@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">智能客房</string>
+
+    <string name="input_module">输入模块列表</string>
+    <string name="output_module">输出模块列表</string>
+    <string name="choose">筛选</string>
+    <string name="id">控制板名称</string>
+    <string name="type">类型</string>
+    <string name="room">房间</string>
+    <string name="existing_deploy">已有配置列表</string>
+    <string name="add_button_control">新增按键控制</string>
+    <string name="output">输出</string>
+    <string name="input">输入</string>
+    <string name="infrared">红外</string>
+    <string name="home_page">首页</string>
+    <string name="setting">设置</string>
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="telephone">手机号码</string>
+    <string name="verification_code">验证码</string>
+    <string name="confirm">确 认</string>
+    <string name="vol">VOL</string>
+    <string name="ch">CH</string>
+    <string name="keyboard_plate">按键板 1</string>
+    <string name="networking">联网模块</string>
+    <string name="module_name">模块名称</string>
+    <string name="equipment_id">设备ID</string>
+    <string name="equipment_password">设备密码</string>
+    <string name="cancel">取 消</string>
+    <string name="notice">灰色：选中，白色：未选中</string>
+    <string name="save">保存</string>
+    <string name="add_scene">新增情景</string>
+    <string name="scene_name">情景名称</string>
+    <string name="first_parlour">一楼客厅</string>
+    <string name="module_keyboard">-- 模块 -- 键</string>
+    <string name="on_off">开关</string>
+    <string name="delete">删除</string>
+    <string name="air_condition">空调</string>
+    <string name="first_parlour_curtain">一楼客厅窗帘</string>
+    <string name="text">测试</string>
+    <string name="deploy">配置</string>
+    <string name="new_register">新用户注册</string>
+    <string name="auto_login">自动登录</string>
+    <string name="login">登 录</string>
+
+
+    <string name="broadcast_ip">"255.255.255.255"</string>
+    <string name="socket_port">8300</string>
+
+</resources>

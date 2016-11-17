@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_2">
+
+    <TextView
+        android:id="@+id/light_gv_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@color/color_929292"
+        android:text="空调"
+        android:gravity="center_horizontal|bottom"
+        android:paddingBottom="@dimen/dp_5"
+        android:textColor="@color/color_fff"
+        android:textSize="@dimen/sp_20" />
+</RelativeLayout>
