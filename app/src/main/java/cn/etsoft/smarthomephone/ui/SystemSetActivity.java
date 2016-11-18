@@ -99,6 +99,11 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
                 intent.putExtra("title",text[4]);
                 startActivity(intent);
                 break;
+            case 5:
+                intent = new Intent(SystemSetActivity.this, Equipment_control.class);
+                intent.putExtra("title",text[5]);
+                startActivity(intent);
+                break;
         }
     }
 }

@@ -52,6 +52,7 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
         if (adapter!= null)
             adapter.notifyDataSetChanged();
         else
+            adapter = new Equi_ListAdapter();
             equi_list.setAdapter(adapter);
         super.onRestart();
     }

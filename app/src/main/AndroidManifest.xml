@@ -131,6 +131,21 @@
             android:name=".ui.SetNewWorkActivity"
             android:screenOrientation="portrait" />
 
+        <!--联网模块详情-->
+        <activity
+            android:name=".ui.Equipment_control"
+            android:screenOrientation="portrait" />
+
+        <!--设备详情-->
+        <activity
+            android:name=".ui.Devs_Detail_Activity"
+            android:screenOrientation="portrait" />
+
+        <!--添加设备-->
+        <activity
+            android:name=".ui.Add_Dev_Activity"
+            android:screenOrientation="portrait" />
+
         <!--服务-->
         <service android:name=".udpService" />
     </application>
