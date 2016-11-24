@@ -1,6 +1,7 @@
 #include "json.h"
 
-char *create_rcu_json(u8 *devUnitID, int datType, int subType1, int subType2) {
+char *create_rcu_json(u8 *devUnitID, int datType, int subType1, int subType2)
+{
     cJSON *root, *rcu_rows, *item;
     root = cJSON_CreateObject();
 
@@ -34,10 +35,11 @@ char *create_rcu_json(u8 *devUnitID, int datType, int subType1, int subType2) {
                     rcu->item.name[2], rcu->item.name[3], rcu->item.name[4], rcu->item.name[5],
                     rcu->item.name[6], rcu->item.name[7], rcu->item.name[8], rcu->item.name[9],
                     rcu->item.name[10], rcu->item.name[11]);
-            cJSON_AddItemToObject(item, "name", cJSON_CreateString(rcu->item.name));
+            cJSON_AddItemToObject(item, "name", cJSON_CreateString((char *)rcu->item.name));
 
             char ip[16] = {0};
-            sprintf(ip, "%d.%d.%d.%d", rcu->item.IpAddr[0] & 0xff, rcu->item.IpAddr[1] & 0xff,
+            sprintf(ip, "%d.%d.%d.%d"
+                    , rcu->item.IpAddr[0] & 0xff, rcu->item.IpAddr[1] & 0xff,
                     rcu->item.IpAddr[2] & 0xff, rcu->item.IpAddr[3] & 0xff);
             cJSON_AddItemToObject(item, "IpAddr", cJSON_CreateString(ip));
 
@@ -78,12 +80,12 @@ char *create_rcu_json(u8 *devUnitID, int datType, int subType1, int subType2) {
             cJSON_AddItemToObject(item, "bDhcp", cJSON_CreateNumber(rcu->item.bDhcp));
         }
     }
-
     return cJSON_Print(root);
 }
 
 //针对灯光和新风设备的控制返回状态
-char *create_chn_status_json(u8 *devUnitID, int datType, int subType1, int subType2) {
+char *create_chn_status_json(u8 *devUnitID, int datType, int subType1, int subType2)
+{
     cJSON *root, *light_rows, *item;
     root = cJSON_CreateObject();
 
@@ -149,8 +151,11 @@ char *create_chn_status_json(u8 *devUnitID, int datType, int subType1, int subTy
     return cJSON_Print(root);
 }
 
-char *create_dev_json(u8 *devUnitID, int datType, int subType1, int subType2) {
-    cJSON *root, *air_rows, *light_rows, *cur_rows, *item;
+char *create_dev_json(u8 *devUnitID, int datType, int subType1, int subType2)
+{
+    cJSON *root, *air_rows, *light_rows;
+    cJSON *cur_rows, *tv_rows, *tvUP_rows;
+    cJSON *lock_rows, *valve_rows, *frair_rows, *item;
     root = cJSON_CreateObject();
 
     if (root == NULL) {
@@ -300,10 +305,212 @@ char *create_dev_json(u8 *devUnitID, int datType, int subType1, int subType2) {
     }
     cJSON_AddItemToObject(root, "curtain", cJSON_CreateNumber(item_num));
 
+    cJSON_AddItemToObject(root, "lock_rows", lock_rows = cJSON_CreateArray());
+    node_lock *lock = lock_list.head;
+    for (int i = 0; i < lock_list.size; i++, lock = lock->next) {
+        if (memcmp(lock->devUnitID, devUnitID, 12) == 0) {
+
+            item_num++;
+
+            cJSON_AddItemToArray(lock_rows, item = cJSON_CreateObject());
+
+            u8 canCpuID[25] = {0};
+            bytes_to_string(lock->ware_dev.canCpuId, canCpuID, 12);
+            cJSON_AddItemToObject(item, "canCpuID", cJSON_CreateString((char *) canCpuID));
+
+            char devName[25] = {0};
+            sprintf(devName, "%x%x%x%x%x%x%x%x%x%x%x%x", lock->ware_dev.devName[0],
+                    lock->ware_dev.devName[1], lock->ware_dev.devName[2],
+                    lock->ware_dev.devName[3], lock->ware_dev.devName[4],
+                    lock->ware_dev.devName[5], lock->ware_dev.devName[6],
+                    lock->ware_dev.devName[7], lock->ware_dev.devName[8],
+                    lock->ware_dev.devName[9], lock->ware_dev.devName[10],
+                    lock->ware_dev.devName[11]);
+            cJSON_AddItemToObject(item, "devName", cJSON_CreateString((char *) devName));
+            char roomName[25] = {0};
+            //bytes_to_string(light->ware_dev.roomName, roomName, 12);
+            sprintf(roomName, "%x%x%x%x%x%x%x%x%x%x%x%x", lock->ware_dev.roomName[0],
+                    lock->ware_dev.roomName[1], lock->ware_dev.roomName[2],
+                    lock->ware_dev.roomName[3], lock->ware_dev.roomName[4],
+                    lock->ware_dev.roomName[5], lock->ware_dev.roomName[6],
+                    lock->ware_dev.roomName[7], lock->ware_dev.roomName[8],
+                    lock->ware_dev.roomName[9], lock->ware_dev.roomName[10],
+                    lock->ware_dev.roomName[11]);
+            cJSON_AddItemToObject(item, "roomName", cJSON_CreateString((char *) roomName));
+            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(lock->ware_dev.devType));
+            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(lock->ware_dev.devId));
+
+            cJSON_AddItemToObject(item, "bOnOff", cJSON_CreateNumber(lock->lock.bOnOff));
+            cJSON_AddItemToObject(item, "timRun", cJSON_CreateNumber(lock->lock.timRun));
+            cJSON_AddItemToObject(item, "bLockOut", cJSON_CreateNumber(lock->lock.bLockOut));
+            cJSON_AddItemToObject(item, "powChnOpen", cJSON_CreateNumber(lock->lock.powChnOpen));
+            cJSON_AddItemToObject(item, "pwd", cJSON_CreateString((char *)lock->lock.pwd));
+        }
+    }
+    cJSON_AddItemToObject(root, "lock", cJSON_CreateNumber(item_num));
+
+    cJSON_AddItemToObject(root, "valve_rows", valve_rows = cJSON_CreateArray());
+    node_valve *valve = valve_list.head;
+    for (int i = 0; i < valve_list.size; i++, valve = valve->next) {
+        if (memcmp(valve->devUnitID, devUnitID, 12) == 0) {
+            item_num++;
+            cJSON_AddItemToArray(valve_rows, item = cJSON_CreateObject());
+
+            u8 canCpuID[25] = {0};
+            bytes_to_string(valve->ware_dev.canCpuId, canCpuID, 12);
+            cJSON_AddItemToObject(item, "canCpuID", cJSON_CreateString((char *) canCpuID));
+
+            char devName[25] = {0};
+            sprintf(devName, "%x%x%x%x%x%x%x%x%x%x%x%x", valve->ware_dev.devName[0],
+                    valve->ware_dev.devName[1], valve->ware_dev.devName[2],
+                    valve->ware_dev.devName[3], valve->ware_dev.devName[4],
+                    valve->ware_dev.devName[5], valve->ware_dev.devName[6],
+                    valve->ware_dev.devName[7], valve->ware_dev.devName[8],
+                    valve->ware_dev.devName[9], valve->ware_dev.devName[10],
+                    valve->ware_dev.devName[11]);
+            cJSON_AddItemToObject(item, "devName", cJSON_CreateString((char *) devName));
+            char roomName[25] = {0};
+            //bytes_to_string(light->ware_dev.roomName, roomName, 12);
+            sprintf(roomName, "%x%x%x%x%x%x%x%x%x%x%x%x", valve->ware_dev.roomName[0],
+                    valve->ware_dev.roomName[1], valve->ware_dev.roomName[2],
+                    valve->ware_dev.roomName[3], valve->ware_dev.roomName[4],
+                    valve->ware_dev.roomName[5], valve->ware_dev.roomName[6],
+                    valve->ware_dev.roomName[7], valve->ware_dev.roomName[8],
+                    valve->ware_dev.roomName[9], valve->ware_dev.roomName[10],
+                    valve->ware_dev.roomName[11]);
+            cJSON_AddItemToObject(item, "roomName", cJSON_CreateString((char *) roomName));
+            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(valve->ware_dev.devType));
+            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(valve->ware_dev.devId));
+
+            cJSON_AddItemToObject(item, "bOnOff", cJSON_CreateNumber(valve->valve.bOnOff));
+            cJSON_AddItemToObject(item, "timRun", cJSON_CreateNumber(valve->valve.timRun));
+            cJSON_AddItemToObject(item, "powChnOpen", cJSON_CreateNumber(valve->valve.powChnOpen));
+            cJSON_AddItemToObject(item, "powChnClose", cJSON_CreateNumber(valve->valve.powChnClose));
+        }
+    }
+    cJSON_AddItemToObject(root, "valve", cJSON_CreateNumber(item_num));
+
+    cJSON_AddItemToObject(root, "frair_rows", frair_rows = cJSON_CreateArray());
+    node_frair *frair = frair_list.head;
+    for (int i = 0; i < frair_list.size; i++, frair = frair->next) {
+        if (memcmp(frair->devUnitID, devUnitID, 12) == 0) {
+            item_num++;
+            cJSON_AddItemToArray(frair_rows, item = cJSON_CreateObject());
+
+            u8 canCpuID[25] = {0};
+            bytes_to_string(frair->ware_dev.canCpuId, canCpuID, 12);
+            cJSON_AddItemToObject(item, "canCpuID", cJSON_CreateString((char *) canCpuID));
+
+            char devName[25] = {0};
+            sprintf(devName, "%x%x%x%x%x%x%x%x%x%x%x%x", frair->ware_dev.devName[0],
+                    frair->ware_dev.devName[1], frair->ware_dev.devName[2],
+                    frair->ware_dev.devName[3], frair->ware_dev.devName[4],
+                    frair->ware_dev.devName[5], frair->ware_dev.devName[6],
+                    frair->ware_dev.devName[7], frair->ware_dev.devName[8],
+                    frair->ware_dev.devName[9], frair->ware_dev.devName[10],
+                    frair->ware_dev.devName[11]);
+            cJSON_AddItemToObject(item, "devName", cJSON_CreateString((char *) devName));
+            char roomName[25] = {0};
+            //bytes_to_string(light->ware_dev.roomName, roomName, 12);
+            sprintf(roomName, "%x%x%x%x%x%x%x%x%x%x%x%x", frair->ware_dev.roomName[0],
+                    frair->ware_dev.roomName[1], frair->ware_dev.roomName[2],
+                    frair->ware_dev.roomName[3], frair->ware_dev.roomName[4],
+                    frair->ware_dev.roomName[5], frair->ware_dev.roomName[6],
+                    frair->ware_dev.roomName[7], frair->ware_dev.roomName[8],
+                    frair->ware_dev.roomName[9], frair->ware_dev.roomName[10],
+                    frair->ware_dev.roomName[11]);
+            cJSON_AddItemToObject(item, "roomName", cJSON_CreateString((char *) roomName));
+            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(frair->ware_dev.devType));
+            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(frair->ware_dev.devId));
+
+            cJSON_AddItemToObject(item, "bOnOff", cJSON_CreateNumber(frair->frair.bOnOff));
+            cJSON_AddItemToObject(item, "spdSel", cJSON_CreateNumber(frair->frair.spdSel));
+            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(frair->frair.powChn));
+        }
+    }
+    cJSON_AddItemToObject(root, "frair", cJSON_CreateNumber(item_num));
+
+    cJSON_AddItemToObject(root, "tv_rows", tv_rows = cJSON_CreateArray());
+    node_tv *tv = tv_list.head;
+    for (int i = 0; i < tv_list.size; i++, tv = tv->next) {
+        if (memcmp(tv->devUnitID, devUnitID, 12) == 0) {
+
+            item_num++;
+
+            cJSON_AddItemToArray(tv_rows, item = cJSON_CreateObject());
+
+            u8 canCpuID[25] = {0};
+            bytes_to_string(curtain->ware_dev.canCpuId, canCpuID, 12);
+            cJSON_AddItemToObject(item, "canCpuID", cJSON_CreateString((char *) canCpuID));
+
+            char devName[25] = {0};
+            sprintf(devName, "%x%x%x%x%x%x%x%x%x%x%x%x", tv->ware_dev.devName[0],
+                    tv->ware_dev.devName[1], tv->ware_dev.devName[2],
+                    tv->ware_dev.devName[3], tv->ware_dev.devName[4],
+                    tv->ware_dev.devName[5], tv->ware_dev.devName[6],
+                    tv->ware_dev.devName[7], tv->ware_dev.devName[8],
+                    tv->ware_dev.devName[9], tv->ware_dev.devName[10],
+                    tv->ware_dev.devName[11]);
+            cJSON_AddItemToObject(item, "devName", cJSON_CreateString((char *) devName));
+            char roomName[25] = {0};
+            //bytes_to_string(light->ware_dev.roomName, roomName, 12);
+            sprintf(roomName, "%x%x%x%x%x%x%x%x%x%x%x%x", tv->ware_dev.roomName[0],
+                    tv->ware_dev.roomName[1], tv->ware_dev.roomName[2],
+                    tv->ware_dev.roomName[3], tv->ware_dev.roomName[4],
+                    tv->ware_dev.roomName[5], tv->ware_dev.roomName[6],
+                    tv->ware_dev.roomName[7], tv->ware_dev.roomName[8],
+                    tv->ware_dev.roomName[9], tv->ware_dev.roomName[10],
+                    tv->ware_dev.roomName[11]);
+            cJSON_AddItemToObject(item, "roomName", cJSON_CreateString((char *) roomName));
+            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(tv->ware_dev.devType));
+            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(tv->ware_dev.devId));
+        }
+    }
+    cJSON_AddItemToObject(root, "tv", cJSON_CreateNumber(item_num));
+
+    cJSON_AddItemToObject(root, "tvUP_rows", tvUP_rows = cJSON_CreateArray());
+    node_tvUP *tvUP = tvUP_list.head;
+    for (int i = 0; i < tvUP_list.size; i++, tvUP = tvUP->next) {
+        if (memcmp(tvUP->devUnitID, devUnitID, 12) == 0) {
+
+            item_num++;
+
+            cJSON_AddItemToArray(tvUP_rows, item = cJSON_CreateObject());
+
+            u8 canCpuID[25] = {0};
+            bytes_to_string(curtain->ware_dev.canCpuId, canCpuID, 12);
+            cJSON_AddItemToObject(item, "canCpuID", cJSON_CreateString((char *) canCpuID));
+
+            char devName[25] = {0};
+            sprintf(devName, "%x%x%x%x%x%x%x%x%x%x%x%x", tvUP->ware_dev.devName[0],
+                    tvUP->ware_dev.devName[1], tvUP->ware_dev.devName[2],
+                    tvUP->ware_dev.devName[3], tvUP->ware_dev.devName[4],
+                    tvUP->ware_dev.devName[5], tvUP->ware_dev.devName[6],
+                    tvUP->ware_dev.devName[7], tvUP->ware_dev.devName[8],
+                    tvUP->ware_dev.devName[9], tvUP->ware_dev.devName[10],
+                    tvUP->ware_dev.devName[11]);
+            cJSON_AddItemToObject(item, "devName", cJSON_CreateString((char *) devName));
+            char roomName[25] = {0};
+            //bytes_to_string(light->ware_dev.roomName, roomName, 12);
+            sprintf(roomName, "%x%x%x%x%x%x%x%x%x%x%x%x", tvUP->ware_dev.roomName[0],
+                    tvUP->ware_dev.roomName[1], tvUP->ware_dev.roomName[2],
+                    tvUP->ware_dev.roomName[3], tvUP->ware_dev.roomName[4],
+                    tvUP->ware_dev.roomName[5], tvUP->ware_dev.roomName[6],
+                    tvUP->ware_dev.roomName[7], tvUP->ware_dev.roomName[8],
+                    tvUP->ware_dev.roomName[9], tvUP->ware_dev.roomName[10],
+                    tvUP->ware_dev.roomName[11]);
+            cJSON_AddItemToObject(item, "roomName", cJSON_CreateString((char *) roomName));
+            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(tvUP->ware_dev.devType));
+            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(tvUP->ware_dev.devId));
+        }
+    }
+    cJSON_AddItemToObject(root, "tvUP", cJSON_CreateNumber(item_num));
+
     return cJSON_Print(root);
 }
 
-char *create_events_json(u8 *devUnitID, int datType, int subType1, int subType2) {
+char *create_events_json(u8 *devUnitID, int datType, int subType1, int subType2)
+{
     cJSON *root, *scene_rows, *item, *item2, *itemAry;
     root = cJSON_CreateObject();
 
@@ -366,7 +573,8 @@ char *create_events_json(u8 *devUnitID, int datType, int subType1, int subType2)
     return cJSON_Print(root);
 }
 
-char *create_board_chnout_json(u8 *devUnitID, int datType, int subType1, int subType2) {
+char *create_board_chnout_json(u8 *devUnitID, int datType, int subType1, int subType2)
+{
     cJSON *root, *chnout_rows, *chnName_rows, *item;
     root = cJSON_CreateObject();
 
@@ -430,7 +638,8 @@ char *create_board_chnout_json(u8 *devUnitID, int datType, int subType1, int sub
     return cJSON_Print(root);
 }
 
-char *create_board_keyinput_json(u8 *devUnitID, int datType, int subType1, int subType2) {
+char *create_board_keyinput_json(u8 *devUnitID, int datType, int subType1, int subType2)
+{
     cJSON *root, *keyinput_rows, *keyName_rows, *keyAllCtrlType_rows, *item;
     root = cJSON_CreateObject();
 
@@ -503,8 +712,187 @@ char *create_board_keyinput_json(u8 *devUnitID, int datType, int subType1, int s
     return cJSON_Print(root);
 }
 
-void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int devID, int cmd) {
+void set_rcuInfo_json(u8 *devUnitID, u8 *devUnitPass, u8 *name, u8 *IpAddr, u8 *SubMask, u8 *Gateway,
+                      u8 *centerServ, u8 *roomNum, u8 *macAddr, int bDhcp){
 
+    node_gw_client *gw = gw_client_list.head;
+    for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
+        if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
+            char gw_ip[16] = {0};
+            sprintf(gw_ip, "%d.%d.%d.%d", gw->rcu_ip[0] & 0xff, gw->rcu_ip[1] & 0xff,
+                    gw->rcu_ip[2] & 0xff, gw->rcu_ip[3] & 0xff);
+
+            u8 data_buf[RCU_INFO_SIZE];
+            memset(data_buf, 0, RCU_INFO_SIZE);
+            RCU_INFO rcu;
+            memcpy(rcu.devUnitID, devUnitID, 12);
+            memcpy(rcu.devUnitPass, devUnitPass, 8);
+            memcpy(rcu.name, name, 12);
+            memcpy(rcu.IpAddr, IpAddr, 4);
+            memcpy(rcu.SubMask, SubMask, 4);
+            memcpy(rcu.Gateway, Gateway, 4);
+            memcpy(rcu.centerServ, centerServ, 4);
+            memcpy(rcu.roomNum, roomNum, 4);
+            memcpy(rcu.macAddr, macAddr, 6);
+            rcu.bDhcp = bDhcp;
+
+            memcpy(data_buf, &rcu, RCU_INFO_SIZE);
+
+            UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip), data_buf,
+                                                   RCU_INFO_SIZE, e_udpPro_setRcuInfo, gw->gw_id, gw->gw_pass,
+                                                   IS_ACK, 0, 0);
+            int len = UDP_PKT_SIZE + RCU_INFO_SIZE;
+            sendto(primary_udp, send_pkt, len, 0, (struct sockaddr *) &gw->gw_sender,
+                   sizeof(gw->gw_sender));
+
+        }
+    }
+}
+
+void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int powChn, u8 *roomName, u8 *devName)
+{
+    node_gw_client *gw = gw_client_list.head;
+    for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
+        if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
+            char gw_ip[16] = {0};
+            sprintf(gw_ip, "%d.%d.%d.%d", gw->rcu_ip[0] & 0xff, gw->rcu_ip[1] & 0xff,
+                    gw->rcu_ip[2] & 0xff, gw->rcu_ip[3] & 0xff);
+            //canCpuID, devid, devtype, ctrl_cmd, statue
+            WARE_DEV ware_dev;
+            memcpy(ware_dev.canCpuId, canCpuID, 12);
+            ware_dev.devType = devType;
+            memcpy(ware_dev.roomName, roomName, 12);
+            memcpy(ware_dev.devName, devName, 12);
+
+            switch (devType) {
+                case e_ware_airCond: {
+                    u8 data_buf[WARE_AIR_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+                    DEV_PRO_AIRCOND air;
+                    air.powChn = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &air, AIR_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_AIR_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_AIR_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                }
+                case e_ware_tv: {
+                    u8 data_buf[WARE_TV_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_TV_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_TV_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                }
+                case e_ware_tvUP: {
+                    u8 data_buf[WARE_TVUP_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_TVUP_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_TVUP_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                }
+                    break;
+                case e_ware_light: {
+                    u8 data_buf[WARE_LGT_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+                    DEV_PRO_LIGHT light;
+                    light.powChn = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &light, LIGHT_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_LGT_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_LGT_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+                }
+                    break;
+                case e_ware_curtain: {
+                    u8 data_buf[WARE_CUR_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+                    DEV_PRO_CURTAIN curtain;
+                    curtain.powChn = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &curtain, CURTAIN_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_CUR_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_CUR_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+                }
+                case e_ware_lock: {
+                    u8 data_buf[WARE_LOCK_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+                    DEV_PRO_LOCK lock;
+                    lock.powChnOpen = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &lock, LOCK_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_LOCK_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_LOCK_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+                }
+                case e_ware_value: {
+                    u8 data_buf[WARE_VALUE_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+                    DEV_PRO_LOCK lock;
+                    lock.powChnOpen = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &lock, VALUE_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_VALUE_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_VALUE_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+                }
+                case e_ware_fresh_air: {
+                    u8 data_buf[WARE_FRAIR_SIZE];
+                    memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
+                    DEV_PRO_LOCK lock;
+                    lock.powChnOpen = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &lock, FRAIR_SIZE);
+
+                    UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                           data_buf, WARE_FRAIR_SIZE, \
+                                                       datType, gw->gw_id, gw->gw_pass,
+                                                           IS_ACK, 0, 0);
+                    int len = UDP_PKT_SIZE + WARE_FRAIR_SIZE;
+                    sendto(primary_udp, send_pkt, len, 0,
+                           (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+                }
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int devID, int powChn, u8 *devName, u8 *roomName, int cmd)
+{
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
         if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
@@ -525,6 +913,11 @@ void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int d
                         if (memcmp(air->ware_dev.canCpuId, canCpuID, 12) == 0
                             && air->ware_dev.devType == devType
                             && air->ware_dev.devId == devID) {
+                            if(datType == e_udpPro_editDev){
+                                memcpy(air->ware_dev.devName, devName, 12);
+                                memcpy(air->ware_dev.roomName, roomName, 12);
+                                air->aircond.powChn = powChn;
+                            }
                             u8 data_buf[WARE_AIR_SIZE];
                             memcpy(data_buf, &air->ware_dev, WARE_DEV_SIZE);
                             memcpy(data_buf + WARE_DEV_SIZE, &air->aircond, AIR_SIZE);
@@ -547,7 +940,11 @@ void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int d
                         if (memcmp(light->ware_dev.canCpuId, canCpuID, 12) == 0
                             && light->ware_dev.devType == devType
                             && light->ware_dev.devId == devID) {
-
+                            if(datType == e_udpPro_editDev){
+                                memcpy(light->ware_dev.devName, devName, 12);
+                                memcpy(light->ware_dev.roomName, roomName, 12);
+                                light->light.powChn = powChn;
+                            }
                             u8 data_buf[WARE_LGT_SIZE];
                             memcpy(data_buf, &light->ware_dev, WARE_DEV_SIZE);
                             memcpy(data_buf + WARE_DEV_SIZE, &light->light, LIGHT_SIZE);
@@ -569,6 +966,12 @@ void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int d
                         if (memcmp(curtain->ware_dev.canCpuId, canCpuID, 12) == 0
                             && curtain->ware_dev.devType == devType
                             && curtain->ware_dev.devId == devID) {
+                            if(datType == e_udpPro_editDev){
+                                memcpy(curtain->ware_dev.devName, devName, 12);
+                                memcpy(curtain->ware_dev.roomName, roomName, 12);
+                                curtain->curtain.powChn = powChn;
+                            }
+
                             u8 data_buf[WARE_CUR_SIZE];
                             memcpy(data_buf, &curtain->ware_dev, WARE_DEV_SIZE);
                             memcpy(data_buf + WARE_DEV_SIZE, &curtain->curtain, CURTAIN_SIZE);
@@ -584,6 +987,143 @@ void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int d
                         }
                     }
                 }
+                    break;
+                case e_ware_tv: {
+                    node_tv *tv = tv_list.head;
+                    for (int j = 0; j < curtain_list.size; j++, tv = tv->next) {
+                        if (memcmp(tv->ware_dev.canCpuId, canCpuID, 12) == 0
+                            && tv->ware_dev.devType == devType
+                            && tv->ware_dev.devId == devID) {
+                            if(datType == e_udpPro_editDev){
+                                memcpy(tv->ware_dev.devName, devName, 12);
+                                memcpy(tv->ware_dev.roomName, roomName, 12);
+                            }
+
+                            u8 data_buf[WARE_TV_SIZE];
+                            memcpy(data_buf, &tv->ware_dev, WARE_TV_SIZE);
+
+                            UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                                   data_buf, WARE_TV_SIZE, \
+                                                               datType, gw->gw_id, gw->gw_pass,
+                                                                   IS_ACK, 0, value);
+                            int len = UDP_PKT_SIZE + WARE_TV_SIZE;
+                            sendto(primary_udp, send_pkt, len, 0,
+                                   (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                        }
+                    }
+                }
+                    break;
+                case e_ware_tvUP: {
+                    node_tv *tvUP = tv_list.head;
+                    for (int j = 0; j < curtain_list.size; j++, tvUP = tvUP->next) {
+                        if (memcmp(tvUP->ware_dev.canCpuId, canCpuID, 12) == 0
+                            && tvUP->ware_dev.devType == devType
+                            && tvUP->ware_dev.devId == devID) {
+                            if(datType == e_udpPro_editDev){
+                                memcpy(tvUP->ware_dev.devName, devName, 12);
+                                memcpy(tvUP->ware_dev.roomName, roomName, 12);
+                            }
+
+                            u8 data_buf[WARE_TVUP_SIZE];
+                            memcpy(data_buf, &tvUP->ware_dev, WARE_TVUP_SIZE);
+
+                            UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                                   data_buf, WARE_TVUP_SIZE, \
+                                                               datType, gw->gw_id, gw->gw_pass,
+                                                                   IS_ACK, 0, value);
+                            int len = UDP_PKT_SIZE + WARE_TVUP_SIZE;
+                            sendto(primary_udp, send_pkt, len, 0,
+                                   (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                        }
+                    }
+                }
+                    break;
+                case e_ware_lock: {
+                    node_lock *lock = lock_list.head;
+                    for (int j = 0; j < curtain_list.size; j++, lock = lock->next) {
+                        if (memcmp(lock->ware_dev.canCpuId, canCpuID, 12) == 0
+                            && lock->ware_dev.devType == devType
+                            && lock->ware_dev.devId == devID) {
+                            if(datType == e_udpPro_editDev){
+                                memcpy(lock->ware_dev.devName, devName, 12);
+                                memcpy(lock->ware_dev.roomName, roomName, 12);
+                                lock->lock.powChnOpen = powChn;
+                            }
+
+                            u8 data_buf[WARE_LOCK_SIZE];
+                            memcpy(data_buf, &lock->ware_dev, WARE_LOCK_SIZE);
+                            memcpy(data_buf + WARE_DEV_SIZE, &lock->lock, LOCK_SIZE);
+
+                            UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                                   data_buf, WARE_LOCK_SIZE, \
+                                                               datType, gw->gw_id, gw->gw_pass,
+                                                                   IS_ACK, 0, value);
+                            int len = UDP_PKT_SIZE + WARE_LOCK_SIZE;
+                            sendto(primary_udp, send_pkt, len, 0,
+                                   (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                        }
+                    }
+                }
+                    break;
+                case e_ware_fresh_air: {
+                    node_frair *frair = frair_list.head;
+                    for (int j = 0; j < curtain_list.size; j++, frair = frair->next) {
+                        if (memcmp(frair->ware_dev.canCpuId, canCpuID, 12) == 0
+                            && frair->ware_dev.devType == devType
+                            && frair->ware_dev.devId == devID) {
+                            if(datType == e_udpPro_editDev){
+                                memcpy(frair->ware_dev.devName, devName, 12);
+                                memcpy(frair->ware_dev.roomName, roomName, 12);
+                                frair->frair.powChn = powChn;
+                            }
+
+                            u8 data_buf[WARE_FRAIR_SIZE];
+                            memcpy(data_buf, &frair->ware_dev, WARE_FRAIR_SIZE);
+                            memcpy(data_buf + WARE_DEV_SIZE, &frair->frair, FRAIR_SIZE);
+
+                            UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                                   data_buf, WARE_FRAIR_SIZE, \
+                                                               datType, gw->gw_id, gw->gw_pass,
+                                                                   IS_ACK, 0, value);
+                            int len = UDP_PKT_SIZE + WARE_FRAIR_SIZE;
+                            sendto(primary_udp, send_pkt, len, 0,
+                                   (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                        }
+                    }
+                }
+                    break;
+                case e_ware_value: {
+                    node_valve *valve = valve_list.head;
+                    for (int j = 0; j < curtain_list.size; j++, valve = valve->next) {
+                        if (memcmp(valve->ware_dev.canCpuId, canCpuID, 12) == 0
+                            && valve->ware_dev.devType == devType
+                            && valve->ware_dev.devId == devID) {
+                            if(datType == e_udpPro_editDev){
+                                memcpy(valve->ware_dev.devName, devName, 12);
+                                memcpy(valve->ware_dev.roomName, roomName, 12);
+                                valve->valve.powChnOpen = powChn;
+                            }
+
+                            u8 data_buf[WARE_VALUE_SIZE];
+                            memcpy(data_buf, &valve->ware_dev, WARE_VALUE_SIZE);
+                            memcpy(data_buf + WARE_DEV_SIZE, &valve->valve, VALUE_SIZE);
+
+                            UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
+                                                                   data_buf, WARE_VALUE_SIZE, \
+                                                               datType, gw->gw_id, gw->gw_pass,
+                                                                   IS_ACK, 0, value);
+                            int len = UDP_PKT_SIZE + WARE_VALUE_SIZE;
+                            sendto(primary_udp, send_pkt, len, 0,
+                                   (struct sockaddr *) &gw->gw_sender, sizeof(gw->gw_sender));
+
+                        }
+                    }
+                }
+                    break;
                 default:
                     break;
             }
@@ -591,7 +1131,8 @@ void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int d
     }
 }
 
-void ctrl_all_devs_json(u8 *devUnitID, int datType, int devType, int cmd) {
+void ctrl_all_devs_json(u8 *devUnitID, int datType, int devType, int cmd)
+{
 
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
@@ -613,7 +1154,8 @@ void ctrl_all_devs_json(u8 *devUnitID, int datType, int devType, int cmd) {
     }
 }
 
-char *create_ctl_reply_info_json(UDPPROPKT *pkt) {
+char *create_ctl_reply_info_json(UDPPROPKT *pkt)
+{
     cJSON *root, *dev_rows, *item;
     root = cJSON_CreateObject();
 
@@ -681,7 +1223,8 @@ char *create_ctl_reply_info_json(UDPPROPKT *pkt) {
     return cJSON_Print(root);
 }
 
-void add_scene_json(u8 *devUnitID, char *sceneName, int devCnt, int eventId, cJSON *item, int cmd) {
+void add_scene_json(u8 *devUnitID, char *sceneName, int devCnt, int eventId, cJSON *item, int cmd)
+{
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
         if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
@@ -737,7 +1280,8 @@ void add_scene_json(u8 *devUnitID, char *sceneName, int devCnt, int eventId, cJS
     }
 }
 
-void ctrl_scene_json(u8 *devUnitID, int eventId, int cmd) {
+void ctrl_scene_json(u8 *devUnitID, int eventId, int cmd)
+{
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
         if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
@@ -754,7 +1298,7 @@ void ctrl_scene_json(u8 *devUnitID, int eventId, int cmd) {
 
                     UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip), data_buf,
                                                            SCENE_SIZE, \
-                                                            cmd, gw->gw_id, gw->gw_pass, IS_ACK, 0,
+                                                           cmd, gw->gw_id, gw->gw_pass, IS_ACK, 0,
                                                            0);
                     int len = UDP_PKT_SIZE + SCENE_SIZE;
                     sendto(primary_udp, send_pkt, len, 0, (struct sockaddr *) &gw->gw_sender,
@@ -766,7 +1310,8 @@ void ctrl_scene_json(u8 *devUnitID, int eventId, int cmd) {
     }
 }
 
-void get_keyOpitem_json(u8 *devUnitID, int key_index, u8 *uid) {
+void get_keyOpitem_json(u8 *devUnitID, int key_index, u8 *uid)
+{
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
         if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
@@ -788,7 +1333,8 @@ void get_keyOpitem_json(u8 *devUnitID, int key_index, u8 *uid) {
     }
 }
 
-void get_chnOpitem_json(u8 *devUnitID, int devType, int devID, u8 *uid) {
+void get_chnOpitem_json(u8 *devUnitID, int devType, int devID, u8 *uid)
+{
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
         if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
@@ -812,7 +1358,8 @@ void get_chnOpitem_json(u8 *devUnitID, int devType, int devID, u8 *uid) {
     }
 }
 
-char *create_get_chn_opitem_reply_json(u8 *devUnitID, u8 *cpuCanID, int devType, int devID) {
+char *create_get_chn_opitem_reply_json(u8 *devUnitID, u8 *cpuCanID, int devType, int devID)
+{
     cJSON *root, *chn_opitem_rows, *chn_item, *chn_item_up, *chn_item_down;
     root = cJSON_CreateObject();
 
@@ -865,7 +1412,8 @@ char *create_get_chn_opitem_reply_json(u8 *devUnitID, u8 *cpuCanID, int devType,
     return cJSON_Print(root);
 }
 
-char *create_set_chn_opitem_reply_json(UDPPROPKT *pkt) {
+char *create_set_chn_opitem_reply_json(UDPPROPKT *pkt)
+{
     cJSON *root;
     root = cJSON_CreateObject();
 
@@ -889,7 +1437,8 @@ char *create_set_chn_opitem_reply_json(UDPPROPKT *pkt) {
 }
 
 void set_chn_opitem_json(u8 *devUnitID, u8 *canCpuID, int devType, int devID, int cnt,
-                         cJSON *chnop_item, int cmd) {
+                         cJSON *chnop_item, int cmd)
+{
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
         if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
@@ -936,7 +1485,7 @@ void set_chn_opitem_json(u8 *devUnitID, u8 *canCpuID, int devType, int devID, in
 
                 UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip), data_buf,
                                                        data_len, \
-                                                   cmd, gw->gw_id, gw->gw_pass, IS_ACK, 0, cnt);
+                                                       cmd, gw->gw_id, gw->gw_pass, IS_ACK, 0, cnt);
                 int len = UDP_PKT_SIZE + data_len;
                 sendto(primary_udp, send_pkt, len, 0, (struct sockaddr *) &gw->gw_sender,
                        sizeof(gw->gw_sender));
@@ -946,7 +1495,8 @@ void set_chn_opitem_json(u8 *devUnitID, u8 *canCpuID, int devType, int devID, in
     }
 }
 
-char *create_get_key_opitem_reply_json(u8 *devUnitID, u8 *cpuCanID, int key_index) {
+char *create_get_key_opitem_reply_json(u8 *devUnitID, u8 *cpuCanID, int key_index)
+{
     cJSON *root, *key_opitem_rows, *key_item;
     root = cJSON_CreateObject();
 
@@ -999,7 +1549,8 @@ char *create_get_key_opitem_reply_json(u8 *devUnitID, u8 *cpuCanID, int key_inde
 }
 
 void set_key_opitem_json(u8 *devUnitID, u8 *canCpuID, int key_index, int cnt, cJSON *keyop_item,
-                         int cmd) {
+                         int cmd)
+{
     node_gw_client *gw = gw_client_list.head;
     for (int i = 0; i < gw_client_list.size; i++, gw = gw->next) {
         if (memcmp(gw->gw_id, devUnitID, 12) == 0) {
@@ -1048,7 +1599,8 @@ void set_key_opitem_json(u8 *devUnitID, u8 *canCpuID, int key_index, int cnt, cJ
     }
 }
 
-char *create_set_key_opitem_reply_json(UDPPROPKT *pkt) {
+char *create_set_key_opitem_reply_json(UDPPROPKT *pkt)
+{
     cJSON *root;
     root = cJSON_CreateObject();
 
@@ -1070,4 +1622,3 @@ char *create_set_key_opitem_reply_json(UDPPROPKT *pkt) {
 
     return cJSON_Print(root);
 }
-

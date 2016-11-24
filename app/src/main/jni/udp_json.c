@@ -36,6 +36,11 @@ ware_linked_list ware_list;
 aircond_linked_list aircond_list;
 light_linked_list light_list;
 curtain_linked_list curtain_list;
+tv_linked_list tv_list;
+tvUP_linked_list tvUP_list;
+lock_linked_list lock_list;
+valve_linked_list valve_list;
+frair_linked_list frair_list;
 scene_linked_list scene_list;
 rcu_linked_list rcu_list;
 board_linked_list board_list;
@@ -200,20 +205,169 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
         case e_udpPro_getRcuInfo:
             udp_broadcast(devUnitID);
             break;
+        case e_udpPro_setRcuInfo:
+        {
+            u8 name[12];
+            u8 IpAddr[4];
+            u8 SubMask[4];
+            u8 Gateway[4];
+            u8 roomNum[4];
+            u8 macAddr[6];
+            u8 centerServ[4];
+
+            memset(name, 0, 12);
+            memset(IpAddr, 0, 4);
+            memset(Gateway, 0, 4);
+            memset(SubMask, 0, 4);
+            memset(roomNum, 0, 4);
+            memset(macAddr, 0, 6);
+            memset(centerServ, 0, 4);
+
+            char *name_str = cJSON_GetObjectItem(root_json, "name")->valuestring;
+            if(name_str != NULL) {
+                memcpy(name, name_str, 12);
+                free(name_str);
+            }
+            char *ip_str = cJSON_GetObjectItem(root_json, "IpAddr")->valuestring;
+            if(ip_str != NULL) {
+                const char *div = ".";
+                char *p;
+                p = strtok(ip_str,div);
+                int i = 0;
+                while(p) {
+                    IpAddr[i] = atoi(p);
+                    i++;
+                    p=strtok(NULL,div);
+                }
+                free(ip_str);
+            }
+
+            char *subMask_str = cJSON_GetObjectItem(root_json, "SubMask")->valuestring;
+            if(subMask_str != NULL) {
+                const char *div = ".";
+                char *p;
+                p = strtok(subMask_str,div);
+                int i = 0;
+                while(p) {
+                    SubMask[i] = atoi(p);
+                    i++;
+                    p=strtok(NULL,div);
+                }
+                free(subMask_str);
+            }
+
+            char *gateway_str = cJSON_GetObjectItem(root_json, "Gateway")->valuestring;
+            if(gateway_str != NULL) {
+                const char *div = ".";
+                char *p;
+                p = strtok(gateway_str,div);
+                int i = 0;
+                while(p) {
+                    Gateway[i] = atoi(p);
+                    i++;
+                    p=strtok(NULL,div);
+                }
+                free(gateway_str);
+            }
+
+            char *centerServ_str = cJSON_GetObjectItem(root_json, "centerServ")->valuestring;
+            if(centerServ_str != NULL) {
+                const char *div = ".";
+                char *p;
+                p = strtok(centerServ_str,div);
+                int i = 0;
+                while(p) {
+                    centerServ[i] = atoi(p);
+                    i++;
+                    p=strtok(NULL,div);
+                }
+                free(centerServ_str);
+            }
+
+            char *roomNum_str = cJSON_GetObjectItem(root_json, "roomNum")->valuestring;
+            if(roomNum_str != NULL) {
+                memcpy(roomNum_str, roomNum, 4);
+                free(roomNum_str);
+            }
+
+            char *macAddr_str = cJSON_GetObjectItem(root_json, "macAddr")->valuestring;
+            if(macAddr_str != NULL) {
+                string_to_bytes(macAddr_str, macAddr, 12);
+                free(macAddr_str);
+            }
+
+            int bDhcp = cJSON_GetObjectItem(root_json, "bDhcp")->valueint;
+
+            set_rcuInfo_json(devUnitID, devUnitPass, name, IpAddr, SubMask, Gateway, centerServ, roomNum, macAddr, bDhcp);
+        }
+        break;
         case e_udpPro_getDevsInfo:
             get_info_from_gw_shorttime(1);
             break;
+        case e_udpPro_addDev:{
+            devType = cJSON_GetObjectItem(root_json, "devType")->valueint;
+            u8 devName[12];
+            u8 roomName[12];
+            u8 canCpuID[12];
+            char *devName_str = cJSON_GetObjectItem(root_json, "devName")->valuestring;
+            if (devName_str != NULL) {
+                string_to_bytes(devName_str, devName, 24);
+                free(devName_str);
+            } else {
+                return;
+            }
+            char *roomName_str = cJSON_GetObjectItem(root_json, "roomName")->valuestring;
+            if (roomName_str != NULL) {
+                string_to_bytes(roomName_str, roomName, 24);
+                free(roomName_str);
+            } else {
+                return;
+            }
+
+            int powChn = cJSON_GetObjectItem(root_json, "powChn")->valueint;
+            char *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID")->valuestring;
+            if (canCpuID_str != NULL) {
+                string_to_bytes(canCpuID_str, canCpuID, 24);
+                free(canCpuID_str);
+            } else {
+                return;
+            }
+
+            add_devs_json(devUnitID, canCpuID, e_udpPro_addDev, devType, powChn, roomName, devName);
+    }
         case e_udpPro_editDev: {
             //重新打包数据，转发给联网模块
             devType = cJSON_GetObjectItem(root_json, "devType")->valueint;
             devID = cJSON_GetObjectItem(root_json, "devID")->valueint;
             //控制时cmd为控制命令，编辑和删除时cmd为设备类型T_WARE_TYPE
             int cmd = cJSON_GetObjectItem(root_json, "cmd")->valueint;
-            cJSON *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID");
-
             u8 canCpuID[12];
-            string_to_bytes(cJSON_Print(canCpuID_str), canCpuID, 24);
-            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_editDev, devType, devID, cmd);
+            u8 devName[12];
+            u8 roomName[12];
+            char *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID")->valuestring;
+            if (canCpuID_str != NULL) {
+                string_to_bytes(canCpuID_str, canCpuID, 24);
+                free(canCpuID_str);
+            } else {
+                return;
+            }
+            char *devName_str = cJSON_GetObjectItem(root_json, "devName")->valuestring;
+            if (devName_str != NULL) {
+                string_to_bytes(devName_str, devName, 24);
+                free(devName_str);
+            } else {
+                return;
+            }
+            char *roomName_str = cJSON_GetObjectItem(root_json, "roomName")->valuestring;
+            if (roomName_str != NULL) {
+                string_to_bytes(roomName_str, roomName, 24);
+                free(roomName_str);
+            } else {
+                return;
+            }
+
+            int powChn = cJSON_GetObjectItem(root_json, "powChn")->valueint;
+            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_editDev, devType, devID,  powChn, devName, roomName, cmd);
         }
             break;
         case e_udpPro_delDev: {
@@ -222,11 +376,16 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
             devID = cJSON_GetObjectItem(root_json, "devID")->valueint;
             //控制时cmd为控制命令，编辑和删除时cmd为设备类型T_WARE_TYPE
             int cmd = cJSON_GetObjectItem(root_json, "cmd")->valueint;
-            cJSON *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID");
 
             u8 canCpuID[12];
-            string_to_bytes(cJSON_Print(canCpuID_str), canCpuID, 24);
-            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_delDev, devType, devID, cmd);
+            char *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID")->valuestring;
+            if (canCpuID_str != NULL) {
+                string_to_bytes(canCpuID_str, canCpuID, 24);
+                free(canCpuID_str);
+            } else {
+                return;
+            }
+            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_delDev, devType, devID, 0, 0, 0, cmd);
         }
             break;
         case e_udpPro_ctrlDev: {//重新打包数据，转发给联网模块
@@ -234,11 +393,16 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
             devID = cJSON_GetObjectItem(root_json, "devID")->valueint;
             //控制时cmd为控制命令，编辑和删除时cmd为设备类型T_WARE_TYPE
             int cmd = cJSON_GetObjectItem(root_json, "cmd")->valueint;
-            cJSON *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID");
 
             u8 canCpuID[12];
-            string_to_bytes(canCpuID_str->valuestring, canCpuID, 24);
-            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_ctrlDev, devType, devID, cmd);
+            char *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID")->valuestring;
+            if (canCpuID_str != NULL) {
+                string_to_bytes(canCpuID_str, canCpuID, 24);
+                free(canCpuID_str);
+            } else {
+                return;
+            }
+            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_ctrlDev, devType, devID, 0, 0, 0, cmd);
         }
             break;
         case e_udpPro_ctrl_allDevs:
@@ -434,6 +598,7 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
             }
             break;
 
+        case e_udpPro_addDev:
         case e_udpPro_ctrlDev:
         case e_udpPro_editDev:
             if (udp_pro_pkt->subType1 == 1) {
@@ -610,6 +775,7 @@ void ui_udp_server() {
             continue;
         } else {
             extract_json(ui_recvbuf, ui_sender);
+            memset(&ui_recvbuf, 0, sizeof(ui_recvbuf));
         }
     }
 }

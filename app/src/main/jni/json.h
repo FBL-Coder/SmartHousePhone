@@ -21,7 +21,12 @@ extern char* create_board_keyinput_json(u8 *devUnitID, int datType, int subType1
 
 extern char* create_rcu_json(u8 *devUnitID, int datType, int subType1, int subType2);
 
-extern void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int devID, int cmd);
+extern void set_rcuInfo_json(u8 *devUnitID, u8 *devUnitPass, u8 *name, u8 *IpAddr, u8 *SubMask, u8 *Gateway,
+                             u8 *centerServ, u8 *roomNum, u8 *macAddr, int bDhcp);
+
+extern void ctrl_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int devID, int powChn, u8 *devName, u8 *roomName, int cmd);
+
+extern void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int powChn, u8 *roomName, u8 *devName);
 
 extern void ctrl_all_devs_json(u8 *devUnitID, int datType, int devType, int cmd);
 

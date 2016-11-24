@@ -71,7 +71,7 @@ extern void rcu_display (rcu_linked_list* _this);
 extern rcu_linked_list rcu_create_linked_list ();
 /** create a node_rcu
  */
-extern node_rcu* rcu_create_node (RCU_INFO rcu_info);   
+extern node_rcu* rcu_create_node (RCU_INFO rcu_info);
 
 typedef struct Node {
     u8 devUnitID[12];
@@ -238,7 +238,6 @@ extern void ware_light_display (light_linked_list* _this);
  */
 extern light_linked_list ware_light_create_linked_list ();
 
-
 typedef struct node_curtain {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
@@ -248,7 +247,6 @@ typedef struct node_curtain {
     // next node
     struct node_curtain* next;
 } node_curtain;
-
 
 typedef struct curtain_linked_list {
     node_curtain* head;
@@ -292,6 +290,264 @@ extern void ware_curtain_display (curtain_linked_list* _this);
  */
 curtain_linked_list ware_curtain_create_linked_list ();
 
+typedef struct node_lock {
+    u8 devUnitID[12];
+    WARE_DEV ware_dev;
+    DEV_PRO_LOCK lock;
+    // previous node
+    struct node_lock* prev;
+    // next node
+    struct node_lock* next;
+} node_lock;
+
+typedef struct lock_linked_list {
+    node_lock* head;
+    node_lock* tail;
+    // size of this LinkedList
+    int size;
+
+    // ware_add item to any position
+    void (*ware_lock_add) (struct lock_linked_list*, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID, int);
+    // ware_aircond_add item after tail
+    void (*ware_lock_addLast) (struct lock_linked_list*, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
+    // ware_aircond_add item before head
+    void (*ware_lock_addFirst) (struct lock_linked_list*, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
+
+    // remove item from any position
+    void (*ware_lock_remove) (struct lock_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+
+    // display all element in the LinkedList
+    void (*ware_lock_display) (struct lock_linked_list*);
+
+    // create a node with item
+    node_lock* (*ware_lock_createNode) (WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
+} lock_linked_list;
+
+/** ware_add item to any position
+ */
+extern void ware_lock_add(lock_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID, int position);
+/** ware_add item to head
+ */
+extern void ware_lock_addFirst (lock_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
+/** ware_add item to tail
+ */
+extern void ware_lock_addLast (lock_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
+/** get item and remove it from any position
+ */
+extern void ware_lock_remove (lock_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** display the items in the list
+ */
+extern void ware_lock_display (lock_linked_list* _this);
+/** create a LinkedList
+ */
+lock_linked_list ware_lock_create_linked_list ();
+
+typedef struct node_valve {
+    u8 devUnitID[12];
+    WARE_DEV ware_dev;
+    DEV_PRO_VALVE valve;
+    // previous node
+    struct node_valve* prev;
+    // next node
+    struct node_valve* next;
+} node_valve;
+
+typedef struct valve_linked_list {
+    node_valve* head;
+    node_valve* tail;
+    // size of this LinkedList
+    int size;
+
+    // ware_add item to any position
+    void (*ware_valve_add) (struct valve_linked_list*, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID, int);
+    // ware_aircond_add item after tail
+    void (*ware_valve_addLast) (struct valve_linked_list*, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
+    // ware_aircond_add item before head
+    void (*ware_valve_addFirst) (struct valve_linked_list*, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
+
+    // remove item from any position
+    void (*ware_valve_remove) (struct valve_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+
+    // display all element in the LinkedList
+    void (*ware_valve_display) (struct valve_linked_list*);
+
+    // create a node with item
+    node_valve* (*ware_valve_createNode) (WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
+} valve_linked_list;
+
+/** ware_add item to any position
+ */
+extern void ware_valve_add(valve_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID, int position);
+/** ware_add item to head
+ */
+extern void ware_valve_addFirst (valve_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
+/** ware_add item to tail
+ */
+extern void ware_valve_addLast (valve_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
+/** get item and remove it from any position
+ */
+extern void ware_valve_remove (valve_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** display the items in the list
+ */
+extern void ware_valve_display (valve_linked_list* _this);
+/** create a LinkedList
+ */
+valve_linked_list ware_valve_create_linked_list ();
+
+typedef struct node_frair {
+    u8 devUnitID[12];
+    WARE_DEV ware_dev;
+    DEV_PRO_FRESHAIR frair;
+    // previous node
+    struct node_frair* prev;
+    // next node
+    struct node_frair* next;
+} node_frair;
+
+typedef struct frair_linked_list {
+    node_frair* head;
+    node_frair* tail;
+    // size of this LinkedList
+    int size;
+
+    // ware_add item to any position
+    void (*ware_frair_add) (struct frair_linked_list*, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID, int);
+    // ware_aircond_add item after tail
+    void (*ware_frair_addLast) (struct frair_linked_list*, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
+    // ware_aircond_add item before head
+    void (*ware_frair_addFirst) (struct frair_linked_list*, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
+
+    // remove item from any position
+    void (*ware_frair_remove) (struct frair_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+
+    // display all element in the LinkedList
+    void (*ware_frair_display) (struct frair_linked_list*);
+
+    // create a node with item
+    node_frair* (*ware_frair_createNode) (WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
+} frair_linked_list;
+
+/** ware_add item to any position
+ */
+extern void ware_frair_add(frair_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID, int position);
+/** ware_add item to head
+ */
+extern void ware_frair_addFirst (frair_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
+/** ware_add item to tail
+ */
+extern void ware_frair_addLast (frair_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
+/** get item and remove it from any position
+ */
+extern void ware_frair_remove (frair_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** display the items in the list
+ */
+extern void ware_frair_display (frair_linked_list* _this);
+/** create a LinkedList
+ */
+frair_linked_list ware_frair_create_linked_list ();
+
+typedef struct node_tv {
+    u8 devUnitID[12];
+    WARE_DEV ware_dev;
+    // previous node
+    struct node_tv* prev;
+    // next node
+    struct node_tv* next;
+} node_tv;
+
+typedef struct tv_linked_list {
+    node_tv* head;
+    node_tv* tail;
+    // size of this LinkedList
+    int size;
+
+    // ware_add item to any position
+    void (*ware_tv_add) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID, int);
+    // ware_aircond_add item after tail
+    void (*ware_tv_addLast) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+    // ware_aircond_add item before head
+    void (*ware_tv_addFirst) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+
+    // remove item from any position
+    void (*ware_tv_remove) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+
+    // display all element in the LinkedList
+    void (*ware_tv_display) (struct tv_linked_list*);
+
+    // create a node with item
+    node_tv* (*ware_tv_createNode) (WARE_DEV ware_dev, u8 *devUnitID);
+} tv_linked_list;
+
+/** ware_add item to any position
+ */
+extern void ware_tv_add(tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID, int position);
+/** ware_add item to head
+ */
+extern void ware_tv_addFirst (tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** ware_add item to tail
+ */
+extern void ware_tv_addLast (tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** get item and remove it from any position
+ */
+extern void ware_tv_remove (tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** display the items in the list
+ */
+extern void ware_tv_display (tv_linked_list* _this);
+/** create a LinkedList
+ */
+tv_linked_list ware_tv_create_linked_list ();
+
+typedef struct node_tvUP {
+    u8 devUnitID[12];
+    WARE_DEV ware_dev;
+    // previous node
+    struct node_tvUP* prev;
+    // next node
+    struct node_tvUP* next;
+} node_tvUP;
+
+typedef struct tvUP_linked_list {
+    node_tvUP* head;
+    node_tvUP* tail;
+    // size of this LinkedList
+    int size;
+
+    // ware_add item to any position
+    void (*ware_tvUP_add) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID, int);
+    // ware_aircond_add item after tail
+    void (*ware_tvUP_addLast) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+    // ware_aircond_add item before head
+    void (*ware_tvUP_addFirst) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+
+    // remove item from any position
+    void (*ware_tvUP_remove) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
+
+    // display all element in the LinkedList
+    void (*ware_tvUP_display) (struct tvUP_linked_list*);
+
+    // create a node with item
+    node_tvUP* (*ware_tvUP_createNode) (WARE_DEV ware_dev, u8 *devUnitID);
+} tvUP_linked_list;
+
+/** ware_add item to any position
+ */
+extern void ware_tvUP_add(tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID, int position);
+/** ware_add item to head
+ */
+extern void ware_tvUP_addFirst (tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** ware_add item to tail
+ */
+extern void ware_tvUP_addLast (tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** get item and remove it from any position
+ */
+extern void ware_tvUP_remove (tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
+/** display the items in the list
+ */
+extern void ware_tvUP_display (tvUP_linked_list* _this);
+/** create a LinkedList
+ */
+tvUP_linked_list ware_tvUP_create_linked_list ();
+
 typedef struct NodeScene {
     u8 devUnitID[12];
     SCENE_EVENT scene;
@@ -300,7 +556,6 @@ typedef struct NodeScene {
     // next node
     struct NodeScene* next;
 } node_scene;
-
 
 typedef struct scene_linked_list {
     node_scene* head;
