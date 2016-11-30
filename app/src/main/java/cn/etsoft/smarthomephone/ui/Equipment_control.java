@@ -85,9 +85,9 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                         if (result.getDev_rows().get(0).getDevType() == 0) {
                             WareAirCondDev dev = new WareAirCondDev();
                             dev.setPowChn(result.getDev_rows().get(0).getPowChn());
-                            dev1.setDevName(result.getDev_rows().get(0).getDevName());
+                            dev1.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(result.getDev_rows().get(0).getDevName())));
                             dev1.setType((byte) result.getDev_rows().get(0).getDevType());
-                            dev1.setRoomName(result.getDev_rows().get(0).getRoomName());
+                            dev1.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(result.getDev_rows().get(0).getRoomName())));
                             dev1.setCanCpuId(result.getDev_rows().get(0).getCanCpuID());
                             dev1.setDevId((byte) result.getDev_rows().get(0).getDevID());
                             dev.setDev(dev1);
@@ -97,9 +97,9 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                         } else if (result.getDev_rows().get(0).getDevType() == 3) {
                             WareLight light = new WareLight();
                             light.setPowChn((byte) result.getDev_rows().get(0).getPowChn());
-                            dev1.setDevName(Sutf2Sgbk(result.getDev_rows().get(0).getDevName()));
+                            dev1.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(result.getDev_rows().get(0).getDevName())));
                             dev1.setType((byte) result.getDev_rows().get(0).getDevType());
-                            dev1.setRoomName(Sutf2Sgbk(result.getDev_rows().get(0).getRoomName()));
+                            dev1.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(result.getDev_rows().get(0).getRoomName())));
                             dev1.setCanCpuId(result.getDev_rows().get(0).getCanCpuID());
                             dev1.setDevId((byte) result.getDev_rows().get(0).getDevID());
                             light.setDev(dev1);
@@ -109,9 +109,9 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                         } else if (result.getDev_rows().get(0).getDevType() == 4) {
                             WareCurtain curtain = new WareCurtain();
                             curtain.setPowChn((byte) result.getDev_rows().get(0).getPowChn());
-                            dev1.setDevName(result.getDev_rows().get(0).getDevName());
+                            dev1.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(result.getDev_rows().get(0).getDevName())));
                             dev1.setType((byte) result.getDev_rows().get(0).getDevType());
-                            dev1.setRoomName(result.getDev_rows().get(0).getRoomName());
+                            dev1.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(result.getDev_rows().get(0).getRoomName())));
                             dev1.setCanCpuId(result.getDev_rows().get(0).getCanCpuID());
                             dev1.setDevId((byte) result.getDev_rows().get(0).getDevID());
                             curtain.setDev(dev1);
@@ -125,10 +125,9 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                             adapter = new Dev_Adapter();
                             equi_control.setAdapter(adapter);
                         }
+                    } else {
+                        Toast.makeText(Equipment_control.this, "操作失败", Toast.LENGTH_SHORT).show();
                     }
-
-                } else {
-                    Toast.makeText(Equipment_control.this, "操作失败", Toast.LENGTH_SHORT).show();
                 }
 
                 MyApplication.getWareData().setDev_result(null);
@@ -158,7 +157,6 @@ public class Equipment_control extends Activity implements View.OnClickListener 
 
     private void event() {
         title.setText("设 备 控 制");
-        devs = MyApplication.getWareData().getDevs();
         adapter = new Dev_Adapter();
         equi_control.setAdapter(adapter);
         add_equi.setOnClickListener(this);
@@ -198,7 +196,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
 //                                "cmd": 1
 //                       }
 
-                        final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                        final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                                 "\"datType\":" + 7 + "," +
                                 "\"subType1\":0," +
                                 "\"subType2\":0," +
@@ -237,6 +235,10 @@ public class Equipment_control extends Activity implements View.OnClickListener 
     }
 
     class Dev_Adapter extends BaseAdapter {
+
+        Dev_Adapter() {
+            devs = MyApplication.getWareData().getDevs();
+        }
 
         @Override
         public int getCount() {
@@ -289,18 +291,5 @@ public class Equipment_control extends Activity implements View.OnClickListener 
             public TextView title;
             public ImageView image;
         }
-    }
-    public String Sutf2Sgbk(String string) {
-
-        byte[] data = {0};
-        try {
-            data = string.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        String str_gb = CommonUtils.bytesToHexString(data);
-        LogUtils.LOGE("情景模式名称:%s", str_gb);
-        return str_gb;
     }
 }

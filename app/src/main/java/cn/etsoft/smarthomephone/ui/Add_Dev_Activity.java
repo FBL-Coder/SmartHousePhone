@@ -26,6 +26,7 @@ import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
+import cn.etsoft.smarthomephone.pullmi.entity.WareBoardChnout;
 import cn.etsoft.smarthomephone.pullmi.entity.WareBoardKeyInput;
 import cn.etsoft.smarthomephone.pullmi.entity.WareCurtain;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
@@ -44,7 +45,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     private ImageView back;
     private PopupWindow popupWindow;
     private List<String> Board_text;
-    private List<WareBoardKeyInput> list_board;
+    private List<WareBoardChnout> list_board;
     private List<String> home_text;
     private List<String> type_text;
 
@@ -76,7 +77,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 
 
         Board_text = new ArrayList<>();
-        list_board = MyApplication.getWareData().getKeyInputs();
+        list_board = MyApplication.getWareData().getBoardChnouts();
         for (int i = 0; i < list_board.size(); i++) {
             Board_text.add(list_board.get(i).getBoardName());
         }

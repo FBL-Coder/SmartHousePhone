@@ -690,6 +690,7 @@ public class udpService extends Service {
 //                    "powChn":	6
 //        }]
 //        }
+        Log.i("add_dev_data",info);
         Gson gson = new Gson();
         DevControl_Result result = gson.fromJson(info, DevControl_Result.class);
         MyApplication.getWareData().setDev_result(result);

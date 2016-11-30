@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
@@ -41,6 +42,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     private int modelValue = 0, curValue = 0, cmdValue = 0;
     private boolean IsCanClick = false;
     private List<WareAirCondDev> list;
+    private List<View> Viewlists;
     private ViewPager pager;
     private View pageView;
     private int positionId;
@@ -61,11 +63,13 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
-                //初始化控件
-                initView();
+                if (what == 4)
+                    //初始化控件
+                    upData();
             }
         });
     }
+
     MyViewPagerAdapter adapter;
 
     private void upData() {
@@ -75,6 +79,11 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
 
         list = MyApplication.getWareData().getAirConds();
 
+        for (int i = 0; i < list.size(); i++) {
+            Viewlists.add(pageView);
+        }
+
+
         //这里的刷新不合适，刷新后不显示！
         Log.i("AAAA", "空调开关    " + list.get(0).getbOnOff());
 
@@ -83,6 +92,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
 //        else {
             adapter = new MyViewPagerAdapter(list);
             pager.setAdapter(adapter);
+//            pager.setCurrentItem(0);
 //        }
     }
 
@@ -96,19 +106,9 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         temp1 = (TextView) findViewById(R.id.airCondition_temp1);
         wind = (TextView) findViewById(R.id.airCondition_wind);
         pager = (ViewPager) findViewById(R.id.page_view);
-
+        Viewlists = new ArrayList<>();
         pageView = LayoutInflater.from(this).inflate(R.layout.page_view, null);
-        back = (ImageView) pageView.findViewById(R.id.title_bar_iv_back);
-        title = (TextView) pageView.findViewById(R.id.title_bar_tv_title);
-        title.setText(getIntent().getStringExtra("title") + "控制");
-        title.setTextColor(0xffffffff);
-        back.setImageResource(R.drawable.return2);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
 
         if (MyApplication.getWareData() != null) {
             if (MyApplication.getWareData().getAirConds() != null && MyApplication.getWareData().getAirConds().size() > 0) {
@@ -116,7 +116,6 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 IsCanClick = true;
             }
         } else {
-
             ToastUtil.showToast(this, "没有找到可控空调");
         }
 
@@ -352,7 +351,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(pageView);
+            container.removeView(Viewlists.get(position));
         }
 
 
@@ -360,8 +359,8 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         public Object instantiateItem(ViewGroup container, int position) {  //这个方法用来实例化页卡
             positionId = position;
             initPageView(position);
-            container.addView(pageView, 0);
-            return pageView;
+            container.addView(Viewlists.get(position));
+            return Viewlists.get(position);
         }
 
         @Override
@@ -390,11 +389,23 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         }
 
         public void initPageView(int position) {
-            name = (TextView) pageView.findViewById(R.id.airCondition_name);
-            temp = (TextView) pageView.findViewById(R.id.airCondition_temp);
-            temp1 = (TextView) pageView.findViewById(R.id.airCondition_temp1);
-            state = (TextView) pageView.findViewById(R.id.airCondition_state);
-            wind = (TextView) pageView.findViewById(R.id.airCondition_wind);
+            back = (ImageView) Viewlists.get(position).findViewById(R.id.title_bar_iv_back);
+            title = (TextView) Viewlists.get(position).findViewById(R.id.title_bar_tv_title);
+            name = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_name);
+            temp = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_temp);
+            temp1 = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_temp1);
+            state = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_state);
+            wind = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_wind);
+
+            title.setText(getIntent().getStringExtra("title") + "控制");
+            title.setTextColor(0xffffffff);
+            back.setImageResource(R.drawable.return2);
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
 
 
             wareAirCondDev = listdata.get(position);

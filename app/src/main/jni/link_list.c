@@ -630,7 +630,6 @@ void ware_light_remove(light_linked_list *_this, WARE_DEV ware_dev, u8 *devUnitI
             node = node->next;
         }
     }
-
 }
 
 /** display the items in the list
