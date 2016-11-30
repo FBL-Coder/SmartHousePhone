@@ -15,6 +15,7 @@ import java.util.List;
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.LightAdapter;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
@@ -96,7 +97,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                 String ctlStr;
                 if (wareLight.get(position).getbOnOff() == 0) {
 
-                    ctlStr = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+                    ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                             ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
                             ",\"subType1\":0" +
                             ",\"subType2\":0" +
@@ -109,7 +110,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                     CommonUtils.sendMsg(ctlStr);
                 } else {
 
-                    ctlStr = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+                    ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                             ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
                             ",\"subType1\":0" +
                             ",\"subType2\":0" +
@@ -153,7 +154,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         if (IsCanClick) {
             switch (v.getId()) {
                 case R.id.light_open_all:
-                    String open_str = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+                    String open_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                             ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrl_allDevs.getValue() +
                             ",\"subType1\":0" +
                             ",\"subType2\":0" +
@@ -165,7 +166,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                     CommonUtils.sendMsg(open_str);
                     break;
                 case R.id.light_close_all:
-                    String close_str = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+                    String close_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                             ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrl_allDevs.getValue() +
                             ",\"subType1\":0" +
                             ",\"subType2\":0" +

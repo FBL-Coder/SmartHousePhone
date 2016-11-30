@@ -125,6 +125,11 @@ void fresh_dev_info(UDPPROPKT *pkt) {
             ware_aircond_add(&aircond_list, *ware_dev, *aircond, pkt->uidSrc, aircond_list.size);
         }
             break;
+        case 3: {
+            DEV_PRO_LIGHT *light = (DEV_PRO_LIGHT *) ware_dev->dat;
+            ware_light_add(&light_list, *ware_dev, *light, pkt->uidSrc, light_list.size);
+        }
+            break;
         default:
             break;
     }

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.StbAdapter;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareSetBox;
@@ -83,7 +84,7 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         if (v.getId() == R.id.title_bar_iv_back)//返回
             finish();
         if (IsCanClick) {
-            String str_Fixed = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+            String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":4" +
                     ",\"subType1\":0" +
                     ",\"subType2\":0" +

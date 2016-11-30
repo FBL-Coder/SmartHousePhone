@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
+import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
@@ -166,6 +167,24 @@ public class udpService extends Service {
             case 4: // ctrlDev
                 if (subType1 == 1) {
                     refreshDevData(info);
+                    isFreshData = true;
+                }
+                break;
+            case 5: // ctrlDev
+                if (subType1 == 1) {
+                    deldev_result(info);
+                    isFreshData = true;
+                }
+                break;
+            case 6: // ctrlDev
+                if (subType1 == 1) {
+                    deldev_result(info);
+                    isFreshData = true;
+                }
+                break;
+            case 7: // delDev
+                if (subType1 == 1) {
+                    deldev_result(info);
                     isFreshData = true;
                 }
                 break;
@@ -646,13 +665,36 @@ public class udpService extends Service {
                         MyApplication.getWareData().getAirConds().remove(i);
                     }
                 }
-
                 MyApplication.getWareData().getAirConds().add(airCondDev);
             }
         } catch (JSONException e) {
             System.out.println(e.toString());
         }
     }
+
+    public void deldev_result(String info) {
+//        {
+//            "devUnitID":	"37ffdb05424e323416702443",
+//                "datType":	7,
+//                "subType1":	1,
+//                "subType2":	1,
+//                "dev_rows":	[{
+//            "canCpuID":	"31ffdf054257313827502543",
+//                    "devName":	"b5c636360000000000000000",
+//                    "roomName":	"ceb4b6a8d2e5000000000000",
+//                    "devType":	3,
+//                    "devID":	6,
+//                    "bOnOff":	0,
+//                    "bTuneEn":	0,
+//                    "lmVal":	0,
+//                    "powChn":	6
+//        }]
+//        }
+        Gson gson = new Gson();
+        DevControl_Result result = gson.fromJson(info, DevControl_Result.class);
+        MyApplication.getWareData().setDev_result(result);
+    }
+
 
     public void getkeyOutBoard(String info) {
 

@@ -2,6 +2,8 @@ package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,14 +12,19 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
+import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
+import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 
 /**
  * Created by fbl on 16-11-17.
@@ -36,6 +43,27 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dec_detail_activity);
         initView();
+        final Handler mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 6) {
+                    if (MyApplication.getWareData().getDev_result() != null
+                            && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
+                        MyApplication.getWareData().getDevs().set(id, dev);
+                        Toast.makeText(Devs_Detail_Activity.this, "操作成功", Toast.LENGTH_SHORT).show();
+                        MyApplication.getWareData().setDev_result(null);
+                    }
+                }
+                super.handleMessage(msg);
+            }
+        };
+        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int what) {
+                Message message = mHandler.obtainMessage(what);
+                mHandler.sendMessage(message);
+            }
+        });
     }
 
     /**
@@ -114,8 +142,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         }
         for (int i = 0; i < mWareDev_room.size() - 1; i++) {
             for (int j = mWareDev_room.size() - 1; j > i; j--) {
-                if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())
-                        || !(mWareDev_room.get(i).getCanCpuId()).equals(MyApplication.getWareData().getBoardChnouts().get(j).getDevUnitID())) {
+                if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())) {
                     mWareDev_room.remove(j);
                 }
             }
@@ -189,9 +216,35 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
 
                 dev.setDevName(dev_name.getText().toString());
+//                发送：
+//            {
+//                "devUnitID": "37ffdb05424e323416702443",
+//                    "datType": 6,
+//                    "subType1": 0,
+//                    "subType2": 0,
+//                    "canCpuID": "31ffdf054257313827502543",
+//                    "devType": 3,
+//                    "devID": 6,
+//                    "devName": "b5c636360000000000000000",
+//                    "roomName": "ceb4b6a8d2e5000000000000",
+//                    "powChn":	6，
+//                "cmd": 1
+//            }
 
-                MyApplication.getWareData().getDevs().set(id, dev);
 
+                final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                        "\"datType\":" + 6 + "," +
+                        "\"subType1\":0," +
+                        "\"subType2\":0," +
+                        "\"canCpuID\":\"" + dev.getCanCpuId() + "\"," +
+                        "\"devType\":" + dev.getType() + "," +
+                        "\"devID\":" + +dev.getDevId() + "," +
+                        "\"devName\":" + "\"" + Sutf2Sgbk(dev_name.getText().toString()) + "\"," +
+                        "\"roomName\":" + "\"" + Sutf2Sgbk(dev_room.getText().toString()) + "\"," +
+                        "\"powChn\":" + dev_way.getText().toString() + "," +
+                        "\"cmd\":" + 1 + "}";
+
+                MyApplication.sendMsg(chn_str);
 
                 // =-----待向服务器交互数据
                 finish();
@@ -206,5 +259,18 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
                 break;
         }
+    }
+    public String Sutf2Sgbk (String string){
+
+        byte[] data = {0};
+        try {
+            data = string.getBytes("GB2312");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String str_gb = CommonUtils.bytesToHexString(data);
+        LogUtils.LOGE("情景模式名称:%s", str_gb);
+        return str_gb;
     }
 }

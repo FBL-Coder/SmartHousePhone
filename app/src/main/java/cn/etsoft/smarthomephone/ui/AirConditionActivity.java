@@ -20,6 +20,7 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
@@ -135,7 +136,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
-            String str_Fixed = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+            String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
                     ",\"subType1\":0" +
                     ",\"subType2\":0" +
@@ -394,8 +395,6 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
             temp1 = (TextView) pageView.findViewById(R.id.airCondition_temp1);
             state = (TextView) pageView.findViewById(R.id.airCondition_state);
             wind = (TextView) pageView.findViewById(R.id.airCondition_wind);
-
-
 
 
             wareAirCondDev = listdata.get(position);

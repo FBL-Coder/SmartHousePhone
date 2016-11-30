@@ -121,8 +121,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
 
         for (int i = 0; i < mWareDev_room.size() - 1; i++) {
             for (int j = mWareDev_room.size() - 1; j > i; j--) {
-                if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())
-                        || !(mWareDev_room.get(i).getCanCpuId()).equals(MyApplication.getWareData().getBoardChnouts().get(j).getDevUnitID())) {
+                if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())) {
                     mWareDev_room.remove(j);
                 }
             }

@@ -22,6 +22,7 @@ import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.IClick;
 import cn.etsoft.smarthomephone.adapter.SystemAdapter;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareSceneEvent;
@@ -178,7 +179,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         String str_gb = CommonUtils.bytesToHexString(data);
         LogUtils.LOGE("情景模式名称:%s", str_gb);
 
-        String ctlStr = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                 ",\"sceneName\":\"" + str_gb + "\"" +
                 ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_addSceneEvents.getValue() +
                 ",\"subType1\":0" +

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 
 /**
@@ -61,6 +62,9 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                 info.setDevUnitID(id);
                 info.setDevUnitPass(pass);
                 info.setName("手机");
+
+                GlobalVars.setDevid(id);
+                GlobalVars.setDevpass(pass);
 
                 list.add(info);
                 Gson gson = new Gson();

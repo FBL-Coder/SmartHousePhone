@@ -309,16 +309,19 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
             u8 devName[12];
             u8 roomName[12];
             u8 canCpuID[12];
+            memset(devName, 0, 12);
+            memset(roomName, 0, 12);
+
             char *devName_str = cJSON_GetObjectItem(root_json, "devName")->valuestring;
             if (devName_str != NULL) {
-                string_to_bytes(devName_str, devName, 24);
+                string_to_bytes(devName_str, devName, strlen(devName_str));
                 free(devName_str);
             } else {
                 return;
             }
             char *roomName_str = cJSON_GetObjectItem(root_json, "roomName")->valuestring;
             if (roomName_str != NULL) {
-                string_to_bytes(roomName_str, roomName, 24);
+                string_to_bytes(roomName_str, roomName, strlen(roomName_str));
                 free(roomName_str);
             } else {
                 return;
@@ -335,6 +338,7 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
 
             add_devs_json(devUnitID, canCpuID, e_udpPro_addDev, devType, powChn, roomName, devName);
     }
+        break;
         case e_udpPro_editDev: {
             //重新打包数据，转发给联网模块
             devType = cJSON_GetObjectItem(root_json, "devType")->valueint;
@@ -353,14 +357,14 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
             }
             char *devName_str = cJSON_GetObjectItem(root_json, "devName")->valuestring;
             if (devName_str != NULL) {
-                string_to_bytes(devName_str, devName, 24);
+                string_to_bytes(devName_str, devName, strlen(devName_str));
                 free(devName_str);
             } else {
                 return;
             }
             char *roomName_str = cJSON_GetObjectItem(root_json, "roomName")->valuestring;
             if (roomName_str != NULL) {
-                string_to_bytes(roomName_str, roomName, 24);
+                string_to_bytes(roomName_str, roomName, strlen(roomName_str));
                 free(roomName_str);
             } else {
                 return;
@@ -601,7 +605,7 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
         case e_udpPro_addDev:
         case e_udpPro_ctrlDev:
         case e_udpPro_editDev:
-            if (udp_pro_pkt->subType1 == 1) {
+            if (udp_pro_pkt->subType2 == 1) {
                 //控制设备之后，返回设备的最新数据，直接更新链表
                 fresh_dev_info(udp_pro_pkt);
                 report_all_ctl_reply_json(udp_pro_pkt);

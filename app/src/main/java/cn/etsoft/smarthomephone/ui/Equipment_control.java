@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +14,21 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.adapter.SwipeAdapter;
+import cn.etsoft.smarthomephone.domain.DevControl_Result;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
+import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
+import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
+import cn.etsoft.smarthomephone.pullmi.entity.WareCurtain;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
+import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
+import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 
 /**
@@ -39,6 +49,100 @@ public class Equipment_control extends Activity implements View.OnClickListener 
         initView();
 
         event();
+
+        final Handler mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 7) {
+                    if (MyApplication.getWareData().getDev_result() != null
+                            && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
+
+                        for (int i = 0; i < devs.size(); i++) {
+                            if (devs.get(i).getType() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType()
+                                    && devs.get(i).getDevId() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
+                                    && devs.get(i).getCanCpuId().equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
+
+                                devs.remove(i);
+                                if (adapter != null)
+                                    adapter.notifyDataSetChanged();
+                                else {
+                                    adapter = new Dev_Adapter();
+                                    equi_control.setAdapter(adapter);
+                                }
+                            }
+                        }
+                        Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+
+                if (msg.what == 5) {
+                    if (MyApplication.getWareData().getDev_result() != null
+                            && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
+                        Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
+                        DevControl_Result result = MyApplication.getWareData().getDev_result();
+                        WareDev dev1 = new WareDev();
+                        if (result.getDev_rows().get(0).getDevType() == 0) {
+                            WareAirCondDev dev = new WareAirCondDev();
+                            dev.setPowChn(result.getDev_rows().get(0).getPowChn());
+                            dev1.setDevName(result.getDev_rows().get(0).getDevName());
+                            dev1.setType((byte) result.getDev_rows().get(0).getDevType());
+                            dev1.setRoomName(result.getDev_rows().get(0).getRoomName());
+                            dev1.setCanCpuId(result.getDev_rows().get(0).getCanCpuID());
+                            dev1.setDevId((byte) result.getDev_rows().get(0).getDevID());
+                            dev.setDev(dev1);
+                            dev.setbOnOff((byte) result.getDev_rows().get(0).getBOnOff());
+                            MyApplication.getWareData().getDevs().add(dev1);
+                            MyApplication.getWareData().getAirConds().add(dev);
+                        } else if (result.getDev_rows().get(0).getDevType() == 3) {
+                            WareLight light = new WareLight();
+                            light.setPowChn((byte) result.getDev_rows().get(0).getPowChn());
+                            dev1.setDevName(Sutf2Sgbk(result.getDev_rows().get(0).getDevName()));
+                            dev1.setType((byte) result.getDev_rows().get(0).getDevType());
+                            dev1.setRoomName(Sutf2Sgbk(result.getDev_rows().get(0).getRoomName()));
+                            dev1.setCanCpuId(result.getDev_rows().get(0).getCanCpuID());
+                            dev1.setDevId((byte) result.getDev_rows().get(0).getDevID());
+                            light.setDev(dev1);
+                            light.setbOnOff((byte) result.getDev_rows().get(0).getBOnOff());
+                            MyApplication.getWareData().getDevs().add(dev1);
+                            MyApplication.getWareData().getLights().add(light);
+                        } else if (result.getDev_rows().get(0).getDevType() == 4) {
+                            WareCurtain curtain = new WareCurtain();
+                            curtain.setPowChn((byte) result.getDev_rows().get(0).getPowChn());
+                            dev1.setDevName(result.getDev_rows().get(0).getDevName());
+                            dev1.setType((byte) result.getDev_rows().get(0).getDevType());
+                            dev1.setRoomName(result.getDev_rows().get(0).getRoomName());
+                            dev1.setCanCpuId(result.getDev_rows().get(0).getCanCpuID());
+                            dev1.setDevId((byte) result.getDev_rows().get(0).getDevID());
+                            curtain.setDev(dev1);
+                            curtain.setbOnOff((byte) result.getDev_rows().get(0).getBOnOff());
+                            MyApplication.getWareData().getDevs().add(dev1);
+                            MyApplication.getWareData().getCurtains().add(curtain);
+                        }
+                        if (adapter != null)
+                            adapter.notifyDataSetChanged();
+                        else {
+                            adapter = new Dev_Adapter();
+                            equi_control.setAdapter(adapter);
+                        }
+                    }
+
+                } else {
+                    Toast.makeText(Equipment_control.this, "操作失败", Toast.LENGTH_SHORT).show();
+                }
+
+                MyApplication.getWareData().setDev_result(null);
+
+                super.handleMessage(msg);
+            }
+        };
+        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int what) {
+                Message message = mHandler.obtainMessage(what);
+                mHandler.sendMessage(message);
+            }
+        });
     }
 
     @Override
@@ -63,7 +167,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
         equi_control.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(Equipment_control.this, Devs_Detail_Activity.class).putExtra("id",position));
+                startActivity(new Intent(Equipment_control.this, Devs_Detail_Activity.class).putExtra("id", position));
             }
         });
 
@@ -83,15 +187,27 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                 builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        devs.remove(position);
-                        if (adapter != null)
-                            adapter.notifyDataSetChanged();
-                        else {
-                            adapter = new Dev_Adapter();
-                            equi_control.setAdapter(adapter);
-                        }
+                        //                        {
+//                            "devUnitID": "37ffdb05424e323416702443",
+//                                "datType": 7,
+//                                "subType1": 0,
+//                                "subType2": 0,
+//                                "canCpuID": "31ffdf054257313827502543",
+//                                "devType": 3,
+//                                "devID": 6,
+//                                "cmd": 1
+//                       }
 
-                        //----------服务器段交互
+                        final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                                "\"datType\":" + 7 + "," +
+                                "\"subType1\":0," +
+                                "\"subType2\":0," +
+                                "\"canCpuID\":\"" + devs.get(position).getCanCpuId() + "\"," +
+                                "\"devType\":" + devs.get(position).getType() + "," +
+                                "\"devID\":" + devs.get(position).getDevId() + "," +
+                                "\"cmd\":" + 1 + "}";
+
+                        MyApplication.sendMsg(chn_str);
                         dialog.dismiss();
                     }
                 });
@@ -115,7 +231,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                 finish();
                 break;
             case R.id.add_equi:
-                startActivity(new Intent(Equipment_control.this,Add_Dev_Activity.class));
+                startActivity(new Intent(Equipment_control.this, Add_Dev_Activity.class));
                 break;
         }
     }
@@ -173,5 +289,18 @@ public class Equipment_control extends Activity implements View.OnClickListener 
             public TextView title;
             public ImageView image;
         }
+    }
+    public String Sutf2Sgbk(String string) {
+
+        byte[] data = {0};
+        try {
+            data = string.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String str_gb = CommonUtils.bytesToHexString(data);
+        LogUtils.LOGE("情景模式名称:%s", str_gb);
+        return str_gb;
     }
 }

@@ -9,9 +9,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.io.UnsupportedEncodingException;
+
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
+import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
+import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 
 /**
  * Created by fbl on 16-11-17.
@@ -34,12 +39,14 @@ public class SetNewWorkActivity extends Activity implements View.OnClickListener
         initView();
     }
 
+    int bDhcp = -1;
+
     private void initView() {
         id = getIntent().getIntExtra("id", 0);
         rcuinfo = MyApplication.getWareData().getRcuInfos().get(id);
         Title = (TextView) findViewById(R.id.title_bar_tv_title);
         Title.setText(rcuinfo.getName());
-
+        bDhcp = rcuinfo.getbDhcp();
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
 
 
@@ -74,18 +81,20 @@ public class SetNewWorkActivity extends Activity implements View.OnClickListener
         roomNum.setText(rcuinfo.getRoomNum());
         macAddr.setText(rcuinfo.getMacAddr());
 
-        if (rcuinfo.getbDhcp() == 0)
+        if (rcuinfo.getbDhcp() == 0) {
             no.setChecked(true);
-        else
+        } else {
             yes.setChecked(true);
-
+        }
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.work_yes:
+                        bDhcp = 1;
                         break;
                     case R.id.work_no:
+                        bDhcp = 0;
                         break;
                 }
             }
@@ -103,6 +112,25 @@ public class SetNewWorkActivity extends Activity implements View.OnClickListener
                 break;
             case R.id.work_save:
 
+//            {
+//                "devUnitID": "37ffdb05424e323416702443",
+//                    "datType": 1,
+//                    "subType1": 0,
+//                    "subType2": 0,
+//                    "canCpuID": "37ffdb05424e323416702443",
+//                    "devUnitPass": "16072443",
+//                    "name": "6666",
+//                    "IpAddr": "192.168.0.102",
+//                    "SubMask": "255.255.255.0",
+//                    "Gateway": "192.168.0.1",
+//                    "centerServ": "192.168.1.114",
+//                    "roomNum": "0000",
+//                    "macAddr": "00502a040248",
+//                    "SoftVersion": 0,
+//                    "HwVersion": 0,
+//                    "bDhcp": 0
+//            }
+
                 String newname = name.getText().toString();
                 String newpass = devUnitPass.getText().toString();
                 String newip = IpAddr.getText().toString();
@@ -116,10 +144,43 @@ public class SetNewWorkActivity extends Activity implements View.OnClickListener
                 rcuinfo.setSubMask(newSubmask);
                 rcuinfo.setGateWay(newGateway);
                 rcuinfo.setCenterServ(newcenterServ);
+                rcuinfo.setbDhcp(bDhcp);
+
                 MyApplication.getWareData().getRcuInfos().set(id, rcuinfo);
 
+                final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                        "\"datType\":" + 1 + "," +
+                        "\"subType1\":0," +
+                        "\"subType2\":0," +
+                        "\"canCpuID\":\"" + rcuinfo.getDevUnitID() + "\"," +
+                        "\"devUnitPass\":\"" + newpass + "\"," +
+                        "\"name\":" + "\"" + Sutf2Sgbk(newname) + "\"," +
+                        "\"IpAddr\":" + "\"" + newip + "\"," +
+                        "\"SubMask\":" + "\"" + newSubmask + "\"," +
+                        "\"Gateway\":" + "\"" + newGateway + "\"," +
+                        "\"centerServ\":" + "\"" + newcenterServ + "\"," +
+                        "\"roomNum\":" + "\"" + rcuinfo.getRoomNum() + "\"," +
+                        "\"macAddr\":" + "\"" + rcuinfo.getMacAddr() + "\"," +
+                        "\"SoftVersion\":" + 0 + "," +
+                        "\"HwVersion\":" + 0 + "," +
+                        "\"bDhcp\":" + bDhcp + "}";
+
+                MyApplication.sendMsg(chn_str);
                 finish();
                 break;
         }
+    }
+    public String Sutf2Sgbk (String string){
+
+        byte[] data = {0};
+        try {
+            data = string.getBytes("GB2312");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String str_gb = CommonUtils.bytesToHexString(data);
+        LogUtils.LOGE("情景模式名称:%s", str_gb);
+        return str_gb;
     }
 }

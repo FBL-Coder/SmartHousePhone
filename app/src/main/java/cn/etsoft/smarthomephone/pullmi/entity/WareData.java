@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
 
 public class WareData implements Serializable {
@@ -22,6 +23,7 @@ public class WareData implements Serializable {
     private List<WareChnOpItem> chnOpItems;
     private List<WareKeyOpItem> keyOpItems;
     private SetEquipmentResult result;
+    private DevControl_Result dev_result;
 
     public WareData() {
 
@@ -180,5 +182,13 @@ public class WareData implements Serializable {
 
     public void setResult(SetEquipmentResult result) {
         this.result = result;
+    }
+
+    public DevControl_Result getDev_result() {
+        return dev_result;
+    }
+
+    public void setDev_result(DevControl_Result dev_result) {
+        this.dev_result = dev_result;
     }
 }
