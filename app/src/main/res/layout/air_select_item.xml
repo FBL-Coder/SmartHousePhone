@@ -2,20 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="200dp"
     android:layout_height="200dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#77ffffff">
 
    <TextView
        android:layout_width="200dp"
        android:layout_height="wrap_content"
        android:textSize="@dimen/dp_20"
-       android:textColor="@color/color_565656"
+       android:textColor="#000"
        android:paddingLeft="@dimen/dp_10"
        android:paddingTop="8dp"
        android:paddingBottom="@dimen/dp_8"
-       android:background="@color/color_96c9e7"
+       android:background="#abdfec"
        android:text="请选择空调:"/>
     <ListView
         android:id="@+id/air_select"
+        android:background="@null"
+        android:layout_marginTop="@dimen/dp_5"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </ListView>
