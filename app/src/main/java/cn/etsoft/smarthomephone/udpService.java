@@ -303,7 +303,7 @@ public class udpService extends Service {
 //                    "name": "6666",
 //                    "IpAddr": "192.168.0.102",
 //                    "SubMask": "255.255.255.0",
-//                    "Gateway": "192.168.0.1",
+//                devName    "Gateway": "192.168.0.1",
 //                    "centerServ": "192.168.1.114",
 //                    "roomNum": "0000",
 //                    "macAddr": "00502a040248",
@@ -456,10 +456,10 @@ public class udpService extends Service {
             if (devnum_air > 0) {
                 List<WareAirCondDev> list = new ArrayList<>();
 
-                WareAirCondDev airCondDev = new WareAirCondDev();
+
                 JSONArray jsonArray = jsonObject.getJSONArray("aircond_rows");
                 for (int i = 0; i < devnum_air; i++) {
-
+                    WareAirCondDev airCondDev = new WareAirCondDev();
                     JSONObject jsonobj = jsonArray.getJSONObject(i);
                     WareDev dev = new WareDev();
                     dev.setCanCpuId(jsonobj.getString("canCpuID"));
@@ -658,14 +658,16 @@ public class udpService extends Service {
                 airCondDev.setSelSpd((byte) jsonobj.getInt("selSpd"));
                 airCondDev.setSelTemp((byte) jsonobj.getInt("selTemp"));
 
+                int id = 0;
                 for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                     WareAirCondDev air = MyApplication.getWareData().getAirConds().get(i);
                     if (air.getDev().getCanCpuId().equals(airCondDev.getDev().getCanCpuId())
                             && air.getDev().getDevId() == airCondDev.getDev().getDevId()) {
-                        MyApplication.getWareData().getAirConds().remove(i);
+//                        MyApplication.getWareData().getAirConds().remove(i);
+                        id = airCondDev.getDev().getDevId();
                     }
                 }
-                MyApplication.getWareData().getAirConds().add(airCondDev);
+                MyApplication.getWareData().getAirConds().set(id,airCondDev);
             }
         } catch (JSONException e) {
             System.out.println(e.toString());

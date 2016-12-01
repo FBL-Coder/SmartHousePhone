@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -9,8 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +30,8 @@ import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
+import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
+import cn.etsoft.smarthomephone.weidget.CustomDialog;
 
 /**
  * Created by Say GoBay on 2016/9/1.
@@ -33,7 +40,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     private GridView gridView;
     private int[] image = {R.drawable.airconditiononoff, R.drawable.airconditiontoohot, R.drawable.airconditionsocold, R.drawable.airconditionsf, R.drawable.airconditionrefrigeration, R.drawable.airconditionhot, R.drawable.airconditionfsg, R.drawable.airconditiofsz, R.drawable.airconditionfsd};
     private String[] text = {"开/关", "升温", "降温", "扫风", "制冷", "制热", "风速高", "风速中", "风速低"};
-    private ImageView back;
+    private ImageView back, select;
     private TextView title, name, temp, state, temp1, wind;
 
 
@@ -42,10 +49,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     private int modelValue = 0, curValue = 0, cmdValue = 0;
     private boolean IsCanClick = false;
     private List<WareAirCondDev> list;
-    private List<View> Viewlists;
-    private ViewPager pager;
-    private View pageView;
-    private int positionId;
+    private int positionId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +57,17 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         setContentView(R.layout.activity_aircondition);
 
         initView();
+
         //初始化GridView
         initGridView();
-    }
 
+        if (MyApplication.getWareData() != null) {
+            if (MyApplication.getWareData().getAirConds() != null
+                    && MyApplication.getWareData().getAirConds().size() > 1) {
+                getDialog();
+            }
+        }
+    }
 
     private void initEvent() {
 
@@ -70,30 +81,58 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         });
     }
 
-    MyViewPagerAdapter adapter;
 
     private void upData() {
         if (MyApplication.getWareData().getAirConds().size() == 0) {
             return;
         }
-
         list = MyApplication.getWareData().getAirConds();
-
-        for (int i = 0; i < list.size(); i++) {
-            Viewlists.add(pageView);
-        }
-
-
         //这里的刷新不合适，刷新后不显示！
         Log.i("AAAA", "空调开关    " + list.get(0).getbOnOff());
 
-//        if (adapter != null)
-//            adapter.notifyDataSetChanged();
-//        else {
-            adapter = new MyViewPagerAdapter(list);
-            pager.setAdapter(adapter);
-//            pager.setCurrentItem(0);
-//        }
+        initdata();
+    }
+
+    private void setData() {
+        if (MyApplication.getWareData().getAirConds().size() == 0) {
+            return;
+        }
+        list = MyApplication.getWareData().getAirConds();
+        //这里的刷新不合适，刷新后不显示！
+        Log.i("AAAA", "空调开关    " + list.get(0).getbOnOff());
+
+        initdata();
+        select.setVisibility(View.VISIBLE);
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDialog();
+            }
+        });
+    }
+
+    /**
+     * 初始化自定义dialog
+     */
+    CustomDialog dialog;
+
+    private ListView dia_listview;
+
+    public void getDialog() {
+        dialog = new CustomDialog(this, R.style.customDialog, R.layout.air_select_item);
+        dialog.show();
+        dia_listview = (ListView) dialog.findViewById(R.id.air_select);
+        dia_listview.setAdapter(new Air_Select_Adapter());
+
+        dia_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                positionId = position;
+                initdata();
+                dialog.dismiss();
+
+            }
+        });
     }
 
     /**
@@ -105,14 +144,27 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         state = (TextView) findViewById(R.id.airCondition_state);
         temp1 = (TextView) findViewById(R.id.airCondition_temp1);
         wind = (TextView) findViewById(R.id.airCondition_wind);
-        pager = (ViewPager) findViewById(R.id.page_view);
-        Viewlists = new ArrayList<>();
-        pageView = LayoutInflater.from(this).inflate(R.layout.page_view, null);
 
+        back = (ImageView) findViewById(R.id.title_bar_iv_back);
+        title = (TextView) findViewById(R.id.title_bar_tv_title);
+        select = (ImageView) findViewById(R.id.title_bar_iv_or);
+        name = (TextView) findViewById(R.id.airCondition_name);
+        temp = (TextView) findViewById(R.id.airCondition_temp);
+        temp1 = (TextView) findViewById(R.id.airCondition_temp1);
+        state = (TextView) findViewById(R.id.airCondition_state);
+        wind = (TextView) findViewById(R.id.airCondition_wind);
 
+        back.setImageResource(R.drawable.return2);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         if (MyApplication.getWareData() != null) {
-            if (MyApplication.getWareData().getAirConds() != null && MyApplication.getWareData().getAirConds().size() > 0) {
-                upData();
+            if (MyApplication.getWareData().getAirConds() != null
+                    && MyApplication.getWareData().getAirConds().size() > 0) {
+                setData();
                 IsCanClick = true;
             }
         } else {
@@ -135,13 +187,14 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
+            wareAirCondDev = list.get(positionId);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
                     ",\"subType1\":0" +
                     ",\"subType2\":0" +
-                    ",\"canCpuID\":\"" + MyApplication.getWareData().getAirConds().get(positionId).getDev().getCanCpuId() +
-                    "\",\"devType\":" + MyApplication.getWareData().getAirConds().get(positionId).getDev().getType() +
-                    ",\"devID\":" + MyApplication.getWareData().getAirConds().get(positionId).getDev().getDevId();
+                    ",\"canCpuID\":\"" + wareAirCondDev.getDev().getCanCpuId() +
+                    "\",\"devType\":" + wareAirCondDev.getDev().getType() +
+                    ",\"devID\":" + wareAirCondDev.getDev().getDevId();
             switch (position) {
                 //开/关
                 case 0:
@@ -156,7 +209,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                     //设置升温
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
                         ToastUtil.showToast(this, "请先开机，再操作");
-                        break;
+                        return;
                     }
                     curValue++;
                     if (curValue > 30) {
@@ -224,7 +277,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                     //设置降温
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
                         Toast.makeText(this, "请先开机，再操作", Toast.LENGTH_SHORT).show();
-                        break;
+                        return;
                     }
                     curValue--;
                     if (curValue < 14) {
@@ -296,7 +349,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 case 4:
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
                         Toast.makeText(this, "请先开机，再操作", Toast.LENGTH_SHORT).show();
-                        break;
+                        return;
                     }
                     modelValue = UdpProPkt.E_AIR_MODE.e_air_cool.getValue();
                     break;
@@ -304,7 +357,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 case 5:
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
                         Toast.makeText(this, "请先开机，再操作", Toast.LENGTH_SHORT).show();
-                        break;
+                        return;
                     }
                     modelValue = UdpProPkt.E_AIR_MODE.e_air_hot.getValue();
                     break;
@@ -312,7 +365,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 case 6:
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
                         Toast.makeText(this, "请先开机，再操作", Toast.LENGTH_SHORT).show();
-                        break;
+                        return;
                     }
                     cmdValue = UdpProPkt.E_AIR_CMD.e_air_spdHigh.getValue();
                     break;
@@ -320,7 +373,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 case 7:
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
                         Toast.makeText(this, "请先开机，再操作", Toast.LENGTH_SHORT).show();
-                        break;
+                        return;
                     }
                     cmdValue = UdpProPkt.E_AIR_CMD.e_air_spdMid.getValue();
                     break;
@@ -328,7 +381,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 case 8:
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
                         Toast.makeText(this, "请先开机，再操作", Toast.LENGTH_SHORT).show();
-                        break;
+                        return;
                     }
                     cmdValue = UdpProPkt.E_AIR_CMD.e_air_spdLow.getValue();
                     break;
@@ -337,100 +390,85 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
 
             str_Fixed = str_Fixed +
                     ",\"cmd\":" + value + "}";
+            Log.i("CMD_空调", str_Fixed);
             CommonUtils.sendMsg(str_Fixed);
         }
     }
 
-    public class MyViewPagerAdapter extends PagerAdapter {
-        private List<WareAirCondDev> listdata;
-        private int mChildCount = 0;
 
-        public MyViewPagerAdapter(List<WareAirCondDev> listdata) {
-            this.listdata = listdata;
+    public void initdata() {
+
+        title.setText(getIntent().getStringExtra("title") + "控制");
+        title.setTextColor(0xffffffff);
+
+
+        wareAirCondDev = list.get(positionId);
+        curValue = list.get(positionId).getSelTemp();
+        name.setText("空调名称 :" + wareAirCondDev.getDev().getDevName());
+        temp.setText("当前温度 :" + wareAirCondDev.getSelTemp() + "℃");
+        temp1.setText("设置温度 :" + wareAirCondDev.getSelTemp() + "℃");
+
+        if (wareAirCondDev.getbOnOff() == 0) {
+            state.setText("空调状态 : 关闭");
+        } else {
+            state.setText("空调状态 : 打开");
         }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(Viewlists.get(position));
+        Log.i("WelCome", wareAirCondDev.getSelSpd() + "");
+        if (wareAirCondDev.getSelSpd()
+                == UdpProPkt.E_AIR_CMD.e_air_spdLow.getValue()) {
+            wind.setText("风速 : 低风");
+        } else if (wareAirCondDev.getSelSpd()
+                == UdpProPkt.E_AIR_CMD.e_air_spdMid.getValue()) {
+            wind.setText("风速 : 中风");
+        } else if (wareAirCondDev.getSelSpd()
+                == UdpProPkt.E_AIR_CMD.e_air_spdHigh.getValue()) {
+            wind.setText("风速 : 高风");
         }
+    }
 
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {  //这个方法用来实例化页卡
-            positionId = position;
-            initPageView(position);
-            container.addView(Viewlists.get(position));
-            return Viewlists.get(position);
-        }
-
-        @Override
-        public void notifyDataSetChanged() {
-            mChildCount = getCount();
-            super.notifyDataSetChanged();
-        }
+    class Air_Select_Adapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return listdata.size();
+            return list.size();
         }
 
         @Override
-        public boolean isViewFromObject(View arg0, Object arg1) {
-            return arg0 == arg1;
+        public Object getItem(int position) {
+            return list.get(position).getDev().getDevName();
         }
 
         @Override
-        public int getItemPosition(Object object) {
-            if (mChildCount > 0) {
-                mChildCount--;
-                return POSITION_NONE;
-            }
-            return super.getItemPosition(object);
+        public long getItemId(int position) {
+            return position;
         }
 
-        public void initPageView(int position) {
-            back = (ImageView) Viewlists.get(position).findViewById(R.id.title_bar_iv_back);
-            title = (TextView) Viewlists.get(position).findViewById(R.id.title_bar_tv_title);
-            name = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_name);
-            temp = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_temp);
-            temp1 = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_temp1);
-            state = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_state);
-            wind = (TextView) Viewlists.get(position).findViewById(R.id.airCondition_wind);
+        @Override
+        public View getView(final int position, View convertView, final ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(AirConditionActivity.this).
+                        inflate(R.layout.equipment_listview_control_item, null);
 
-            title.setText(getIntent().getStringExtra("title") + "控制");
-            title.setTextColor(0xffffffff);
-            back.setImageResource(R.drawable.return2);
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+                viewHolder = new ViewHolder();
+                viewHolder.title = (TextView) convertView.findViewById(R.id.equipment_tv);
+                viewHolder.image = (ImageView) convertView.findViewById(R.id.equipment_iv);
 
+                convertView.setTag(viewHolder);
+            } else
+                viewHolder = (ViewHolder) convertView.getTag();
 
-            wareAirCondDev = listdata.get(position);
-            curValue = listdata.get(position).getSelTemp();
-            name.setText("空调名称 :" + wareAirCondDev.getDev().getDevName());
-            temp.setText("当前温度 :" + 10 + "℃");
-            temp1.setText("设置温度 :" + wareAirCondDev.getSelTemp() + "℃");
+            viewHolder.title.setText(list.get(position).getDev().getDevName());
+            viewHolder.image.setImageResource(image[4]);
 
-            if (wareAirCondDev.getbOnOff() == 0) {
-                state.setText("空调状态 : 关闭");
-            } else {
-                state.setText("空调状态 : 打开");
-            }
-            Log.i("WelCome", wareAirCondDev.getSelSpd() + "");
-            if (wareAirCondDev.getSelSpd()
-                    == UdpProPkt.E_AIR_CMD.e_air_spdLow.getValue()) {
-                wind.setText("风速 : 低风");
-            } else if (wareAirCondDev.getSelSpd()
-                    == UdpProPkt.E_AIR_CMD.e_air_spdMid.getValue()) {
-                wind.setText("风速 : 中风");
-            } else if (wareAirCondDev.getSelSpd()
-                    == UdpProPkt.E_AIR_CMD.e_air_spdHigh.getValue()) {
-                wind.setText("风速 : 高风");
-            }
+            return convertView;
+        }
+
+        public class ViewHolder {
+            public TextView title;
+            public ImageView image;
         }
     }
 }
+
 

@@ -275,6 +275,10 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.equipment_out_rl:
+                if (list_board.size() == 0) {
+                    Toast.makeText(EquipmentDeployActivity.this, "没有可用出输入板", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 tv_equipment_parlour.setText(list_board.get(0).getBoardName());
                 tv_equipment_parlour.setTag(list_board.get(0));

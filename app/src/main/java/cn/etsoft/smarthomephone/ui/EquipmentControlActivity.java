@@ -29,7 +29,6 @@ public class EquipmentControlActivity extends Activity implements View.OnClickLi
     private TextView title, TvEquipment, TvRoom,id_kz;
     private ScrollView sv;
     private ListView dev_lv;
-    private String[] des = {"灯光7", "灯光8", "灯光9", "灯光10"};
     private int[] image = {R.drawable.select, R.drawable.select, R.drawable.selected, R.drawable.select,};
     private PopupWindow popupWindow;
     private String[] text = {"电视", "灯光", "空调", "窗帘"};
@@ -86,10 +85,12 @@ public class EquipmentControlActivity extends Activity implements View.OnClickLi
         }
         mWareDev_room = new ArrayList<>();
         mWareDev = new ArrayList<>();
+
         for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
             mWareDev_room.add(MyApplication.getWareData().getDevs().get(i));
             mWareDev.add(MyApplication.getWareData().getDevs().get(i));
         }
+
         for (int i = 0; i < mWareDev_room.size() - 1; i++) {
             for (int j = mWareDev_room.size() - 1; j > i; j--) {
                 if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())
@@ -98,6 +99,7 @@ public class EquipmentControlActivity extends Activity implements View.OnClickLi
                 }
             }
         }
+
         for (int i = 0; i < mWareDev_room.size(); i++) {
             home_text.add(mWareDev_room.get(i).getRoomName()) ;
         }

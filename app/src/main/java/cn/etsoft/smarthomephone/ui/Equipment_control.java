@@ -58,10 +58,35 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                             && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
 
                         for (int i = 0; i < devs.size(); i++) {
+                            if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 0) {
+                                if (MyApplication.getWareData().getAirConds().size() <= i && MyApplication.getWareData().getAirConds().get(i).getDev().getDevId()
+                                        == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
+                                        && MyApplication.getWareData().getAirConds().get(i).getDev().getCanCpuId()
+                                        .equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
+                                    MyApplication.getWareData().getAirConds().remove(i);
+                                }
+                            }
+                            if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 0) {
+                                if (MyApplication.getWareData().getLights().size() <= i && MyApplication.getWareData().getLights().get(i).getDev().getDevId()
+                                        == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
+                                        && MyApplication.getWareData().getLights().get(i).getDev().getCanCpuId()
+                                        .equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
+                                    MyApplication.getWareData().getLights().remove(i);
+                                }
+
+                            }
+                            if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 0) {
+
+                                if (MyApplication.getWareData().getCurtains().size() <= i &&MyApplication.getWareData().getCurtains().get(i).getDev().getDevId()
+                                        == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
+                                        && MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId()
+                                        .equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
+                                    MyApplication.getWareData().getCurtains().remove(i);
+                                }
+                            }
                             if (devs.get(i).getType() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType()
                                     && devs.get(i).getDevId() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
                                     && devs.get(i).getCanCpuId().equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
-
                                 devs.remove(i);
                                 if (adapter != null)
                                     adapter.notifyDataSetChanged();
