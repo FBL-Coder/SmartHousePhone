@@ -119,7 +119,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     private ListView dia_listview;
 
     public void getDialog() {
-        dialog = new CustomDialog(this, R.style.customDialog, R.layout.air_select_item);
+        dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
         dialog.show();
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Air_Select_Adapter());
@@ -130,7 +130,6 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 positionId = position;
                 initdata();
                 dialog.dismiss();
-
             }
         });
     }
