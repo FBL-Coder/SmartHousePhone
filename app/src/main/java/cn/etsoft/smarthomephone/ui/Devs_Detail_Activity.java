@@ -43,27 +43,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dec_detail_activity);
         initView();
-        final Handler mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == 6) {
-                    if (MyApplication.getWareData().getDev_result() != null
-                            && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
-                        MyApplication.getWareData().getDevs().set(id, dev);
-                        Toast.makeText(Devs_Detail_Activity.this, "操作成功", Toast.LENGTH_SHORT).show();
-                        MyApplication.getWareData().setDev_result(null);
-                    }
-                }
-                super.handleMessage(msg);
-            }
-        };
-        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-            @Override
-            public void upDataWareData(int what) {
-                Message message = mHandler.obtainMessage(what);
-                mHandler.sendMessage(message);
-            }
-        });
     }
 
     /**
@@ -232,7 +211,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 //            }
 
 
-                final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                         "\"datType\":" + 6 + "," +
                         "\"subType1\":0," +
                         "\"subType2\":0," +

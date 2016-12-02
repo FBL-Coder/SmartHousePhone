@@ -26,4 +26,14 @@
         android:textColor="@color/color_000"
         android:textSize="@dimen/sp_16" />
 
+    <ImageView
+        android:id="@+id/title_bar_iv_or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back_bg"
+        android:layout_centerVertical="true"
+        android:padding="5dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/xinzeng"
+        android:visibility="gone"/>
 </RelativeLayout>

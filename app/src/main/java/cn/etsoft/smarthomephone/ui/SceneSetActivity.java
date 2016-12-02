@@ -64,8 +64,11 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
-                Message message = mHandler.obtainMessage();
-                mHandler.sendMessage(message);
+                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_addSceneEvents.getValue()
+                        || what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_delSceneEvents.getValue()) {
+                    Message message = mHandler.obtainMessage();
+                    mHandler.sendMessage(message);
+                }
             }
         });
     }
@@ -215,7 +218,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         String str_gb = CommonUtils.bytesToHexString(data);
         LogUtils.LOGE("情景模式名称:%s", str_gb);
 
-        String ctlStr = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                 ",\"sceneName\":\"" + str_gb + "\"" +
                 ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_delSceneEvents.getValue() +
                 ",\"subType1\":0" +
