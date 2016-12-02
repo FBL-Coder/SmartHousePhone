@@ -13,30 +13,6 @@ void report_rcu_info_json(UDPPROPKT *pkt) {
     free(json_str);
 }
 
-void get_rcu_info_json(u8 *devUnitID, u8 *devPass, SOCKADDR_IN sender_client) {
-    if (rcu_list.size == 0)
-        return;
-
-    RCU_INFO rcuinfo;
-    memset(&rcuinfo, 0, sizeof(RCU_INFO));
-
-    rcuinfo = rcu_get(&rcu_list, devUnitID, devPass);
-    u8 str[12] = {0};
-
-    if (memcmp(rcuinfo.devUnitID, str, 12) == 0)
-        return;
-
-    char *json_str = create_rcu_json(devUnitID, e_udpPro_getRcuInfo, 0, 1);
-    int len = strlen(json_str);
-
-    node_app_client *head = app_client_list.head;
-    for (; head; head = head->next) {
-        sendto(primary_udp, json_str, len, 0, (struct sockaddr *) &sender_client,
-               sizeof(sender_client));
-        free(json_str);
-    }
-}
-
 void get_devs_info_json(u8 *devUnitID, SOCKADDR_IN sender_client) {
     char *json_str = create_dev_json(devUnitID, e_udpPro_getDevsInfo, 1, 0);
     int len = strlen(json_str);
@@ -65,7 +41,6 @@ void get_events_info_json(u8 *devUnitID, SOCKADDR_IN sender_client) {
            sizeof(sender_client));
     free(json_str);
 }
-
 
 void get_board_chnout_json(u8 *devUnitID, SOCKADDR_IN sender_client) {
     char *json_str = create_board_chnout_json(devUnitID, e_udpPro_getBoards, 1, e_board_chnOut);

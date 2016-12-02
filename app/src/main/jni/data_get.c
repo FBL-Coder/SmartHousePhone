@@ -69,7 +69,7 @@ UDPPROPKT *pre_send_udp_pkt(unsigned long sender_ip, u8 *dat, int dat_len, u8 cm
     return pkt;
 }
 
-UDPPROPKT *udp_pkt_bradcast(u8 *devUnitID, char *dst_ip) {
+UDPPROPKT *udp_pkt_bradcast(u8 *devUnitID, u8 *rcu_pwd,char *dst_ip) {
     UDPPROPKT *pkt = (UDPPROPKT *) malloc(sizeof(UDPPROPKT));
 
     memcpy(pkt->head, HEAD_STRING, 4);
@@ -89,11 +89,10 @@ UDPPROPKT *udp_pkt_bradcast(u8 *devUnitID, char *dst_ip) {
     }
 
     memset(pkt->uidSrc, 0xff, 12);
+    if (rcu_pwd != NULL)
+       memcpy(pkt->pwdDst, rcu_pwd, 8);
+   else
     memset(pkt->pwdDst, 0xff, 8);
-//    if (rcu_pwd != NULL)
-//       memcpy(pkt->pwdDst, rcu_pwd, 8);
-//   else
-//    memset(pkt->pwdDst, 0xff, 8);
 
     if (devUnitID != NULL)
         memcpy(pkt->uidDst, devUnitID, 12);

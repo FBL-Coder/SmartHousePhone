@@ -12,14 +12,12 @@ struct Timer { //Timer结构体，用来保存一个定时器的信息
 
 u8 ui_recvbuf[UI_BUFF_SIZE];
 u8 recvbuf[BUFF_SIZE];
-u8 local_devUnitID[12];
 
 char local_ip[IP_SIZE];
 SOCKET primary_udp;
 SOCKET ui_socket;
 struct sockaddr_in sender, ui_sender;
 int sender_len, ui_sender_len;
-int rcu_flag = -1;
 static int devs_num = -1;
 static int scene_num = -1;
 static int board_out_num = -1;
@@ -52,8 +50,8 @@ gw_client_linked_list gw_client_list;
 app_client_linked_list app_client_list;
 udp_msg_queue_linked_list msg_queue_list;
 
-void udp_broadcast(u8 *devUnitID) {
-    UDPPROPKT *pkt = udp_pkt_bradcast(devUnitID, "255.255.255.255");
+void udp_broadcast(u8 *devUnitID, u8 *devUnitPass) {
+    UDPPROPKT *pkt = udp_pkt_bradcast(devUnitID, devUnitPass, "255.255.255.255");
 
     int optval = 1;//这个值一定要设置，否则可能导致sendto()失败
     setsockopt(primary_udp, SOL_SOCKET, SO_BROADCAST, &optval, sizeof(int));
@@ -198,15 +196,14 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
     int datType = cJSON_GetObjectItem(root_json, "datType")->valueint;
     switch (datType) {
         case e_udpPro_getBroadCast:
-            app_client_add(&app_client_list, send_client, (u8 *) "", app_client_list.size);
-            app_client_display(&app_client_list);
-            udp_broadcast(devUnitID);
+            app_client_list.app_client_add(&app_client_list, send_client, (u8 *) "",
+                                           app_client_list.size);
+            udp_broadcast(devUnitID, devUnitPass);
             break;
         case e_udpPro_getRcuInfo:
-            udp_broadcast(devUnitID);
+            udp_broadcast(devUnitID, devUnitPass);
             break;
-        case e_udpPro_setRcuInfo:
-        {
+        case e_udpPro_setRcuInfo: {
             u8 name[12];
             u8 IpAddr[4];
             u8 SubMask[4];
@@ -224,87 +221,90 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
             memset(centerServ, 0, 4);
 
             char *name_str = cJSON_GetObjectItem(root_json, "name")->valuestring;
-            if(name_str != NULL) {
+            if (name_str != NULL) {
                 memcpy(name, name_str, 12);
                 free(name_str);
             }
             char *ip_str = cJSON_GetObjectItem(root_json, "IpAddr")->valuestring;
-            if(ip_str != NULL) {
+            if (ip_str != NULL) {
                 const char *div = ".";
                 char *p;
-                p = strtok(ip_str,div);
+                p = strtok(ip_str, div);
                 int i = 0;
-                while(p) {
+                while (p) {
                     IpAddr[i] = atoi(p);
                     i++;
-                    p=strtok(NULL,div);
+                    p = strtok(NULL, div);
                 }
                 free(ip_str);
             }
 
             char *subMask_str = cJSON_GetObjectItem(root_json, "SubMask")->valuestring;
-            if(subMask_str != NULL) {
+            if (subMask_str != NULL) {
                 const char *div = ".";
                 char *p;
-                p = strtok(subMask_str,div);
+                p = strtok(subMask_str, div);
                 int i = 0;
-                while(p) {
+                while (p) {
                     SubMask[i] = atoi(p);
                     i++;
-                    p=strtok(NULL,div);
+                    p = strtok(NULL, div);
                 }
                 free(subMask_str);
             }
 
             char *gateway_str = cJSON_GetObjectItem(root_json, "Gateway")->valuestring;
-            if(gateway_str != NULL) {
+            if (gateway_str != NULL) {
                 const char *div = ".";
                 char *p;
-                p = strtok(gateway_str,div);
+                p = strtok(gateway_str, div);
                 int i = 0;
-                while(p) {
+                while (p) {
                     Gateway[i] = atoi(p);
                     i++;
-                    p=strtok(NULL,div);
+                    p = strtok(NULL, div);
                 }
                 free(gateway_str);
             }
 
             char *centerServ_str = cJSON_GetObjectItem(root_json, "centerServ")->valuestring;
-            if(centerServ_str != NULL) {
+            if (centerServ_str != NULL) {
                 const char *div = ".";
                 char *p;
-                p = strtok(centerServ_str,div);
+                p = strtok(centerServ_str, div);
                 int i = 0;
-                while(p) {
+                while (p) {
                     centerServ[i] = atoi(p);
                     i++;
-                    p=strtok(NULL,div);
+                    p = strtok(NULL, div);
                 }
                 free(centerServ_str);
             }
 
             char *roomNum_str = cJSON_GetObjectItem(root_json, "roomNum")->valuestring;
-            if(roomNum_str != NULL) {
+            if (roomNum_str != NULL) {
                 memcpy(roomNum_str, roomNum, 4);
                 free(roomNum_str);
             }
 
             char *macAddr_str = cJSON_GetObjectItem(root_json, "macAddr")->valuestring;
-            if(macAddr_str != NULL) {
+            if (macAddr_str != NULL) {
                 string_to_bytes(macAddr_str, macAddr, 12);
                 free(macAddr_str);
             }
 
             int bDhcp = cJSON_GetObjectItem(root_json, "bDhcp")->valueint;
 
-            set_rcuInfo_json(devUnitID, devUnitPass, name, IpAddr, SubMask, Gateway, centerServ, roomNum, macAddr, bDhcp);
+            set_rcuInfo_json(devUnitID, devUnitPass, name, IpAddr, SubMask, Gateway, centerServ,
+                             roomNum, macAddr, bDhcp);
         }
-        break;
+            break;
+        case e_udpPro_handShake:
+            break;
         case e_udpPro_getDevsInfo:
             get_info_from_gw_shorttime(1);
             break;
-        case e_udpPro_addDev:{
+        case e_udpPro_addDev: {
             devType = cJSON_GetObjectItem(root_json, "devType")->valueint;
             u8 devName[12];
             u8 roomName[12];
@@ -327,7 +327,7 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
                 return;
             }
 
-            int powChn = cJSON_GetObjectItem(root_json, "powChn")->valueint;
+            int powChn = cJSON_GetObjectItem(root_json, "powChn")->valueint - 1;
             char *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID")->valuestring;
             if (canCpuID_str != NULL) {
                 string_to_bytes(canCpuID_str, canCpuID, 24);
@@ -337,8 +337,8 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
             }
 
             add_devs_json(devUnitID, canCpuID, e_udpPro_addDev, devType, powChn, roomName, devName);
-    }
-        break;
+        }
+            break;
         case e_udpPro_editDev: {
             //重新打包数据，转发给联网模块
             devType = cJSON_GetObjectItem(root_json, "devType")->valueint;
@@ -348,6 +348,8 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
             u8 canCpuID[12];
             u8 devName[12];
             u8 roomName[12];
+            memset(devName, 0, 12);
+            memset(roomName, 0, 12);
             char *canCpuID_str = cJSON_GetObjectItem(root_json, "canCpuID")->valuestring;
             if (canCpuID_str != NULL) {
                 string_to_bytes(canCpuID_str, canCpuID, 24);
@@ -370,8 +372,9 @@ void extract_json(u8 *buffer, SOCKADDR_IN send_client) {
                 return;
             }
 
-            int powChn = cJSON_GetObjectItem(root_json, "powChn")->valueint;
-            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_editDev, devType, devID,  powChn, devName, roomName, cmd);
+            int powChn = cJSON_GetObjectItem(root_json, "powChn")->valueint - 1;
+            ctrl_devs_json(devUnitID, canCpuID, e_udpPro_editDev, devType, devID, powChn, devName,
+                           roomName, cmd);
         }
             break;
         case e_udpPro_delDev: {
@@ -545,31 +548,34 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
                sizeof(sender));
     }
 
-    if(udp_pro_pkt->datType != 2){
+    if (udp_pro_pkt->datType != 2) {
         LOGI("收到的数据包:%d %d %d", udp_pro_pkt->datType, udp_pro_pkt->subType1, udp_pro_pkt->subType2);
     }
 
     switch (udp_pro_pkt->datType) {
         case e_udpPro_getRcuInfo:          // e_udpPro_getRcuinfo
-            if (udp_pro_pkt->subType2 == 1 && rcu_flag == -1) {
-                rcu_flag = 1;
+            if (udp_pro_pkt->subType2 == 1) {
                 //联网模块发送信息到服务器
                 set_rcuinfo(udp_pro_pkt, sender);
                 //给UI发送收到消息info
                 report_rcu_info_json(udp_pro_pkt);
 
-                udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc, e_udpPro_getDevsInfo, 0,
-                                  1,
-                                  msg_queue_list.size);
+                msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
+                                                 e_udpPro_getDevsInfo, 0,
+                                                 1,
+                                                 msg_queue_list.size);
 
-                udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc, e_udpPro_getSceneEvents,
-                                  0, 2, msg_queue_list.size);
+                msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
+                                                 e_udpPro_getSceneEvents,
+                                                 0, 2, msg_queue_list.size);
 
-                udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc, e_udpPro_getBoards,
-                                  e_board_chnOut, 3, msg_queue_list.size);
-                udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc, e_udpPro_getBoards,
-                                  e_board_keyInput, 4,
-                                  msg_queue_list.size);
+                msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
+                                                 e_udpPro_getBoards,
+                                                 e_board_chnOut, 3, msg_queue_list.size);
+                msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
+                                                 e_udpPro_getBoards,
+                                                 e_board_keyInput, 4,
+                                                 msg_queue_list.size);
 
                 get_info_from_gw_shorttime(1);
                 get_info_from_gw_shorttime(2);
@@ -607,7 +613,33 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
         case e_udpPro_editDev:
             if (udp_pro_pkt->subType2 == 1) {
                 //控制设备之后，返回设备的最新数据，直接更新链表
-                fresh_dev_info(udp_pro_pkt);
+                //如果是编辑，并且同devUnitID，同devType，powChn则删除原来的设备，再添加新设备
+                if (udp_pro_pkt->datType == e_udpPro_editDev) {
+                    WARE_DEV *ware_dev = (WARE_DEV *) udp_pro_pkt->dat;
+                    switch (ware_dev->devType) {
+                        case e_ware_airCond:
+                            aircond_list.ware_aircond_clean(&aircond_list);
+                            break;
+                        case e_ware_light:
+                            light_list.ware_light_clean(&light_list);
+                            break;
+                        case e_ware_curtain:
+                            curtain_list.ware_curtain_clean(&curtain_list);
+                            break;
+                        case e_ware_lock:
+                            lock_list.ware_lock_clean(&lock_list);
+                            break;
+                        case e_ware_value:
+                            valve_list.ware_valve_clean(&valve_list);
+                            break;
+                        case e_ware_fresh_air:
+                            frair_list.ware_frair_clean(&frair_list);
+                            break;
+                    }
+                    get_info_from_gw_shorttime(1); //重新获取所有设备
+                } else {
+                    fresh_dev_info(udp_pro_pkt);
+                }
                 report_all_ctl_reply_json(udp_pro_pkt);
             }
             break;
@@ -617,6 +649,7 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
                 del_dev_info(udp_pro_pkt);
                 //转发该数据包到所有app
                 report_all_ctl_reply_json(udp_pro_pkt);
+                get_info_from_gw_shorttime(1); //重新获取所有设备
             }
             break;
 
@@ -672,7 +705,6 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
                 if (udp_pro_pkt->subType2 == 1) {
                     set_board_info(udp_pro_pkt);
                 }
-                //forward_gwdat_toapp(udp_pro_pkt, dat_len);
             }
             break;
 
@@ -753,7 +785,7 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
     }
 }
 
-void ui_udp_server() {
+void *ui_udp_server() {
 
     ui_socket = init_socket(SOCK_TYPE); //SOCK_DGRAM
 
@@ -764,7 +796,7 @@ void ui_udp_server() {
 
     int result = bind(ui_socket, (struct sockaddr *) &local_ui_socket, sizeof(local_ui_socket));
     if (result == SOCKET_ERROR) {
-        return;
+        return NULL;
     }
 
     memset(&ui_recvbuf, 0, sizeof(ui_recvbuf));
@@ -815,6 +847,11 @@ void udp_server(char *ip) {
     aircond_list = ware_aircond_create_linked_list();
     light_list = ware_light_create_linked_list();
     curtain_list = ware_curtain_create_linked_list();
+    lock_list = ware_lock_create_linked_list();
+    valve_list = ware_valve_create_linked_list();
+    frair_list = ware_frair_create_linked_list();
+    tv_list = ware_tv_create_linked_list();
+    tvUP_list = ware_tvUP_create_linked_list();
     scene_list = ware_scene_create_linked_list();
     board_list = board_create_linked_list();
     keyinput_list = keyinput_create_linked_list();
