@@ -134,15 +134,13 @@ char *create_chn_status_json(u8 *devUnitID, int datType, int subType1, int subTy
                     light->ware_dev.roomName[9], light->ware_dev.roomName[10],
                     light->ware_dev.roomName[11]);
             cJSON_AddItemToObject(item, "roomName", cJSON_CreateString(roomName));
-            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(
-                    light->ware_dev.devType ? light->ware_dev.devType : -1));
-            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(
-                    light->ware_dev.devId ? light->ware_dev.devId : -1));
+            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(light->ware_dev.devType));
+            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(light->ware_dev.devId));
 
             cJSON_AddItemToObject(item, "bOnOff", cJSON_CreateNumber(light->light.bOnOff));
             cJSON_AddItemToObject(item, "bTuneEn", cJSON_CreateNumber(light->light.bTuneEn));
             cJSON_AddItemToObject(item, "lmVal", cJSON_CreateNumber(light->light.lmVal));
-            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(light->light.powChn));
+            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(light->light.powChn+1));
         }
     }
 
@@ -249,15 +247,13 @@ char *create_dev_json(u8 *devUnitID, int datType, int subType1, int subType2)
                     light->ware_dev.roomName[9], light->ware_dev.roomName[10],
                     light->ware_dev.roomName[11]);
             cJSON_AddItemToObject(item, "roomName", cJSON_CreateString(roomName));
-            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(
-                    light->ware_dev.devType ? light->ware_dev.devType : -1));
-            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(
-                    light->ware_dev.devId ? light->ware_dev.devId : -1));
+            cJSON_AddItemToObject(item, "devType", cJSON_CreateNumber(light->ware_dev.devType));
+            cJSON_AddItemToObject(item, "devID", cJSON_CreateNumber(light->ware_dev.devId));
 
             cJSON_AddItemToObject(item, "bOnOff", cJSON_CreateNumber(light->light.bOnOff));
             cJSON_AddItemToObject(item, "bTuneEn", cJSON_CreateNumber(light->light.bTuneEn));
             cJSON_AddItemToObject(item, "lmVal", cJSON_CreateNumber(light->light.lmVal));
-            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(light->light.powChn));
+            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(light->light.powChn+1));
         }
     }
     cJSON_AddItemToObject(root, "light", cJSON_CreateNumber(item_num));
@@ -769,7 +765,9 @@ void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int po
                     u8 data_buf[WARE_AIR_SIZE];
                     memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
                     DEV_PRO_AIRCOND air;
+                    memset(&air, 0, sizeof(DEV_PRO_AIRCOND));
                     air.powChn = powChn;
+
                     memcpy(data_buf + WARE_DEV_SIZE, &air, AIR_SIZE);
 
                     UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
@@ -812,7 +810,9 @@ void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int po
                     u8 data_buf[WARE_LGT_SIZE];
                     memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
                     DEV_PRO_LIGHT light;
+                    memset(&light, 0, sizeof(DEV_PRO_LIGHT));
                     light.powChn = powChn;
+
                     memcpy(data_buf + WARE_DEV_SIZE, &light, LIGHT_SIZE);
 
                     UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
@@ -828,6 +828,7 @@ void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int po
                     u8 data_buf[WARE_CUR_SIZE];
                     memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
                     DEV_PRO_CURTAIN curtain;
+                    memset(&curtain, 0, sizeof(DEV_PRO_CURTAIN));
                     curtain.powChn = powChn;
                     memcpy(data_buf + WARE_DEV_SIZE, &curtain, CURTAIN_SIZE);
 
@@ -843,6 +844,7 @@ void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int po
                     u8 data_buf[WARE_LOCK_SIZE];
                     memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
                     DEV_PRO_LOCK lock;
+                    memset(&lock, 0, sizeof(DEV_PRO_LOCK));
                     lock.powChnOpen = powChn;
                     memcpy(data_buf + WARE_DEV_SIZE, &lock, LOCK_SIZE);
 
@@ -857,9 +859,10 @@ void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int po
                 case e_ware_value: {
                     u8 data_buf[WARE_VALUE_SIZE];
                     memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
-                    DEV_PRO_LOCK lock;
-                    lock.powChnOpen = powChn;
-                    memcpy(data_buf + WARE_DEV_SIZE, &lock, VALUE_SIZE);
+                    DEV_PRO_VALVE valve;
+                    memset(&valve, 0, sizeof(DEV_PRO_VALVE));
+                    valve.powChnOpen = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &valve, VALUE_SIZE);
 
                     UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
                                                            data_buf, WARE_VALUE_SIZE, \
@@ -872,9 +875,10 @@ void add_devs_json(u8 *devUnitID, u8 *canCpuID, int datType, int devType, int po
                 case e_ware_fresh_air: {
                     u8 data_buf[WARE_FRAIR_SIZE];
                     memcpy(data_buf, &ware_dev, WARE_DEV_SIZE);
-                    DEV_PRO_LOCK lock;
-                    lock.powChnOpen = powChn;
-                    memcpy(data_buf + WARE_DEV_SIZE, &lock, FRAIR_SIZE);
+                    DEV_PRO_FRESHAIR frair;
+                    memset(&frair, 0, sizeof(DEV_PRO_FRESHAIR));
+                    frair.powChn = powChn;
+                    memcpy(data_buf + WARE_DEV_SIZE, &frair, FRAIR_SIZE);
 
                     UDPPROPKT *send_pkt = pre_send_udp_pkt(inet_addr((char *) gw_ip),
                                                            data_buf, WARE_FRAIR_SIZE, \
@@ -1213,7 +1217,7 @@ char *create_ctl_reply_info_json(UDPPROPKT *pkt)
             cJSON_AddItemToObject(item, "bOnOff", cJSON_CreateNumber(light->bOnOff));
             cJSON_AddItemToObject(item, "bTuneEn", cJSON_CreateNumber(light->bTuneEn));
             cJSON_AddItemToObject(item, "lmVal", cJSON_CreateNumber(light->lmVal));
-            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(light->powChn));
+            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(light->powChn+1));
         }
             break;
         default:

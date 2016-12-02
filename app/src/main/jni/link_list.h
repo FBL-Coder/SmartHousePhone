@@ -15,8 +15,6 @@
 
 typedef struct nodercu {
     RCU_INFO item;
-    // previous node
-    struct nodercu* prev;
     // next node
     struct nodercu* next;
 } node_rcu;
@@ -33,51 +31,19 @@ typedef struct rcu_linked_list {
 
     // rcu_add item to any position
     void (*rcu_add) (struct rcu_linked_list*, RCU_INFO rcu_info, int);
-    // rcu_add item after tail
-    void (*rcu_addLast) (struct rcu_linked_list*, RCU_INFO rcu_info);
-    // rcu_add item before head
-    void (*rcu_addFirst) (struct rcu_linked_list*, RCU_INFO rcu_info);
-    // get item from any position
-    RCU_INFO (*rcu_get) (struct rcu_linked_list*, u8 *devUnitID, u8* devUnitPass);
     // remove item from any position
     void (*rcu_remove) (struct rcu_linked_list*, u8 *devUnitID);
-
-    // display all element in the rcu_linked_list
-    void (*rcu_display) (struct rcu_linked_list*);
     // create a node with item
     node_rcu* (*rcu_create_node) (RCU_INFO rcu_info);
 } rcu_linked_list;
 
-/** rcu_add item to any position
- */
-extern void rcu_add (rcu_linked_list* _this, RCU_INFO rcu_info, int position);
-/** rcu_add item to head
- */
-extern void rcu_addFirst (rcu_linked_list* _this, RCU_INFO rcu_info);
-/** rcu_add item to tail
- */
-extern void rcu_addLast (rcu_linked_list* _this, RCU_INFO rcu_info);
-/** get item from specific position
- */
-extern RCU_INFO rcu_get(rcu_linked_list* _this, u8 *devUnitID, u8 *devUnitPass);
-/** get item and remove it from any position
- */
-extern void rcu_remove (rcu_linked_list* _this, u8 *devUnitID);
-/** display the items in the list
- */
-extern void rcu_display (rcu_linked_list* _this);
 /** create a rcu_linked_list
  */
-extern rcu_linked_list rcu_create_linked_list ();
-/** create a node_rcu
- */
-extern node_rcu* rcu_create_node (RCU_INFO rcu_info);
+extern rcu_linked_list rcu_create_linked_list();
 
 typedef struct Node {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
-    // previous node
-    struct Node* prev;
     // next node
     struct Node* next;
 } Node;
@@ -89,55 +55,32 @@ typedef struct Node {
 typedef struct ware_linked_list {
     Node* head;
     Node* tail;
+
     // size of this LinkedList
     int size;
 
     // ware_add item to any position
     void (*ware_add) (struct ware_linked_list*, WARE_DEV, u8 *, int);
-    // ware_add item after tail
-    void (*ware_addLast) (struct ware_linked_list*, WARE_DEV, u8 * );
-    // ware_add item before head
-    void (*ware_addFirst) (struct ware_linked_list*, WARE_DEV, u8 * );
 
     // remove item from any position
     void (*ware_remove) (struct ware_linked_list*, WARE_DEV, u8 * );
 
-    // display all element in the LinkedList
-    void (*ware_display) (struct ware_linked_list*);
+    //clean all item from list
+    void (*ware_clean)(struct ware_linked_list*);
+
     // create a node with item
     Node* (*ware_create_node) (WARE_DEV ware_dev, u8 *);
 } ware_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_add (ware_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_addFirst (ware_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_addLast (ware_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_remove (ware_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-
-/** display the items in the list
- */
-extern void ware_display (ware_linked_list* _this);
 /** create a LinkedList
  */
 extern ware_linked_list ware_create_linked_list ();
-/** create a Node
- */
-extern Node* ware_create_node (WARE_DEV ware_dev, u8 *devUnitID);
 
 
 typedef struct NodeAircond {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
     DEV_PRO_AIRCOND aircond;
-    // previous node
-    struct NodeAircond* prev;
     // next node
     struct NodeAircond* next;
 } Node_aircond;
@@ -151,46 +94,26 @@ typedef struct aircond_linked_list {
 
     // ware_add item to any position
     void (*ware_aircond_add) (struct aircond_linked_list*, WARE_DEV ware_dev, DEV_PRO_AIRCOND aircond, u8 *devUnitID, int position);
-    // ware_aircond_add item after tail
-    void (*ware_aircond_addLast) (struct aircond_linked_list*, WARE_DEV ware_dev, DEV_PRO_AIRCOND aircond, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_aircond_addFirst) (struct aircond_linked_list*, WARE_DEV ware_dev, DEV_PRO_AIRCOND aircond, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_aircond_remove) (struct aircond_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
-    // display all element in the LinkedList
-    void (*ware_aircond_display) (struct aircond_linked_list*);
+    //clean all item from list
+    void (*ware_aircond_clean)(struct aircond_linked_list*);
+
     // create a node with item
     Node_aircond* (*ware_aircond_createNode) (WARE_DEV ware_dev, DEV_PRO_AIRCOND aircond, u8 *devUnitID);
 
 } aircond_linked_list;
-\
-/** ware_add item to any position
- */
-extern void ware_aircond_add(aircond_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_AIRCOND aircond, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_aircond_addFirst (aircond_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_AIRCOND aircond, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_aircond_addLast (aircond_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_AIRCOND aircond, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_aircond_remove (aircond_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_aircond_display (aircond_linked_list* _this);
+
 /** create a LinkedList
  */
-aircond_linked_list ware_aircond_create_linked_list ();
+extern aircond_linked_list ware_aircond_create_linked_list ();
 
 typedef struct Nodelight {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
     DEV_PRO_LIGHT light;
-    // previous node
-    struct Nodelight* prev;
     // next node
     struct Nodelight* next;
 } Node_light;
@@ -204,46 +127,24 @@ typedef struct light_linked_list {
 
     // ware_add item to any position
     void (*ware_light_add) (struct light_linked_list*, WARE_DEV ware_dev, DEV_PRO_LIGHT light, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_light_addLast) (struct light_linked_list*, WARE_DEV ware_dev, DEV_PRO_LIGHT light, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_light_addFirst) (struct light_linked_list*, WARE_DEV ware_dev, DEV_PRO_LIGHT light, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_light_remove) (struct light_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
-    // display all element in the LinkedList
-    void (*ware_light_display) (struct light_linked_list*);
+    //clean all item from list
+    void (*ware_light_clean)(struct light_linked_list*);
 
     // create a node with item
     Node_light* (*ware_light_createNode) (WARE_DEV ware_dev, DEV_PRO_LIGHT light, u8 *devUnitID);
 } light_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_light_add(light_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LIGHT light, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_light_addFirst (light_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LIGHT light, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_light_addLast (light_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LIGHT light, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_light_remove (light_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_light_display (light_linked_list* _this);
-/** create a LinkedList
- */
-extern light_linked_list ware_light_create_linked_list ();
+extern light_linked_list ware_light_create_linked_list();
+
 
 typedef struct node_curtain {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
     DEV_PRO_CURTAIN curtain;
-    // previous node
-    struct node_curtain* prev;
     // next node
     struct node_curtain* next;
 } node_curtain;
@@ -256,46 +157,25 @@ typedef struct curtain_linked_list {
 
     // ware_add item to any position
     void (*ware_curtain_add) (struct curtain_linked_list*, WARE_DEV ware_dev, DEV_PRO_CURTAIN curtain, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_curtain_addLast) (struct curtain_linked_list*, WARE_DEV ware_dev, DEV_PRO_CURTAIN curtain, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_curtain_addFirst) (struct curtain_linked_list*, WARE_DEV ware_dev, DEV_PRO_CURTAIN curtain, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_curtain_remove) (struct curtain_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
-    // display all element in the LinkedList
-    void (*ware_curtain_display) (struct curtain_linked_list*);
+    //clean all item from list
+    void (*ware_curtain_clean)(struct curtain_linked_list*);
 
     // create a node with item
     node_curtain* (*ware_curtain_createNode) (WARE_DEV ware_dev, DEV_PRO_CURTAIN curtain, u8 *devUnitID);
 } curtain_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_curtain_add(curtain_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_CURTAIN curtain, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_curtain_addFirst (curtain_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_CURTAIN curtain, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_curtain_addLast (curtain_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_CURTAIN curtain, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_curtain_remove (curtain_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_curtain_display (curtain_linked_list* _this);
 /** create a LinkedList
  */
-curtain_linked_list ware_curtain_create_linked_list ();
+extern curtain_linked_list ware_curtain_create_linked_list ();
 
 typedef struct node_lock {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
     DEV_PRO_LOCK lock;
-    // previous node
-    struct node_lock* prev;
     // next node
     struct node_lock* next;
 } node_lock;
@@ -308,46 +188,25 @@ typedef struct lock_linked_list {
 
     // ware_add item to any position
     void (*ware_lock_add) (struct lock_linked_list*, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_lock_addLast) (struct lock_linked_list*, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_lock_addFirst) (struct lock_linked_list*, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_lock_remove) (struct lock_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
-    // display all element in the LinkedList
-    void (*ware_lock_display) (struct lock_linked_list*);
+    //clean all item from list
+    void (*ware_lock_clean)(struct lock_linked_list*);
 
     // create a node with item
     node_lock* (*ware_lock_createNode) (WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
 } lock_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_lock_add(lock_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_lock_addFirst (lock_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_lock_addLast (lock_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_LOCK lock, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_lock_remove (lock_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_lock_display (lock_linked_list* _this);
 /** create a LinkedList
  */
-lock_linked_list ware_lock_create_linked_list ();
+extern lock_linked_list ware_lock_create_linked_list ();
 
 typedef struct node_valve {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
     DEV_PRO_VALVE valve;
-    // previous node
-    struct node_valve* prev;
     // next node
     struct node_valve* next;
 } node_valve;
@@ -360,46 +219,26 @@ typedef struct valve_linked_list {
 
     // ware_add item to any position
     void (*ware_valve_add) (struct valve_linked_list*, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_valve_addLast) (struct valve_linked_list*, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_valve_addFirst) (struct valve_linked_list*, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_valve_remove) (struct valve_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
-    // display all element in the LinkedList
-    void (*ware_valve_display) (struct valve_linked_list*);
+    //clean all item from list
+    void (*ware_valve_clean)(struct valve_linked_list*);
+
 
     // create a node with item
     node_valve* (*ware_valve_createNode) (WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
 } valve_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_valve_add(valve_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_valve_addFirst (valve_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_valve_addLast (valve_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_VALVE valve, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_valve_remove (valve_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_valve_display (valve_linked_list* _this);
 /** create a LinkedList
  */
-valve_linked_list ware_valve_create_linked_list ();
+extern valve_linked_list ware_valve_create_linked_list ();
 
 typedef struct node_frair {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
     DEV_PRO_FRESHAIR frair;
-    // previous node
-    struct node_frair* prev;
     // next node
     struct node_frair* next;
 } node_frair;
@@ -412,45 +251,24 @@ typedef struct frair_linked_list {
 
     // ware_add item to any position
     void (*ware_frair_add) (struct frair_linked_list*, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_frair_addLast) (struct frair_linked_list*, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_frair_addFirst) (struct frair_linked_list*, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_frair_remove) (struct frair_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
-    // display all element in the LinkedList
-    void (*ware_frair_display) (struct frair_linked_list*);
+    //clean all item from list
+    void (*ware_frair_clean)(struct frair_linked_list*);
 
     // create a node with item
     node_frair* (*ware_frair_createNode) (WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
 } frair_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_frair_add(frair_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_frair_addFirst (frair_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_frair_addLast (frair_linked_list* _this, WARE_DEV ware_dev, DEV_PRO_FRESHAIR frair, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_frair_remove (frair_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_frair_display (frair_linked_list* _this);
 /** create a LinkedList
  */
-frair_linked_list ware_frair_create_linked_list ();
+extern frair_linked_list ware_frair_create_linked_list ();
 
 typedef struct node_tv {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
-    // previous node
-    struct node_tv* prev;
     // next node
     struct node_tv* next;
 } node_tv;
@@ -463,45 +281,21 @@ typedef struct tv_linked_list {
 
     // ware_add item to any position
     void (*ware_tv_add) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_tv_addLast) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_tv_addFirst) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_tv_remove) (struct tv_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
-
-    // display all element in the LinkedList
-    void (*ware_tv_display) (struct tv_linked_list*);
 
     // create a node with item
     node_tv* (*ware_tv_createNode) (WARE_DEV ware_dev, u8 *devUnitID);
 } tv_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_tv_add(tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_tv_addFirst (tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_tv_addLast (tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_tv_remove (tv_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_tv_display (tv_linked_list* _this);
 /** create a LinkedList
  */
-tv_linked_list ware_tv_create_linked_list ();
+extern tv_linked_list ware_tv_create_linked_list ();
 
 typedef struct node_tvUP {
     u8 devUnitID[12];
     WARE_DEV ware_dev;
-    // previous node
-    struct node_tvUP* prev;
     // next node
     struct node_tvUP* next;
 } node_tvUP;
@@ -514,45 +308,21 @@ typedef struct tvUP_linked_list {
 
     // ware_add item to any position
     void (*ware_tvUP_add) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_tvUP_addLast) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_tvUP_addFirst) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
 
     // remove item from any position
     void (*ware_tvUP_remove) (struct tvUP_linked_list*, WARE_DEV ware_dev, u8 *devUnitID);
-
-    // display all element in the LinkedList
-    void (*ware_tvUP_display) (struct tvUP_linked_list*);
 
     // create a node with item
     node_tvUP* (*ware_tvUP_createNode) (WARE_DEV ware_dev, u8 *devUnitID);
 } tvUP_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_tvUP_add(tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_tvUP_addFirst (tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_tvUP_addLast (tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_tvUP_remove (tvUP_linked_list* _this, WARE_DEV ware_dev, u8 *devUnitID);
-/** display the items in the list
- */
-extern void ware_tvUP_display (tvUP_linked_list* _this);
 /** create a LinkedList
  */
-tvUP_linked_list ware_tvUP_create_linked_list ();
+extern tvUP_linked_list ware_tvUP_create_linked_list ();
 
 typedef struct NodeScene {
     u8 devUnitID[12];
     SCENE_EVENT scene;
-    // previous node
-    struct NodeScene* prev;
     // next node
     struct NodeScene* next;
 } node_scene;
@@ -565,45 +335,20 @@ typedef struct scene_linked_list {
 
     // ware_add item to any position
     void (*ware_scene_add) (struct scene_linked_list*,  SCENE_EVENT scene, u8 *devUnitID, int);
-    // ware_aircond_add item after tail
-    void (*ware_scene_addLast) (struct scene_linked_list*,  SCENE_EVENT scene, u8 *devUnitID);
-    // ware_aircond_add item before head
-    void (*ware_scene_addFirst) (struct scene_linked_list*,  SCENE_EVENT scene, u8 *devUnitID);
     // remove item from any position
     void (*ware_scene_remove) (struct scene_linked_list*,  SCENE_EVENT scene, u8 *devUnitID);
-
-    // display all element in the LinkedList
-    void (*ware_scene_display) (struct scene_linked_list*);
 
     // create a node with item
     node_scene* (*ware_scene_createNode) ( SCENE_EVENT scene, u8 *devUnitID);
 } scene_linked_list;
 
-/** ware_add item to any position
- */
-extern void ware_scene_add(scene_linked_list* _this,  SCENE_EVENT scene, u8 *devUnitID, int position);
-/** ware_add item to head
- */
-extern void ware_scene_addFirst (scene_linked_list* _this,  SCENE_EVENT scene, u8 *devUnitID);
-/** ware_add item to tail
- */
-extern void ware_scene_addLast (scene_linked_list* _this,  SCENE_EVENT scene, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void ware_scene_remove (scene_linked_list* _this, SCENE_EVENT scene, u8 *devUnitID);
-
-/** display the items in the list
- */
-extern void ware_scene_display (scene_linked_list* _this);
 /** create a LinkedList
  */
-scene_linked_list ware_scene_create_linked_list ();
+extern scene_linked_list ware_scene_create_linked_list ();
 
 typedef struct node_board {
     u8 devUnitID[12];
     BOARD_CHNOUT board;
-    // previous node
-    struct node_board* prev;
     // next node
     struct node_board* next;
 } node_board;
@@ -617,44 +362,20 @@ typedef struct board_linked_list {
 
     // board_add item to any position
     void (*board_add) (struct board_linked_list*,  BOARD_CHNOUT board, u8 *devUnitID, int);
-    // board_aircond_add item after tail
-    void (*board_addLast) (struct board_linked_list*,  BOARD_CHNOUT board, u8 *devUnitID);
-    // board_aircond_add item before head
-    void (*board_addFirst) (struct board_linked_list*,  BOARD_CHNOUT board, u8 *devUnitID);
     // remove item from any position
     void (*board_remove) (struct board_linked_list*,  BOARD_CHNOUT board, u8 *devUnitID);
-
-    // display all element in the LinkedList
-    void (*board_display) (struct board_linked_list*);
 
     // create a node with item
     node_board* (*board_create_node) (BOARD_CHNOUT board, u8 *devUnitID);
 } board_linked_list;
 
-/** board_add item to any position
- */
-extern void board_add(board_linked_list* _this,  BOARD_CHNOUT board, u8 *devUnitID, int position);
-/** board_add item to head
- */
-extern void board_addFirst (board_linked_list* _this,  BOARD_CHNOUT board, u8 *devUnitID);
-/** board_add item to tail
- */
-extern void board_addLast (board_linked_list* _this,  BOARD_CHNOUT board, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void board_remove (board_linked_list* _this, BOARD_CHNOUT board, u8 *devUnitID);
-/** display the items in the list
- */
-extern void board_display (board_linked_list* _this);
 /** create a LinkedList
  */
-board_linked_list board_create_linked_list ();
+extern board_linked_list board_create_linked_list ();
 
 typedef struct node_keyinput {
     u8 devUnitID[12];
     BOARD_KEYINPUT keyinput;
-    // previous node
-    struct node_keyinput* prev;
     // next node
     struct node_keyinput* next;
 } node_keyinput;
@@ -668,39 +389,17 @@ typedef struct keyinput_linked_list {
 
     // keyinput_add item to any position
     void (*keyinput_add) (struct keyinput_linked_list*,  BOARD_KEYINPUT keyinput, u8 *devUnitID, int);
-    // keyinput_aircond_add item after tail
-    void (*keyinput_addLast) (struct keyinput_linked_list*,  BOARD_KEYINPUT keyinput, u8 *devUnitID);
-    // keyinput_aircond_add item before head
-    void (*keyinput_addFirst) (struct keyinput_linked_list*,  BOARD_KEYINPUT keyinput, u8 *devUnitID);
 
     // remove item from any position
     void (*keyinput_remove) (struct keyinput_linked_list*,  BOARD_KEYINPUT keyinput, u8 *devUnitID);
-
-    // display all element in the LinkedList
-    void (*keyinput_display) (struct keyinput_linked_list*);
 
     // create a node with item
     node_keyinput* (*keyinput_create_node) ( BOARD_KEYINPUT keyinput, u8 *devUnitID);
 } keyinput_linked_list;
 
-/** keyinput_add item to any position
- */
-extern void keyinput_add(keyinput_linked_list* _this,  BOARD_KEYINPUT keyinput, u8 *devUnitID, int position);
-/** keyinput_add item to head
- */
-extern void keyinput_addFirst (keyinput_linked_list* _this,  BOARD_KEYINPUT keyinput, u8 *devUnitID);
-/** keyinput_add item to tail
- */
-extern void keyinput_addLast (keyinput_linked_list* _this,  BOARD_KEYINPUT keyinput, u8 *devUnitID);
-/** get item and remove it from any position
- */
-extern void keyinput_remove (keyinput_linked_list* _this, BOARD_KEYINPUT keyinput, u8 *devUnitID);
-/** display the items in the list
- */
-extern void keyinput_display (keyinput_linked_list* _this);
 /** create a LinkedList
  */
-keyinput_linked_list keyinput_create_linked_list ();
+extern keyinput_linked_list keyinput_create_linked_list ();
 
 typedef struct node_chnop_item {
     u8 devUnitID[12];
@@ -709,8 +408,6 @@ typedef struct node_chnop_item {
     int devID;
     int item_num;
     CHNOP_ITEM chnop_item;
-    // previous node
-    struct node_chnop_item* prev;
     // next node
     struct node_chnop_item* next;
 } node_chnop_item;
@@ -724,47 +421,22 @@ typedef struct chnop_item_linked_list {
 
     // chnop_item_add item to any position
     void (*chnop_item_add) (struct chnop_item_linked_list*,  CHNOP_ITEM chnop_item, u8 *devUnitID, u8 *board_id, int devType, int devID, int num, int);
-    // chnop_item_aircond_add item after tail
-    void (*chnop_item_addLast) (struct chnop_item_linked_list*,  CHNOP_ITEM chnop_item, u8 *devUnitID, u8 *board_id, int devType, int devID, int num);
-    // chnop_item_aircond_add item before head
-    void (*chnop_item_addFirst) (struct chnop_item_linked_list*,  CHNOP_ITEM chnop_item, u8 *devUnitID, u8 *board_id, int devType, int devID, int num);
     // remove item from any position
     void (*chnop_item_remove) (struct chnop_item_linked_list*,  CHNOP_ITEM chnop_item, u8 *devUnitID);
     void (*chnop_item_clean)(struct chnop_item_linked_list*);
-    // display all element in the LinkedList
-    void (*chnop_item_display) (struct chnop_item_linked_list*);
-
     // create a node with item
     node_chnop_item* (*chnop_item_create_node) ( CHNOP_ITEM chnop_item, u8 *devUnitID, u8 *board_id, int devType, int devID, int num);
 } chnop_item_linked_list;
 
-/** chnop_item_add item to any position
- */
-extern void chnop_item_add(chnop_item_linked_list* _this,  CHNOP_ITEM chnop_item, u8 *devUnitID, u8 *board_id, int devType, int devID, int num, int position);
-/** chnop_item_add item to head
- */
-extern void chnop_item_addFirst (chnop_item_linked_list* _this,  CHNOP_ITEM chnop_item, u8 *devUnitID, u8 *board_id, int devType, int devID, int num);
-/** chnop_item_add item to tail
- */
-extern void chnop_item_addLast (chnop_item_linked_list* _this,  CHNOP_ITEM chnop_item, u8 *devUnitID, u8 *board_id, int devType, int devID, int num);
-/** get item and remove it from any position
- */
-extern void chnop_item_remove (chnop_item_linked_list* _this, CHNOP_ITEM chnop_item, u8 *devUnitID);
-extern void chnop_item_clean(chnop_item_linked_list *_this);
-/** display the items in the list
- */
-extern void chnop_item_display (chnop_item_linked_list* _this);
 /** create a LinkedList
  */
-chnop_item_linked_list chnop_item_create_linked_list ();
+extern chnop_item_linked_list chnop_item_create_linked_list ();
 
 typedef struct node_keyop_item {
     u8 devUnitID[12];
     u8 keyinput_board_id[12];
     int key_index;
     KEYOP_ITEM keyop_item;
-    // previous node
-    struct node_keyop_item* prev;
     // next node
     struct node_keyop_item* next;
 } node_keyop_item;
@@ -778,36 +450,13 @@ typedef struct keyop_item_linked_list {
 
     // keyop_item_add item to any position
     void (*keyop_item_add) (struct keyop_item_linked_list*,  KEYOP_ITEM keyop_item, u8 *devUnitID, u8 *keyinput_board_id, int key_index, int);
-    // keyop_item_aircond_add item after tail
-    void (*keyop_item_addLast) (struct keyop_item_linked_list*,  KEYOP_ITEM keyop_item, u8 *devUnitID, u8 *keyinput_board_id, int key_index);
-    // keyop_item_aircond_add item before head
-    void (*keyop_item_addFirst) (struct keyop_item_linked_list*,  KEYOP_ITEM keyop_item, u8 *devUnitID, u8 *keyinput_board_id, int key_index);
     // remove item from any position
     void (*keyop_item_remove) (struct keyop_item_linked_list*, u8 *devUnitID, u8 *keyinput_board_id, int key_index);
-
-    // display all element in the LinkedList
-    void (*keyop_item_display) (struct keyop_item_linked_list*);
 
     // create a node with item
     node_keyop_item* (*keyop_item_create_node) ( KEYOP_ITEM keyop_item, u8 *devUnitID, u8 *keyinput_board_id, int index);
 } keyop_item_linked_list;
 
-/** keyop_item_add item to any position
- */
-extern void keyop_item_add(keyop_item_linked_list* _this,  KEYOP_ITEM keyop_item, u8 *devUnitID, u8 *keyinput_board_id, int index, int position);
-/** keyop_item_add item to head
- */
-extern void keyop_item_addFirst (keyop_item_linked_list* _this,  KEYOP_ITEM keyop_item, u8 *devUnitID, u8 *keyinput_board_id, int index);
-/** keyop_item_add item to tail
- */
-extern void keyop_item_addLast (keyop_item_linked_list* _this,  KEYOP_ITEM keyop_item, u8 *devUnitID, u8 *keyinput_board_id, int index);
-
-/** get item and remove it from any position
- */
-extern void keyop_item_remove (keyop_item_linked_list* _this, u8 *devUnitID, u8 *keyinput_board_id, int index);
-/** display the items in the list
- */
-extern void keyop_item_display (keyop_item_linked_list* _this);
 /** create a LinkedList
  */
 extern keyop_item_linked_list keyop_item_create_linked_list ();
@@ -819,8 +468,6 @@ typedef struct node_gw_client
     u8                    gw_id[12];
     u8                    gw_pass[8];
     u8                    rcu_ip[4];
-    // previous node
-    struct node_gw_client* prev;
     // next node
     struct node_gw_client* next;
 } node_gw_client;
@@ -833,38 +480,14 @@ typedef struct gw_client_linked_list {
 
     // keyop_item_add item to any position
     void (*gw_client_add) (struct gw_client_linked_list*,  struct sockaddr_in , u8 *, u8 *, u8 *,int);
-    // keyop_item_aircond_add item after tail
-    void (*gw_client_addLast) (struct gw_client_linked_list*,  struct sockaddr_in , u8 *, u8 *, u8 *);
-    // keyop_item_aircond_add item before head
-    void (*gw_client_addFirst) (struct gw_client_linked_list*,  struct sockaddr_in , u8 *, u8 *, u8 *);
 
     // remove item from any position
     void (*gw_client_remove) (struct gw_client_linked_list*,u8 *, u8 *);
-
-    // display all element in the LinkedList
-    void (*gw_client_display) (struct gw_client_linked_list*);
 
     // create a node with item
     node_gw_client* (*gw_client_create_node) (struct sockaddr_in , u8 *, u8 *, u8 *);
 } gw_client_linked_list;
 
-
-/** keyop_item_add item to any position
- */
-extern void gw_client_add(gw_client_linked_list* _this,  struct sockaddr_in sender, u8 *gw_id, u8 *gw_pass, u8 *ip, int position);
-/** keyop_item_add item to head
- */
-extern void gw_client_addLast (gw_client_linked_list* _this,  struct sockaddr_in sender, u8 *gw_id, u8 *gw_pass, u8 *ip);
-/** keyop_item_add item to tail
- */
-extern void gw_client_addFirst (gw_client_linked_list* _this,  struct sockaddr_in sender, u8 *gw_id, u8 *gw_pass, u8 *ip);
-
-/** get item and remove it from any position
- */
-extern void gw_client_remove (gw_client_linked_list* _this,u8 *gw_id, u8 *gw_pass);
-/** display the items in the list
- */
-extern void gw_client_display (gw_client_linked_list* _this);
 /** create a LinkedList
  */
 extern gw_client_linked_list gw_client_create_linked_list ();
@@ -873,8 +496,6 @@ typedef struct node_app_client
 {
     struct sockaddr_in    app_sender;
     u8                    app_ip[4];
-    // previous node
-    struct node_app_client* prev;
     // next node
     struct node_app_client* next;
 } node_app_client;
@@ -887,37 +508,14 @@ typedef struct app_client_linked_list {
 
     // keyop_item_add item to any position
     void (*app_client_add) (struct app_client_linked_list*,  struct sockaddr_in , u8 *, int);
-    // keyop_item_aircond_add item after tail
-    void (*app_client_addLast) (struct app_client_linked_list*,  struct sockaddr_in, u8 * );
-    // keyop_item_aircond_add item before head
-    void (*app_client_addFirst) (struct app_client_linked_list*,  struct sockaddr_in, u8 * );
 
     // remove item from any position
     void (*app_client_remove) (struct app_client_linked_list*, struct sockaddr_in);
-
-    // display all element in the LinkedList
-    void (*app_client_display) (struct app_client_linked_list*);
 
     // create a node with item
     node_app_client* (*app_client_create_node) (struct sockaddr_in, u8 *app_ip);
 } app_client_linked_list;
 
-
-/** keyop_item_add item to any position
- */
-extern void app_client_add(app_client_linked_list* _this,  struct sockaddr_in sender, u8 *app_ip, int position);
-/** keyop_item_add item to head
- */
-extern void app_client_addLast (app_client_linked_list* _this,  struct sockaddr_in sender, u8 *app_ip);
-/** keyop_item_add item to tail
- */
-extern void app_client_addFirst (app_client_linked_list* _this,  struct sockaddr_in sender, u8 *app_ip);
-/** get item and remove it from any position
- */
-extern void app_client_remove (app_client_linked_list* _this, struct sockaddr_in sender);
-/** display the items in the list
- */
-extern void app_client_display (app_client_linked_list* _this);
 /** create a LinkedList
  */
 extern app_client_linked_list app_client_create_linked_list ();
@@ -928,8 +526,6 @@ typedef struct node_udp_msg_queue
     int cmd;
     int id;
     int flag;
-    // previous node
-    struct node_udp_msg_queue* prev;
     // next node
     struct node_udp_msg_queue* next;
 } node_udp_msg_queue;
@@ -942,37 +538,11 @@ typedef struct udp_msg_queue_linked_list {
 
     // keyop_item_add item to any position
     void (*udp_msg_queue_add) (struct udp_msg_queue_linked_list*, u8 *, int ,int, int, int);
-    // keyop_item_aircond_add item after tail
-    void (*udp_msg_queue_addLast) (struct udp_msg_queue_linked_list*, u8 *, int ,int, int);
-    // keyop_item_aircond_add item before head
-    void (*udp_msg_queue_addFirst) (struct udp_msg_queue_linked_list*, u8 *, int ,int, int);
-    // remove item from any position
-    void (*udp_msg_queue_remove) (struct udp_msg_queue_linked_list*,u8 *, int);
-
-    // display all element in the LinkedList
-    void (*udp_msg_queue_display) (struct udp_msg_queue_linked_list*);
 
     // create a node with item
     node_udp_msg_queue* (*udp_msg_queue_create_node) (u8 *, int ,int, int);
 } udp_msg_queue_linked_list;
 
-
-/** keyop_item_add item to any position
- */
-extern void udp_msg_queue_add(udp_msg_queue_linked_list* _this, u8 *devUnitID, int cmd, int id, int flag, int position);
-/** keyop_item_add item to head
- */
-extern void udp_msg_queue_addLast (udp_msg_queue_linked_list* _this,  u8 *devUnitID, int cmd, int id, int flag);
-/** keyop_item_add item to tail
- */
-extern void udp_msg_queue_addFirst (udp_msg_queue_linked_list* _this,  u8 *devUnitID, int cmd, int id, int flag);
-
-/** get item and remove it from any position
- */
-extern void udp_msg_queue_remove (udp_msg_queue_linked_list* _this, u8 *devUnitID, int cmd);
-/** display the items in the list
- */
-extern void udp_msg_queue_display (udp_msg_queue_linked_list* _this);
 /** create a LinkedList
  */
 extern udp_msg_queue_linked_list udp_msg_queue_create_linked_list ();

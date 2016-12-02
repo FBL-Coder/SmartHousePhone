@@ -30,7 +30,6 @@
 #define SOCKET_ERROR          -1
 #define UI_BUFF_SIZE          1024*4
 #define BUFF_SIZE             1024
-#define BUFF_MIN_SIZE         56
 #define HEAD_STRING           "head"
 #define CLOUD_SERVER_IP       "192.168.1.220"
 
