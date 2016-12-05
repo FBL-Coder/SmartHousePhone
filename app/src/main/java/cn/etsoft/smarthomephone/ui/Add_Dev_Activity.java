@@ -2,14 +2,11 @@ package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -21,18 +18,12 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
-import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
-import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareBoardChnout;
-import cn.etsoft.smarthomephone.pullmi.entity.WareBoardKeyInput;
-import cn.etsoft.smarthomephone.pullmi.entity.WareCurtain;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
-import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
-import cn.etsoft.smarthomephone.pullmi.entity.WareSetBox;
-import cn.etsoft.smarthomephone.pullmi.entity.WareTv;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 
 /**
@@ -40,8 +31,8 @@ import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
  */
 public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 
-    private TextView title, add_dev_type, add_dev_room, add_dev_board, add_dev_save;
-    private EditText add_dev_name, add_dev_way;
+    private TextView title, add_dev_type, add_dev_room, add_dev_board, add_dev_save, add_dev_way;
+    private EditText add_dev_name;
     private ImageView back;
     private PopupWindow popupWindow;
     private List<String> Board_text;
@@ -66,7 +57,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         add_dev_save = (TextView) findViewById(R.id.add_dev_save);
         add_dev_board = (TextView) findViewById(R.id.add_dev_board);
         add_dev_name = (EditText) findViewById(R.id.add_dev_name);
-        add_dev_way = (EditText) findViewById(R.id.add_dev_way);
+        add_dev_way = (TextView) findViewById(R.id.add_dev_way);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
 
         back.setOnClickListener(this);
@@ -74,6 +65,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         add_dev_room.setOnClickListener(this);
         add_dev_board.setOnClickListener(this);
         add_dev_save.setOnClickListener(this);
+        add_dev_way.setOnClickListener(this);
 
 
         Board_text = new ArrayList<>();
@@ -100,15 +92,47 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
             home_text.add(mWareDev_room.get(i).getRoomName());
         }
 
+
+//        List<Integer> list_voard_cancpuid = new ArrayList<>();
+//        if (type_position == 0) {
+//            for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
+//                list_voard_cancpuid.add(MyApplication.getWareData().getAirConds().get(i).getPowChn());
+//            }
+//        } else if (type_position == 3) {
+//            for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
+//                list_voard_cancpuid.add((int) MyApplication.getWareData().getLights().get(i).getPowChn());
+//            }
+//        } else if (type_position == 4) {
+//            for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
+//                list_voard_cancpuid.add(MyApplication.getWareData().getCurtains().get(i).getPowChn());
+//            }
+//        }
+
+//        List<Integer> list_way_ok_light = new ArrayList<>();
+//        for (int i = 0; i < 11; i++) {
+//            list_way_ok_light.add(i);
+//        }
+//
+//        for (int i = 0; i < list_voard_cancpuid.size(); i++) {
+//            list_way_ok_light.remove(i);
+//        }
+
+
         type_text = new ArrayList<>();
         type_text.add("空调");
         type_text.add("灯光");
         type_text.add("窗帘");
         title.setText("添加设备");
-        add_dev_type.setText(type_text.get(0));
-        add_dev_board.setText(Board_text.get(0));
-        add_dev_room.setText(home_text.get(0));
-
+        if (type_text != null && type_text.size() != 0 &&
+                Board_text != null && Board_text.size() != 0 &&
+                home_text != null && home_text.size() != 0) {
+            add_dev_type.setText(type_text.get(0));
+            add_dev_board.setText(Board_text.get(0));
+            add_dev_room.setText(home_text.get(0));
+        } else {
+            ToastUtil.showToast(Add_Dev_Activity.this, "没有数据");
+            return;
+        }
     }
 
     @Override
@@ -142,6 +166,55 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     popupWindow = null;
                 } else {
                     initPopupWindow(Board_text, 3);
+                    popupWindow.showAsDropDown(v, -widthOff, 0);
+                }
+                break;
+            case R.id.add_dev_way:
+
+                List<Integer> list_voard_cancpuid = new ArrayList<>();
+                if (type_position == 0) {
+                    for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
+                        if (list_board.get(board_position).getDevUnitID()
+                                .equals(MyApplication.getWareData().getAirConds().get(i).getDev().getCanCpuId()))
+                            list_voard_cancpuid.add(MyApplication.getWareData().getAirConds().get(i).getPowChn());
+                    }
+                } else if (type_position == 3) {
+                    for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
+                        if (list_board.get(board_position).getDevUnitID()
+                                .equals(MyApplication.getWareData().getLights().get(i).getDev().getCanCpuId()))
+                            list_voard_cancpuid.add((int) MyApplication.getWareData().getLights().get(i).getPowChn());
+                    }
+                } else if (type_position == 4) {
+                    for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
+                        if (list_board.get(board_position).getDevUnitID()
+                                .equals(MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId()))
+                            list_voard_cancpuid.add(MyApplication.getWareData().getCurtains().get(i).getPowChn());
+                    }
+                }
+
+                List<String> list_way_ok = new ArrayList<>();
+                if (type_position == 0) {
+                    for (int i = 1; i < 17; i++) {
+                        list_way_ok.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i < 13; i++) {
+                        list_way_ok.add(i + "");
+                    }
+                }
+
+                for (int i = 0; i < list_voard_cancpuid.size(); i++) {
+                    for (int j = 0; j < list_way_ok.size(); j++) {
+                        if (Integer.parseInt(list_way_ok.get(j)) == list_voard_cancpuid.get(i)) {
+                            list_way_ok.remove(j);
+                        }
+                    }
+                }
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                } else {
+                    initPopupWindow(list_way_ok, 4);
                     popupWindow.showAsDropDown(v, -widthOff, 0);
                 }
                 break;
@@ -201,6 +274,9 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
      * 初始化自定义设备的状态以及设备PopupWindow
      */
 
+    private int board_position = 0;
+    private int type_position = 0;
+
     private void initPopupWindow(final List<String> text, final int type) {
         //获取自定义布局文件pop.xml的视图
         final View customView = getLayoutInflater().from(this).inflate(R.layout.popupwindow_equipment_listview, null);
@@ -209,9 +285,11 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         // 创建PopupWindow实例
         if (type == 1)
             popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 160);
-        else if (type == 0)
+        else if (type == 2)
             popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 300);
-        else
+        else if (type == 3)
+            popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 120);
+        else if (type == 4)
             popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 120);
 
         popupWindow.setContentView(customView);
@@ -223,11 +301,20 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (type == 1) {
                     add_dev_type.setText(text.get(position));
+                    if (position == 0)
+                        type_position = 0;
+                    else if (position == 1)
+                        type_position = 3;
+                    else if (position == 2)
+                        type_position = 4;
                 } else if (type == 2) {
                     add_dev_room.setText(text.get(position));
 
                 } else if (type == 3) {
                     add_dev_board.setText(text.get(position));
+                    board_position = position;
+                } else if (type == 4) {
+                    add_dev_way.setText(text.get(position));
                 }
                 popupWindow.dismiss();
             }

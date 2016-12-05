@@ -63,11 +63,11 @@ public class WareData implements Serializable {
             setBoardChnouts(new ArrayList<WareBoardChnout>());
         }
 
-        if(keyOpItems == null){
+        if (keyOpItems == null) {
             setKeyOpItems(new ArrayList<WareKeyOpItem>());
         }
 
-        if(chnOpItems == null){
+        if (chnOpItems == null) {
             setChnOpItems(new ArrayList<WareChnOpItem>());
         }
     }
@@ -85,6 +85,8 @@ public class WareData implements Serializable {
     }
 
     public void setDevs(List<WareDev> devs) {
+        if (this.devs != null)
+            this.devs.clear();
         this.devs = devs;
     }
 
@@ -93,6 +95,8 @@ public class WareData implements Serializable {
     }
 
     public void setLights(List<WareLight> lights) {
+        if (this.lights != null)
+            this.lights.clear();
         this.lights = lights;
     }
 
@@ -101,6 +105,8 @@ public class WareData implements Serializable {
     }
 
     public void setAirConds(List<WareAirCondDev> airConds) {
+        if (this.airConds != null)
+            this.airConds.clear();
         this.airConds = airConds;
     }
 
@@ -109,6 +115,8 @@ public class WareData implements Serializable {
     }
 
     public void setCurtains(List<WareCurtain> curtains) {
+        if (this.curtains != null)
+            this.curtains.clear();
         this.curtains = curtains;
     }
 
@@ -133,6 +141,8 @@ public class WareData implements Serializable {
     }
 
     public void setTvs(List<WareTv> tvs) {
+        if (this.tvs != null)
+            this.tvs.clear();
         this.tvs = tvs;
     }
 

@@ -31,8 +31,8 @@ import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
  */
 public class Devs_Detail_Activity extends Activity implements View.OnClickListener {
 
-    private TextView dev_type, dev_room, dev_save, dev_back, title;
-    private EditText dev_name, dev_way;
+    private TextView dev_type, dev_room, dev_save, dev_back, title,dev_way;
+    private EditText dev_name;
     private ImageView back;
     private WareDev dev;
     private int id;
@@ -58,7 +58,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         dev_save = (TextView) findViewById(R.id.dev_save);
         dev_back = (TextView) findViewById(R.id.dev_back);
         dev_name = (EditText) findViewById(R.id.dev_name);
-        dev_way = (EditText) findViewById(R.id.dev_way);
+        dev_way = (TextView) findViewById(R.id.dev_way);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
 
 
@@ -96,7 +96,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
             }
         }
-
+        dev_way.setOnClickListener(this);
         dev_save.setOnClickListener(this);
         dev_back.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -107,39 +107,28 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
     /**
      * 初始化自定义设备的状态以及设备PopupWindow
      */
-    private void initPopupWindow() {
+    private void initPopupWindow(final int type, final List<String> text) {
         //获取自定义布局文件pop.xml的视图
         final View customView = getLayoutInflater().from(this).inflate(R.layout.popupwindow_equipment_listview, null);
         customView.setBackgroundResource(R.drawable.selectbg);
 
         // 创建PopupWindow实例
-        final List<String> home_text = new ArrayList<>();
-        List<WareDev> mWareDev_room = new ArrayList<>();
 
-        for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
-            mWareDev_room.add(MyApplication.getWareData().getDevs().get(i));
-        }
-        for (int i = 0; i < mWareDev_room.size() - 1; i++) {
-            for (int j = mWareDev_room.size() - 1; j > i; j--) {
-                if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())) {
-                    mWareDev_room.remove(j);
-                }
-            }
-        }
-        for (int i = 0; i < mWareDev_room.size(); i++) {
-            home_text.add(mWareDev_room.get(i).getRoomName());
-        }
         popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 120);
 
         popupWindow.setContentView(customView);
         ListView list_pop = (ListView) customView.findViewById(R.id.popupWindow_equipment_lv);
-        PopupWindowAdapter adapter = new PopupWindowAdapter(home_text, this);
+        PopupWindowAdapter adapter = new PopupWindowAdapter(text, this);
         list_pop.setAdapter(adapter);
         list_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dev_room.setText(home_text.get(position));
-                dev.setRoomName(home_text.get(position));
+
+                if (type == 0) {
+                    dev_room.setText(text.get(position));
+                }else if (type == 1){
+                    dev_way.setText(text.get(position));
+                }
                 popupWindow.dismiss();
             }
         });
@@ -195,7 +184,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
 
                 dev.setDevName(dev_name.getText().toString());
-//                发送：
+////                发送：
 //            {
 //                "devUnitID": "37ffdb05424e323416702443",
 //                    "datType": 6,
@@ -209,7 +198,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 //                    "powChn":	6，
 //                "cmd": 1
 //            }
-
 
                 final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                         "\"datType\":" + 6 + "," +
@@ -229,11 +217,72 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 finish();
                 break;
             case R.id.dev_room:
+                final List<String> home_text = new ArrayList<>();
+                List<WareDev> mWareDev_room = new ArrayList<>();
+
+                for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                    mWareDev_room.add(MyApplication.getWareData().getDevs().get(i));
+                }
+                for (int i = 0; i < mWareDev_room.size() - 1; i++) {
+                    for (int j = mWareDev_room.size() - 1; j > i; j--) {
+                        if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())) {
+                            mWareDev_room.remove(j);
+                        }
+                    }
+                }
+                for (int i = 0; i < mWareDev_room.size(); i++) {
+                    home_text.add(mWareDev_room.get(i).getRoomName());
+                }
+
                 if (popupWindow != null && popupWindow.isShowing()) {
                     popupWindow.dismiss();
                     popupWindow = null;
                 } else {
-                    initPopupWindow();
+                    initPopupWindow(0,home_text);
+                    popupWindow.showAsDropDown(v, -widthOff, 0);
+                }
+                break;
+            case R.id.dev_way:
+
+
+                List<Integer> list_voard_cancpuid = new ArrayList<>();
+                if (dev.getType() == 0) {
+                    for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
+                        if (dev.getCanCpuId()
+                                .equals(MyApplication.getWareData().getAirConds().get(i).getDev().getCanCpuId()))
+                            list_voard_cancpuid.add(MyApplication.getWareData().getAirConds().get(i).getPowChn());
+                    }
+                } else if (dev.getType() == 3) {
+                    for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
+                        if (dev.getCanCpuId()
+                                .equals(MyApplication.getWareData().getLights().get(i).getDev().getCanCpuId()))
+                            list_voard_cancpuid.add((int) MyApplication.getWareData().getLights().get(i).getPowChn());
+                    }
+                } else if (dev.getType() == 4) {
+                    for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
+                        if (dev.getCanCpuId()
+                                .equals(MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId()))
+                            list_voard_cancpuid.add(MyApplication.getWareData().getCurtains().get(i).getPowChn());
+                    }
+                }
+
+                List<String> list_coard_ok = new ArrayList<>();
+                for (int i = 1; i < 13; i++) {
+                    list_coard_ok.add(i + "");
+                }
+
+                for (int i = 0; i < list_voard_cancpuid.size(); i++) {
+                    for (int j = 0; j < list_coard_ok.size(); j++) {
+                        if (Integer.parseInt(list_coard_ok.get(j)) == list_voard_cancpuid.get(i)) {
+                            list_coard_ok.remove(j);
+                        }
+                    }
+                }
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                } else {
+                    initPopupWindow(1,list_coard_ok);
                     popupWindow.showAsDropDown(v, -widthOff, 0);
                 }
                 break;

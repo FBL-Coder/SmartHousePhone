@@ -86,7 +86,7 @@ public class udpService extends Service {
             // TODO Auto-generated method stub
             // 遍历集合，通知所有的实现类，即activity
             for (int i = 0; i < list.size(); i++) {
-                list.get(i).getWareData(msg.what,wareData);
+                list.get(i).getWareData(msg.what, wareData);
             }
         }
     };
@@ -111,7 +111,7 @@ public class udpService extends Service {
                         MyApplication.mInstance.getSocket().receive(packet);
                         // 处理消息
                         String info = new String(packet.getData(), 0, packet.getLength());
-                        Log.i("接收信息：", info);
+
                         extractData(info, handler);
                     }
                 } catch (Exception e) {
@@ -142,6 +142,8 @@ public class udpService extends Service {
             System.out.println(e.toString());
         }
 
+        if (datType != 35)
+            Log.i("接收信息：", info);
         switch (datType) {
             case 0:// e_udpPro_getRcuinfo
                 if (subType2 == 1) {
@@ -150,11 +152,20 @@ public class udpService extends Service {
                 break;
             case 3: // getDevsInfo
                 if (subType1 == 1) {
+                    MyApplication.getWareData().getDevs().clear();
                     getDevsInfo(info);
+
                     isFreshData = true;
                     //删除重复的设备
                     List<WareDev> devs = removeDuplicateDevs(MyApplication.getWareData().getDevs());
                     MyApplication.getWareData().setDevs(devs);
+                    Log.i("Devs_Size", "设备总数 :  " + MyApplication.getWareData().getDevs().size() + "");
+
+                    for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                        Log.i("Devs_Size", "所有设备ID  :  " + MyApplication.getWareData().getDevs().get(i).getDevId());
+                    }
+
+                    Log.i("Devs_Size", "---------------------------------- " );
 
                     Message msg = mhandler.obtainMessage();
                     if (mhandler != null) {
@@ -667,7 +678,7 @@ public class udpService extends Service {
                         id = airCondDev.getDev().getDevId();
                     }
                 }
-                MyApplication.getWareData().getAirConds().set(id,airCondDev);
+                MyApplication.getWareData().getAirConds().set(id, airCondDev);
             }
         } catch (JSONException e) {
             System.out.println(e.toString());
@@ -692,7 +703,7 @@ public class udpService extends Service {
 //                    "powChn":	6
 //        }]
 //        }
-        Log.i("add_dev_data",info);
+        Log.i("add_dev_data", info);
         Gson gson = new Gson();
         DevControl_Result result = gson.fromJson(info, DevControl_Result.class);
         MyApplication.getWareData().setDev_result(result);

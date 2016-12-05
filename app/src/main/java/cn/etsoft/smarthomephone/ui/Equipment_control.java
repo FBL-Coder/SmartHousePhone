@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
@@ -105,8 +106,16 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                 if (msg.what == 5) {
                     if (MyApplication.getWareData().getDev_result() != null
                             && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
-                        Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
                         DevControl_Result result = MyApplication.getWareData().getDev_result();
+
+                        for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                            if (result.getDev_rows().get(0).getDevID() == MyApplication.getWareData().getDevs().get(i).getDevId() &&
+                                    result.getDev_rows().get(0).getCanCpuID().equals(MyApplication.getWareData().getDevs().get(i).getCanCpuId()) &&
+                                    result.getDev_rows().get(0).getDevType() == MyApplication.getWareData().getDevs().get(i).getType()) {
+                                return;
+                            }
+                        }
+                        Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
                         WareDev dev1 = new WareDev();
                         if (result.getDev_rows().get(0).getDevType() == 0) {
                             WareAirCondDev dev = new WareAirCondDev();
@@ -158,7 +167,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
 
                 if (msg.what == 6) {
                     if (MyApplication.getWareData().getDev_result() != null
-                            && MyApplication.getWareData().getDev_result().getSubType2() == 1 && edit_dev_id != -1) {
+                            && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
 
 //                        WareDev dev = new WareDev();
 //                        dev.setDevId((byte) MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID());
@@ -167,6 +176,11 @@ public class Equipment_control extends Activity implements View.OnClickListener 
 //                        dev.setType((byte) MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType());
 //                        dev.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevName())));
 //                        devs.set(edit_dev_id, dev);
+
+
+//                        adapter = new Dev_Adapter();
+//                        equi_control.setAdapter(adapter);
+
                         Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -280,7 +294,21 @@ public class Equipment_control extends Activity implements View.OnClickListener 
     class Dev_Adapter extends BaseAdapter {
 
         Dev_Adapter() {
-            devs = MyApplication.getWareData().getDevs();
+            devs = new ArrayList<>();
+//            if (MyApplication.getWareData().getDevs() == null && MyApplication.getWareData().getDevs().size() == 0)
+//                return;
+            for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                devs.add(MyApplication.getWareData().getDevs().get(i));
+            }
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            devs = new ArrayList<>();
+            for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                devs.add(MyApplication.getWareData().getDevs().get(i));
+            }
+            super.notifyDataSetChanged();
         }
 
         @Override

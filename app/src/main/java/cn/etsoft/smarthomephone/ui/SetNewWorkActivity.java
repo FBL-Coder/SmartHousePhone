@@ -12,6 +12,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +25,7 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
@@ -54,33 +58,11 @@ public class SetNewWorkActivity extends Activity implements View.OnClickListener
         id = getIntent().getIntExtra("id", 0);
         SharedPreferences sharedPreferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
         String json_rcuinfo_list = sharedPreferences.getString("list", "");
-        List<RcuInfo> json_list;
-        Log.i("JSON", json_rcuinfo_list);
-
-        json_list = new ArrayList<>();
-        try {
-            JSONArray array = new JSONArray(json_rcuinfo_list);
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject object = array.getJSONObject(i);
-                RcuInfo info = new RcuInfo();
-                info.setDevUnitID(object.getString("devUnitID"));
-                info.setDevUnitPass(object.getString("devUnitPass"));
-                info.setName(object.getString("name"));
-                info.setSoftVersion(object.getString("SoftVersion"));
-                info.setRoomNum(object.getString("roomNum"));
-                info.setMacAddr(object.getString("macAddr"));
-                info.setbDhcp(object.getInt("bDhcp"));
-                info.setCenterServ(object.getString("centerServ"));
-                info.setGateWay(object.getString("GateWay"));
-                info.setHwVversion(object.getString("HwVversion"));
-                info.setSubMask(object.getString("SubMask"));
-                info.setIpAddr(object.getString("IpAddr"));
-                json_list.add(info);
-            }
-
-        } catch (JSONException e) {
-//                e.printStackTrace();
-            Log.i("NetWorkActivity", e + "");
+        Gson gson = new Gson();
+        List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {}.getType());
+        if (json_list.size() == 0 || json_list == null) {
+            ToastUtil.showToast(this, "没有数据");
+            return;
         }
         rcuinfo = json_list.get(id);
         Title = (TextView) findViewById(R.id.title_bar_tv_title);
@@ -208,7 +190,8 @@ public class SetNewWorkActivity extends Activity implements View.OnClickListener
                 break;
         }
     }
-    public String Sutf2Sgbk (String string){
+
+    public String Sutf2Sgbk(String string) {
 
         byte[] data = {0};
         try {

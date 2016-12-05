@@ -141,15 +141,19 @@
             android:gravity="center"
             android:text="设备通道 :" />
 
-        <EditText
+        <TextView
             android:id="@+id/add_dev_way"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:inputType="number"
-            android:maxLength="2"
             android:gravity="center_vertical"
-            android:textColor="#000"
+            android:background="@drawable/save_click_selector"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:drawableRight="@drawable/more"
+            android:paddingRight="@dimen/dp_10"
+            android:clickable="true"
+            android:textColor="#fff"
             android:textSize="@dimen/sp_16" />
     </LinearLayout>
 

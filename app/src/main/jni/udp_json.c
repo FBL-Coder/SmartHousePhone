@@ -601,10 +601,10 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
             if (udp_pro_pkt->subType1 == 1) {
                 set_dev_info(udp_pro_pkt);
 
-                if (devs_num != ware_list.size) {
+                //if (devs_num != ware_list.size) {
                     report_all_devs_info_json(udp_pro_pkt->uidSrc);
                     devs_num = ware_list.size;
-                }
+                //}
             }
             break;
 

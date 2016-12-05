@@ -20,19 +20,34 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
+import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
+import cn.etsoft.smarthomephone.pullmi.entity.WareBoardChnout;
+import cn.etsoft.smarthomephone.pullmi.entity.WareBoardKeyInput;
+import cn.etsoft.smarthomephone.pullmi.entity.WareChnOpItem;
+import cn.etsoft.smarthomephone.pullmi.entity.WareCurtain;
+import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
+import cn.etsoft.smarthomephone.pullmi.entity.WareFreshAir;
+import cn.etsoft.smarthomephone.pullmi.entity.WareKeyOpItem;
+import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
+import cn.etsoft.smarthomephone.pullmi.entity.WareSceneEvent;
+import cn.etsoft.smarthomephone.pullmi.entity.WareSetBox;
+import cn.etsoft.smarthomephone.pullmi.entity.WareTv;
 import cn.etsoft.smarthomephone.weidget.CustomDialog;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 
@@ -48,6 +63,7 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
     private Button sure, cancel;
     private ListView equi_list;
     private Equi_ListAdapter adapter;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +77,15 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onRestart() {
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-        else
-            adapter = new Equi_ListAdapter();
+        String json_rcuinfo_list = sharedPreferences.getString("list", "");
+        Gson gson = new Gson();
+        List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {
+        }.getType());
+
+        adapter = null;
+        adapter = new Equi_ListAdapter(json_list);
         equi_list.setAdapter(adapter);
+
         super.onRestart();
     }
 
@@ -82,13 +102,18 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 finish();
             }
         });
+        sharedPreferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
     }
 
     /**
      * 初始化控件
      */
     private void initView() {
-        adapter = new Equi_ListAdapter();
+        String json_rcuinfo_list = sharedPreferences.getString("list", "");
+        Gson gson = new Gson();
+        List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {
+        }.getType());
+        adapter = new Equi_ListAdapter(json_list);
         networking = (TextView) findViewById(R.id.networking_title);
         networking.setText(getIntent().getStringExtra("title"));
         add = (ImageView) findViewById(R.id.network_add);
@@ -99,10 +124,72 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
 
         equi_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
                 //list条目点击事件；
-                startActivity(new Intent(NetWorkActivity.this, SetNewWorkActivity.class).putExtra("id", position));
+//                startActivity(new Intent(NetWorkActivity.this, SetNewWorkActivity.class).putExtra("id", position));
 
+                final String UnitID = GlobalVars.getDevid();
+                CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(NetWorkActivity.this);
+                builder.setTitle("提示 :");
+
+                builder.setMessage("您要切换联网模块？");
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String json_rcuinfo_list = sharedPreferences.getString("list", "");
+                        Gson gson = new Gson();
+                        List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {
+                        }.getType());
+
+                        if (json_list.size() == 0 || json_list == null) {
+                            ToastUtil.showToast(NetWorkActivity.this, "数据异常");
+                            dialog.dismiss();
+                            return;
+                        }
+                        RcuInfo info = json_list.get(position);
+                        Log.i("RcuInfo", info.getDevUnitID());
+                        if (UnitID.equals(info.getDevUnitID())) {
+                            ToastUtil.showToast(NetWorkActivity.this, "正在使用中");
+                            dialog.dismiss();
+                            return;
+                        }
+                        json_list.remove(position);
+                        json_list.add(info);
+                        String str = gson.toJson(json_list);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("list", str);
+                        editor.commit();
+                        GlobalVars.setDevid(json_list.get(json_list.size() - 1).getDevUnitID());
+                        GlobalVars.setDevpass(json_list.get(json_list.size() - 1).getDevUnitPass());
+                        MyApplication.getWareData().setAirConds(new ArrayList<WareAirCondDev>());
+                        MyApplication.getWareData().setBoardChnouts(new ArrayList<WareBoardChnout>());
+                        MyApplication.getWareData().setChnOpItems(new ArrayList<WareChnOpItem>());
+                        MyApplication.getWareData().setCurtains(new ArrayList<WareCurtain>());
+                        MyApplication.getWareData().setKeyOpItems(new ArrayList<WareKeyOpItem>());
+                        MyApplication.getWareData().setDevs(new ArrayList<WareDev>());
+                        MyApplication.getWareData().setFreshAirs(new ArrayList<WareFreshAir>());
+                        MyApplication.getWareData().setKeyInputs(new ArrayList<WareBoardKeyInput>());
+                        MyApplication.getWareData().setLights(new ArrayList<WareLight>());
+                        MyApplication.getWareData().setRcuInfos(new ArrayList<RcuInfo>());
+                        MyApplication.getWareData().setSceneEvents(new ArrayList<WareSceneEvent>());
+                        MyApplication.getWareData().setStbs(new ArrayList<WareSetBox>());
+                        MyApplication.getWareData().setTvs(new ArrayList<WareTv>());
+                        MyApplication.setRcuDevIDtoLocal();
+                        startActivity(new Intent(NetWorkActivity.this,HomeActivity.class));
+                        adapter = null;
+                        adapter = new Equi_ListAdapter(json_list);
+                        equi_list.setAdapter(adapter);
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
             }
         });
 
@@ -161,7 +248,6 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 String id_equi = id.getText().toString();
                 String pass_equi = pwd.getText().toString();
 
-                SharedPreferences sharedPreferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
                 String json_rcuinfo_list = sharedPreferences.getString("list", "");
                 List<RcuInfo> json_list = new ArrayList<>();
                 try {
@@ -203,41 +289,36 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
     }
 
     class Equi_ListAdapter extends BaseAdapter {
-        SharedPreferences sharedPreferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
         List<RcuInfo> json_list;
 
-        Equi_ListAdapter() {
+        Equi_ListAdapter(List<RcuInfo> json_list) {
+            this.json_list = json_list;
 
-            List<RcuInfo> list = MyApplication.getWareData().getRcuInfos();
-
-            RcuInfo rcuinfo = list.get(0);
-
-            String json_rcuinfo_list = sharedPreferences.getString("list", "");
-//            [{"devUnitID":"39ffe005484d303433630443","devUnitPass":"33630443","name":"手机","rev1":0,"rev2":0,"bDhcp":0}]
-            Log.i("JSON", json_rcuinfo_list);
-
-            json_list = new ArrayList<>();
-            try {
-                JSONArray array = new JSONArray(json_rcuinfo_list);
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject object = array.getJSONObject(i);
-                    RcuInfo info = new RcuInfo();
-                    info.setDevUnitID(object.getString("devUnitID"));
-                    info.setDevUnitPass(object.getString("devUnitPass"));
-                    info.setName(object.getString("name"));
-                    json_list.add(info);
-                }
-
-            } catch (JSONException e) {
-//                e.printStackTrace();
-                Log.i("NetWorkActivity", e + "");
-            }
-
-            for (int i = 0; i < json_list.size(); i++) {
-                if (rcuinfo.getDevUnitID().equals(json_list.get(i).getDevUnitID())) {
-                    json_list.set(i, rcuinfo);
-                }
-            }
+////            [{"devUnitID":"39ffe005484d303433630443","devUnitPass":"33630443","name":"手机","rev1":0,"rev2":0,"bDhcp":0}]
+//            Log.i("JSON", json_rcuinfo_list);
+//
+//            json_list = new ArrayList<>();
+//            try {
+//                JSONArray array = new JSONArray(json_rcuinfo_list);
+//                for (int i = 0; i < array.length(); i++) {
+//                    JSONObject object = array.getJSONObject(i);
+//                    RcuInfo info = new RcuInfo();
+//                    info.setDevUnitID(object.getString("devUnitID"));
+//                    info.setDevUnitPass(object.getString("devUnitPass"));
+//                    info.setName(object.getString("name"));
+//                    json_list.add(info);
+//                }
+//
+//            } catch (JSONException e) {
+////                e.printStackTrace();
+//                Log.i("NetWorkActivity", e + "");
+//            }
+//
+//            for (int i = 0; i < json_list.size(); i++) {
+//                if (rcuinfo.getDevUnitID().equals(json_list.get(i).getDevUnitID())) {
+//                    json_list.set(i, rcuinfo);
+//                }
+//            }
         }
 
 
@@ -263,16 +344,14 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 viewHolder = new ViewHolder();
                 convertView = LinearLayout.inflate(NetWorkActivity.this, R.layout.equi_list_item, null);
                 viewHolder.equi_name = (TextView) convertView.findViewById(R.id.equi_name);
-                viewHolder.ll_ip_ll = (LinearLayout) convertView.findViewById(R.id.ll_ip_ll);
+                viewHolder.equi_iv_use = (ImageView) convertView.findViewById(R.id.equi_iv_use);
                 convertView.setTag(viewHolder);
 
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            if ("".equals(json_list.get(position).getMacAddr()) || json_list.get(position).getMacAddr() == null) {
-                viewHolder.ll_ip_ll.setBackgroundColor(0xffffff);
-            }else {
-                viewHolder.ll_ip_ll.setBackgroundColor(0x00ff00);
+            if (json_list.size() - 1 == position) {
+                viewHolder.equi_iv_use.setImageResource(R.drawable.sleep);
             }
             viewHolder.equi_name.setText(json_list.get(position).getName());
             return convertView;
@@ -280,7 +359,7 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
 
         class ViewHolder {
             TextView equi_name;
-            LinearLayout ll_ip_ll;
+            ImageView equi_iv_use;
         }
     }
 }

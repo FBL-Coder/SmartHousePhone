@@ -1209,7 +1209,7 @@ char *create_ctl_reply_info_json(UDPPROPKT *pkt)
             cJSON_AddItemToObject(item, "selSpd", cJSON_CreateNumber(air->selSpd));
             cJSON_AddItemToObject(item, "selDirect", cJSON_CreateNumber(air->selDirect));
             cJSON_AddItemToObject(item, "rev1", cJSON_CreateNumber(air->rev1));
-            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(air->powChn));
+            cJSON_AddItemToObject(item, "powChn", cJSON_CreateNumber(air->powChn+1));
         }
             break;
         case e_ware_light: {

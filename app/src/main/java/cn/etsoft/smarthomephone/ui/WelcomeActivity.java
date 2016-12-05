@@ -54,11 +54,12 @@ public class WelcomeActivity extends Activity {
         boolean isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
+
         mRcuInfos = getGwList();
         if (mRcuInfos != null && mRcuInfos.size() > 0) {
 
-            GlobalVars.setDevid(mRcuInfos.get(0).getDevUnitID());
-            GlobalVars.setDevpass(mRcuInfos.get(0).getDevUnitPass());
+            GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitID());
+            GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitPass());
 
             mDataHandler = new Handler() {
 
@@ -89,16 +90,16 @@ public class WelcomeActivity extends Activity {
                 MyApplication.mInstance.setHandler(mHandler);
                 editor.putBoolean("isFirstRun", false);
                 editor.commit();
-                GlobalVars.setDevid(mRcuInfos.get(0).getDevUnitID());
-                GlobalVars.setDevpass(mRcuInfos.get(0).getDevUnitPass());
+                GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitID());
+                GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitPass());
             } else {
                 mHandler = new Handler();
                 MyApplication.mInstance.setHandler(mHandler);
                 MyApplication.setWareData((WareData) Dtat_Cache.readFile());
                 startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
 
-                GlobalVars.setDevid(mRcuInfos.get(0).getDevUnitID());
-                GlobalVars.setDevpass(mRcuInfos.get(0).getDevUnitPass());
+                GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitID());
+                GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitPass());
             }
         } else {
             startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));

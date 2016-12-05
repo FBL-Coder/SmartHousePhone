@@ -186,6 +186,10 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
+            if (list.size() == 0 || list == null){
+                ToastUtil.showToast(this,"没有数据");
+                return;
+            }
             wareAirCondDev = list.get(positionId);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
