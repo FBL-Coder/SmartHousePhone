@@ -186,8 +186,8 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
-            if (list.size() == 0 || list == null){
-                ToastUtil.showToast(this,"没有数据");
+            if (list.size() == 0 || list == null) {
+                ToastUtil.showToast(this, "没有数据");
                 return;
             }
             wareAirCondDev = list.get(positionId);
@@ -275,7 +275,8 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                                 break;
                         }
                     }
-                    //降温
+                    break;
+                //降温
                 case 2:
                     //设置降温
                     if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {

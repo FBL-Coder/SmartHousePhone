@@ -93,8 +93,7 @@ public class EquipmentControlActivity extends Activity implements View.OnClickLi
 
         for (int i = 0; i < mWareDev_room.size() - 1; i++) {
             for (int j = mWareDev_room.size() - 1; j > i; j--) {
-                if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())
-                        || !(mWareDev_room.get(i).getCanCpuId()).equals(MyApplication.getWareData().getBoardChnouts().get(j).getDevUnitID())) {
+                if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())) {
                     mWareDev_room.remove(j);
                 }
             }
@@ -108,7 +107,6 @@ public class EquipmentControlActivity extends Activity implements View.OnClickLi
         equipment_id.setOnClickListener(this);
         room.setOnClickListener(this);
         TvEquipment.setText(dev_type_text.get(0));
-//        TvRoom.setText(home_text.get(0));
         id_kz.setText(id_kz_text.get(0));
 
     }

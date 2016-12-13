@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -58,9 +60,10 @@ public class WelcomeActivity extends Activity {
         mRcuInfos = getGwList();
         if (mRcuInfos != null && mRcuInfos.size() > 0) {
 
-            GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitID());
-            GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitPass());
-
+            GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitID());
+            GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitPass());
+            mHandler = new Handler();
+            MyApplication.mInstance.setHandler(mHandler);
             mDataHandler = new Handler() {
 
                 @Override
@@ -68,53 +71,66 @@ public class WelcomeActivity extends Activity {
                     if (msg.what == OUTTIME_INITUID) {
                         LogUtils.LOGE("", GlobalVars.getDstip() + "获取数据");
                         MyApplication.setRcuDevIDtoLocal();
+
+                        /**
+                         * 局域网内 30秒发送一次数据请求；
+                         */
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    for (; ; ) {
+//                                        Log.i("TIME", "局域网内数据请求-----------------");
+                                        Thread.sleep(120 * 1000);
+                                        if (MyApplication.getWareData().getRcuInfos() == null
+                                                || MyApplication.getWareData().getRcuInfos().size() == 0) {
+                                            GlobalVars.setDstip("127.0.0.1");
+                                        } else {
+                                            if (!MyApplication.getWareData().isDATA_LOCAL_FLAG())
+                                                GlobalVars.setDstip("123.206.104.89");
+                                            else
+                                                GlobalVars.setDstip("127.0.0.1");
+                                        }
+                                        MyApplication.setRcuDevIDtoLocal();
+                                    }
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+
                     }
                     super.handleMessage(msg);
                 }
             };
-
             MyApplication.mInstance.setAllHandler(mDataHandler);
-
             if (isFirstRun) {
-                mHandler = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        if (count == 1) {
-                            count++;
-                            startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
-                            finish();
-                        }
-                    }
-                };
-                MyApplication.mInstance.setHandler(mHandler);
                 editor.putBoolean("isFirstRun", false);
                 editor.commit();
-                GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitID());
-                GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitPass());
-            } else {
-                mHandler = new Handler();
-                MyApplication.mInstance.setHandler(mHandler);
-                MyApplication.setWareData((WareData) Dtat_Cache.readFile());
+                GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitID());
+                GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitPass());
                 startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
-
-                GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitID());
-                GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size()-1).getDevUnitPass());
+                finish();
+            } else {
+                MyApplication.setWareData((WareData) Dtat_Cache.readFile());
+                GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitID());
+                GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitPass());
+                startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
+                finish();
             }
         } else {
             startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+            finish();
         }
     }
-
+    @Nullable
     private List<RcuInfo> getGwList() {
         SharedPreferences sharedPreferences = getSharedPreferences("profile",
                 Context.MODE_PRIVATE);
         String jsondata = sharedPreferences.getString("list", "null");
         Gson gson = new Gson();
         if (!jsondata.equals("null")) {
-            List<RcuInfo> list = gson.fromJson(jsondata,
-                    new TypeToken<List<RcuInfo>>() {
-                    }.getType());
+            List<RcuInfo> list = gson.fromJson(jsondata, new TypeToken<List<RcuInfo>>() {
+            }.getType());
             for (int i = 0; i < list.size(); i++) {
                 RcuInfo p = list.get(i);
                 System.out.println(p.getName());

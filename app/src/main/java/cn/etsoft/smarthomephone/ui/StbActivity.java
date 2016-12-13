@@ -139,7 +139,7 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
-            String str_Fixed = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+            String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":4" +
                     ",\"subType1\":0" +
                     ",\"subType2\":0" +

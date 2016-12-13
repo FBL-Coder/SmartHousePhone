@@ -42,6 +42,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         initTitleBar();
         //初始化控件
         intView();
+        initEvent();
         //初始化GridView
         initGridView();
     }
@@ -81,8 +82,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         allOpen = (ImageView) findViewById(R.id.light_open_all);
         allClose = (ImageView) findViewById(R.id.light_close_all);
 
-        if (MyApplication.getWareData().getLights() != null && MyApplication.getWareData().getLights().size() > 1) {
-            initEvent();
+        if (MyApplication.getWareData().getLights() != null && MyApplication.getWareData().getLights().size() > 0) {
             upData();
             IsCanClick = true;
         } else {

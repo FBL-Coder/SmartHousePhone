@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareSceneEvent;
@@ -91,7 +92,7 @@ public class SceneAdapter extends BaseAdapter {
 
     private void createSceneEvents(int eventId) {
 
-        String exec_str = "{\"devUnitID\":\"37ffdb05424e323416702443\"" +
+        String exec_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                 ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_exeSceneEvents.getValue() +
                 ",\"subType1\":0" +
                 ",\"subType2\":0" +

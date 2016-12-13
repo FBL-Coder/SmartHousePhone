@@ -1,5 +1,6 @@
 package cn.etsoft.smarthomephone;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -14,14 +16,16 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
-import cn.etsoft.smarthomephone.jniUtils;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
+import cn.etsoft.smarthomephone.pullmi.entity.RUN_DEV_ITEM;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareData;
-import cn.etsoft.smarthomephone.udpService;
 import cn.etsoft.smarthomephone.ui.WelcomeActivity;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 
 /**
  * 作者：FBL  时间： 2016/8/30.
@@ -38,12 +42,14 @@ public class MyApplication extends Application implements udpService.Callback {
     private DatagramSocket socket = null;
     public static int local_server_flag = -1; //0 local 1 server
     final static String local_ip = "127.0.0.1";
+    private static List<String> room_list;
+
+    private static Activity mHomeActivity;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-
         mInstance = MyApplication.this;
         /**
          * 初始化上下文；
@@ -88,13 +94,20 @@ public class MyApplication extends Application implements udpService.Callback {
     }
 
     @Override
-    public void getWareData(int what,WareData wareData) {
+    public void getWareData(int what, WareData wareData) {
         MyApplication.wareData = wareData;
         onGetWareDataListener.upDataWareData(what);
     }
 
-    public static void setRcuDevIDtoLocal() {
+    public static Activity getmHomeActivity() {
+        return mHomeActivity;
+    }
 
+    public static void setmHomeActivity(Activity mHomeActivity) {
+        MyApplication.mHomeActivity = mHomeActivity;
+    }
+
+    public static void setRcuDevIDtoLocal() {
         final String str = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                 "\"devPass\":\"" + GlobalVars.getDevpass() + "\"," +
@@ -102,7 +115,48 @@ public class MyApplication extends Application implements udpService.Callback {
                 "\"subType1\":0," +
                 "\"subType2\":0}";
         sendMsg(str);
+        /**
+         * 远程数据包发送
+         */
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    if (MyApplication.getWareData().getRcuInfos() == null || MyApplication.getWareData().getRcuInfos().size() == 0) {
+                        if (!MyApplication.getWareData().isDATA_LOCAL_FLAG())
+                            GlobalVars.setDstip("123.206.104.89");
+//                        Log.i("TIME", "远程数据包发送**************");
+                        sendMsg(str);
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        }).start();
     }
+
+    public static Handler getHandler_time() {
+        return handler_time;
+    }
+
+    public static Runnable getRunnable() {
+        return runnable;
+    }
+
+    /**
+     * 远程数据
+     */
+    static Handler handler_time = new Handler();
+    static Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.i("TIME", "远程数据***************");
+            if (MyApplication.getWareData().getRcuInfos() == null
+                    || MyApplication.getWareData().getRcuInfos().size() == 0) {
+
+            }
+        }
+    };
 
     public static void getRcuInfo() {
 
@@ -164,6 +218,7 @@ public class MyApplication extends Application implements udpService.Callback {
             public void run() {
                 DatagramPacket packet = null;
                 try {
+                    Log.i("IPAdd", "命令的IP地址 : "+GlobalVars.getDstip());
                     packet = new DatagramPacket(msg.getBytes(), msg.getBytes().length,
                             InetAddress.getByName(GlobalVars.getDstip()), 8400);
                     if (packet != null)
@@ -182,7 +237,22 @@ public class MyApplication extends Application implements udpService.Callback {
         MyApplication.wareData = wareData;
     }
 
+    public static List<String> getRoom_list() {
+        if (room_list == null) {
+            return new ArrayList<>();
+        }
+        return room_list;
+    }
+
+    public static void setRoom_list(List<String> room_list) {
+        MyApplication.room_list = room_list;
+    }
+
+
     public static WareData getWareData() {
+        if (wareData == null) {
+            return new WareData();
+        }
         return wareData;
     }
 

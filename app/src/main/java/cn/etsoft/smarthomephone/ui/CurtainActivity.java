@@ -26,7 +26,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     private int[] image = {R.drawable.curtainfullopen, R.drawable.curtainhalfopen, R.drawable.curtainalloff};
     private String[] text = {"全开", "半开", "全关"};
     private ImageView back;
-    private TextView title;
+    private TextView title,name_cur;
 
     private boolean IsCanClick = false;
 
@@ -65,6 +65,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     private void intView() {
         ll = (LinearLayout) findViewById(R.id.ll);
         ll.setBackgroundResource(R.drawable.tu4);
+        name_cur = (TextView) findViewById(R.id.name_cur);
     }
 
     /**
@@ -76,13 +77,13 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
         gridView.setSelector(R.drawable.selector_gridview_item);
         gridView.setOnItemClickListener(this);
 
-        if (MyApplication.getWareData().getCurtains() != null && MyApplication.getWareData().getCurtains().size() > 1) {
+        if (MyApplication.getWareData().getCurtains() != null && MyApplication.getWareData().getCurtains().size() > 0) {
             IsCanClick = true;
+            name_cur.setText(MyApplication.getWareData().getCurtains().get(0).getDev().getDevName()+" :");
         } else {
             Toast.makeText(this, "没有找到可控制窗帘", Toast.LENGTH_SHORT).show();
         }
     }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
@@ -90,9 +91,9 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
                     ",\"datType\":4" +
                     ",\"subType1\":0" +
                     ",\"subType2\":0" +
-                    ",\"canCpuID\":" + MyApplication.getWareData().getCurtains().get(0).getDev().getCanCpuId() +
-                    ".\"devType\":" + MyApplication.getWareData().getCurtains().get(0).getDev().getType() +
-                    ".\"devID\":" + MyApplication.getWareData().getCurtains().get(0).getDev().getDevId();
+                    ",\"canCpuID\":\"" + MyApplication.getWareData().getCurtains().get(0).getDev().getCanCpuId() +"\""+
+                    ",\"devType\":" + MyApplication.getWareData().getCurtains().get(0).getDev().getType() +
+                    ",\"devID\":" + MyApplication.getWareData().getCurtains().get(0).getDev().getDevId();
             int Value = -1;
             switch (position) {
                 case 0:
@@ -105,9 +106,9 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
                     Value = UdpProPkt.E_CURT_CMD.e_curt_offOff.getValue();
                     break;
             }
-            if (Value != 1) {
+            if (Value != -1) {
                 str_Fixed = str_Fixed +
-                        ".\"cmd:" + Value + "}";
+                        ",\"cmd:" + Value + "}";
                 CommonUtils.sendMsg(str_Fixed);
             }
         }

@@ -24,6 +24,7 @@ public class WareData implements Serializable {
     private List<WareKeyOpItem> keyOpItems;
     private SetEquipmentResult result;
     private DevControl_Result dev_result;
+    private boolean DATA_LOCAL_FLAG ;
 
     public WareData() {
 
@@ -201,4 +202,13 @@ public class WareData implements Serializable {
     public void setDev_result(DevControl_Result dev_result) {
         this.dev_result = dev_result;
     }
+
+    public boolean isDATA_LOCAL_FLAG() {
+        return DATA_LOCAL_FLAG;
+    }
+
+    public void setDATA_LOCAL_FLAG(boolean DATA_IP_FLAG) {
+        this.DATA_LOCAL_FLAG = DATA_IP_FLAG;
+    }
+
 }

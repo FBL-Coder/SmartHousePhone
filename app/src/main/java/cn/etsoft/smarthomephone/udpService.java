@@ -94,10 +94,6 @@ public class udpService extends Service {
     public void runUdpServer(final Handler handler) {
 
         GlobalVars.setDstip(MyApplication.local_ip);
-        Handler handler1 = MyApplication.mInstance.getAllHandler();
-        Message message = handler1.obtainMessage(OUTTIME_INITUID);
-        handler1.sendMessage(message);
-
         new Thread(new Runnable() {//执行接收数据接口，有数据，则执行；
             @Override
             public void run() {
@@ -125,6 +121,9 @@ public class udpService extends Service {
                 }
             }
         }).start();
+        Handler handler1 = MyApplication.mInstance.getAllHandler();
+        Message message = handler1.obtainMessage(OUTTIME_INITUID);
+        handler1.sendMessage(message);
     }
 
 

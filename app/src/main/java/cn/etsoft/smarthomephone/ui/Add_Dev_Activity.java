@@ -273,7 +273,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     /**
      * 初始化自定义设备的状态以及设备PopupWindow
      */
-
     private int board_position = 0;
     private int type_position = 0;
 
@@ -349,7 +348,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         LogUtils.LOGE("情景模式名称:%s", str_gb);
         return str_gb;
     }
-
 }
 
 

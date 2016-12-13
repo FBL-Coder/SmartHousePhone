@@ -209,7 +209,16 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MyApplication.getWareData().getRcuInfos().remove(position);
+                        String json_rcuinfo_list = sharedPreferences.getString("list", "");
+                        Gson gson = new Gson();
+                        List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {
+                        }.getType());
+
+                        json_list.remove(position);
+                        String json = gson.toJson(json_list);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("list", json);
+                        editor.commit();
                         initView();
                         dialog.dismiss();
                     }
@@ -249,32 +258,25 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 String pass_equi = pwd.getText().toString();
 
                 String json_rcuinfo_list = sharedPreferences.getString("list", "");
-                List<RcuInfo> json_list = new ArrayList<>();
-                try {
-                    JSONArray array = new JSONArray(json_rcuinfo_list);
 
-                    for (int i = 0; i < array.length(); i++) {
+                Gson gson = new Gson();
+                List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {
+                }.getType());
 
-                        JSONObject object = array.getJSONObject(i);
-                        RcuInfo info = new RcuInfo();
-                        info.setDevUnitID(object.getString("devUnitID"));
-                        info.setDevUnitPass(object.getString("devUnitPass"));
-                        info.setName(object.getString("name"));
-
-                        json_list.add(info);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
                 RcuInfo info = new RcuInfo();
                 info.setDevUnitID(id_equi);
                 info.setDevUnitPass(pass_equi);
                 info.setName(name_equi);
-                json_list.add(info);
 
-                Gson gson = new Gson();
-                String str = gson.toJson(json_list);
+                List<RcuInfo> json_list_ok = new ArrayList<>();
+                for (int i = 0; i < json_list.size() + 1; i++) {
+                    if (i == 0)
+                        json_list_ok.add(info);
+                    else
+                        json_list_ok.add(json_list.get(i - 1));
+                }
+
+                String str = gson.toJson(json_list_ok);
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("list", str);

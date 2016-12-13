@@ -68,6 +68,4 @@ public class Add_long_ip extends Activity {
         long_ip_num_3 = (EditText) findViewById(R.id.long_ip_num_3);
         long_ip_num_4 = (EditText) findViewById(R.id.long_ip_num_4);
     }
-
-
 }
