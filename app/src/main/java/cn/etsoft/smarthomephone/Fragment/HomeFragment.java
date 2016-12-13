@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.ui.AirConditionActivity;
 import cn.etsoft.smarthomephone.ui.CurtainActivity;
 import cn.etsoft.smarthomephone.ui.LightActivity;
@@ -26,6 +29,7 @@ import cn.etsoft.smarthomephone.ui.TvActivity;
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
     private GridView gridView;
     private ImageView banner;
+    private TextView ref_home;
     private int[] image = {R.drawable.aircondition, R.drawable.tv, R.drawable.stb, R.drawable.light, R.drawable.curtain, R.drawable.scene};
     private String[] title = {"空调", "电视", "机顶盒", "灯光", "窗帘", "情景"};
 
@@ -46,6 +50,14 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private void initView(View view) {
         banner = (ImageView) view.findViewById(R.id.banner);
         banner.setImageResource(R.drawable.tu1);
+        ref_home = (TextView) view.findViewById(R.id.home_tv_ref);
+        ref_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalVars.setDstip("127.0.0.1");
+                MyApplication.setRcuDevIDtoLocal();
+            }
+        });
     }
 
     /**

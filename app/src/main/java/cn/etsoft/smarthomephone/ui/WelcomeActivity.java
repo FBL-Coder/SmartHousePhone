@@ -79,7 +79,6 @@ public class WelcomeActivity extends Activity {
                             public void run() {
                                 try {
                                     for (; ; ) {
-//                                        Log.i("TIME", "局域网内数据请求-----------------");
                                         Thread.sleep(300 * 1000);
                                         if (MyApplication.getWareData().getRcuInfos() == null
                                                 || MyApplication.getWareData().getRcuInfos().size() == 0) {

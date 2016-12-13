@@ -115,7 +115,7 @@ public class MyApplication extends Application implements udpService.Callback {
                 "\"subType2\":0}";
         sendMsg(str);
         /**
-         * 远程数据包发送
+         * 如果局域网内没数据   进行远程数据包发送
          */
         new Thread(new Runnable() {
             @Override
