@@ -71,9 +71,8 @@ public class WelcomeActivity extends Activity {
                     if (msg.what == OUTTIME_INITUID) {
                         LogUtils.LOGE("", GlobalVars.getDstip() + "获取数据");
                         MyApplication.setRcuDevIDtoLocal();
-
                         /**
-                         * 局域网内 30秒发送一次数据请求；
+                         * 局域网内 300秒发送一次数据请求；
                          */
                         new Thread(new Runnable() {
                             @Override
@@ -81,7 +80,7 @@ public class WelcomeActivity extends Activity {
                                 try {
                                     for (; ; ) {
 //                                        Log.i("TIME", "局域网内数据请求-----------------");
-                                        Thread.sleep(120 * 1000);
+                                        Thread.sleep(300 * 1000);
                                         if (MyApplication.getWareData().getRcuInfos() == null
                                                 || MyApplication.getWareData().getRcuInfos().size() == 0) {
                                             GlobalVars.setDstip("127.0.0.1");
@@ -97,7 +96,6 @@ public class WelcomeActivity extends Activity {
                                 }
                             }
                         }).start();
-
                     }
                     super.handleMessage(msg);
                 }

@@ -93,7 +93,6 @@ public class udpService extends Service {
 
     public void runUdpServer(final Handler handler) {
 
-        GlobalVars.setDstip(MyApplication.local_ip);
         new Thread(new Runnable() {//执行接收数据接口，有数据，则执行；
             @Override
             public void run() {
@@ -144,6 +143,14 @@ public class udpService extends Service {
         if (datType != 35)
             Log.i("接收信息：", info);
         switch (datType) {
+            case 60:// 本地数据
+                if (subType2 == 0 && subType1 == 0) {
+                    MyApplication.getWareData().setDATA_LOCAL_FLAG(true);
+                    GlobalVars.setDstip("127.0.0.1");
+                }else {
+                    GlobalVars.setDstip("123.206.104.89");
+                }
+                break;
             case 0:// e_udpPro_getRcuinfo
                 if (subType2 == 1) {
                     setRcuInfo(info);

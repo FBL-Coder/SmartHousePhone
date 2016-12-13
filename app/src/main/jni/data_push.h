@@ -6,6 +6,7 @@
 
 extern void get_broadcast_reply_json(UDPPROPKT *pkt);
 extern void get_rcu_info_json(u8 *devUnitID, u8 *devPass, SOCKADDR_IN sender_client);
+extern void report_broadcast_info_json(UDPPROPKT *pkt);
 extern void report_rcu_info_json(UDPPROPKT *pkt);
 extern void get_devs_info_json(u8 *devUnitID, SOCKADDR_IN sender_client);
 extern void report_all_devs_info_json(u8 *devUnitID);

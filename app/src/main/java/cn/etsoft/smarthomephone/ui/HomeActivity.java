@@ -71,6 +71,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private long TimeExit = 0;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode != KeyEvent.KEYCODE_BACK)
+            return false;
         if (System.currentTimeMillis() - TimeExit < 1500) {
             Dtat_Cache.writeFile(MyApplication.getWareData());
             MyApplication.mInstance.getActivity().finish();

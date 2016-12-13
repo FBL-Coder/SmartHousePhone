@@ -22,6 +22,9 @@ public class GlobalVars {
 	}
 
 	public static String getDstip() {
+		if (dstip == null || "".equals(dstip)){
+			return "127.0.0.1";
+		}
 		return dstip;
 	}
 

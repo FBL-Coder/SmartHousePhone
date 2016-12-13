@@ -1,5 +1,23 @@
 #include "json.h"
 
+char *create_broadcast_json(u8 *devUnitID, int datType, int subType1, int subType2) {
+    cJSON *root;
+    root = cJSON_CreateObject();
+
+    if (root == NULL) {
+        return NULL;
+    }
+
+    u8 uid[25] = {0};
+    bytes_to_string(devUnitID, uid, 12);
+    cJSON_AddItemToObject(root, "devUnitID", cJSON_CreateString((char *) uid));
+    cJSON_AddItemToObject(root, "datType", cJSON_CreateNumber(datType));
+    cJSON_AddItemToObject(root, "subType1", cJSON_CreateNumber(subType1));
+    cJSON_AddItemToObject(root, "subType2", cJSON_CreateNumber(subType2));
+
+    return cJSON_Print(root);
+
+}
 char *create_rcu_json(u8 *devUnitID, int datType, int subType1, int subType2)
 {
     cJSON *root, *rcu_rows, *item;

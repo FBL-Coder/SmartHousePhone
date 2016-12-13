@@ -85,10 +85,9 @@ void get_info_from_gw_shorttime(int flag) {
                                                            gw_head->gw_id, gw_head->gw_pass, IS_ACK,
                                                            0, head->id);
 
-                    for (int i = 0; i < 2; i++) {
                         sendto(primary_udp, (u8 *) send_pkt, sizeof(UDPPROPKT), 0,
                                (struct sockaddr *) &gw_head->gw_sender, sizeof(gw_head->gw_sender));
-                    }
+
                 }
             }
         }
@@ -138,8 +137,9 @@ void timeout(int arg)  //判断定时器是否超时，以及超时时所要执�
         else {
             switch (myTimer[j].func) { //通过匹配myTimer[j].func，判断下一步选择哪种操作
                 case 1:
-                    for (int i = 0; i < 4; ++i) {
+                    for (int i = 0; i < 3; ++i) {
                         get_info_from_gw_shorttime(i);
+                        usleep(500);
                     }
                     break;
                 case 4:
@@ -558,11 +558,11 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
                 //联网模块发送信息到服务器
                 set_rcuinfo(udp_pro_pkt, sender);
                 //给UI发送收到消息info
+                report_broadcast_info_json(udp_pro_pkt);
                 report_rcu_info_json(udp_pro_pkt);
 
                 msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
-                                                 e_udpPro_getDevsInfo, 0,
-                                                 1,
+                                                 e_udpPro_getDevsInfo, 0, 1,
                                                  msg_queue_list.size);
 
                 msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
@@ -572,17 +572,12 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
                 msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
                                                  e_udpPro_getBoards,
                                                  e_board_chnOut, 3, msg_queue_list.size);
-                msg_queue_list.udp_msg_queue_add(&msg_queue_list, udp_pro_pkt->uidSrc,
-                                                 e_udpPro_getBoards,
-                                                 e_board_keyInput, 4,
-                                                 msg_queue_list.size);
 
                 get_info_from_gw_shorttime(1);
                 get_info_from_gw_shorttime(2);
                 get_info_from_gw_shorttime(3);
-                get_info_from_gw_shorttime(4);
-
-                setTimer(60 * 2, 1);
+/*
+                setTimer(60 * 5, 1);
 
                 if (pthread_flag == 0) {
                     ret_thrd2 = pthread_create(&thread2, NULL, singal_msg, NULL);
@@ -590,7 +585,7 @@ void extract_data(UDPPROPKT *udp_pro_pkt, int dat_len, SOCKADDR_IN sender) {
                     if (ret_thrd2 == 0) {
                         pthread_flag = 1;
                     }
-                }
+                }*/
             }
             break;
         case e_udpPro_handShake: //握手应答

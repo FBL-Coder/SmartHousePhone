@@ -19,6 +19,8 @@ extern char* create_board_chnout_json(u8 *devUnitID, int datType, int subType1, 
 
 extern char* create_board_keyinput_json(u8 *devUnitID, int datType, int subType1, int subType2);
 
+extern char *create_broadcast_json(u8 *devUnitID, int datType, int subType1, int subType2);
+
 extern char* create_rcu_json(u8 *devUnitID, int datType, int subType1, int subType2);
 
 extern void set_rcuInfo_json(u8 *devUnitID, u8 *devUnitPass, u8 *name, u8 *IpAddr, u8 *SubMask, u8 *Gateway,

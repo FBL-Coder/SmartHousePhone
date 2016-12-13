@@ -1,5 +1,18 @@
 #include "data_push.h"
 
+void report_broadcast_info_json(UDPPROPKT *pkt) {
+
+    char *json_str = create_broadcast_json(pkt->uidSrc, e_udpPro_getBroadCast, 0, 0);
+    int len = strlen(json_str);
+
+    node_app_client *head = app_client_list.head;
+    for (; head; head = head->next) {
+        sendto(primary_udp, json_str, len, 0, (struct sockaddr *) &head->app_sender,
+               sizeof(head->app_sender));
+    }
+    free(json_str);
+}
+
 void report_rcu_info_json(UDPPROPKT *pkt) {
 
     char *json_str = create_rcu_json(pkt->uidSrc, e_udpPro_getRcuInfo, 0, 1);

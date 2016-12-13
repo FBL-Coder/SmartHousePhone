@@ -41,7 +41,6 @@ public class MyApplication extends Application implements udpService.Callback {
     private WelcomeActivity activity;
     private DatagramSocket socket = null;
     public static int local_server_flag = -1; //0 local 1 server
-    final static String local_ip = "127.0.0.1";
     private static List<String> room_list;
 
     private static Activity mHomeActivity;
