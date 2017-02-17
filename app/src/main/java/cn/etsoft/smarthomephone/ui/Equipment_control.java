@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +28,11 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareCurtain;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
-import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 
 /**
  * Created by fbl on 16-11-17.
+ * 设备编辑，添加，删除页面
  */
 public class Equipment_control extends Activity implements View.OnClickListener {
     private ListView equi_control;

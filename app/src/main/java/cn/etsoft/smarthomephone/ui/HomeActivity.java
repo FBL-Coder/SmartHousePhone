@@ -18,6 +18,10 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.pullmi.utils.Dtat_Cache;
 
+/**
+ * 主页界面
+ */
+
 public class HomeActivity extends FragmentActivity implements View.OnClickListener{
     private RadioGroup homeRadioGroup;
     private FragmentManager fragmentManager;
@@ -61,6 +65,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                         break;
                     case R.id.rb_home_setting:
                         transaction.replace(R.id.home, settingFragment);
+                        MyApplication.getActivities().add(HomeActivity.this);
                         break;
                 }
                 transaction.commit();

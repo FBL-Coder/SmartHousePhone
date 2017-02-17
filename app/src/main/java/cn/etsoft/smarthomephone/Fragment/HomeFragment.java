@@ -25,6 +25,7 @@ import cn.etsoft.smarthomephone.ui.TvActivity;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 设备控制碎片
  */
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
     private GridView gridView;

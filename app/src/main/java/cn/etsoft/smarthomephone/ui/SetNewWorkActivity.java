@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,12 +14,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
@@ -33,6 +27,7 @@ import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 
 /**
  * Created by fbl on 16-11-17.
+ * 设置联网模块
  */
 public class SetNewWorkActivity extends Activity implements View.OnClickListener {
 

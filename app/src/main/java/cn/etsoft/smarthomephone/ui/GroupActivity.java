@@ -18,6 +18,7 @@ import cn.etsoft.smarthomephone.R;
 
 /**
  * Created by Say GoBay on 2016/9/5.
+ * 输出，输入以及红外编辑页面
  */
 public class GroupActivity extends FragmentActivity {
     private RadioGroup group;

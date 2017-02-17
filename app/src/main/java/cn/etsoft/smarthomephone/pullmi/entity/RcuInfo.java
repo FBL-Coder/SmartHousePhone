@@ -13,6 +13,7 @@ public class RcuInfo implements Serializable {
     private String centerServ;
     private String roomNum;
     private String macAddr;
+    private String canCpuName;
     private String SoftVersion;
     private String HwVversion;
     private int bDhcp;
@@ -117,4 +118,11 @@ public class RcuInfo implements Serializable {
         HwVversion = hwVversion;
     }
 
+    public String getCanCpuName() {
+        return canCpuName;
+    }
+
+    public void setCanCpuName(String canCpuName) {
+        this.canCpuName = canCpuName;
+    }
 }

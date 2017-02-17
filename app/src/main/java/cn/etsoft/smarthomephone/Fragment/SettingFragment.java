@@ -17,6 +17,7 @@ import cn.etsoft.smarthomephone.ui.SystemSetActivity;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 设置碎片
  */
 public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener{
     private GridView gridView;

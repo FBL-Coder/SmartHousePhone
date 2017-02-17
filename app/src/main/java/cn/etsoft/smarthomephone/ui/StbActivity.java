@@ -13,7 +13,6 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.StbAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
-import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareSetBox;
 
@@ -121,7 +120,7 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
             if (Value != -1) {
                 str_Fixed = str_Fixed +
                         ".\"cmd:" + Value + "}";
-                CommonUtils.sendMsg(str_Fixed);
+                MyApplication.sendMsg(str_Fixed);
             }
         }
     }
@@ -186,7 +185,7 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
             if (Value != -1) {
                 str_Fixed = str_Fixed +
                         ".\"cmd:" + Value + "}";
-                CommonUtils.sendMsg(str_Fixed);
+                MyApplication.sendMsg(str_Fixed);
             }
         }
     }

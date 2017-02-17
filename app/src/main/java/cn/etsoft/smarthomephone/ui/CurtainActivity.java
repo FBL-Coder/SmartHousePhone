@@ -14,11 +14,11 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
-import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 窗帘也页面
  */
 public class CurtainActivity extends Activity implements AdapterView.OnItemClickListener {
     private GridView gridView;
@@ -109,7 +109,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
             if (Value != -1) {
                 str_Fixed = str_Fixed +
                         ",\"cmd:" + Value + "}";
-                CommonUtils.sendMsg(str_Fixed);
+                MyApplication.sendMsg(str_Fixed);
             }
         }
     }

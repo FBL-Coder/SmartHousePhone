@@ -33,6 +33,7 @@ import cn.etsoft.smarthomephone.weidget.SwipeListView;
 
 /**
  * Created by Say GoBay on 2016/9/2.
+ * 情景设置页面
  */
 public class SceneSetActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private ImageView iv_cancel, back;
@@ -198,7 +199,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 ",\"param1\":0" +
                 ",\"param2\":0" +
                 "}]}";
-        CommonUtils.sendMsg(ctlStr);
+        MyApplication.sendMsg(ctlStr);
     }
 
     /**
@@ -235,7 +236,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 ",\"param2\":0" +
                 "}]}";
         LogUtils.LOGE("情景模式测试数据:", ctlStr);
-        CommonUtils.sendMsg(ctlStr);
+        MyApplication.sendMsg(ctlStr);
     }
 
     /**

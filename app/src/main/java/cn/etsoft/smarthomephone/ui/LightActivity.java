@@ -16,7 +16,6 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.LightAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
-import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
 
@@ -107,7 +106,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                             ",\"cmd\":0" +
                             "" +
                             "}";
-                    CommonUtils.sendMsg(ctlStr);
+                    MyApplication.sendMsg(ctlStr);
                 } else {
 
                     ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
@@ -120,7 +119,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                             ",\"cmd\":1" +
                             "}";
 
-                    CommonUtils.sendMsg(ctlStr);
+                    MyApplication.sendMsg(ctlStr);
 
                 }
 
@@ -163,7 +162,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                             ",\"devID\":0" +
                             ",\"cmd\": 1" +
                             "}";
-                    CommonUtils.sendMsg(open_str);
+                    MyApplication.sendMsg(open_str);
                     break;
                 case R.id.light_close_all:
                     String close_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
@@ -175,7 +174,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                             ",\"devID\":0" +
                             ",\"cmd\": 0" +
                             "}";
-                    CommonUtils.sendMsg(close_str);
+                    MyApplication.sendMsg(close_str);
                     break;
             }
         }

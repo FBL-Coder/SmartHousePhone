@@ -10,6 +10,7 @@ import cn.etsoft.smarthomephone.R;
 
 /**
  * Created by Say GoBay on 2016/10/13.
+ * 房间页面
  */
 public class RoomActivity extends Activity{
     private ImageView back;

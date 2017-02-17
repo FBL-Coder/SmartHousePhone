@@ -18,6 +18,7 @@ import cn.etsoft.smarthomephone.domain.EquipmentBean;
 
 /**
  * Created by Say GoBay on 2016/8/29.
+ * 输入板设置
  */
 public class AddActivity extends Activity {
     private TextView title;

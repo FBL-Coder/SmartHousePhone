@@ -12,10 +12,11 @@ import android.widget.RelativeLayout;
 
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.UiUtils.Contacts;
-import cn.etsoft.smarthomephone.UiUtils.SharedPreferencesUtil;
+import cn.etsoft.smarthomephone.utils.SharePreferenceUtil;
 
 /**
  * Created by Say GoBay on 2016/9/2.
+ * 可以删除的页面
  */
 public class SplashActivity extends Activity {
     private RelativeLayout mRoot;
@@ -94,7 +95,7 @@ public class SplashActivity extends Activity {
 
             //跳转操作
             //第一次进入，跳转引导界面，不是第一次，跳转主界面,splash界面只是判断是否是第一次进入，更改操作放到其他界面
-            boolean isFirst_enter = SharedPreferencesUtil.getBoolean(getApplicationContext(), Contacts.FIRST_ENTER, true);
+            boolean isFirst_enter = SharePreferenceUtil.getBoolean(getApplicationContext(), Contacts.FIRST_ENTER, true);
             if (isFirst_enter) {
                 //跳转引导界面
                 startActivity(new Intent(SplashActivity.this, GuideActivity.class));

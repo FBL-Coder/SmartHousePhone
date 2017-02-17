@@ -14,6 +14,7 @@ import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 
 /**
  * Created by fbl on 16-11-11.
+ * 设置远程IP
  */
 public class Add_long_ip extends Activity {
 

@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SmartHomePhone.iml" filepath="$PROJECT_DIR$/SmartHomePhone.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/smartHouse-android-phone.iml" filepath="$PROJECT_DIR$/smartHouse-android-phone.iml" />
     </modules>
   </component>
 </project>

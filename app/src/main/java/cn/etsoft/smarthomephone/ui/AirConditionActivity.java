@@ -1,25 +1,19 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
@@ -27,14 +21,13 @@ import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
-import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
-import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.weidget.CustomDialog;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 空调页面
  */
 public class AirConditionActivity extends Activity implements AdapterView.OnItemClickListener {
     private GridView gridView;
@@ -395,7 +388,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
             str_Fixed = str_Fixed +
                     ",\"cmd\":" + value + "}";
             Log.i("CMD_空调", str_Fixed);
-            CommonUtils.sendMsg(str_Fixed);
+            MyApplication.sendMsg(str_Fixed);
         }
     }
 

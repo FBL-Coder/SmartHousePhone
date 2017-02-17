@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
@@ -97,7 +98,7 @@ public class SceneAdapter extends BaseAdapter {
                 ",\"subType1\":0" +
                 ",\"subType2\":0" +
                 ",\"eventId\":" + eventId + "}";
-        CommonUtils.sendMsg(exec_str);
+        MyApplication.sendMsg(exec_str);
     }
 
     private class ViewHolder {

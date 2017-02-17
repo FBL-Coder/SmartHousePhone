@@ -12,7 +12,7 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.pullmi.entity.IcLick_Tag;
+import cn.etsoft.smarthomephone.pullmi.entity.Iclick_Tag;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareCurtain;
 import cn.etsoft.smarthomephone.pullmi.entity.WareKeyOpItem;
@@ -175,7 +175,7 @@ public class SwipeAdapter extends BaseAdapter {
             }
         });
 
-        IcLick_Tag tag = new IcLick_Tag();
+        Iclick_Tag tag = new Iclick_Tag();
         tag.setPosition(position);
         tag.setType(keyOpItems.get(position).getDevType());
         tag.setText(text);

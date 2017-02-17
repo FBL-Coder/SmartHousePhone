@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,7 +19,6 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter_parlour;
 import cn.etsoft.smarthomephone.adapter.ParlourGridViewAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
@@ -34,6 +32,7 @@ import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 
 /**
  * Created by Say GoBay on 2016/9/2.
+ * 情景模式设置页面
  */
 public class ParlourActivity extends Activity implements View.OnClickListener {
     private GridView gridView;

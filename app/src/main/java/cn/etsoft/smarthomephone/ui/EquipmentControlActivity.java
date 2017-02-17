@@ -23,6 +23,7 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 
 /**
  * Created by Say GoBay on 2016/8/25.
+ * 输出板设置页面
  */
 public class EquipmentControlActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private ImageView equipment_id,equipment, room,back;

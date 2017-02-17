@@ -10,11 +10,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
 
 /**
  * Created by Say GoBay on 2016/9/2.
+ * 系统设置页面
  */
 public class SystemSetActivity extends Activity implements AdapterView.OnItemClickListener{
     private GridView gridView;
@@ -76,6 +78,7 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
         switch (position) {
             case 0:
                 intent = new Intent(SystemSetActivity.this,NetWorkActivity.class);
+                MyApplication.getActivities().add(SystemSetActivity.this);
                 intent.putExtra("title",text[0]);
                 startActivity(intent);
                 break;

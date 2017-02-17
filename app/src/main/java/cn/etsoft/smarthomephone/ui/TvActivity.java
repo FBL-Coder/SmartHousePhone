@@ -13,12 +13,12 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.StbAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
-import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareTv;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 电视页面
  */
 public class TvActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private GridView gridView;
@@ -113,7 +113,7 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
             if (Value != -1) {
                 str_Fixed = str_Fixed +
                         ".\"cmd:" + Value + "}";
-                CommonUtils.sendMsg(str_Fixed);
+                MyApplication.sendMsg(str_Fixed);
             }
         }
     }
@@ -190,7 +190,7 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
             if (Value != -1) {
                 str_Fixed = str_Fixed +
                         ".\"cmd:" + Value + "}";
-                CommonUtils.sendMsg(str_Fixed);
+                MyApplication.sendMsg(str_Fixed);
             }
         }
     }

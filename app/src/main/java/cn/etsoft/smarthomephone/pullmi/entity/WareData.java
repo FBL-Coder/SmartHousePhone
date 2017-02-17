@@ -1,5 +1,7 @@
 package cn.etsoft.smarthomephone.pullmi.entity;
 
+import android.os.Bundle;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,12 @@ public class WareData implements Serializable {
     private List<WareKeyOpItem> keyOpItems;
     private SetEquipmentResult result;
     private DevControl_Result dev_result;
-    private boolean DATA_LOCAL_FLAG ;
+    private int login_result;
+    private int addNewNet_reslut;
+    private int addUser_reslut = -1;
+    private boolean DATA_LOCAL_FLAG;
+    private int DeleteNetReslut;
+    private String DeleteDevid;
 
     public WareData() {
 
@@ -82,6 +89,8 @@ public class WareData implements Serializable {
     }
 
     public List<WareDev> getDevs() {
+        if(devs==null)
+            devs = new ArrayList<>();
         return devs;
     }
 
@@ -211,4 +220,40 @@ public class WareData implements Serializable {
         this.DATA_LOCAL_FLAG = DATA_IP_FLAG;
     }
 
+    public int getLogin_result() {
+        return login_result;
+    }
+
+    public void setLogin_result(int login_result) {
+        this.login_result = login_result;
+    }
+
+    public int getAddNewNet_reslut() {
+        return addNewNet_reslut;
+    }
+
+    public void setAddNewNet_reslut(int addNewNet_reslut) {
+        this.addNewNet_reslut = addNewNet_reslut;
+    }
+
+    public int getAddUser_reslut() {
+        return addUser_reslut;
+    }
+
+    public void setAddUser_reslut(int addUser_reslut) {
+        this.addUser_reslut = addUser_reslut;
+    }
+    public Bundle getDeleteNetReslut() {
+        Bundle bundle = new Bundle();
+        bundle.putString("id",DeleteDevid);
+        bundle.putInt("Reslut",DeleteNetReslut);
+        return bundle;
+
+    }
+
+    public void setDeleteNetReslut(String DeleteDevid, int DeleteNetReslut) {
+        this.DeleteNetReslut = DeleteNetReslut;
+        this.DeleteDevid = DeleteDevid;
+    }
 }
+

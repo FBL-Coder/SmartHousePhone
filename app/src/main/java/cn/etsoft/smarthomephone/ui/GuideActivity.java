@@ -14,10 +14,11 @@ import java.util.ArrayList;
 
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.UiUtils.Contacts;
-import cn.etsoft.smarthomephone.UiUtils.SharedPreferencesUtil;
+import cn.etsoft.smarthomephone.utils.SharePreferenceUtil;
 
 /**
  * Created by Say GoBay on 2016/9/2.
+ * 安装引导页面
  */
 public class GuideActivity extends Activity implements View.OnClickListener {
     private Button experience;
@@ -127,7 +128,7 @@ public class GuideActivity extends Activity implements View.OnClickListener {
                 // 跳转主界面
                 startActivity(new Intent(GuideActivity.this, HomeActivity.class));
                 // 保存不是第一次进入的状态
-                SharedPreferencesUtil.saveBoolean(getApplicationContext(), Contacts.FIRST_ENTER, false);
+                SharePreferenceUtil.saveBoolean(getApplicationContext(), Contacts.FIRST_ENTER, false);
                 finish();
                 break;
             default:

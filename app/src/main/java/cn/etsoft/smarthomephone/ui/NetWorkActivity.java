@@ -16,18 +16,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +46,7 @@ import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 
 /**
  * Created by Say GoBay on 2016/9/2.
+ * 联网模块页面
  */
 public class NetWorkActivity extends Activity implements View.OnClickListener {
     private ImageView back;
@@ -182,11 +176,16 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                         MyApplication.getWareData().setStbs(new ArrayList<WareSetBox>());
                         MyApplication.getWareData().setTvs(new ArrayList<WareTv>());
                         MyApplication.setRcuDevIDtoLocal();
-                        startActivity(new Intent(NetWorkActivity.this,HomeActivity.class));
+
+                        for (int i = MyApplication.getActivities().size() - 1; i > -1; i--) {
+                            MyApplication.getActivities().get(i).finish();
+                        }
                         adapter = null;
                         adapter = new Equi_ListAdapter(json_list);
                         equi_list.setAdapter(adapter);
                         dialog.dismiss();
+                        startActivity(new Intent(NetWorkActivity.this,HomeActivity.class));
+                        finish();
                     }
                 });
                 builder.create().show();
@@ -353,7 +352,7 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             if (json_list.size() - 1 == position) {
-                viewHolder.equi_iv_use.setImageResource(R.drawable.sleep);
+                viewHolder.equi_iv_use.setImageResource(R.drawable.checked);
             }
             viewHolder.equi_name.setText(json_list.get(position).getName());
             return convertView;

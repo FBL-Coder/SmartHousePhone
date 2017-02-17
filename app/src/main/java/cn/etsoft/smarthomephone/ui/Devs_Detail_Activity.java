@@ -2,8 +2,6 @@ package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 
 /**
  * Created by fbl on 16-11-17.
+ * 设备详情页面
  */
 public class Devs_Detail_Activity extends Activity implements View.OnClickListener {
 

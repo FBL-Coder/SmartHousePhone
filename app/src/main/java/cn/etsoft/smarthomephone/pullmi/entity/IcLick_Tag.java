@@ -3,12 +3,12 @@ package cn.etsoft.smarthomephone.pullmi.entity;
 /**
  * Created by hwp on 16-11-2.
  */
-public class IcLick_Tag {
+public class Iclick_Tag {
     int position;
 
     int Type;
 
-    String [] text;
+    String[] text;
 
     public int getType() {
         return Type;

@@ -28,6 +28,7 @@ import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 
 /**
  * Created by fbl on 16-11-17.
+ * 添加设备页面
  */
 public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 
@@ -88,6 +89,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 }
             }
         }
+
         for (int i = 0; i < mWareDev_room.size(); i++) {
             home_text.add(mWareDev_room.get(i).getRoomName());
         }

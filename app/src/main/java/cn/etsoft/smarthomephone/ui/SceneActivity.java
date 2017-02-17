@@ -19,6 +19,7 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareSceneEvent;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 情景页面
  */
 public class SceneActivity extends Activity {
     private GridView gridView;

@@ -18,6 +18,7 @@ import cn.etsoft.smarthomephone.adapter.TextDeployAdapter;
 
 /**
  * Created by Say GoBay on 2016/8/24.
+ * 输入输出板配置页面
  */
 public class ParlourFourActivity extends Activity implements AdapterView.OnItemClickListener {
     private TextView title;

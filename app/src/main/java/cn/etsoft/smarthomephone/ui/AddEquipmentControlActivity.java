@@ -32,8 +32,7 @@ import cn.etsoft.smarthomephone.adapter.IClick_PZ;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
 import cn.etsoft.smarthomephone.adapter.SwipeAdapter;
 import cn.etsoft.smarthomephone.domain.Save_Quipment;
-import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
-import cn.etsoft.smarthomephone.pullmi.entity.IcLick_Tag;
+import cn.etsoft.smarthomephone.pullmi.entity.Iclick_Tag;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareKeyOpItem;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
@@ -41,6 +40,7 @@ import cn.etsoft.smarthomephone.weidget.SwipeListView;
 
 /**
  * Created by Say GoBay on 2016/8/29.
+ * 集体输入板或输出板设置
  */
 public class AddEquipmentControlActivity extends Activity implements View.OnClickListener {
     private TextView mTitle, equipment_close, tv_equipment_parlour, ref_equipment, del_equipment, save_equipment;
@@ -410,7 +410,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
         public void listViewItemClick(final int position, View v) {
             int widthOff = getWindow().getWindowManager().getDefaultDisplay().getWidth() / 500;
             List<String> list_text = new ArrayList<>();
-            IcLick_Tag tag = (IcLick_Tag) v.getTag();
+            Iclick_Tag tag = (Iclick_Tag) v.getTag();
             System.out.println("设备类型:" + tag.getType());
             for (int i = 0; i < tag.getText().length; i++) {
                 list_text.add(tag.getText()[i]);

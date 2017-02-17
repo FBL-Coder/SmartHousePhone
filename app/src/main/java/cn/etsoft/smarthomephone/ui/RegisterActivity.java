@@ -12,6 +12,7 @@ import cn.etsoft.smarthomephone.R;
 
 /**
  * Created by Say GoBay on 2016/9/5.
+ * 注册页面
  */
 public class RegisterActivity extends Activity implements View.OnClickListener{
     private TextView title;

@@ -17,22 +17,22 @@
             android:id="@+id/equi_iv_use"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_50"
+            android:layout_marginLeft="@dimen/dp_10"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="设备名："
-            android:layout_marginLeft="@dimen/dp_50"
-            android:textSize="@dimen/sp_18" />
+            android:text="模块名称："
+            android:layout_marginLeft="@dimen/dp_40"
+            android:textSize="@dimen/sp_16" />
 
         <TextView
             android:id="@+id/equi_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="asdasdasd"
-            android:textSize="@dimen/sp_18" />
+            android:gravity="center"
+            android:textSize="@dimen/sp_14" />
 
     </LinearLayout>
 

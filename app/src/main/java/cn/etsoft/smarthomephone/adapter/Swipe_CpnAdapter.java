@@ -12,7 +12,7 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.domain.PrintCmd;
-import cn.etsoft.smarthomephone.pullmi.entity.IcLick_Tag;
+import cn.etsoft.smarthomephone.pullmi.entity.Iclick_Tag;
 import cn.etsoft.smarthomephone.weidget.SwipeItemLayout;
 
 /**
@@ -87,7 +87,7 @@ public class Swipe_CpnAdapter extends BaseAdapter {
         viewHolder.choose.setText(cmd_name[listData.get(position).getKey_cmd()]);
         viewHolder.choose1.setText(key_act[listData.get(position).getKeyAct_num()]);
 
-        IcLick_Tag tag = new IcLick_Tag();
+        Iclick_Tag tag = new Iclick_Tag();
         tag.setPosition(position);
         tag.setType(listData.get(position).getDevType());
         tag.setText(cmd_name);
