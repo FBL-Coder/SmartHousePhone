@@ -9,60 +9,52 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
-import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.ui.AirConditionActivity;
 import cn.etsoft.smarthomephone.ui.CurtainActivity;
+import cn.etsoft.smarthomephone.ui.HomeActivity;
 import cn.etsoft.smarthomephone.ui.LightActivity;
 import cn.etsoft.smarthomephone.ui.SceneActivity;
 import cn.etsoft.smarthomephone.ui.StbActivity;
 import cn.etsoft.smarthomephone.ui.TvActivity;
+import cn.semtec.community2.MyApplication;
 
 /**
  * Created by Say GoBay on 2016/9/1.
  * 设备控制碎片
  */
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
+
     private GridView gridView;
-    private ImageView banner;
-    private TextView ref_home;
-    private int[] image = {R.drawable.aircondition, R.drawable.tv, R.drawable.stb, R.drawable.light, R.drawable.curtain, R.drawable.scene};
-    private String[] title = {"空调", "电视", "机顶盒", "灯光", "窗帘", "情景"};
+    private int[] image = {R.drawable.kt, R.drawable.ds, R.drawable.jdh, R.drawable.dg,
+            R.drawable.cl, R.drawable.qj, R.drawable.jk, R.drawable.cz, R.drawable.ms,};
+    private String[] title = {"空调", "电视", "机顶盒", "灯光", "窗帘", "情景", "门禁", "插座", "门锁"};
+    private int HomeAct_viewpage_pisition;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        //初始化控件
-        initView(view);
         //初始化GridView
         initGridView(view);
+
+        MyApplication.getmHomeActivity().setOnGetViewPageNum(new HomeActivity.OnGetViewPageNum() {
+            @Override
+            public void getViewPageNum(int position) {
+//                ToastUtil.showToast(getActivity(), "主页ViewPage数值:" + position + "");
+                HomeAct_viewpage_pisition = position;
+            }
+        });
+
+
         return view;
     }
 
     /**
-     * 初始化控件
-     */
-    private void initView(View view) {
-        banner = (ImageView) view.findViewById(R.id.banner);
-        banner.setImageResource(R.drawable.tu1);
-        ref_home = (TextView) view.findViewById(R.id.home_tv_ref);
-        ref_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalVars.setDstip("127.0.0.1");
-                MyApplication.setRcuDevIDtoLocal();
-            }
-        });
-    }
-
-    /**
      * 初始化GridView
+     *
      * @param view
      */
     private void initGridView(View view) {
@@ -74,44 +66,47 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent;
+        Intent intent = null;
         switch (position) {
             //空调
             case 0:
-                intent = new Intent(getActivity(),AirConditionActivity.class);
-                intent.putExtra("title",title[0]);
-                startActivity(intent);
+                intent = new Intent(getActivity(), AirConditionActivity.class);
+                intent.putExtra("title", title[0]);
                 break;
             //电视
             case 1:
-                intent = new Intent(getActivity(),TvActivity.class);
-                intent.putExtra("title",title[1]);
-                startActivity(intent);
+                intent = new Intent(getActivity(), TvActivity.class);
+                intent.putExtra("title", title[1]);
                 break;
             //机顶盒
             case 2:
-                intent = new Intent(getActivity(),StbActivity.class);
-                intent.putExtra("title",title[2]);
-                startActivity(intent);
+                intent = new Intent(getActivity(), StbActivity.class);
+                intent.putExtra("title", title[2]);
                 break;
             //灯光
             case 3:
-                intent = new Intent(getActivity(),LightActivity.class);
-                intent.putExtra("title",title[3]);
-                startActivity(intent);
+                intent = new Intent(getActivity(), LightActivity.class);
+                intent.putExtra("title", title[3]);
                 break;
             //窗帘
             case 4:
-                intent = new Intent(getActivity(),CurtainActivity.class);
-                intent.putExtra("title",title[4]);
-                startActivity(intent);
+                intent = new Intent(getActivity(), CurtainActivity.class);
+                intent.putExtra("title", title[4]);
                 break;
             //情景
             case 5:
-                intent = new Intent(getActivity(),SceneActivity.class);
-                intent.putExtra("title",title[5]);
-                startActivity(intent);
+                intent = new Intent(getActivity(), SceneActivity.class);
+                intent.putExtra("title", title[5]);
+
                 break;
+            //门禁
+            case 6:
+                startActivity(new Intent(getActivity(), cn.semtec.community2.WelcomeActivity.class));
+                break;
+        }
+        if (intent != null) {
+            intent.putExtra("viewpage_num", HomeAct_viewpage_pisition);
+            startActivity(intent);
         }
     }
 }

@@ -3,6 +3,7 @@ package cn.etsoft.smarthomephone.weidget;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 public class CustomDialog extends Dialog {
     int layoutRes;
@@ -36,5 +37,9 @@ public class CustomDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(layoutRes);
+    }
+
+    public View getView(){
+        return View.inflate(context,layoutRes,null);
     }
 }

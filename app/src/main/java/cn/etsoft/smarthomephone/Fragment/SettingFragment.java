@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
@@ -21,25 +20,15 @@ import cn.etsoft.smarthomephone.ui.SystemSetActivity;
  */
 public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener{
     private GridView gridView;
-    private ImageView banner;
     private int[] image = {R.drawable.setgohome, R.drawable.setalloff, R.drawable.setfullopen, R.drawable.setlight, R.drawable.setcurtain, R.drawable.setsystemsetup};
     private String[] title = {"回家", "设备全关", "设备全开", "灯光总控", "窗帘总控", "系统设置"};
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        //初始化控件
-        initView(view);
+        View view = inflater.inflate(R.layout.fragment_set, container, false);
         //初始化GridView
         initGridView(view);
         return view;
-    }
-    /**
-     * 初始化控件
-     */
-    private void initView(View view) {
-        banner = (ImageView) view.findViewById(R.id.banner);
-        banner.setImageResource(R.drawable.tu6);
     }
     /**
      * 初始化GridView

@@ -8,34 +8,41 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.pullmi.entity.WareData;
+import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
 
 /**
  * Created by Say GoBay on 2016/9/1.
  */
 public class LightAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
-    private WareData wareData;
+    private List<WareLight> wareLIght;
     private Context context;
 
-    public LightAdapter(WareData wareData, Context context) {
-        this.wareData = wareData;
+    public LightAdapter(List<WareLight> wareLIght, Context context) {
+        this.wareLIght = wareLIght;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        if (null != wareData) {
-            return wareData.getLights().size();
+        if (null != wareLIght) {
+            return wareLIght.size();
         } else {
             return 0;
         }
     }
 
+    public void notifyDataSetChanged(List<WareLight> wareLIght) {
+        this.wareLIght = wareLIght;
+        super.notifyDataSetChanged();
+    }
+
     @Override
     public Object getItem(int position) {
-        return wareData.getLights().get(position);
+        return wareLIght.get(position);
     }
 
     @Override
@@ -57,12 +64,12 @@ public class LightAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (wareData.getLights().get(position).getbOnOff() == 0) {
+        if (wareLIght.get(position).getbOnOff() == 0) {
             viewHolder.image.setBackgroundResource(R.drawable.lightoff);//关闭
         } else {
             viewHolder.image.setBackgroundResource(R.drawable.lighton);//打开
         }
-        viewHolder.title.setText(wareData.getLights().get(position).getDev().getDevName());
+        viewHolder.title.setText(wareLIght.get(position).getDev().getDevName());
 
         return convertView;
     }

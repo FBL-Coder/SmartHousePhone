@@ -58,26 +58,30 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                     if (MyApplication.getWareData().getDev_result() != null
                             && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
 
-                        for (int i = 0; i < devs.size(); i++) {
-                            if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 0) {
+                        if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 0) {
+                            for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                                 if (MyApplication.getWareData().getAirConds().size() <= i && MyApplication.getWareData().getAirConds().get(i).getDev().getDevId()
                                         == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
                                         && MyApplication.getWareData().getAirConds().get(i).getDev().getCanCpuId()
                                         .equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
                                     MyApplication.getWareData().getAirConds().remove(i);
                                 }
+
                             }
-                            if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 0) {
+
+                        }
+                        if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 3) {
+                            for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
                                 if (MyApplication.getWareData().getLights().size() <= i && MyApplication.getWareData().getLights().get(i).getDev().getDevId()
                                         == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
                                         && MyApplication.getWareData().getLights().get(i).getDev().getCanCpuId()
                                         .equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
                                     MyApplication.getWareData().getLights().remove(i);
                                 }
-
                             }
-                            if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 0) {
-
+                        }
+                        if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 4) {
+                            for (int i = 0; i <MyApplication.getWareData().getCurtains().size() ; i++) {
                                 if (MyApplication.getWareData().getCurtains().size() <= i && MyApplication.getWareData().getCurtains().get(i).getDev().getDevId()
                                         == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
                                         && MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId()
@@ -85,19 +89,23 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                                     MyApplication.getWareData().getCurtains().remove(i);
                                 }
                             }
-                            if (devs.get(i).getType() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType()
-                                    && devs.get(i).getDevId() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
-                                    && devs.get(i).getCanCpuId().equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
-                                devs.remove(i);
+                        }
 
-                                if (adapter != null)
-                                    adapter.notifyDataSetChanged();
-                                else {
-                                    adapter = new Dev_Adapter();
-                                    equi_control.setAdapter(adapter);
-                                }
+                        for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                            if (MyApplication.getWareData().getDevs().get(i).getType() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType()
+                                    && MyApplication.getWareData().getDevs().get(i).getDevId() == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
+                                    && MyApplication.getWareData().getDevs().get(i).getCanCpuId().equals(MyApplication.getWareData().getDev_result().getDev_rows().get(0).getCanCpuID())) {
+                                MyApplication.getWareData().getDevs().remove(i);
+
                             }
                         }
+                        if (adapter != null)
+                            adapter.notifyDataSetChanged();
+                        else {
+                            adapter = new Dev_Adapter();
+                            equi_control.setAdapter(adapter);
+                        }
+
                         Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -294,8 +302,6 @@ public class Equipment_control extends Activity implements View.OnClickListener 
 
         Dev_Adapter() {
             devs = new ArrayList<>();
-//            if (MyApplication.getWareData().getDevs() == null && MyApplication.getWareData().getDevs().size() == 0)
-//                return;
             for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
                 devs.add(MyApplication.getWareData().getDevs().get(i));
             }

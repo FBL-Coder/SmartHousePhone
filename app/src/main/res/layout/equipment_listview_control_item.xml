@@ -18,10 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_marginBottom="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_5"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dp_10"
-
-            android:text="@string/first_parlour"
+            android:gravity="center"
             android:textColor="#000"
             android:textSize="@dimen/sp_16" />
 

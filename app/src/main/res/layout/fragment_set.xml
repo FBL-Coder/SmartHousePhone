@@ -8,5 +8,4 @@
     <GridView
         android:id="@+id/home_gv"
         style="@style/GridViewStyle" />
-
 </LinearLayout>

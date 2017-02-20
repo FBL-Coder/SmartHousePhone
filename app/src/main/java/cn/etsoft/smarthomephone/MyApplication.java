@@ -40,6 +40,7 @@ import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareData;
+import cn.etsoft.smarthomephone.ui.HomeActivity;
 import cn.etsoft.smarthomephone.ui.WelcomeActivity;
 import cn.etsoft.smarthomephone.utils.CityDB;
 
@@ -112,7 +113,7 @@ public class MyApplication extends Application implements udpService.Callback, N
     /**
      * 主页的Activity对象
      */
-    private static Activity mHomeActivity;
+    private static HomeActivity mHomeActivity;
     /**
      * 联网模块大于一个的时候，保存最近使用的联网模块ID；
      */
@@ -381,19 +382,17 @@ public class MyApplication extends Application implements udpService.Callback, N
 
     /**
      * 获取主页对象
-     *
      * @return
      */
-    public static Activity getmHomeActivity() {
+    public static HomeActivity getmHomeActivity() {
         return mHomeActivity;
     }
 
     /**
      * 赋值主页对象
-     *
      * @param mHomeActivity
      */
-    public static void setmHomeActivity(Activity mHomeActivity) {
+    public static void setmHomeActivity(HomeActivity mHomeActivity) {
         MyApplication.mHomeActivity = mHomeActivity;
     }
 

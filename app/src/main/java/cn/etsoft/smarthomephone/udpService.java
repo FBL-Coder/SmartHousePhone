@@ -160,7 +160,7 @@ public class udpService extends Service {
             System.out.println(e.toString());
         }
 
-        if (datType != 35)
+        if (datType != 35 || datType != 2)
             show(info);
         switch (datType) {
             case 64:
@@ -789,17 +789,13 @@ public class udpService extends Service {
                 airCondDev.setSelSpd((byte) jsonobj.getInt("selSpd"));
                 airCondDev.setSelTemp((byte) jsonobj.getInt("selTemp"));
 
-//                int id = 0;
                 for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                     WareAirCondDev air = MyApplication.getWareData().getAirConds().get(i);
                     if (air.getDev().getCanCpuId().equals(airCondDev.getDev().getCanCpuId())
                             && air.getDev().getDevId() == airCondDev.getDev().getDevId()) {
-//                        MyApplication.getWareData().getAirConds().remove(i);
-//                        id = airCondDev.getDev().getDevId();
                         MyApplication.getWareData().getAirConds().set(i, airCondDev);
                     }
                 }
-//                MyApplication.getWareData().getAirConds().set(id, airCondDev);
             } else if (devType == 3) {
 
                 WareLight wareLight = new WareLight();

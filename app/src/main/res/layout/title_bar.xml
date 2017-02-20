@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_rl"
     android:layout_width="match_parent"
     android:layout_height="40dp">
 
@@ -26,9 +27,21 @@
         android:textColor="@color/color_000"
         android:textSize="@dimen/sp_16" />
 
+    <TextView
+        android:id="@+id/title_bar_tv_room"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_35"
+        android:maxLines="1"
+        android:gravity="center"
+        android:textColor="@color/white1"
+        android:textSize="@dimen/sp_16"
+        android:visibility="gone"
+        />
     <ImageView
         android:id="@+id/title_bar_iv_or"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:background="@drawable/back_bg"
         android:layout_centerVertical="true"
