@@ -138,7 +138,8 @@
                 android:gravity="center"
                 android:text="@string/login_forget"
                 android:textColor="@color/white1"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
     </LinearLayout>

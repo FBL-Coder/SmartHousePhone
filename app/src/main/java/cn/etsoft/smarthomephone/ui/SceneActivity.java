@@ -25,7 +25,7 @@ public class SceneActivity extends Activity {
     private GridView gridView;
     private LinearLayout ll;
     private ImageView back;
-    private TextView title;
+    private TextView title, name_cur;
 
     private boolean IsCanClick = false;
     private WareData wareData;
@@ -44,13 +44,14 @@ public class SceneActivity extends Activity {
         //初始化GridView
         initGridView();
     }
+
     /**
      * 初始化标题栏
      */
     private void initTitleBar() {
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         title = (TextView) findViewById(R.id.title_bar_tv_title);
-        title.setText(getIntent().getStringExtra("title")+"控制");
+        title.setText(getIntent().getStringExtra("title") + "控制");
         title.setTextColor(0xffffffff);
         back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
@@ -60,13 +61,17 @@ public class SceneActivity extends Activity {
             }
         });
     }
+
     /**
      * 初始化控件
      */
     private void intView() {
         ll = (LinearLayout) findViewById(R.id.ll);
         ll.setBackgroundResource(R.drawable.tu5);
+        name_cur = (TextView) findViewById(R.id.name_cur);
+        name_cur.setVisibility(View.GONE);
     }
+
     /**
      * 初始化GridView
      */

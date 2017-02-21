@@ -18,23 +18,22 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.WareBoardChnout;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 
 /**
  * Created by fbl on 16-11-17.
- * 添加设备页面
  */
 public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 
     private TextView title, add_dev_type, add_dev_room, add_dev_board, add_dev_save, add_dev_way;
-    private EditText add_dev_name;
-    private ImageView back;
+    private EditText add_dev_name, edit_dev_room;
+    private ImageView back, edit_roomname;
     private PopupWindow popupWindow;
     private List<String> Board_text;
     private List<WareBoardChnout> list_board;
@@ -58,9 +57,12 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         add_dev_save = (TextView) findViewById(R.id.add_dev_save);
         add_dev_board = (TextView) findViewById(R.id.add_dev_board);
         add_dev_name = (EditText) findViewById(R.id.add_dev_name);
+        edit_dev_room = (EditText) findViewById(R.id.edit_dev_room);
         add_dev_way = (TextView) findViewById(R.id.add_dev_way);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
+        edit_roomname = (ImageView) findViewById(R.id.edit_roomname);
 
+        edit_roomname.setOnClickListener(this);
         back.setOnClickListener(this);
         add_dev_type.setOnClickListener(this);
         add_dev_room.setOnClickListener(this);
@@ -89,7 +91,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 }
             }
         }
-
         for (int i = 0; i < mWareDev_room.size(); i++) {
             home_text.add(mWareDev_room.get(i).getRoomName());
         }
@@ -141,8 +142,17 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         int widthOff = getWindow().getWindowManager().getDefaultDisplay().getWidth() / 500;
         switch (v.getId()) {
-            case R.id.title_bar_iv_back:
+            case R.id.back:
                 finish();
+                break;
+            case R.id.edit_roomname:
+                if (add_dev_room.getVisibility() == View.VISIBLE) {
+                    edit_dev_room.setVisibility(View.VISIBLE);
+                    add_dev_room.setVisibility(View.GONE);
+                } else {
+                    edit_dev_room.setVisibility(View.GONE);
+                    add_dev_room.setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.add_dev_type:
                 if (popupWindow != null && popupWindow.isShowing()) {
@@ -176,19 +186,19 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 List<Integer> list_voard_cancpuid = new ArrayList<>();
                 if (type_position == 0) {
                     for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
-                        if (list_board.get(board_position).getDevUnitID()
+                        if (list_board.size() > board_position && list_board.get(board_position).getDevUnitID()
                                 .equals(MyApplication.getWareData().getAirConds().get(i).getDev().getCanCpuId()))
                             list_voard_cancpuid.add(MyApplication.getWareData().getAirConds().get(i).getPowChn());
                     }
                 } else if (type_position == 3) {
                     for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
-                        if (list_board.get(board_position).getDevUnitID()
+                        if (list_board.size() > board_position && list_board.get(board_position).getDevUnitID()
                                 .equals(MyApplication.getWareData().getLights().get(i).getDev().getCanCpuId()))
                             list_voard_cancpuid.add((int) MyApplication.getWareData().getLights().get(i).getPowChn());
                     }
                 } else if (type_position == 4) {
                     for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
-                        if (list_board.get(board_position).getDevUnitID()
+                        if (list_board.size() > board_position && list_board.get(board_position).getDevUnitID()
                                 .equals(MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId()))
                             list_voard_cancpuid.add(MyApplication.getWareData().getCurtains().get(i).getPowChn());
                     }
@@ -235,7 +245,11 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 //            }
                 String name = add_dev_name.getText().toString();
                 String type = add_dev_type.getText().toString();
-                String room = add_dev_room.getText().toString();
+                String room = "";
+                if (add_dev_room.getVisibility() == View.VISIBLE)
+                    room = add_dev_room.getText().toString();
+                else
+                    room = edit_dev_room.getText().toString();
                 String board = add_dev_board.getText().toString();
                 String way = add_dev_way.getText().toString();
 
@@ -266,8 +280,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     MyApplication.sendMsg(chn_str);
                     finish();
                 }
-
-
                 break;
         }
     }
@@ -340,12 +352,13 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     public String Sutf2Sgbk(String string) {
 
         byte[] data = {0};
+//        byte[] dataname = new byte[12];
         try {
             data = string.getBytes("GB2312");
+//            System.arraycopy(dataname,0,data,0,data.length);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
         String str_gb = CommonUtils.bytesToHexString(data);
         LogUtils.LOGE("情景模式名称:%s", str_gb);
         return str_gb;

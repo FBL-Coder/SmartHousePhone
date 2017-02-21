@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -63,8 +64,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         title_bar_iv_or = (ImageView) findViewById(R.id.title_bar_iv_or);
         title_bar_iv_or.setVisibility(View.VISIBLE);
-        //点击选择房间；
-        title_bar_iv_or.setImageResource(R.drawable.qing);
+        title_bar_iv_or.setImageResource(R.drawable.fj1);
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         title.setText(getIntent().getStringExtra("title") + "控制");
         title.setTextColor(0xffffffff);
@@ -148,8 +148,6 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
     public void getRoomDialog() {
         ListView dia_listview;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
-        TextView textView = (TextView) dialog.getView().findViewById(R.id.select_room);
-        textView.setText("请选择房间");
         //获得当前窗体
         Window window = dialog.getWindow();
         //重新设置
@@ -163,6 +161,10 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         //(当Window的Attributes改变时系统会调用此函数)
         window.setAttributes(lp);
         dialog.show();
+
+        TextView textView = (TextView) dialog.findViewById(R.id.select_room);
+        textView.setText("请选择房间");
+        textView.setTextColor(Color.BLACK);
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Room_Select_Adapter(LightActivity.this, room_list));
 
@@ -193,6 +195,8 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
             ToastUtil.showToast(LightActivity.this, "没有灯具，请添加");
             return;
         }
+        if (MyApplication.getRoom_list().size() == 0)
+            return;
         AllLight = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
             AllLight.add(MyApplication.getWareData().getLights().get(i));
@@ -216,8 +220,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
             lightAdapter = new LightAdapter(new ArrayList<WareLight>(), this);
             gridView.setAdapter(lightAdapter);
             ToastUtil.showToast(LightActivity.this, title_bar_tv_room.getText() + "没有找到灯具，请添加");
-        }
-        else {
+        } else {
             lightAdapter = new LightAdapter(wareLight, this);
             gridView.setAdapter(lightAdapter);
         }
@@ -230,7 +233,8 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         if (IsCanClick) {
             switch (v.getId()) {
                 case R.id.title_bar_iv_or:
-                    getRoomDialog();
+                    if (room_list.size() > 0)
+                        getRoomDialog();
                     break;
 //                case R.id.light_open_all:
 //                    String open_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +

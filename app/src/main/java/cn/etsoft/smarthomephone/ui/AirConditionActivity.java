@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -86,6 +87,8 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
 
 
     private void upData() {
+        if (MyApplication.getRoom_list().size() == 0)
+            return;
         if (MyApplication.getWareData().getAirConds().size() == 0) {
             ToastUtil.showToast(AirConditionActivity.this, "请添加空调");
             return;
@@ -141,8 +144,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     public void getRoomDialog() {
         ListView dia_listview;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
-        TextView textView = (TextView) dialog.getView().findViewById(R.id.select_room);
-        textView.setText("请选择房间");
+
         //获得当前窗体
         Window window = dialog.getWindow();
         //重新设置
@@ -156,6 +158,9 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         //(当Window的Attributes改变时系统会调用此函数)
         window.setAttributes(lp);
         dialog.show();
+        TextView textView = (TextView) dialog.findViewById(R.id.select_room);
+        textView.setText("请选择房间");
+        textView.setTextColor(Color.BLACK);
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Room_Select_Adapter(AirConditionActivity.this, room_list));
 
@@ -178,10 +183,10 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     public void getSelectDialog(final List<WareAirCondDev> AirConds) {
         ListView dia_listview;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
-        TextView view = (TextView) dialog.getView().findViewById(R.id.select_room);
-        view.setText("请选择空调");
         dialog.show();
-
+        TextView view = (TextView) dialog.findViewById(R.id.select_room);
+        view.setText("请选择空调");
+        view.setTextColor(Color.BLACK);
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Aic_Select_Adapter(AirConds));
 
@@ -201,6 +206,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
      * 初始化控件
      */
     private void initView() {
+
         name = (TextView) findViewById(R.id.airCondition_name);
         temp = (TextView) findViewById(R.id.airCondition_temp);
         state = (TextView) findViewById(R.id.airCondition_state);
@@ -213,6 +219,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         title_bar_tv_room.setVisibility(View.VISIBLE);
         select = (ImageView) findViewById(R.id.title_bar_iv_or);
         select.setVisibility(View.VISIBLE);
+        select.setImageResource(R.drawable.fj1);
         name = (TextView) findViewById(R.id.airCondition_name);
         temp = (TextView) findViewById(R.id.airCondition_temp);
         temp1 = (TextView) findViewById(R.id.airCondition_temp1);
@@ -230,6 +237,8 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (room_list.size() == 0)
+                    return;
                 getRoomDialog();
             }
         });
@@ -530,6 +539,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 viewHolder = new ViewHolder();
                 viewHolder.title = (TextView) convertView.findViewById(R.id.equipment_tv);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.equipment_iv);
+                viewHolder.title.setTextColor(Color.BLACK);
 
                 convertView.setTag(viewHolder);
             } else

@@ -15,7 +15,6 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
@@ -198,13 +197,11 @@ public class WelcomeActivity extends Activity {
             } else {
                 startActivity(new Intent(WelcomeActivity.this, NetWorkActivity.class));
                 finish();
-                ToastUtil.showToast(WelcomeActivity.this,"选择联网模块跳转");
             }
         } else {
             if (login == LOGIN_OK) {
                 startActivity(new Intent(WelcomeActivity.this, NetWorkActivity.class));
                 finish();
-                ToastUtil.showToast(WelcomeActivity.this,"登陆完成后，选择联网模块");
             } else {
                 startActivity(new Intent(WelcomeActivity.this, cn.semtec.community2.activity.LoginActivity.class));
 //                startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));

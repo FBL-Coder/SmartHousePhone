@@ -38,9 +38,12 @@ public class ParlourActivity extends Activity implements View.OnClickListener {
     private GridView gridView;
     private ImageView back, dialog_back;
     private TextView title;
-    private int[] pic1 = {R.drawable.curtain6, R.drawable.curtain5, R.drawable.curtain7};
+    private int[] pic1 = {R.drawable.clk, R.drawable.clbk, R.drawable.clg};
     private String[] des1 = {"全开", "半开", "全关"};
-    private int[] pic2 = {R.drawable.on, R.drawable.off};
+    private int[] pic_light = {R.drawable.dk, R.drawable.dg};
+    private int[] pic_air = {R.drawable.ktk, R.drawable.ktg};
+    private int[] pic_tv = {R.drawable.dsk, R.drawable.dsg};
+    private int[] pic_tvup = {R.drawable.jdhk, R.drawable.jdhg};
     private String[] des2 = {"打开", "关闭"};
 
     private ParlourGridViewAdapter parlourGridViewAdapter;
@@ -146,10 +149,16 @@ public class ParlourActivity extends Activity implements View.OnClickListener {
         int devType = listViewItems.get(parent_position).getType();
         switch (devType) {
             case 0:
+                gridView.setAdapter(new GridViewAdapter_parlour(pic_air, des2, this));
+                break;
             case 1:
+                gridView.setAdapter(new GridViewAdapter_parlour(pic_tv, des2, this));
+                break;
             case 2:
+                gridView.setAdapter(new GridViewAdapter_parlour(pic_tvup, des2, this));
+                break;
             case 3:
-                gridView.setAdapter(new GridViewAdapter_parlour(pic2, des2, this));
+                gridView.setAdapter(new GridViewAdapter_parlour(pic_light, des2, this));
                 break;
             case 4:
                 gridView.setAdapter(new GridViewAdapter_parlour(pic1, des1, this));
@@ -166,14 +175,14 @@ public class ParlourActivity extends Activity implements View.OnClickListener {
                 int devid = listViewItems.get(parent_position).getDevId();
                 if (type == 3) {
                     if (position == 1) {
-                        tv.setBackgroundResource(R.drawable.lightoff);
+                        tv.setBackgroundResource(R.drawable.dg);
                         list.add(0);
                         list.add(cpuid);
                         list.add(type);
                         list.add(devid);
 
                     } else {
-                        tv.setBackgroundResource(R.drawable.lighton);
+                        tv.setBackgroundResource(R.drawable.dk);
                         list.add(1);
                         list.add(cpuid);
                         list.add(type);
@@ -182,13 +191,13 @@ public class ParlourActivity extends Activity implements View.OnClickListener {
                     }
                 } else if (type == 0) {//空调
                     if (position == 1) {
-                        tv.setBackgroundResource(R.drawable.off3);
+                        tv.setBackgroundResource(R.drawable.ktg);
                         list.add(0);
                         list.add(cpuid);
                         list.add(type);
                         list.add(devid);
                     } else {
-                        tv.setBackgroundResource(R.drawable.on3);
+                        tv.setBackgroundResource(R.drawable.ktk);
                         list.add(1);
                         list.add(cpuid);
                         list.add(type);
@@ -196,19 +205,19 @@ public class ParlourActivity extends Activity implements View.OnClickListener {
                     }
                 } else if (type == 4) {//窗帘
                     if (position == 2) {
-                        tv.setBackgroundResource(R.drawable.blind5);
+                        tv.setBackgroundResource(R.drawable.clg);
                         list.add(0);
                         list.add(cpuid);
                         list.add(type);
                         list.add(devid);
                     } else if (position == 1) {
-                        tv.setBackgroundResource(R.drawable.blind3);
+                        tv.setBackgroundResource(R.drawable.clbk);
                         list.add(1);
                         list.add(cpuid);
                         list.add(type);
                         list.add(devid);
                     } else {
-                        tv.setBackgroundResource(R.drawable.blind6);
+                        tv.setBackgroundResource(R.drawable.clk);
                         list.add(2);
                         list.add(cpuid);
                         list.add(type);
@@ -216,13 +225,13 @@ public class ParlourActivity extends Activity implements View.OnClickListener {
                     }
                 } else if (type == 1) {//电视
                     if (position == 1) {
-                        tv.setBackgroundResource(R.drawable.air_choose2);
+                        tv.setBackgroundResource(R.drawable.dsg);
                         list.add(0);
                         list.add(cpuid);
                         list.add(type);
                         list.add(devid);
                     } else {
-                        tv.setBackgroundResource(R.drawable.air_choose1);
+                        tv.setBackgroundResource(R.drawable.dsk);
                         list.add(1);
                         list.add(cpuid);
                         list.add(type);
@@ -230,13 +239,13 @@ public class ParlourActivity extends Activity implements View.OnClickListener {
                     }
                 } else if (type == 2) {//机顶盒
                     if (position == 1) {
-                        tv.setBackgroundResource(R.drawable.air_choose2);
+                        tv.setBackgroundResource(R.drawable.jdhg);
                         list.add(0);
                         list.add(cpuid);
                         list.add(type);
                         list.add(devid);
                     } else {
-                        tv.setBackgroundResource(R.drawable.air_choose1);
+                        tv.setBackgroundResource(R.drawable.jdhk);
                         list.add(1);
                         list.add(cpuid);
                         list.add(type);

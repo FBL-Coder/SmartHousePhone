@@ -148,7 +148,7 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
     private void initTitleBar() {
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         title = (TextView) findViewById(R.id.title_bar_tv_title);
-        title.setText(getIntent().getStringExtra("title"));
+        title.setText("联网模块设置");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,15 +166,14 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
         Gson gson = new Gson();
         List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {
         }.getType());
-        adapter = new Equi_ListAdapter(json_list);
-        networking = (TextView) findViewById(R.id.networking_title);
-        networking.setText(getIntent().getStringExtra("title"));
+        equi_list = (ListView) findViewById(R.id.equi_list);
+        if (json_list != null && json_list.size() > 0) {
+            adapter = new Equi_ListAdapter(json_list);
+            equi_list.setAdapter(adapter);
+        }
         add = (ImageView) findViewById(R.id.network_add);
         add.setOnClickListener(this);
-        equi_list = (ListView) findViewById(R.id.equi_list);
-        equi_list.setAdapter(adapter);
         add.setOnClickListener(this);
-
         equi_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
@@ -322,6 +321,10 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 String name_equi = name.getText().toString();
                 String id_equi = id.getText().toString();
                 String pass_equi = pwd.getText().toString();
+                if (name_equi.length() < 1 || id_equi.length() < 1 || pass_equi.length() < 1) {
+                    ToastUtil.showToast(NetWorkActivity.this, "请填写完整");
+                    return;
+                }
 
                 Gson gson = new Gson();
                 List<RcuInfo> json_list = gson.fromJson(json_rcuinfo_list, new TypeToken<List<RcuInfo>>() {

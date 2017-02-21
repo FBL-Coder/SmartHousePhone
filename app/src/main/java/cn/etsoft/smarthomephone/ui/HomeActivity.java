@@ -394,6 +394,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             ImageView iv = new ImageView(HomeActivity.this);
             iv.setMaxWidth(8);
             iv.setMaxHeight(8);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(12, 12);
+            lp.setMargins(1, 0, 1, 0);
+            iv.setLayoutParams(lp);
             if (i == 0)
                 iv.setBackgroundResource(R.drawable.point_focused);
             else

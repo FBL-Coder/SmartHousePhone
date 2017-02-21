@@ -66,9 +66,9 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
 
         title_bar_tv_room = (TextView) findViewById(R.id.title_bar_tv_room);
         title_bar_tv_room.setVisibility(View.VISIBLE);
-        title_bar_tv_room.setTextColor(Color.BLACK);
+        title_bar_tv_room.setTextColor(Color.WHITE);
         title_bar_iv_or = (ImageView) findViewById(R.id.title_bar_iv_or);
-        title_bar_iv_or.setImageResource(R.drawable.qing);
+        title_bar_iv_or.setImageResource(R.drawable.fj1);
         title_bar_iv_or.setVisibility(View.VISIBLE);
         title_bar_iv_or.setOnClickListener(this);
         name_cur = (TextView) findViewById(R.id.name_cur);
@@ -86,7 +86,8 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     }
 
     private void upData() {
-
+        if (MyApplication.getRoom_list().size() == 0)
+            return;
         //房间名称；
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
@@ -165,7 +166,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     }
     @Override
     public void onClick(View view) {
-        if (view == title_bar_iv_or)
+        if (view == title_bar_iv_or && MyApplication.getRoom_list().size()>0)
             getRoomDialog();
     }
 
@@ -177,8 +178,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     public void getRoomDialog() {
         ListView dia_listview;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
-        TextView textView = (TextView) dialog.getView().findViewById(R.id.select_room);
-        textView.setText("请选择房间");
+
         //获得当前窗体
         Window window = dialog.getWindow();
         //重新设置
@@ -192,6 +192,9 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
         //(当Window的Attributes改变时系统会调用此函数)
         window.setAttributes(lp);
         dialog.show();
+        TextView textView = (TextView) dialog.findViewById(R.id.select_room);
+        textView.setText("请选择房间");
+        textView.setTextColor(Color.BLACK);
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Room_Select_Adapter(CurtainActivity.this, MyApplication.getRoom_list()));
 

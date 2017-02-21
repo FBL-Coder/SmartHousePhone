@@ -28,7 +28,7 @@ import cn.semtec.community2.MyApplication;
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GridView gridView;
-    private int[] image = {R.drawable.kt, R.drawable.ds, R.drawable.jdh, R.drawable.dg,
+    private int[] image = {R.drawable.kt, R.drawable.ds, R.drawable.jdh, R.drawable.light_home,
             R.drawable.cl, R.drawable.qj, R.drawable.jk, R.drawable.cz, R.drawable.ms,};
     private String[] title = {"空调", "电视", "机顶盒", "灯光", "窗帘", "情景", "门禁", "插座", "门锁"};
     private int HomeAct_viewpage_pisition;
@@ -47,8 +47,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                 HomeAct_viewpage_pisition = position;
             }
         });
-
-
         return view;
     }
 

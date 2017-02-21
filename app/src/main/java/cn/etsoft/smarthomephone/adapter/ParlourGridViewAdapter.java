@@ -71,27 +71,57 @@ public class ParlourGridViewAdapter extends BaseAdapter {
         if (items == null) {
             for (int i = 0; i < listViewItems.size(); i++) {
                 if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_light.getValue())
-                    viewHolder.title.setBackgroundResource(R.drawable.lightoff);
+                    viewHolder.title.setBackgroundResource(R.drawable.dg);
                 if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_airCond.getValue())
-                    viewHolder.title.setBackgroundResource(R.drawable.off3);
+                    viewHolder.title.setBackgroundResource(R.drawable.ktg);
+                if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_tv.getValue())
+                    viewHolder.title.setBackgroundResource(R.drawable.dsg);
+                if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_tvUP.getValue())
+                    viewHolder.title.setBackgroundResource(R.drawable.jdhg);
+                if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_curtain.getValue())
+                    viewHolder.title.setBackgroundResource(R.drawable.clg);
             }
         } else {
             for (int i = 0; i < items.size(); i++) {
                 if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_light.getValue()) {
                     if (items.get(i).getDevID() == listViewItems.get(position).getDevId()
                             && items.get(i).getbOnOff() == 1) {
-                        viewHolder.title.setBackgroundResource(R.drawable.lighton);
+                        viewHolder.title.setBackgroundResource(R.drawable.dk);
                         break;
                     } else
-                        viewHolder.title.setBackgroundResource(R.drawable.lightoff);
+                        viewHolder.title.setBackgroundResource(R.drawable.dg);
                 }
                 if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_airCond.getValue()) {
                     if (items.get(i).getDevID() == listViewItems.get(position).getDevId()
                             && items.get(i).getbOnOff() == 1) {
-                        viewHolder.title.setBackgroundResource(R.drawable.on3);
+                        viewHolder.title.setBackgroundResource(R.drawable.ktk);
                         break;
                     } else
-                        viewHolder.title.setBackgroundResource(R.drawable.off3);
+                        viewHolder.title.setBackgroundResource(R.drawable.ktg);
+                }
+                if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_curtain.getValue()) {
+                    if (items.get(i).getDevID() == listViewItems.get(position).getDevId()
+                            && items.get(i).getbOnOff() == 1) {
+                        viewHolder.title.setBackgroundResource(R.drawable.clk);
+                        break;
+                    } else
+                        viewHolder.title.setBackgroundResource(R.drawable.clg);
+                }
+                if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_tv.getValue()) {
+                    if (items.get(i).getDevID() == listViewItems.get(position).getDevId()
+                            && items.get(i).getbOnOff() == 1) {
+                        viewHolder.title.setBackgroundResource(R.drawable.dsk);
+                        break;
+                    } else
+                        viewHolder.title.setBackgroundResource(R.drawable.dsg);
+                }
+                if (listViewItems.get(position).getType() == UdpProPkt.E_WARE_TYPE.e_ware_tvUP.getValue()) {
+                    if (items.get(i).getDevID() == listViewItems.get(position).getDevId()
+                            && items.get(i).getbOnOff() == 1) {
+                        viewHolder.title.setBackgroundResource(R.drawable.jdhk);
+                        break;
+                    } else
+                        viewHolder.title.setBackgroundResource(R.drawable.jdhg);
                 }
             }
         }

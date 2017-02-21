@@ -31,9 +31,12 @@ import cn.etsoft.smarthomephone.weidget.CustomDialog;
  */
 public class StbActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private GridView gridView;
-    private int[] image = {R.drawable.television4, R.drawable.television5, R.drawable.television6, R.drawable.television7, R.drawable.television8, R.drawable.television9, R.drawable.television10, R.drawable.television11, R.drawable.television12, R.drawable.television13, R.drawable.television14, R.drawable.television15};
+    private int[] image = {R.drawable.television4, R.drawable.television5, R.drawable.television6,
+            R.drawable.television7, R.drawable.television8, R.drawable.television9, R.drawable.television10,
+            R.drawable.television11, R.drawable.television12, R.drawable.television13,
+            R.drawable.television14, R.drawable.television15};
     private ImageView back, choose, choose1, add, subtract, up, down, title_bar_iv_or;
-    private TextView title, title_bar_tv_room;
+    private TextView title, title_bar_tv_room, name_stb;
     private List<WareSetBox> wareSetBoxs;
     private List<WareSetBox> AllWareSetBox;
     private WareSetBox wareSetBox;
@@ -63,8 +66,9 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         title_bar_tv_room.setVisibility(View.VISIBLE);
         title_bar_tv_room.setTextColor(Color.BLACK);
         title_bar_iv_or = (ImageView) findViewById(R.id.title_bar_iv_or);
-        title_bar_iv_or.setImageResource(R.drawable.qing);
+        title_bar_iv_or.setImageResource(R.drawable.fj);
         title_bar_iv_or.setVisibility(View.VISIBLE);
+        name_stb = (TextView) findViewById(R.id.name_stb);
         title_bar_iv_or.setOnClickListener(this);
         title.setText(getIntent().getStringExtra("title") + "控制");
         back.setOnClickListener(this);
@@ -91,6 +95,8 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
 
     private void upData() {
 
+        if (MyApplication.getRoom_list().size() == 0)
+            return;
         //房间名称；
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
@@ -114,15 +120,16 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         }
         if (wareSetBoxs.size() == 0) {//如果这个房间没有电视，则不显示设备；
             IsCanClick = false;
-            ToastUtil.showToast(StbActivity.this, title_bar_tv_room.getText() + "没有机顶盒，请添加");
+            name_stb.setText(title_bar_tv_room.getText() + "没有找到机顶盒");
             return;
         } else if (wareSetBoxs.size() == 1) {//电视是一个，刚刚好；
             IsCanClick = true;
             wareSetBox = wareSetBoxs.get(0);
-            title_bar_tv_room.setText(title_bar_tv_room.getText() + "  (" + wareSetBoxs.get(0).getDev().getDevName() + ")");
+            title_bar_tv_room.setText(title_bar_tv_room.getText());
+            name_stb.setText("机顶盒名称 : " + wareSetBoxs.get(0).getDev().getDevName());
         } else if (wareSetBoxs.size() > 1) {//如果一个房间多个电视，则继续选择提示。
             IsCanClick = false;
-            ToastUtil.showToast(StbActivity.this,"一个房间最多一个机顶盒");
+            ToastUtil.showToast(StbActivity.this, "一个房间最多一个机顶盒");
             return;
         }
     }
@@ -132,7 +139,7 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
 
         if (v.getId() == R.id.title_bar_iv_back)//返回
             finish();
-        if (v == title_bar_iv_or)
+        if (v == title_bar_iv_or && MyApplication.getRoom_list().size() > 0)
             getRoomDialog();
         if (IsCanClick && wareSetBox != null) {
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
@@ -186,8 +193,7 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
     public void getRoomDialog() {
         ListView dia_listview;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
-        TextView textView = (TextView) dialog.getView().findViewById(R.id.select_room);
-        textView.setText("请选择房间");
+
         //获得当前窗体
         Window window = dialog.getWindow();
         //重新设置
@@ -201,6 +207,10 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         //(当Window的Attributes改变时系统会调用此函数)
         window.setAttributes(lp);
         dialog.show();
+        TextView textView = (TextView) dialog.findViewById(R.id.select_room);
+        textView.setText("请选择房间");
+        textView.setTextColor(Color.BLACK);
+
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Room_Select_Adapter(StbActivity.this, MyApplication.getRoom_list()));
 

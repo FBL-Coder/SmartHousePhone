@@ -7,5 +7,7 @@
 
     <!-- 矩形的圆角半径 -->
     <corners android:bottomRightRadius="12dp"
-        android:topRightRadius="12dp"/>
+        android:topRightRadius="12dp"
+        android:topLeftRadius="@dimen/dp_12"
+        android:bottomLeftRadius="@dimen/dp_12"/>
 </shape>

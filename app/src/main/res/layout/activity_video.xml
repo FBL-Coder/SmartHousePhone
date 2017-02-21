@@ -11,6 +11,7 @@
         <RelativeLayout
             android:id="@+id/rl"
             android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dp_20"
             android:layout_height="@dimen/activity_title_height">
 
             <ImageView
