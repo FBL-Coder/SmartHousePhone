@@ -136,6 +136,8 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
             } else {
                 getDialog();
             }
+        }else {
+            ToastUtil.showToast(this,"数据异常");
         }
     }
 

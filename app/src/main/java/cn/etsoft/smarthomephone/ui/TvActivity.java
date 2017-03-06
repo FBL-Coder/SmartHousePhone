@@ -229,9 +229,16 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
         gridView.setOnItemClickListener(this);
     }
 
+    long TimeExit = 0;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick && tv != null) {
+
+            if (System.currentTimeMillis() - TimeExit < 1000) {
+                TimeExit = System.currentTimeMillis();
+                return;
+            }
+            MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":4" +
                     ",\"subType1\":0" +

@@ -134,6 +134,8 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         }
     }
 
+    long TimeExit = 0;
+
     @Override
     public void onClick(View v) {
 
@@ -142,6 +144,12 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         if (v == title_bar_iv_or && MyApplication.getRoom_list().size() > 0)
             getRoomDialog();
         if (IsCanClick && wareSetBox != null) {
+
+            if (System.currentTimeMillis() - TimeExit < 1000) {
+                TimeExit = System.currentTimeMillis();
+                return;
+            }
+            MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":4" +
                     ",\"subType1\":0" +

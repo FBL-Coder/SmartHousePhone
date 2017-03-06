@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.etsoft.smarthomephone">
     <permission
-        android:name="cn.semtec.community2.permission.JPUSH_MESSAGE"
+        android:name="cn.etsoft.smarthomephone.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
     <!-- bluethooch -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Required -->
-    <uses-permission android:name="cn.semtec.community2.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="ccn.etsoft.smarthomephone.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- Optional. Required for location feature -->
@@ -26,6 +26,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- 这个权限用于进行网络定位-->
+    <uses-permission android:name="android.permission.LOCATION_HARDWARE"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <!-- 这个权限用于访问GPS定位-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -48,7 +50,6 @@
     <!--用于申请获取蓝牙信息进行室内定位-->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -473,7 +474,7 @@
         //高德地图定位
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="1be941d86c39ed969a5eb9eb8f29e1c2"/>
+            android:value="a7eb513c21b85dd6008c40a6ed0fa8aa"/>
         <receiver android:name=".NetBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

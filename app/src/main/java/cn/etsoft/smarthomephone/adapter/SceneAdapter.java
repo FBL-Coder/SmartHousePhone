@@ -85,6 +85,8 @@ public class SceneAdapter extends BaseAdapter {
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
                 createSceneEvents(mWareSceneEvents.get(position).getEventld());
             }
         });
@@ -93,8 +95,12 @@ public class SceneAdapter extends BaseAdapter {
 
     }
 
+    long TimeExit = 0;
     private void createSceneEvents(int eventId) {
-
+        if (System.currentTimeMillis() - TimeExit < 1000) {
+            TimeExit = System.currentTimeMillis();
+            return;
+        }
         String exec_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                 ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_exeSceneEvents.getValue() +
                 ",\"subType1\":0" +

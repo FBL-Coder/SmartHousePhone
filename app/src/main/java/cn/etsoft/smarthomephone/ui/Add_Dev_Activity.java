@@ -39,6 +39,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     private List<WareBoardChnout> list_board;
     private List<String> home_text;
     private List<String> type_text;
+    private boolean IsSave = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +143,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         int widthOff = getWindow().getWindowManager().getDefaultDisplay().getWidth() / 500;
         switch (v.getId()) {
-            case R.id.back:
+            case R.id.title_bar_iv_back:
                 finish();
                 break;
             case R.id.edit_roomname:
@@ -243,6 +244,10 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 //                    "roomName": "ceb4b6a8d2e5000000000000",
 //                    "powChn":	6
 //            }
+                if (IsSave) {
+                    ToastUtil.showToast(Add_Dev_Activity.this, "设备信息不合适");
+                    return;
+                }
                 String name = add_dev_name.getText().toString();
                 String type = add_dev_type.getText().toString();
                 String room = "";
@@ -318,11 +323,32 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         type_position = 0;
                     else if (position == 1)
                         type_position = 3;
-                    else if (position == 2)
+                    else if (position == 2) {
+                        for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
+                            if (add_dev_room.getText().equals(MyApplication.getWareData().getCurtains().get(i).getDev().getRoomName())) {
+                                cn.etsoft.smarthomephone.UiUtils.ToastUtil.showToast(Add_Dev_Activity.this, "一个房间只能有一个窗帘");
+                                IsSave = false;
+                                popupWindow.dismiss();
+                                return;
+                            }
+                        }
                         type_position = 4;
+                    }
                 } else if (type == 2) {
-                    add_dev_room.setText(text.get(position));
+                    if ("窗帘".equals(add_dev_type.getText())) {
+                        String roomname = text.get(position);
+                        for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
+                            if (roomname.equals(MyApplication.getWareData().getCurtains().get(i).getDev().getRoomName())) {
+                                cn.etsoft.smarthomephone.UiUtils.ToastUtil.showToast(Add_Dev_Activity.this, "一个房间只能有一个窗帘");
+                                IsSave = false;
+                                popupWindow.dismiss();
+                                return;
+                            }
+                        }
 
+                    } else {
+                        add_dev_room.setText(text.get(position));
+                    }
                 } else if (type == 3) {
                     add_dev_board.setText(text.get(position));
                     board_position = position;
@@ -331,7 +357,9 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 }
                 popupWindow.dismiss();
             }
-        });
+        }
+
+        );
         //popupwindow页面之外可点
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
@@ -346,7 +374,9 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 }
                 return false;
             }
-        });
+        }
+
+        );
     }
 
     public String Sutf2Sgbk(String string) {

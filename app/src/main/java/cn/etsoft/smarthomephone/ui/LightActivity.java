@@ -100,9 +100,16 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         }
     }
 
+    long TimeExit = 0;
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
+            if (System.currentTimeMillis() - TimeExit < 1000) {
+                TimeExit = System.currentTimeMillis();
+                return;
+            }
+            MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             if (wareLight.get(position).getbTuneEn() == 0) {
                 String ctlStr;
                 if (wareLight.get(position).getbOnOff() == 0) {
@@ -233,7 +240,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         if (IsCanClick) {
             switch (v.getId()) {
                 case R.id.title_bar_iv_or:
-                    if (room_list.size() > 0)
+                    if (room_list != null && room_list.size() > 0)
                         getRoomDialog();
                     break;
 //                case R.id.light_open_all:

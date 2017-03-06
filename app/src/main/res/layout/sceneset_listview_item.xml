@@ -29,7 +29,6 @@
         android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_10"
         android:paddingTop="@dimen/dp_8"
-        android:text="@string/first_parlour"
         android:textColor="@color/color_88222223"
         android:textSize="@dimen/sp_18" />
 

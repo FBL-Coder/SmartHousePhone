@@ -100,6 +100,16 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         AirConds = new ArrayList<>();
         //房间集合
         room_list = MyApplication.getRoom_list();
+
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (room_list.size() == 0)
+                    return;
+                getRoomDialog();
+            }
+        });
+
         //房间名称；
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
@@ -234,14 +244,6 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
             }
         });
 
-        select.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (room_list.size() == 0)
-                    return;
-                getRoomDialog();
-            }
-        });
         if (MyApplication.getWareData() != null) {
             if (MyApplication.getWareData().getAirConds() != null
                     && MyApplication.getWareData().getAirConds().size() > 0) {
@@ -266,9 +268,15 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         gridView.setOnItemClickListener(this);
     }
 
+    long TimeExit = 0;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
+            if (System.currentTimeMillis() - TimeExit < 1000) {
+                TimeExit = System.currentTimeMillis();
+                return;
+            }
+            MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
                     ",\"subType1\":0" +

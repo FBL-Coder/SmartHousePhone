@@ -4,9 +4,9 @@ android {
     compileSdkVersion 22
     buildToolsVersion "23.0.3"
     defaultConfig {
-        applicationId "cn.etsoft.smarthome"
+        applicationId "cn.etsoft.smarthomephone"
         minSdkVersion 11
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
 

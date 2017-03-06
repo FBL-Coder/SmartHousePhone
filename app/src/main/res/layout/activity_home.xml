@@ -25,6 +25,8 @@
             android:drawableLeft="@drawable/selector_ref"
             android:gravity="center_vertical"
             android:text="刷新"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/color_setting_text"
             android:textSize="@dimen/sp_14" />
 

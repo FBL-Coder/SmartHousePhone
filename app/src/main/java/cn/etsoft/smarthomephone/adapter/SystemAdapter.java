@@ -82,6 +82,11 @@ public class SystemAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        if (listViewItems.size() == 0){
+            viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
+            viewHolder.title.setText("新增模式");
+            return convertView;
+        }
         if (listViewItems.size() > 0) {
             if (position < listViewItems.size()) {
                 viewHolder.image.setImageResource(image[position/5]);
