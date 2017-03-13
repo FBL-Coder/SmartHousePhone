@@ -214,7 +214,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                                 adapter.notifyDataSetChanged();
                             else {
                                 adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener);
-                                lv.setAdapter(Equipadapter);
+                                lv.setAdapter(adapter);
                             }
                         }
                     }

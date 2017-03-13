@@ -169,11 +169,13 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
         if (!"".equals(weatherResult)) {
 
-            Weather_All_Bean results = gson.fromJson(weatherResult, Weather_All_Bean.class);
-
-            MyApplication.mInstance.setResults(results);
-
-            weather_handler.sendMessage(weather_handler.obtainMessage());
+            try {
+                Weather_All_Bean results = gson.fromJson(weatherResult, Weather_All_Bean.class);
+                MyApplication.mInstance.setResults(results);
+                weather_handler.sendMessage(weather_handler.obtainMessage());
+            }catch (Exception e){
+                Log.e("Exception",""+e);
+            }
         } else {
             ToastUtil.showToast(HomeActivity.this, "获取天气信息失败");
         }

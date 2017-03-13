@@ -433,6 +433,10 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                     break;
                 //扫风
                 case 3:
+                    if (wareAirCondDev.getbOnOff() == UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue()) {
+                        Toast.makeText(this, "请先开机，再操作", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     cmdValue = UdpProPkt.E_AIR_CMD.e_air_drctLfRt1.getValue();
                     break;
                 //制冷

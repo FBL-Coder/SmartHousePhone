@@ -132,7 +132,7 @@ public class WelcomeActivity extends Activity {
             if (!"".equals(module_str)) {
                 String DevID = module_str.substring(0, module_str.indexOf("-"));
                 GlobalVars.setDevid(DevID);
-                GlobalVars.setDevpass(module_str.substring(module_str.indexOf("-"))+1);
+                GlobalVars.setDevpass(module_str.substring(module_str.indexOf("-")+1));
 
                 mDataHandler = new Handler() {
                     @Override

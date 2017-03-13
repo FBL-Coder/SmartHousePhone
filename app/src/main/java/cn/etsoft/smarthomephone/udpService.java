@@ -311,8 +311,8 @@ public class udpService extends Service {
                 break;
             case 35:// e_udpPro_chns_status
 
-                ctrlDevReply(info);
-                isFreshData = true;
+//                ctrlDevReply(info);
+//                isFreshData = true;
                 break;
         }
 
