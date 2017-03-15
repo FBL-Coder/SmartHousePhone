@@ -98,10 +98,7 @@ public class udpService extends Service {
         new Thread(new Runnable() {//执行接收数据接口，有数据，则执行；
             @Override
             public void run() {
-                if (MyApplication.getWareData() == null) {
-                    wareData = new WareData();
-                    MyApplication.setWareData(wareData);
-                }
+                wareData = MyApplication.getWareData();
                 byte[] lMsg = new byte[1024 * 10];
                 DatagramPacket packet = new DatagramPacket(lMsg, lMsg.length);
                 try {
