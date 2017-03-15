@@ -492,7 +492,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         if (keyCode != KeyEvent.KEYCODE_BACK)
             return false;
         if (System.currentTimeMillis() - TimeExit < 1500) {
-            Dtat_Cache.writeFile(MyApplication.getWareData());
+            Dtat_Cache.writeFile(GlobalVars.getDevid(),MyApplication.getWareData());
             MyApplication.mInstance.getActivity().finish();
             System.exit(0);
         } else {

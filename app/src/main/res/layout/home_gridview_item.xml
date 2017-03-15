@@ -18,6 +18,7 @@
         android:textColor="@color/white1"
         android:textSize="@dimen/sp_16"
         android:gravity="center"
+        android:textStyle="bold"
         android:layout_marginTop="@dimen/dp_2"
         />
 </LinearLayout>

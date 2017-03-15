@@ -571,9 +571,7 @@ public class MyApplication extends Application implements udpService.Callback, N
 
     public void setAllHandler(Handler handler) {
         this.handler = handler;
-
     }
-
     /**
      * 启动服务；
      *

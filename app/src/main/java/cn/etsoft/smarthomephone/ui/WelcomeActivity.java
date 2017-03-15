@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +18,8 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
+import cn.etsoft.smarthomephone.pullmi.entity.WareData;
+import cn.etsoft.smarthomephone.pullmi.utils.Dtat_Cache;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 
 
@@ -64,7 +67,7 @@ public class WelcomeActivity extends Activity {
 
             GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitID());
             GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitPass());
-
+            MyApplication.setWareData((WareData) Dtat_Cache.readFile(GlobalVars.getDevid()));
             mDataHandler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
@@ -116,15 +119,9 @@ public class WelcomeActivity extends Activity {
                 }
             };
             MyApplication.mInstance.setAllHandler(mDataHandler);
-
-
-//                MyApplication.setWareData((WareData) Dtat_Cache.readFile());
-//            GlobalVars.setDevid(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitID());
-//            GlobalVars.setDevpass(mRcuInfos.get(mRcuInfos.size() - 1).getDevUnitPass());
             MyApplication.mInstance.setRcuInfo(mRcuInfos.get(0));
             startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
             finish();
-
         } else if (mRcuInfos != null && mRcuInfos.size() > 1) {
             SharedPreferences sharedPreferences1 = getSharedPreferences("profile",
                     Context.MODE_PRIVATE);
@@ -133,7 +130,13 @@ public class WelcomeActivity extends Activity {
                 String DevID = module_str.substring(0, module_str.indexOf("-"));
                 GlobalVars.setDevid(DevID);
                 GlobalVars.setDevpass(module_str.substring(module_str.indexOf("-")+1));
-
+                //读缓存数据
+                MyApplication.setWareData((WareData) Dtat_Cache.readFile(DevID));
+                if (MyApplication.getWareData().getDevs().size() > 0) {
+                    for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                        Log.e("Exception", MyApplication.getWareData().getDevs().get(i).getDevName());
+                    }
+                }
                 mDataHandler = new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
