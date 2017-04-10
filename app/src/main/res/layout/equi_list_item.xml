@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
+    android:layout_height="40dp"
     android:background="@drawable/list_item_selector"
     android:paddingBottom="@dimen/dp_10"
     android:paddingTop="@dimen/dp_10">
 
     <ImageView
         android:id="@+id/equi_iv_use"
-        android:layout_width="@dimen/dp_15"
-        android:layout_height="@dimen/dp_15"
-        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
+        android:layout_marginLeft="@dimen/dp_30"
         />
 
     <LinearLayout

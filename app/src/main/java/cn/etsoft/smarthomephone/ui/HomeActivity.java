@@ -45,6 +45,7 @@ import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.domain.City;
 import cn.etsoft.smarthomephone.domain.Weather_All_Bean;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
+import cn.etsoft.smarthomephone.pullmi.entity.WareBoardChnout;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.utils.Dtat_Cache;
 import cn.etsoft.smarthomephone.utils.CityDB;
@@ -77,14 +78,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     public AMapLocationClient mLocationClient = null;
     private List<String> text_room;
     private List<WareDev> mWareDev_room;
-
-
     //ViewPager
     //图片标题
     private TextView textView_banner, loaction_text, temp_text, hum_text, pm_25, breath_text, weather_text, ref_home;
-
-
-
     private ViewPagerCompat mViewPager;
     private List<Integer> mImgIds_img = new ArrayList<>();
     private int[] mImgIds = new int[]{R.drawable.banner_parlour};
@@ -168,13 +164,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         Gson gson = new Gson();
 
         if (!"".equals(weatherResult)) {
-
             try {
                 Weather_All_Bean results = gson.fromJson(weatherResult, Weather_All_Bean.class);
                 MyApplication.mInstance.setResults(results);
                 weather_handler.sendMessage(weather_handler.obtainMessage());
-            }catch (Exception e){
-                Log.e("Exception",""+e);
+            } catch (Exception e) {
+                Log.e("Exception", "" + e);
             }
         } else {
             ToastUtil.showToast(HomeActivity.this, "获取天气信息失败");
@@ -267,7 +262,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 if (MyApplication.mInstance.getResults() == null)
                     return;
                 int code = Integer.parseInt(MyApplication.mInstance.getResults().getResult().getImg());
-
 //                if (code == 0)
 //                    weather.setImageResource(wrathers[0]);
 //                else if (code == 1 || code == 2)
@@ -310,7 +304,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 //                    weather.setImageResource(wrathers[7]);
 //                else
 //                    weather.setImageResource(wrathers[14]);
-
                 String text = MyApplication.mInstance.getResults().getResult().getWeather();
                 String temp = MyApplication.mInstance.getResults().getResult().getTemp();
                 String shidu = MyApplication.mInstance.getResults().getResult().getHumidity() + "%";
@@ -326,34 +319,51 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 weather_text.setText(text);
             }
         };
-
     }
-
 
     /**
      * 填充ViewPager页面的适配器
      */
     private class MyAdapter extends PagerAdapter {
+
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-
-            container.addView(mImageViews.get(position));
-            return mImageViews.get(position);
+            try {
+                container.addView(mImageViews.get(position));
+                return mImageViews.get(position);
+            } catch (Exception e) {
+                System.out.println("" + e);
+            }
+            return null;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(mImageViews.get(position));
+            try {
+                container.removeView(mImageViews.get(position));
+            } catch (Exception e) {
+                System.out.println("" + e);
+            }
         }
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
-            return view == object;
+            try {
+                return view == object;
+            } catch (Exception e) {
+                System.out.println("" + e);
+            }
+            return false;
         }
 
         @Override
         public int getCount() {
-            return mImageViews.size();
+            try {
+                return mImageViews.size();
+            } catch (Exception e) {
+                System.out.println("" + e);
+            }
+            return 0;
         }
     }
 
@@ -412,7 +422,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         Typeface typeface = Typeface.createFromAsset(HomeActivity.this.getAssets(), "fonnts/hua.ttf");
         //使用字体成楷体
         textView_banner.setTypeface(typeface);
-
         textView_banner.setText(text_room.get(0));
         mViewPager.setPageTransformer(true, new DepthPageTransformer());
         // 设置填充ViewPager页面的适配器
@@ -438,12 +447,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private void upData() {
         text_room = new ArrayList<>();
         mWareDev_room = new ArrayList<>();
-
         for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
             mWareDev_room.add(MyApplication.getWareData().getDevs().get(i));
         }
-
-        for (int i = 0; i < mWareDev_room.size() - 1; i++) {
+        for (int i = 0; i < mWareDev_room.size(); i++) {
             for (int j = mWareDev_room.size() - 1; j > i; j--) {
                 if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())) {
                     mWareDev_room.remove(j);
@@ -455,7 +462,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         }
         if (text_room.size() < 1)
             return;
-
         initViewPager();
     }
 
@@ -489,15 +495,20 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode != KeyEvent.KEYCODE_BACK)
+        try {
+            if (keyCode != KeyEvent.KEYCODE_BACK)
+                return false;
+            if (System.currentTimeMillis() - TimeExit < 1500) {
+                MyApplication.getWareData().setBoardChnouts(new ArrayList<WareBoardChnout>());
+                Dtat_Cache.writeFile(GlobalVars.getDevid(), MyApplication.getWareData());
+                MyApplication.mInstance.getActivity().finish();
+                System.exit(0);
+            } else {
+                Toast.makeText(HomeActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+                TimeExit = System.currentTimeMillis();
+            }
+        } catch (Exception e) {
             return false;
-        if (System.currentTimeMillis() - TimeExit < 1500) {
-            Dtat_Cache.writeFile(GlobalVars.getDevid(),MyApplication.getWareData());
-            MyApplication.mInstance.getActivity().finish();
-            System.exit(0);
-        } else {
-            Toast.makeText(HomeActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
-            TimeExit = System.currentTimeMillis();
         }
         return false;
     }
@@ -549,10 +560,11 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
     OnGetViewPageNum onGetViewPageNum;
 
-    public void setOnGetViewPageNum(OnGetViewPageNum onGetViewPageNum){
-       this.onGetViewPageNum = onGetViewPageNum;
+    public void setOnGetViewPageNum(OnGetViewPageNum onGetViewPageNum) {
+        this.onGetViewPageNum = onGetViewPageNum;
     }
-    public interface OnGetViewPageNum{
-       void getViewPageNum(int position);
+
+    public interface OnGetViewPageNum {
+        void getViewPageNum(int position);
     }
 }

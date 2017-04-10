@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,7 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareBoardChnout;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
 import cn.etsoft.smarthomephone.utils.ToastUtil;
+import cn.etsoft.smarthomephone.view.Circle_Progress;
 
 /**
  * Created by fbl on 16-11-17.
@@ -40,6 +42,15 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     private List<String> home_text;
     private List<String> type_text;
     private boolean IsSave = true;
+    private Dialog mDialog;
+
+    //自定义加载进度条
+    private void initDialog(String str) {
+        Circle_Progress.setText(str);
+        mDialog = Circle_Progress.createLoadingDialog(this);
+        mDialog.setCancelable(true);//允许返回
+        mDialog.show();//显示
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,8 +255,8 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 //                    "roomName": "ceb4b6a8d2e5000000000000",
 //                    "powChn":	6
 //            }
-                if (IsSave) {
-                    ToastUtil.showToast(Add_Dev_Activity.this, "设备信息不合适");
+                if (!IsSave) {
+                    ToastUtil.showToast(Add_Dev_Activity.this, "一个房间只能有一个窗帘");
                     return;
                 }
                 String name = add_dev_name.getText().toString();
@@ -283,7 +294,16 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                             "\"powChn\":" + way_int + "}";
 
                     MyApplication.sendMsg(chn_str);
-                    finish();
+                    initDialog("正在保存...");
+                    MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+                        @Override
+                        public void upDataWareData(int what) {
+                            if (what == 5)
+                                if (mDialog != null)
+                                    mDialog.dismiss();
+                            finish();
+                        }
+                    });
                 }
                 break;
         }
@@ -308,7 +328,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         else if (type == 3)
             popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 120);
         else if (type == 4)
-            popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 120);
+            popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 240);
 
         popupWindow.setContentView(customView);
         ListView list_pop = (ListView) customView.findViewById(R.id.popupWindow_equipment_lv);

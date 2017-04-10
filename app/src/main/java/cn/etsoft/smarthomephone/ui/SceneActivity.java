@@ -34,9 +34,9 @@ public class SceneActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initEvent();
-        MyApplication.getSceneInfo();
+//        MyApplication.getSceneInfo();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lights);
+        setContentView(R.layout.activity_scene);
         //初始化标题栏
         initTitleBar();
         //初始化控件

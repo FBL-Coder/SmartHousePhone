@@ -18,4 +18,20 @@ public class WareSetBox implements Serializable {
 		this.dev = dev;
 	}
 
+
+	private byte bOnOff;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+
+	public byte getbOnOff() {
+		return bOnOff;
+	}
+
+	public void setbOnOff(byte bOnOff) {
+		this.bOnOff = bOnOff;
+	}
+
 }

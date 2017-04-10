@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -27,14 +28,16 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.IClick_PZ;
-
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
 import cn.etsoft.smarthomephone.adapter.SwipeAdapter;
 import cn.etsoft.smarthomephone.domain.Save_Quipment;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.entity.Iclick_Tag;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareKeyOpItem;
+import cn.etsoft.smarthomephone.view.Circle_Progress;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 import cn.etsoft.smarthomephone.weidget.SwipeListView;
 
@@ -44,7 +47,7 @@ import cn.etsoft.smarthomephone.weidget.SwipeListView;
  */
 public class AddEquipmentControlActivity extends Activity implements View.OnClickListener {
     private TextView mTitle, equipment_close, tv_equipment_parlour, ref_equipment, del_equipment, save_equipment;
-    private ImageView back;
+    private ImageView back, input_out_iv_nodata;
     private RelativeLayout add_equipment_btn;
     private SwipeListView lv;
     private ListView add_equipment_Layout_lv;
@@ -59,7 +62,9 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
     private List<WareDev> mWareDev_room;
     private List<WareDev> mWareDev;
     private EquipmentAdapter Equipadapter;
-    private int DATTYPE_SET = 12, DATTYPE_DEL = 13, POP_TYPE_DOWNUP = 1, POP_TYPE_STATE = 0, POP_TYPR_ROOM = 2;
+    private int DATTYPE_SET = 12, DATTYPE_DEL = 13, POP_TYPE_DOWNUP = 1, POP_TYPE_STATE = 0, POP_TYPR_ROOM = 2, DEL_ALL = 110;
+    private Dialog mDialog;
+    private int del_Position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,34 +72,86 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
         setContentView(R.layout.activity_equipmentdeploy_listview);
         //初始化标题栏
         initTitleBar();
-        //初始化控件
-        initView();
 //        //初始化listView
 //        initListView();
-
-
-        final Handler mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == 11) {
-                    keyOpItems = null;
-                    initListView();
-                }
-                if (MyApplication.getWareData().getResult() != null
-                        && MyApplication.getWareData().getResult().getResult() == 1) {
-                    Toast.makeText(AddEquipmentControlActivity.this, "操作成功", Toast.LENGTH_SHORT).show();
-                    MyApplication.getWareData().setResult(null);
-                }
-                super.handleMessage(msg);
-            }
-        };
+        initData();
         MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
-                Message message = mHandler.obtainMessage(what);
-                mHandler.sendMessage(message);
+                if (what == 11 || what == 12 || what == 13) {
+                    if (mDialog != null)
+                        mDialog.dismiss();
+                }
+
+                if (what == 11) {
+                    keyOpItems.clear();
+                    initListView();
+                }
+                if (what == 12 && MyApplication.getWareData().getResult() != null
+                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                    Toast.makeText(AddEquipmentControlActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                    MyApplication.getWareData().setResult(null);
+
+                }
+                if (del_Position != DEL_ALL && MyApplication.getWareData().getResult() != null
+                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                    Toast.makeText(AddEquipmentControlActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                    MyApplication.getWareData().setResult(null);
+                    keyOpItems.remove(del_Position);
+                    del_Position = 0;
+                    if (adapter != null)
+                        adapter.notifyDataSetChanged(keyOpItems);
+                    else {
+                        adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener);
+                        lv.setAdapter(adapter);
+                    }
+                }
+                if (del_Position == DEL_ALL && MyApplication.getWareData().getResult() != null
+                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                    Toast.makeText(AddEquipmentControlActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                    MyApplication.getWareData().setResult(null);
+                    del_Position = 0;
+                    keyOpItems.clear();
+                    if (adapter != null)
+                        adapter.notifyDataSetChanged(keyOpItems);
+                    else {
+                        adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener, input_out_iv_nodata);
+                        lv.setAdapter(adapter);
+                    }
+                }
             }
         });
+        //初始化控件
+        initView();
+    }
+
+    //自定义加载进度条
+    private void initDialog(String str) {
+        Circle_Progress.setText(str);
+        mDialog = Circle_Progress.createLoadingDialog(AddEquipmentControlActivity.this);
+        mDialog.setCancelable(true);//允许返回
+        mDialog.show();//显示
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                mDialog.dismiss();
+                ToastUtil.showToast(AddEquipmentControlActivity.this, "数据加载失败");
+            }
+        };
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3500);
+                    if (mDialog.isShowing()) {
+                        handler.sendMessage(handler.obtainMessage());
+                    }
+                } catch (Exception e) {
+                    System.out.println(e + "");
+                }
+            }
+        }).start();
     }
 
     /**
@@ -106,12 +163,9 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         index = getIntent().getExtras().getInt("key_index");
         uid = getIntent().getExtras().getString("uid");
-
-        MyApplication.getKeyItemInfo(index, uid);
         System.out.println("加载数据");
         dev = new ArrayList<>();
         home_text = new ArrayList<>();
-        keyOpItems = new ArrayList<>();
         mWareDev_room = new ArrayList<>();
         mWareDev = MyApplication.getWareData().getDevs();
 
@@ -134,13 +188,19 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
             if (mWareDev.get(i).getRoomName().equals(home_text.get(0)))
                 dev.add(mWareDev.get(i));
         }
+    }
 
+    public void initData() {
+        keyOpItems = new ArrayList<>();
+        MyApplication.getKeyItemInfo(index, uid);
+        initDialog("正在加载...");
     }
 
     /**
      * 初始化控件
      */
     private void initView() {
+        input_out_iv_nodata = (ImageView) findViewById(R.id.input_out_iv_nodata);
         add_equipment_btn = (RelativeLayout) findViewById(R.id.equipment_out_rl);
         equipment_close = (TextView) findViewById(R.id.equipment_close);
         tv_equipment_parlour = (TextView) findViewById(R.id.tv_equipment_parlour);
@@ -165,11 +225,22 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
      * 初始化listView
      */
     private void initListView() {
-
-        keyOpItems = MyApplication.getWareData().getKeyOpItems();
-
+        if (MyApplication.getWareData().getKeyOpItems() == null || MyApplication.getWareData().getKeyOpItems().size() == 0) {
+            input_out_iv_nodata.setVisibility(View.VISIBLE);
+            if (adapter != null)
+                adapter.notifyDataSetChanged(keyOpItems);
+            else {
+                adapter = new SwipeAdapter(this, keyOpItems, mListener);
+                lv.setAdapter(adapter);
+            }
+            return;
+        }
+        input_out_iv_nodata.setVisibility(View.GONE);
+        for (int i = 0; i < MyApplication.getWareData().getKeyOpItems().size(); i++) {
+            keyOpItems.add(MyApplication.getWareData().getKeyOpItems().get(i));
+        }
         if (adapter != null)
-            adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged(keyOpItems);
         else {
             adapter = new SwipeAdapter(this, keyOpItems, mListener);
             lv.setAdapter(adapter);
@@ -179,7 +250,6 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.title_bar_iv_back:
                 finish();
                 break;
@@ -207,19 +277,18 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                                 Toast.makeText(AddEquipmentControlActivity.this, "设备已存在！", Toast.LENGTH_SHORT).show();
                             }
                         }
-
                         if (tag) {
                             keyOpItems.add(item);
+                            input_out_iv_nodata.setVisibility(View.GONE);
                             if (adapter != null)
-                                adapter.notifyDataSetChanged();
+                                adapter.notifyDataSetChanged(keyOpItems);
                             else {
-                                adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener);
+                                adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener, input_out_iv_nodata);
                                 lv.setAdapter(adapter);
                             }
                         }
                     }
                 });
-
                 add_equipment_Layout_ll.setVisibility(View.VISIBLE);
                 add_equipment_btn.setVisibility(View.GONE);
                 break;
@@ -230,9 +299,11 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 break;
             case R.id.ref_equipment:
                 //刷新
-                initTitleBar();
+                input_out_iv_nodata.setVisibility(View.GONE);
+                initData();
                 break;
             case R.id.del_equipment:
+
                 //删除所有设备
                 CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(AddEquipmentControlActivity.this);
                 builder.setTitle("提示 :");
@@ -246,9 +317,12 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        del_Position = DEL_ALL;
                         Save_Quipment save_quipment = new Save_Quipment();
-
+                        if (keyOpItems.size() == 0) {
+                            dialog.dismiss();
+                            return;
+                        }
                         List<Save_Quipment.key_Opitem_Rows> list_kor = new ArrayList<>();
                         for (int i = 0; i < keyOpItems.size(); i++) {
                             Save_Quipment.key_Opitem_Rows key_opitem_rows = save_quipment.new key_Opitem_Rows();
@@ -260,33 +334,26 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                             list_kor.add(key_opitem_rows);
                         }
 
-                        save_quipment.setDevUnitID(MyApplication.getWareData().getRcuInfos().get(0).getDevUnitID());
+                        save_quipment.setDevUnitID(GlobalVars.getDevid());
                         save_quipment.setDatType(DATTYPE_DEL);
                         save_quipment.setKey_cpuCanID(uid);
-                        save_quipment.setCnt(keyOpItems.size());
-                        save_quipment.setKey_index(0);
+                        save_quipment.setKey_opitem(keyOpItems.size());
+                        save_quipment.setKey_index(index);
                         save_quipment.setSubType1(0);
                         save_quipment.setSubType2(0);
                         save_quipment.setKey_opitem_rows(list_kor);
-
+                        dialog.dismiss();
                         Gson gson = new Gson();
                         System.out.println(gson.toJson(save_quipment));
                         MyApplication.sendMsg(gson.toJson(save_quipment).toString());
-
-                        keyOpItems.clear();
-                        if (adapter != null)
-                            adapter.notifyDataSetChanged();
-                        else {
-                            adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener);
-                            lv.setAdapter(adapter);
-                        }
-
-                        dialog.dismiss();
+                        initDialog("正在删除...");
                     }
                 });
                 builder.create().show();
                 break;
             case R.id.save_equipment:
+                if (keyOpItems.size() == 0)
+                    return;
                 //保存
                 for (int i = 0; i < keyOpItems.size(); i++) {
                     if (keyOpItems.get(i).getKeyOp() == 2 || keyOpItems.get(i).getKeyOpCmd() == 0) {
@@ -300,7 +367,6 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 List<Save_Quipment.key_Opitem_Rows> list_kor = new ArrayList<>();
                 for (int i = 0; i < keyOpItems.size(); i++) {
                     Save_Quipment.key_Opitem_Rows key_opitem_rows = save_quipment.new key_Opitem_Rows();
-
                     key_opitem_rows.setOut_cpuCanID(keyOpItems.get(i).getDevUnitID());
                     key_opitem_rows.setDevID(keyOpItems.get(i).getDevId());
                     key_opitem_rows.setDevType(keyOpItems.get(i).getDevType());
@@ -308,21 +374,18 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                     key_opitem_rows.setKeyOpCmd(keyOpItems.get(i).getKeyOpCmd());
                     list_kor.add(key_opitem_rows);
                 }
-
-                save_quipment.setDevUnitID(MyApplication.getWareData().getRcuInfos().get(0).getDevUnitID());
+                save_quipment.setDevUnitID(GlobalVars.getDevid());
                 save_quipment.setDatType(DATTYPE_SET);
                 save_quipment.setKey_cpuCanID(uid);
-                save_quipment.setCnt(keyOpItems.size());
-                save_quipment.setKey_index(0);
+                save_quipment.setKey_opitem(keyOpItems.size());
+                save_quipment.setKey_index(index);
                 save_quipment.setSubType1(0);
                 save_quipment.setSubType2(0);
                 save_quipment.setKey_opitem_rows(list_kor);
-
                 Gson gson = new Gson();
                 System.out.println(gson.toJson(save_quipment));
                 MyApplication.sendMsg(gson.toJson(save_quipment).toString());
-
-
+                initDialog("正在保存...");
                 break;
             case R.id.tv_equipment_parlour:
                 //添加设备页的弹出框
@@ -376,7 +439,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
 
                     }
                     if (Equipadapter != null)
-                        Equipadapter.notifyDataSetInvalidated();
+                        Equipadapter.notifyDataSetChanged();
                     else {
                         Equipadapter = new EquipmentAdapter(dev, AddEquipmentControlActivity.this);
                         add_equipment_Layout_lv.setAdapter(Equipadapter);
@@ -472,14 +535,30 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                     builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            keyOpItems.remove(position);
-                            if (adapter != null)
-                                adapter.notifyDataSetChanged();
-                            else {
-                                adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener);
-                                lv.setAdapter(adapter);
-                            }
+                            del_Position = position;
+                            Save_Quipment save_quipment = new Save_Quipment();
+                            List<Save_Quipment.key_Opitem_Rows> list_kor = new ArrayList<>();
+                            Save_Quipment.key_Opitem_Rows key_opitem_rows = save_quipment.new key_Opitem_Rows();
+                            key_opitem_rows.setOut_cpuCanID(keyOpItems.get(position).getDevUnitID());
+                            key_opitem_rows.setDevID(keyOpItems.get(position).getDevId());
+                            key_opitem_rows.setDevType(keyOpItems.get(position).getDevType());
+                            key_opitem_rows.setKeyOp(keyOpItems.get(position).getKeyOp());
+                            key_opitem_rows.setKeyOpCmd(keyOpItems.get(position).getKeyOpCmd());
+                            list_kor.add(key_opitem_rows);
+                            save_quipment.setDevUnitID(GlobalVars.getDevid());
+                            save_quipment.setDatType(DATTYPE_DEL);
+                            save_quipment.setKey_cpuCanID(uid);
+                            save_quipment.setKey_opitem(1);
+                            save_quipment.setKey_index(index);
+                            save_quipment.setSubType1(0);
+                            save_quipment.setSubType2(0);
+                            save_quipment.setKey_opitem_rows(list_kor);
                             dialog.dismiss();
+                            Gson gson = new Gson();
+                            System.out.println(gson.toJson(save_quipment));
+                            MyApplication.sendMsg(gson.toJson(save_quipment).toString());
+                            initDialog("正在删除...");
+
                         }
                     });
                     builder.create().show();

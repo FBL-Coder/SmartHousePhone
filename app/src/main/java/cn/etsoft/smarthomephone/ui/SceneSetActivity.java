@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareSceneEvent;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
+import cn.etsoft.smarthomephone.view.Circle_Progress;
 import cn.etsoft.smarthomephone.weidget.CustomDialog;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 import cn.etsoft.smarthomephone.weidget.SwipeListView;
@@ -44,6 +46,17 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
 
     private SystemAdapter systemAdapter;
     private List<WareSceneEvent> event;
+    private Dialog mDialog;
+    private Handler mHandler;
+
+    //自定义加载进度条
+    private void initDialog(String str) {
+        Circle_Progress.setText(str);
+        mDialog = Circle_Progress.createLoadingDialog(this);
+        mDialog.setCancelable(true);//允许返回
+        mDialog.show();//显示
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,25 +67,45 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         //初始化ListView
         initListView();
 
-        final Handler mHandler = new Handler() {
+        mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+                if (mDialog != null)
+                    mDialog.dismiss();
                 //初始化ListView
                 initListView();
                 super.handleMessage(msg);
             }
         };
+//        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+//            @Override
+//            public void upDataWareData(int what) {
+//                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_addSceneEvents.getValue()
+//                        || what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_delSceneEvents.getValue()) {
+//                    Message message = mHandler.obtainMessage();
+//                    mHandler.sendMessage(message);
+//                }
+//            }
+//        });
+
         MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
-                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_addSceneEvents.getValue()
-                        || what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_delSceneEvents.getValue()) {
-                    Message message = mHandler.obtainMessage();
-                    mHandler.sendMessage(message);
+                if (mDialog != null)
+                    mDialog.dismiss();
+                if (what == 23) {
+                    //初始化情景的listView
+                    initListView();
+                    ToastUtil.showToast(SceneSetActivity.this, "添加成功");
+                }
+                if (what == 25) {
+                    initListView();
+                    ToastUtil.showToast(SceneSetActivity.this, "删除成功");
                 }
             }
         });
     }
+
 
     /**
      * 初始化标题栏
@@ -95,12 +128,8 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
             event.add(MyApplication.getWareData().getSceneEvents().get(i));
         }
         lv = (SwipeListView) findViewById(R.id.sceneSet_lv);
-        if (systemAdapter != null) {
-            systemAdapter.notifyDataSetChanged();
-        } else {
-            systemAdapter = new SystemAdapter(this, event, mListener);
-            lv.setAdapter(systemAdapter);
-        }
+        systemAdapter = new SystemAdapter(this, event, mListener);
+        lv.setAdapter(systemAdapter);
         lv.setOnItemClickListener(this);
     }
 
@@ -126,18 +155,25 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
 
         int listSize = event.size();
         if (listSize > 0) {
-            if (position < listSize) {
+            if (position < 2) {
+                ToastUtil.showToast(SceneSetActivity.this, "全开、全关模式不可操作");
+                return;
+            } else if (position < listSize ) {
                 Intent intent = new Intent(SceneSetActivity.this, SceneSettingActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putByte("eventId", event.get(position).getEventld());
                 bundle.putString("sceneName", event.get(position).getSceneName());
-                intent.putExtras(bundle);
+                intent.putExtra("bundle",bundle);
                 startActivity(intent);
-            } else {
+            }else {
+                if (MyApplication.getWareData().getSceneEvents().size() == 8) {
+                    ToastUtil.showToast(SceneSetActivity.this, "最多添加8个情景模式");
+                    return;
+                }
                 getDialog();
             }
-        }else {
-            ToastUtil.showToast(this,"数据异常");
+        } else {
+            ToastUtil.showToast(this, "数据异常");
         }
     }
 
@@ -148,14 +184,35 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 dialog.dismiss();
                 break;
             case R.id.scene_btn_sure:
+                dialog.dismiss();
+                initDialog("正在添加...");
                 String data = name.getText().toString();
                 if (!"".equals(data)) {
                     //新增情景模式
-                    add_scene(event.size(), data);
-
+                    List<Integer> Scene_int = new ArrayList<>();
+                    for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
+                        Scene_int.add((int) MyApplication.getWareData().getSceneEvents().get(i).getEventld());
+                    }
+                    List<Integer> Scene_id = new ArrayList<>();
+                    for (int i = 0; i < 8; i++) {
+                        Scene_id.add(i);
+                    }
+                    List<Integer> ID = new ArrayList<>();
+                    for (int i = 0; i < Scene_id.size(); i++) {
+                        if (!Scene_int.contains(Scene_id.get(i))) {
+                            ID.add(Scene_id.get(i));
+                        }
+                    }
+//                    for (int i = 0; i < ID.size(); i++) {
+//                        Log.e("ID",ID.get(i)+"");
+//                    }
+                    add_scene((byte) (int) ID.get(0), data);
+                    //新增情景模式
+//                    add_scene(event.size(), data);
+//
                     initListView();
-                    dialog.dismiss();
                 } else {
+                    dialog.dismiss();
                     ToastUtil.showToast(SceneSetActivity.this, "请填写情景名称");
                 }
                 break;
@@ -261,11 +318,12 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                     builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int i) {
-                            int eventId = MyApplication.getWareData().getSceneEvents().get(position).getEventld();
+                            dialog.dismiss();
+                            initDialog("正在删除...");
+                            byte sceneid = MyApplication.getWareData().getSceneEvents().get(position).getEventld();
                             String name = MyApplication.getWareData().getSceneEvents().get(position).getSceneName();
                             //删除情景模式
-                            del_scene(eventId, name);
-                            dialog.dismiss();
+                            del_scene(sceneid, name);
                         }
                     });
                     builder.create().show();

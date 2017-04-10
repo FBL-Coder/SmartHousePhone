@@ -379,6 +379,18 @@ public class MyApplication extends Application implements udpService.Callback, N
         MyApplication.wareData = wareData;
         onGetWareDataListener.upDataWareData(what);
     }
+    /**
+     * 情景备用全局数据
+     */
+    private static WareData wareData_scene;
+
+    public static WareData getWareData_Scene() {
+        return wareData_scene;
+    }
+
+    public static void setWareData_Scene(WareData wareData_scene) {
+        MyApplication.wareData_scene = wareData_scene;
+    }
 
     /**
      * 获取主页对象

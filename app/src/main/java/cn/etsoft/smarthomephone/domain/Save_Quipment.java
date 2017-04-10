@@ -13,7 +13,7 @@ public class Save_Quipment {
     int subType2;
     String key_cpuCanID;
     int key_index;
-    int cnt;
+    int key_opitem;
 
     List<key_Opitem_Rows> key_opitem_rows;
 
@@ -65,12 +65,12 @@ public class Save_Quipment {
         this.key_index = key_index;
     }
 
-    public int getCnt() {
-        return cnt;
+    public int getKey_opitem() {
+        return key_opitem;
     }
 
-    public void setCnt(int cnt) {
-        this.cnt = cnt;
+    public void setKey_opitem(int key_opitem) {
+        this.key_opitem = key_opitem;
     }
 
 

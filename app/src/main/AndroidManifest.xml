@@ -130,9 +130,6 @@
             android:name=".ui.SceneSettingActivity"
             android:screenOrientation="portrait" />
         <!--一楼客厅-->
-        <activity
-            android:name=".ui.ParlourActivity"
-            android:screenOrientation="portrait" />
         <!--组合设置-->
         <activity
             android:name=".ui.GroupActivity"
@@ -162,9 +159,6 @@
             android:name=".ui.AddActivity"
             android:screenOrientation="portrait" />
         <!--远程IP-->
-        <activity
-            android:name=".ui.Add_long_ip"
-            android:screenOrientation="portrait" />
         <!--联网模块详情-->
         <activity
             android:name=".ui.SetNewWorkActivity"

@@ -75,16 +75,27 @@
 
             </RelativeLayout>
 
-            <cn.etsoft.smarthomephone.weidget.SwipeListView
-                android:id="@+id/equipment_out_lv"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_0"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginRight="@dimen/dp_5"
-                android:layout_weight="6"
-                android:dividerHeight="@dimen/dp_5"
-                android:divider="@color/color_fff"
-                 />
+                android:layout_weight="6">
+                <cn.etsoft.smarthomephone.weidget.SwipeListView
+                    android:id="@+id/equipment_out_lv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:divider="@color/color_00000000"
+                    android:dividerHeight="@dimen/dp_10" />
+                <ImageView
+                    android:id="@+id/input_out_iv_nodata"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:src="@drawable/nodata"/>
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/equipment_out_rl"

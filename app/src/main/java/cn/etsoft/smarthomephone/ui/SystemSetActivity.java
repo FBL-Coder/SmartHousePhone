@@ -1,7 +1,6 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +17,7 @@ import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
+import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 
 /**
  * Created by Say GoBay on 2016/9/2.
@@ -26,16 +26,15 @@ import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 public class SystemSetActivity extends Activity implements AdapterView.OnItemClickListener {
     private GridView gridView;
     private LinearLayout ll;
-    private int[] image = {R.drawable.systemsetup2, R.drawable.systemsetup3, R.drawable.systemsetup4, R.drawable.systemsetup5,
-            R.drawable.ip, R.drawable.equipmentcontrol};
-    private String[] text = {"联网模块", "房间设置", "情景设置", "组合设置", "远程IP", "设备控制"};
+    private int[] image = {R.drawable.systemsetup2, R.drawable.systemsetup3, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.equipmentcontrol};
+    private String[] text = {"联网模块", "房间设置", "情景设置", "组合设置", "设备控制"};
     private ImageView back, title_bar_iv_or;
     private TextView title, title_bar_tv_room, name_cur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lights);
+        setContentView(R.layout.activity_scene);
         //初始化标题栏
         initTitleBar();
         //初始化控件
@@ -60,7 +59,7 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
         title_bar_tv_room.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(SystemSetActivity.this);
+                final CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(SystemSetActivity.this);
                 builder.setMessage("您确定要退出登录？");
                 builder.setTitle("提示");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -90,7 +89,7 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
                         finish();
                     }
                 });
-                builder.show();
+                builder.create().show();
             }
         });
         back.setImageResource(R.drawable.return2);
@@ -147,13 +146,8 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
                 startActivity(intent);
                 break;
             case 4:
-                intent = new Intent(SystemSetActivity.this, Add_long_ip.class);
-                intent.putExtra("title", text[4]);
-                startActivity(intent);
-                break;
-            case 5:
                 intent = new Intent(SystemSetActivity.this, Equipment_control.class);
-                intent.putExtra("title", text[5]);
+                intent.putExtra("title", text[4]);
                 startActivity(intent);
                 break;
         }

@@ -70,6 +70,9 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network);
+        sharedPreferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        user = gson.fromJson(sharedPreferences.getString("user", ""), User.class);
         //初始化标题栏
         initTitleBar();
         //初始化控件
@@ -182,9 +185,9 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
 
                 final String UnitID = GlobalVars.getDevid();
                 CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(NetWorkActivity.this);
-                builder.setTitle("提示 :");
+                builder.setTitle("提示");
 
-                builder.setMessage("您要切换联网模块？");
+                builder.setMessage("您确定要切换联网模块？");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -334,7 +337,6 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 info.setDevUnitID(id_equi);
                 info.setDevUnitPass(pass_equi);
                 info.setCanCpuName(name_equi);
-
                 List<RcuInfo> json_list_ok = new ArrayList<>();
                 if (json_list != null && json_list.size() > 0) {
                     for (int i = 0; i < json_list.size() + 1; i++) {

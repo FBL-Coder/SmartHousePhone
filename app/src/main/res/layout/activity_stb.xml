@@ -75,8 +75,9 @@
                 android:background="@color/color_4FC1E9"
                 android:gravity="center"
                 android:text="@string/vol"
+                android:textStyle="bold"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_18" />
 
             <ImageView
                 android:id="@+id/stb_subtract"
@@ -113,8 +114,9 @@
                 android:background="@color/color_FC6E51"
                 android:gravity="center"
                 android:text="@string/ch"
+                android:textStyle="bold"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_18" />
 
             <ImageView
                 android:id="@+id/stb_down"
@@ -130,6 +132,6 @@
 
     <GridView
         android:id="@+id/stb_gv"
-        style="@style/GridViewStyle"
+        style="@style/TvGridViewStyle"
         android:layout_height="match_parent" />
 </LinearLayout>

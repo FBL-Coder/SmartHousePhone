@@ -24,9 +24,9 @@ public class SceneAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<WareSceneEvent> mWareSceneEvents;
     private Context context;
-    int[] images = new int[]{R.drawable.comfort, R.drawable.day, R.drawable.diner, R.drawable.disturbance, R.drawable.night,
-            R.drawable.replace, R.drawable.scan, R.drawable.scenemodule,
-            R.drawable.shower, R.drawable.sleep, R.drawable.trade, R.drawable.urgent};
+    int[] images = new int[]{R.drawable.comfort, R.drawable.disturbance, R.drawable.day, R.drawable.night, R.drawable.diner,
+            R.drawable.replace, R.drawable.scenemodule, R.drawable.scan,
+            R.drawable.shower, R.drawable.urgent, R.drawable.sleep, R.drawable.trade};
 
 
     public SceneAdapter(List<WareSceneEvent> mWareSceneEvents, Context context) {
@@ -74,11 +74,7 @@ public class SceneAdapter extends BaseAdapter {
         } else if (mWareSceneEvents.get(position).getEventld() == 1) {
             viewHolder.image.setBackgroundResource(R.drawable.situationalloff);//情景全关
         } else {
-            for (int i = 0; i < images.length; i++) {
-
-                viewHolder.image.setBackgroundResource(images[i]);//其他情景
-            }
-
+            viewHolder.image.setBackgroundResource(images[position - 2]);//其他情景
         }
         viewHolder.title.setText(mWareSceneEvents.get(position).getSceneName());
 
@@ -96,6 +92,7 @@ public class SceneAdapter extends BaseAdapter {
     }
 
     long TimeExit = 0;
+
     private void createSceneEvents(int eventId) {
         if (System.currentTimeMillis() - TimeExit < 1000) {
             TimeExit = System.currentTimeMillis();

@@ -208,7 +208,7 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.RIGHT | Gravity.TOP);
         lp.x = 0; // 新位置X坐标
-        lp.y = 40; // 新位置Y坐标
+        lp.y = 65; // 新位置Y坐标
         lp.width = 300; // 宽度
         lp.height = 300; // 高度
         // dialog.onWindowAttributesChanged(lp);
@@ -217,7 +217,6 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         dialog.show();
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
-        textView.setTextColor(Color.BLACK);
 
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Room_Select_Adapter(StbActivity.this, MyApplication.getRoom_list()));

@@ -161,7 +161,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.RIGHT | Gravity.TOP);
         lp.x = 0; // 新位置X坐标
-        lp.y = 40; // 新位置Y坐标
+        lp.y = 65; // 新位置Y坐标
         lp.width = 300; // 宽度
         lp.height = 300; // 高度
         // dialog.onWindowAttributesChanged(lp);
@@ -170,7 +170,6 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         dialog.show();
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
-        textView.setTextColor(Color.BLACK);
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Room_Select_Adapter(AirConditionActivity.this, room_list));
 
@@ -304,7 +303,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                     if (curValue > 30) {
                         curValue = 30;
                     } else {
-                        temp1.setText("设置温度 :" + curValue + "℃");
+                        temp1.setText("设置温度 : " + curValue + "℃");
                         switch (curValue) {
                             case 14:
                                 cmdValue = UdpProPkt.E_AIR_CMD.e_air_temp14.getValue();
@@ -373,7 +372,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                     if (curValue < 14) {
                         curValue = 14;
                     } else {
-                        temp1.setText("设置温度 :" + curValue + "℃");
+                        temp1.setText("设置温度 : " + curValue + "℃");
                         switch (curValue) {
                             case 14:
                                 cmdValue = UdpProPkt.E_AIR_CMD.e_air_temp14.getValue();
@@ -496,9 +495,9 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         }
 
         curValue = wareAirCondDev.getSelTemp();
-        name.setText("空调名称 :" + wareAirCondDev.getDev().getDevName());
-        temp.setText("当前温度 :" + wareAirCondDev.getSelTemp() + "℃");
-        temp1.setText("设置温度 :" + wareAirCondDev.getSelTemp() + "℃");
+        name.setText("空调名称 : " + wareAirCondDev.getDev().getDevName());
+        temp.setText("当前温度 : " + wareAirCondDev.getSelTemp() + "℃");
+        temp1.setText("设置温度 : " + wareAirCondDev.getSelTemp() + "℃");
 
         if (wareAirCondDev.getbOnOff() == 0) {
             state.setText("空调状态 : 关闭");

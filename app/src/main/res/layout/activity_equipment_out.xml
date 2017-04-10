@@ -23,8 +23,7 @@
         android:scrollbars="none"
         android:layout_marginTop="@dimen/dp_10"
         >
-        <cn.etsoft.smarthome.widget.ListViewForScrollView
-            android:id="@+id/equipment_out_lv"
+        <cn.etsoft.smarthomephone.widget.ListViewForScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />

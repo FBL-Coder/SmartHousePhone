@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.domain.DevControl_Result;
+import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
@@ -138,12 +139,10 @@ public class udpService extends Service {
             } else {
                 sub = str.substring(index, maxLength);
             }
-
             index += maxLength;
             Log.i("接收信息", sub.trim());
         }
     }
-
     public void extractData(String info, Handler mhandler) {
         // TODO Auto-generated method stub
         int datType = 0;
@@ -157,7 +156,6 @@ public class udpService extends Service {
         } catch (JSONException e) {
             System.out.println(e.toString());
         }
-
         if (datType != 35 || datType != 2)
             show(info);
         switch (datType) {
@@ -180,13 +178,13 @@ public class udpService extends Service {
             case 3: // getDevsInfo
                 if (subType1 == 1) {
                     MyApplication.getWareData().getDevs().clear();
+                    isFreshData = true;
                     getDevsInfo(info);
 
-                    isFreshData = true;
                     //删除重复的设备
                     List<WareDev> devs = removeDuplicateDevs(MyApplication.getWareData().getDevs());
                     MyApplication.getWareData().setDevs(devs);
-//                    Log.i("Devs_Size", "设备总数 :  " + MyApplication.getWareData().getDevs().size() + "");
+                    Log.i("Devs_Size", "设备总数 :  " + MyApplication.getWareData().getDevs().size() + "");
                     for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
                         if (MyApplication.getWareData().getDevs().get(i).getType() == 3)
                             Log.i("Devs_Size", "所有灯ID  :  " + MyApplication.getWareData().getDevs().get(i).getDevId());
@@ -202,14 +200,15 @@ public class udpService extends Service {
                 break;
             case 4: // ctrlDev
                 if (subType1 == 1) {
-                    refreshDevData(info);
                     isFreshData = true;
+                    refreshDevData(info);
                 }
                 break;
             case 5: // ctrlDev
                 if (subType1 == 1) {
-                    deldev_result(info);
                     isFreshData = true;
+                    deldev_result(info);
+
                 }
                 break;
             case 6: // ctrlDev
@@ -226,18 +225,18 @@ public class udpService extends Service {
                 break;
             case 8:
                 if (subType2 == 0) {
-                    getkeyOutBoard(info);
                     isFreshData = true;
+                    getkeyOutBoard(info);
                 }
                 if (subType2 == 1) {
-                    getKyeInputBoard(info);
                     isFreshData = true;
+                    getKyeInputBoard(info);
                 }
                 break;
             case 11: // e_udpPro_getKeyOpItems
                 if (subType1 == 1) {
-                    getKeyOpItem(info);
                     isFreshData = true;
+                    getKeyOpItem(info);
                 }
                 break;
             case 12: // e_udpPro_setKeyOpItems
@@ -277,34 +276,37 @@ public class udpService extends Service {
                 break;
             case 22: // e_udpPro_getSceneEvents
                 if (subType2 == 1) {
-                    getSceneEvents(info);
                     isFreshData = true;
+                    getSceneEvents(info);
+
                 }
                 break;
             case 23: // e_udpPro_addSceneEvents
                 if (subType2 == 1) {
+                    isFreshData = true;
                     getSceneEvents(info);
                     //添加提示信息
-                    isFreshData = true;
+
                 }
                 break;
             case 24: // e_udpPro_editSceneEvents
                 if (subType2 == 1) {
+                    isFreshData = true;
                     getSceneEvents(info);
                     //添加提示信息
-                    isFreshData = true;
+
                 }
                 break;
             case 25: // e_udpPro_delSceneEvents
                 if (subType2 == 1) {
-                    getSceneEvents(info);
                     isFreshData = true;
+                    getSceneEvents(info);
                 }
                 break;
             case 26: // e_udpPro_exeSceneEvents
                 if (subType2 == 1) {
                     // setSceneEvents(udpProData);
-                    isFreshData = true;
+//                    isFreshData = true;
                 }
                 break;
             case 35:// e_udpPro_chns_status
@@ -346,11 +348,11 @@ public class udpService extends Service {
         try {
             JSONObject object = new JSONObject(info);
             DevId = object.getString("devUnitID");
-
+            isFreshData = true;
         } catch (Exception e) {
+            isFreshData = false;
+            return;
         }
-
-        isFreshData = true;
         MyApplication.getWareData().setDeleteNetReslut(DevId, subType2);
     }
 
@@ -716,6 +718,7 @@ public class udpService extends Service {
             }
             //}
         } catch (JSONException e) {
+            isFreshData = false;
             System.out.println(e.toString());
         }
     }
@@ -810,7 +813,6 @@ public class udpService extends Service {
                 wareLight.setPowChn((byte) jsonobj.getInt("powChn"));
                 wareLight.setbTuneEn((byte) jsonobj.getInt("bTuneEn"));
                 wareLight.setLmVal((byte) jsonobj.getInt("lmVal"));
-
                 for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
                     WareLight light = MyApplication.getWareData().getLights().get(i);
                     if (light.getDev().getCanCpuId().equals(wareLight.getDev().getCanCpuId())
@@ -822,6 +824,7 @@ public class udpService extends Service {
                 }
             }
         } catch (Exception e) {
+            isFreshData = false;
             System.out.println(e.toString());
         }
     }
@@ -844,12 +847,10 @@ public class udpService extends Service {
 //                    "powChn":	6
 //        }]
 //        }
-        Log.i("add_dev_data", info);
         Gson gson = new Gson();
         DevControl_Result result = gson.fromJson(info, DevControl_Result.class);
         MyApplication.getWareData().setDev_result(result);
     }
-
 
     public void getkeyOutBoard(String info) {
 
@@ -884,20 +885,18 @@ public class udpService extends Service {
 //            ],
 //            "board": 1
 //        }
-        Log.i(TAG, "keyOutBoard: " + info);
         try {
             JSONObject jsonObject = new JSONObject(info);
             int board = jsonObject.getInt("board");
-            if (board == 0)
+            if (board == 0) {
+                isFreshData = false;
                 return;
-            WareBoardChnout chnout = new WareBoardChnout();
-
+            }
             JSONArray array = jsonObject.getJSONArray("chnout_rows");
-
             for (int i = 0; i < array.length(); i++) {
-
+                boolean isContains = false;
+                WareBoardChnout chnout = new WareBoardChnout();
                 JSONObject object = array.getJSONObject(i);
-
                 chnout.setDevUnitID(object.getString("canCpuID"));
                 chnout.setBoardName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(object.getString("boardName"))));
                 chnout.setBoardType((byte) object.getInt("boardType"));
@@ -913,10 +912,14 @@ public class udpService extends Service {
 
                 if (MyApplication.getWareData().getBoardChnouts().size() > 0) {
                     for (int k = 0; k < MyApplication.getWareData().getBoardChnouts().size(); k++) {
-                        if (!chnout.getBoardName().equals(MyApplication.getWareData().getBoardChnouts().get(k).getBoardName())) {
-                            MyApplication.getWareData().getBoardChnouts().add(chnout);
+                        if (chnout.getBoardName().equals(MyApplication.getWareData().getBoardChnouts().get(k).getBoardName()) && chnout.getDevUnitID().equals(MyApplication.getWareData().getBoardChnouts().get(k).getDevUnitID())) {
+                            isContains = true;
                         }
                     }
+                    if (!isContains)
+                        MyApplication.getWareData().getBoardChnouts().add(chnout);
+                    else
+                        isFreshData = false;
                 } else {
                     MyApplication.getWareData().getBoardChnouts().add(chnout);
                 }
@@ -924,6 +927,7 @@ public class udpService extends Service {
 
 
         } catch (JSONException e) {
+            isFreshData = false;
             System.out.println(e.toString());
         }
     }
@@ -956,18 +960,18 @@ public class udpService extends Service {
 //        ],
 //        "keyinput": 1
 //    }
-        Log.i(TAG, "keyinput: " + info);
         try {
             JSONObject jsonObject = new JSONObject(info);
             int keyinput = jsonObject.getInt("keyinput");
-            if (keyinput == 0)
+            if (keyinput == 0) {
+                isFreshData = false;
                 return;
-
-            WareBoardKeyInput input = new WareBoardKeyInput();
+            }
 
             JSONArray array = jsonObject.getJSONArray("keyinput_rows");
             for (int i = 0; i < array.length(); i++) {
-
+                boolean isContains = false;
+                WareBoardKeyInput input = new WareBoardKeyInput();
                 JSONObject object = array.getJSONObject(i);
                 input.setDevUnitID(object.getString("canCpuID"));
                 input.setBoardName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(object.getString("boardName"))));
@@ -981,21 +985,26 @@ public class udpService extends Service {
                     name[j] = CommonUtils.getGBstr(CommonUtils.hexStringToBytes(array1.getString(j)));
                 }
                 input.setKeyName(name);
-            }
-            if (MyApplication.getWareData().getKeyInputs().size() > 0) {
-                for (int k = 0; k < MyApplication.getWareData().getKeyInputs().size(); k++) {
-                    if (!input.getDevUnitID().equals(MyApplication.getWareData().getKeyInputs().get(k).getDevUnitID())) {
-                        MyApplication.getWareData().getKeyInputs().add(input);
+
+                if (MyApplication.getWareData().getKeyInputs().size() > 0) {
+                    for (int k = 0; k < MyApplication.getWareData().getKeyInputs().size(); k++) {
+                        if (MyApplication.getWareData().getKeyInputs().get(k).getBoardName().equals(input.getBoardName()) && input.getDevUnitID().equals(MyApplication.getWareData().getKeyInputs().get(k).getDevUnitID())) {
+                            isContains = true;
+                        }
                     }
+                    if (!isContains)
+                        MyApplication.getWareData().getKeyInputs().add(input);
+                    else
+                        isFreshData = false;
+                } else {
+                    MyApplication.getWareData().getKeyInputs().add(input);
                 }
-            } else {
-                MyApplication.getWareData().getKeyInputs().add(input);
             }
         } catch (JSONException e) {
+            isFreshData = false;
             System.out.println(e.toString());
         }
     }
-
 
     public void getKeyOpItem(String info) {
 
@@ -1020,10 +1029,7 @@ public class udpService extends Service {
         MyApplication.getWareData().getKeyOpItems().clear();
         try {
             JSONObject jsonObject = new JSONObject(info);
-            if (jsonObject.getInt("key_opitem") == 0) {
-                isFreshData = false;
-                return;
-            }
+
             JSONArray array = jsonObject.getJSONArray("key_opitem_rows");
             for (int i = 0; i < array.length(); i++) {
                 WareKeyOpItem opItem = new WareKeyOpItem();
@@ -1037,6 +1043,7 @@ public class udpService extends Service {
             }
 
         } catch (JSONException e) {
+            isFreshData = false;
             System.out.println(e.toString());
         }
     }
@@ -1052,8 +1059,8 @@ public class udpService extends Service {
 //        }
         MyApplication.getWareData().getKeyOpItems().clear();
         Gson gson = new Gson();
-//        SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
-//        MyApplication.getWareData().setResult(result);
+        SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
+        MyApplication.getWareData().setResult(result);
     }
 
     public void delChnOpItem_result(String info) {
@@ -1067,8 +1074,8 @@ public class udpService extends Service {
 //        }
         MyApplication.getWareData().getChnOpItems().clear();
         Gson gson = new Gson();
-//        SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
-//        MyApplication.getWareData().setResult(result);
+        SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
+        MyApplication.getWareData().setResult(result);
     }
 
     public void setKeyOpItem_result(String info) {
@@ -1081,10 +1088,9 @@ public class udpService extends Service {
 //                "result":	1
 //        }
         Gson gson = new Gson();
-//        SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
-//        MyApplication.getWareData().setResult(result);
+        SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
+        MyApplication.getWareData().setResult(result);
     }
-
 
     public void getChnOpItem(String info) {
 //        {
@@ -1106,10 +1112,6 @@ public class udpService extends Service {
         try {
             JSONObject object = new JSONObject(info);
 
-            if (object.getInt("chn_opitem") == 0) {
-                isFreshData = false;
-                return;
-            }
             JSONArray array = object.getJSONArray("chn_opitem_rows");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object_rows = array.getJSONObject(i);
@@ -1119,14 +1121,14 @@ public class udpService extends Service {
                 item.setKeyUpValid((byte) object_rows.getInt("keyUpValid"));
 
                 JSONArray array_up_cmd = object_rows.getJSONArray("keyUpCmd");
-                byte[] up_cmd = new byte[6];
+                byte[] up_cmd = new byte[8];
                 for (int j = 0; j < array_up_cmd.length(); j++) {
                     up_cmd[j] = (byte) array_up_cmd.getInt(j);
                 }
                 item.setKeyUpCmd(up_cmd);
 
                 JSONArray array_down_cmd = object_rows.getJSONArray("keyDownCmd");
-                byte[] down_cmd = new byte[6];
+                byte[] down_cmd = new byte[8];
                 for (int j = 0; j < array_down_cmd.length(); j++) {
                     down_cmd[j] = (byte) array_down_cmd.getInt(j);
                 }
@@ -1134,13 +1136,10 @@ public class udpService extends Service {
                 inputs.add(item);
                 MyApplication.getWareData().setChnOpItems(inputs);
             }
-
-
         } catch (JSONException e) {
-            e.printStackTrace();
+            isFreshData = false;
+            System.out.println(""+e);
         }
-
-
     }
 
     public void getSceneEvents(String info) {
@@ -1200,9 +1199,11 @@ public class udpService extends Service {
             }
             MyApplication.getWareData().setSceneEvents(list);
         } catch (JSONException e) {
+            isFreshData = false;
             System.out.println(e.toString());
         }
     }
+
 
     public void ctrlDevReply(String info) {
 

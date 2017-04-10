@@ -85,11 +85,12 @@ public class SystemAdapter extends BaseAdapter {
         if (listViewItems.size() == 0){
             viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
             viewHolder.title.setText("新增模式");
+            viewHolder.hui.setVisibility(View.GONE);
             return convertView;
         }
         if (listViewItems.size() > 0) {
             if (position < listViewItems.size()) {
-                viewHolder.image.setImageResource(image[position/5]);
+                viewHolder.image.setImageResource(image[position%5 ]);
                 viewHolder.title.setText(mSceneEvents.get(position).getSceneName());
                 viewHolder.hui.setImageResource(R.drawable.huijiantou);
 
@@ -102,6 +103,7 @@ public class SystemAdapter extends BaseAdapter {
             } else {
                 viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
                 viewHolder.title.setText("新增模式");
+                viewHolder.hui.setVisibility(View.GONE);
             }
         }
         return convertView;

@@ -29,13 +29,21 @@ public class SwipeAdapter extends BaseAdapter {
     private IClick_PZ mListener;
     private List<WareKeyOpItem> keyOpItems;
     String[] text;
-    private int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv,R.drawable.jidinghe,R.drawable.dengguang, R.drawable.chuanglian};
+    private int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv_0,R.drawable.jidinghe,R.drawable.dengguang, R.drawable.chuanglian};
+
 
     public SwipeAdapter(Context context, List<WareKeyOpItem> lst, IClick_PZ listener) {
         this.mContext = context;
         mListener = listener;
         keyOpItems = lst;
 //        System.out.println(lst.get(0).getDevId() +"---------"+lst.get(1).getDevId() +"---------"+lst.get(2).getDevId());
+    }
+    public SwipeAdapter(Context context, List<WareKeyOpItem> lst, IClick_PZ listener,ImageView view) {
+        this.mContext = context;
+        mListener = listener;
+        keyOpItems = lst;
+        if (lst.size()>0)
+            view.setVisibility(View.GONE);
     }
 
     @Override
@@ -44,6 +52,10 @@ public class SwipeAdapter extends BaseAdapter {
             return keyOpItems.size();
         else
             return 0;
+    }
+    public void notifyDataSetChanged(List<WareKeyOpItem> keyOpItems) {
+        this.keyOpItems = keyOpItems;
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -81,7 +93,7 @@ public class SwipeAdapter extends BaseAdapter {
         if (keyOpItems.get(position).getDevType() == 0) {
             List<WareAirCondDev> list = MyApplication.getWareData().getAirConds();
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()) {
+                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId() && list.get(i).getDev().getCanCpuId().equals(keyOpItems.get(position).getDevUnitID()) ) {
                     viewHolder.title.setText(list.get(i).getDev().getDevName() + "");
                 }
             }
@@ -99,7 +111,7 @@ public class SwipeAdapter extends BaseAdapter {
         } else if (keyOpItems.get(position).getDevType() == 1) {
             List<WareTv> list = MyApplication.getWareData().getTvs();
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()) {
+                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()&& list.get(i).getDev().getCanCpuId().equals(keyOpItems.get(position).getDevUnitID())) {
                     viewHolder.title.setText(list.get(i).getDev().getDevName() + "");
                 }
             }
@@ -116,7 +128,7 @@ public class SwipeAdapter extends BaseAdapter {
         } else if (keyOpItems.get(position).getDevType() == 2) {
             List<WareSetBox> list = MyApplication.getWareData().getStbs();
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()) {
+                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()&& list.get(i).getDev().getCanCpuId().equals(keyOpItems.get(position).getDevUnitID())) {
                     viewHolder.title.setText(list.get(i).getDev().getDevName() + "");
                 }
             }
@@ -133,7 +145,7 @@ public class SwipeAdapter extends BaseAdapter {
         } else if (keyOpItems.get(position).getDevType() == 3) {
             List<WareLight> list = MyApplication.getWareData().getLights();
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()) {
+                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()&& list.get(i).getDev().getCanCpuId().equals(keyOpItems.get(position).getDevUnitID())) {
                     viewHolder.title.setText(list.get(i).getDev().getDevName() + "");
                 }
             }
@@ -151,7 +163,7 @@ public class SwipeAdapter extends BaseAdapter {
         } else if (keyOpItems.get(position).getDevType() == 4) {
             List<WareCurtain> list = MyApplication.getWareData().getCurtains();
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()) {
+                if (list.get(i).getDev().getDevId() == keyOpItems.get(position).getDevId()&& list.get(i).getDev().getCanCpuId().equals(keyOpItems.get(position).getDevUnitID())) {
                     viewHolder.title.setText(list.get(i).getDev().getDevName() + "");
                 }
             }

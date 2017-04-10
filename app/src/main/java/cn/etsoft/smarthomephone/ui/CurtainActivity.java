@@ -48,7 +48,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lights);
+        setContentView(R.layout.activity_scene);
         //初始化标题栏及控件
         initTitleBar();
         //初始化数据
@@ -192,7 +192,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
         WindowManager.LayoutParams lp = window.getAttributes();
         window.setGravity(Gravity.RIGHT | Gravity.TOP);
         lp.x = 0; // 新位置X坐标
-        lp.y = 40; // 新位置Y坐标
+        lp.y = 65; // 新位置Y坐标
         lp.width = 300; // 宽度
         lp.height = 300; // 高度
         // dialog.onWindowAttributesChanged(lp);
@@ -201,7 +201,6 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
         dialog.show();
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
-        textView.setTextColor(Color.BLACK);
         dia_listview = (ListView) dialog.findViewById(R.id.air_select);
         dia_listview.setAdapter(new Room_Select_Adapter(CurtainActivity.this, MyApplication.getRoom_list()));
 

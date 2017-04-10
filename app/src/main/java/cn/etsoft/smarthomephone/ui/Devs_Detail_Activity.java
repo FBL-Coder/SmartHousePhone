@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +23,7 @@ import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
+import cn.etsoft.smarthomephone.view.Circle_Progress;
 
 /**
  * Created by fbl on 16-11-17.
@@ -35,6 +37,15 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
     private WareDev dev;
     private int id;
     private PopupWindow popupWindow;
+    private Dialog mDialog;
+
+    //自定义加载进度条
+    private void initDialog(String str) {
+        Circle_Progress.setText(str);
+        mDialog = Circle_Progress.createLoadingDialog(this);
+        mDialog.setCancelable(true);//允许返回
+        mDialog.show();//显示
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,8 +222,17 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
                 MyApplication.sendMsg(chn_str);
 
-                // =-----待向服务器交互数据
-                finish();
+                initDialog("正在保存...");
+                MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+                    @Override
+                    public void upDataWareData(int what) {
+                        if (what == 6) {
+                            if (mDialog != null)
+                                mDialog.dismiss();
+                            finish();
+                        }
+                    }
+                });
                 break;
             case R.id.dev_room:
                 final List<String> home_text = new ArrayList<>();

@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -28,15 +29,18 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.IClick_PZ;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
 import cn.etsoft.smarthomephone.adapter.Swipe_CpnAdapter;
 import cn.etsoft.smarthomephone.domain.PrintCmd;
 import cn.etsoft.smarthomephone.domain.UpBoardKeyData;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.entity.Iclick_Tag;
 import cn.etsoft.smarthomephone.pullmi.entity.WareBoardKeyInput;
 import cn.etsoft.smarthomephone.pullmi.entity.WareChnOpItem;
 import cn.etsoft.smarthomephone.pullmi.utils.Sixteen2Two;
+import cn.etsoft.smarthomephone.view.Circle_Progress;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 import cn.etsoft.smarthomephone.weidget.SwipeListView;
 
@@ -47,7 +51,7 @@ import cn.etsoft.smarthomephone.weidget.SwipeListView;
 public class EquipmentDeployActivity extends Activity implements View.OnClickListener {
     private TextView mTitle, equipment_close, tv_equipment_parlour, ref_equipment, del_equipment, save_equipment;
     private RelativeLayout add_equipment_btn;
-    private ImageView back;
+    private ImageView back, input_out_iv_nodata;
     private SwipeListView lv;
     private ListView add_equipment_Layout_lv;
     private PopupWindow popupWindow;
@@ -63,9 +67,41 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
     private int KEY_ACTION_DOWN = 0, KEY_ACTION_UP = 1;
     private int BOARD_UP = 15, BOARD_DEL = 16;
+    private int DEL_ALL = 110;
 
     private List<PrintCmd> listData;
     private List<WareBoardKeyInput> list_board;
+    private Dialog mDialog;
+    private int del_Position = 0;
+
+    //自定义加载进度条
+    private void initDialog(String str) {
+        Circle_Progress.setText(str);
+        mDialog = Circle_Progress.createLoadingDialog(this);
+        mDialog.setCancelable(true);//允许返回
+        mDialog.show();//显示
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                mDialog.dismiss();
+                ToastUtil.showToast(EquipmentDeployActivity.this, "数据加载失败");
+            }
+        };
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3500);
+                    if (mDialog.isShowing()) {
+                        handler.sendMessage(handler.obtainMessage());
+                    }
+                } catch (Exception e) {
+                    System.out.println(e + "");
+                }
+            }
+        }).start();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,34 +109,56 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
         setContentView(R.layout.activity_equipmentdeploy_listview);
         //初始化标题栏
         initTitleBar();
-        //初始化控件
-        initView();
 //        //初始化listView
 //        initListView();
-
-
-        final Handler mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == 14) {
-                    listData.clear();
-                    initListView();
-                }
-                if (MyApplication.getWareData().getResult() != null
-                        && MyApplication.getWareData().getResult().getResult() == 1) {
-                    Toast.makeText(EquipmentDeployActivity.this, "操作成功", Toast.LENGTH_SHORT).show();
-                    MyApplication.getWareData().setResult(null);
-                }
-                super.handleMessage(msg);
-            }
-        };
+        initData();
         MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
-                Message message = mHandler.obtainMessage(what);
-                mHandler.sendMessage(message);
+                if (what == 14) {
+                    ChnOpItem.clear();
+                    listData.clear();
+                    initListView();
+                }
+                if (what == 15 && MyApplication.getWareData().getResult() != null
+                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                    Toast.makeText(EquipmentDeployActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                    MyApplication.getWareData().setResult(null);
+                }
+                if (del_Position != DEL_ALL && MyApplication.getWareData().getResult() != null
+                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                    Toast.makeText(EquipmentDeployActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                    MyApplication.getWareData().setResult(null);
+                    listData.remove(del_Position);
+                    del_Position = 0;
+                    if (adapter != null)
+                        adapter.notifyDataSetChanged(listData);
+                    else {
+                        adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData,mListener);
+                        lv.setAdapter(adapter);
+                    }
+                }
+                if (del_Position == DEL_ALL && MyApplication.getWareData().getResult() != null
+                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                    Toast.makeText(EquipmentDeployActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                    MyApplication.getWareData().setResult(null);
+                    listData.clear();
+                    del_Position = 0;
+                    if (adapter != null)
+                        adapter.notifyDataSetChanged(listData);
+                    else {
+                        adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData,mListener);
+                        lv.setAdapter(adapter);
+                    }
+                }
+                if (what == 14 || what == 15 || what == 16) {
+                    if (mDialog != null)
+                        mDialog.dismiss();
+                }
             }
         });
+        //初始化控件
+        initView();
     }
 
     /**
@@ -119,22 +177,27 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
         devtype = getIntent().getIntExtra("devType", -1);
         devid = getIntent().getIntExtra("devID", -1);
         uid = getIntent().getExtras().getString("uid");
-
-        MyApplication.getChnItemInfo(uid, devtype, devid);
         System.out.println("加载数据");
         Board_text = new ArrayList<>();
         list_board = MyApplication.getWareData().getKeyInputs();
         for (int i = 0; i < list_board.size(); i++) {
             Board_text.add(list_board.get(i).getBoardName());
         }
+
+    }
+
+    public void initData() {
         ChnOpItem = new ArrayList<>();
         listData = new ArrayList<>();
+        MyApplication.getChnItemInfo(uid, devtype, devid);
+        initDialog("正在加载...");
     }
 
     /**
      * 初始化控件
      */
     private void initView() {
+        input_out_iv_nodata = (ImageView) findViewById(R.id.input_out_iv_nodata);
         add_equipment_btn = (RelativeLayout) findViewById(R.id.equipment_out_rl);
         equipment_close = (TextView) findViewById(R.id.equipment_close);
         tv_equipment_parlour = (TextView) findViewById(R.id.tv_equipment_parlour);
@@ -161,25 +224,17 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
     private void initListView() {
 
-       /* {
-            "chn_opitem_rows":	[{
-            "key_cpuCanID":	"50ff6c067184515640421267",
-                    "keyDownValid":	1,
-                    "keyUpValid":	0,
-                    "keyUpValid":	0,
-                    "keyUpCmd":	[0, 0, 0, 0, 91, 0],
-       for (int i = 0; i < list_board.size(); i++) {
-                        Board_text.add(list_board.get(i).getBoardName());
-                    }     "keyDownCmd":	[4, 0, 0, 0, 0, 0]
-        }],
-            "devUnitID":	"37ffdb05424e323416702443",
-                "datType":	14,
-                "subType1":	1,
-                "subType2":	1,
-                "chn_opitem":	1
-        }*/
-
-
+        if (MyApplication.getWareData().getChnOpItems() == null || MyApplication.getWareData().getChnOpItems().size() == 0) {
+            input_out_iv_nodata.setVisibility(View.VISIBLE);
+            if (adapter == null){
+                adapter = new Swipe_CpnAdapter(this, listData,mListener);
+                lv.setAdapter(adapter);
+            }else {
+                adapter.notifyDataSetChanged(listData);
+            }
+            return;
+        }
+        input_out_iv_nodata.setVisibility(View.GONE);
         for (int i = 0; i < MyApplication.getWareData().getChnOpItems().size(); i++) {
             ChnOpItem.add(MyApplication.getWareData().getChnOpItems().get(i));
         }
@@ -204,6 +259,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     cmd.setDevUnitID(ChnOpItem.get(k).getDevUnitID());
                     cmd.setIndex(list_Key_down.get(i));
                     cmd.setDevType(devtype);
+//                    if (list_Key_down.get(i) > 5)
+//                        list_Key_down.get(i) = 5;
                     cmd.setKey_cmd(ChnOpItem.get(k).getKeyDownCmd()[list_Key_down.get(i)]);
                     cmd.setKeyAct_num(KEY_ACTION_DOWN);
                     if (list_Name.size() == 0)
@@ -221,6 +278,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     cmd.setDevUnitID(ChnOpItem.get(k).getDevUnitID());
                     cmd.setIndex(list_Key_down.get(i));
                     cmd.setDevType(devtype);
+//                    if (list_Key_down.get(i) > 5)
+//                        list_Key_down.get(i) = 5;
                     cmd.setKey_cmd(ChnOpItem.get(k).getKeyDownCmd()[list_Key_down.get(i)]);
                     cmd.setKeyAct_num(KEY_ACTION_DOWN);
                     if (list_Name.size() == 0)
@@ -236,6 +295,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     cmd.setDevUnitID(ChnOpItem.get(k).getDevUnitID());
                     cmd.setIndex(list_Key_up.get(i));
                     cmd.setDevType(devtype);
+//                    if(list_Key_up.get(i)>5)
+//                        list_Key_up.get(i) = 5;
                     cmd.setKey_cmd(ChnOpItem.get(k).getKeyUpCmd()[list_Key_up.get(i)]);
                     cmd.setKeyAct_num(KEY_ACTION_UP);
                     if (list_Name.size() == 0)
@@ -264,11 +325,13 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 }
             }
         }
-        adapter = new Swipe_CpnAdapter(this, listData);
-        lv.setAdapter(adapter);
+        if (adapter == null){
+            adapter = new Swipe_CpnAdapter(this, listData,mListener);
+            lv.setAdapter(adapter);
+        }else {
+            adapter.notifyDataSetChanged(listData);
+        }
     }
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -277,7 +340,6 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     Toast.makeText(EquipmentDeployActivity.this, "没有可用出输入板", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 tv_equipment_parlour.setText(list_board.get(0).getBoardName());
                 tv_equipment_parlour.setTag(list_board.get(0));
                 //添加页面的item点击，以及listview的初始化
@@ -290,7 +352,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         PrintCmd item = new PrintCmd();
                         item.setIndex(position);
-                        item.setKeyname("按键" + (position + 1));
+                        item.setKeyname(list_board.get(0).getKeyName()[position]);
                         item.setKeyAct_num(2);
                         item.setKey_cmd(0);
                         item.setDevType(devtype);
@@ -305,13 +367,13 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                                 Toast.makeText(EquipmentDeployActivity.this, "设备已存在！", Toast.LENGTH_SHORT).show();
                             }
                         }
-
                         if (tag) {
                             listData.add(item);
+                            input_out_iv_nodata.setVisibility(View.GONE);
                             if (adapter != null)
-                                adapter.notifyDataSetChanged();
+                                adapter.notifyDataSetChanged(listData);
                             else {
-                                adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData);
+                                adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData,mListener,input_out_iv_nodata);
                                 lv.setAdapter(adapter);
                             }
                         }
@@ -327,18 +389,20 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 break;
             case R.id.ref_equipment:
                 //刷新
+                input_out_iv_nodata.setVisibility(View.GONE);
                 if (listData != null) {
                     listData.clear();
                     if (adapter != null)
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged(listData);
                     else {
-                        adapter = new Swipe_CpnAdapter(this, listData);
+                        adapter = new Swipe_CpnAdapter(this, listData,mListener);
                         lv.setAdapter(adapter);
                     }
                 }
-                initTitleBar();
+                initData();
                 break;
             case R.id.del_equipment:
+
                 //删除
                 CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(EquipmentDeployActivity.this);
                 builder.setTitle("提示 :");
@@ -352,6 +416,10 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if (listData.size() == 0) {
+                            dialog.dismiss();
+                            return;
+                        }
 
                         for (int i = 0; i < listData.size(); i++) {
                             if (listData.get(i).getKeyAct_num() == 2 || listData.get(i).getKey_cmd() == 0) {
@@ -393,7 +461,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                                 for (int m = listData.size() - 1; m >= 0; m--) {
                                     if (listData_id.get(0).getDevUnitID().equals(listData.get(m).getDevUnitID())) {
                                         listData_id.add(listData.get(m));//将所有数据中和第一个添加的按键作比较，相同的话加入新的实体集合，
-                                        listData.remove(m);//在所有数据集合中移除；
+//                                        listData.remove(m);//在所有数据集合中移除；
                                     }
                                 }
                             }
@@ -413,9 +481,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                                     Valid_up_del[listData_id.get(j).getIndex()] = 1;
                                     Cmd_up_del[listData_id.get(j).getIndex()] = (byte) listData_id.get(j).getKey_cmd();
                                 }
-
                             }
-
                             //因为数据传递时，高位、低位和现实中相反，so循环赋值；
                             String down_v = "";
                             for (int j = 0; j < Valid_down_del.length; j++) {
@@ -444,7 +510,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
                         }
                         //将以上数据加入到上传实体中；
-                        data_del.setDevUnitID(MyApplication.getWareData().getRcuInfos().get(0).getDevUnitID());
+                        data_del.setDevUnitID(GlobalVars.getDevid());
                         data_del.setChn_opitem_rows(bean_list_del);
                         data_del.setDatType(BOARD_DEL);
                         data_del.setSubType1(0);
@@ -457,16 +523,9 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         Gson gson_del = new Gson();
                         System.out.println(gson_del.toJson(data_del));
                         MyApplication.sendMsg(gson_del.toJson(data_del).toString());
-
-                        listData.clear();
-
-                        if (adapter != null) {
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData);
-                            lv.setAdapter(adapter);
-                        }
                         dialog.dismiss();
+                        del_Position = DEL_ALL;
+                        initDialog("正在删除...");
                     }
                 });
                 builder.create().show();
@@ -475,26 +534,14 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 //保存
 
                 //判断设备中有没有未设置的，有终止保存。无，继续保存。
+                if (listData.size() == 0)
+                    return;
                 for (int i = 0; i < listData.size(); i++) {
                     if (listData.get(i).getKeyAct_num() == 2 || listData.get(i).getKey_cmd() == 0) {
                         Toast.makeText(EquipmentDeployActivity.this, "存在未设置，请设置完", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
-/*{
-                        "chn_opitem_rows":	[{
-                        "key_cpuCanID":	"50ff6c067184515640421267",
-                                "keyDownValid":	0,
-                                "keyUpValid":	49,
-                                "keyUpCmd":	[3, 0, 0, 0, 3, 1],
-                        "keyDownCmd":	[0, 0, 0, 0, 0, 0]
-                    }],
-                        "devUnitID":	"37ffdb05424e323416702443",
-                            "datType":	14,
-                            "subType1":	1,
-                            "subType2":	1,
-                            "chn_opitem":	1
-                    }*/
 
                 //根据以上注释掉的数据结构，将已有数据已此格式寄存；
 
@@ -509,14 +556,14 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     for (int m = listData.size() - 1; m >= 0; m--) {
                         if (listData_id.get(0).getDevUnitID().equals(listData.get(m).getDevUnitID())) {
                             listData_id.add(listData.get(m));//将所有数据中和第一个添加的按键作比较，相同的话加入新的实体集合，
-                            listData.remove(m);//在所有数据集合中移除；
+//                            listData.remove(m);//在所有数据集合中移除；
                         }
                     }
                     UpBoardKeyData.ChnOpitemRowsBean bean = data.new ChnOpitemRowsBean();//按键实体
-                    byte[] Valid_down = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
-                    byte[] Valid_up = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
-                    byte[] Cmd_down = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键相应的命令
-                    byte[] Cmd_up = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
+                    byte[] Valid_down = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
+                    byte[] Valid_up = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
+                    byte[] Cmd_down = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键相应的命令
+                    byte[] Cmd_up = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
                     for (int j = 0; j < listData_id.size(); j++) {//循环新的/相同的按键板集合；
 
                         key_cpuCanID = listData_id.get(j).getDevUnitID();//为按键板id赋值；
@@ -562,7 +609,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
                 } while (listData.size() > 0);
                 //将以上数据加入到上传实体中；
-                data.setDevUnitID(MyApplication.getWareData().getRcuInfos().get(0).getDevUnitID());
+                data.setDevUnitID(GlobalVars.getDevid());
                 data.setChn_opitem_rows(bean_list);
                 data.setDatType(BOARD_UP);
                 data.setSubType1(0);
@@ -575,6 +622,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 Gson gson = new Gson();
                 System.out.println(gson.toJson(data));
                 MyApplication.sendMsg(gson.toJson(data).toString());
+                initDialog("正在保存...");
+
                 break;
             case R.id.tv_equipment_parlour:
                 //添加设备页的弹出框
@@ -624,7 +673,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 else {
                     tv.setTag(list_board.get(position));
                     if (Equipadapter != null)
-                        Equipadapter.notifyDataSetInvalidated();
+                        Equipadapter.notifyDataSetChanged();
                     else {
                         Equipadapter = new EquipmentAdapter(list_board.get(position).getKeyName(), EquipmentDeployActivity.this);
                         add_equipment_Layout_lv.setAdapter(Equipadapter);
@@ -720,14 +769,89 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            listData.remove(position);
-                            if (adapter != null)
-                                adapter.notifyDataSetChanged();
-                            else {
-                                adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData);
-                                lv.setAdapter(adapter);
+//根据以上注释掉的数据结构，将已有数据已此格式寄存；
+
+                            byte[] Valid_down_del = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
+                            byte[] Valid_up_del = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
+                            byte[] Cmd_down_del = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键相应的命令
+                            byte[] Cmd_up_del = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
+                            String key_cpuCanID_del = "";//按键板的id；
+                            UpBoardKeyData data_del = new UpBoardKeyData();//上传数据实体；
+                            List<UpBoardKeyData.ChnOpitemRowsBean> bean_list_del = new ArrayList<>();//按键板实体集合；
+
+
+                            List<PrintCmd> listData_id = new ArrayList<>();//实例化一个新的数据集合，存放相同按键板的按键；
+                            listData_id.add(listData.get(position));//添加一个按键实体；
+//                            listData.remove(0);//在所有数据中移除此实体；
+                            for (int k = 0; k < listData.size(); k++) {//循环所有数据；
+                                for (int m = listData.size() - 1; m >= 0; m--) {
+                                    if (listData_id.get(0).getDevUnitID().equals(listData.get(m).getDevUnitID())) {
+                                        listData_id.add(listData.get(m));//将所有数据中和第一个添加的按键作比较，相同的话加入新的实体集合，
+//                                        listData.remove(m);//在所有数据集合中移除；
+                                    }
+                                }
                             }
+                            UpBoardKeyData.ChnOpitemRowsBean bean = data_del.new ChnOpitemRowsBean();//按键实体
+
+                            for (int j = 0; j < listData_id.size(); j++) {//循环新的/相同的按键板集合；
+
+                                key_cpuCanID_del = listData_id.get(j).getDevUnitID();//为按键板id赋值；
+
+                                //根据按键动作判断，按下和弹起；
+                                if (listData_id.get(j).getKeyAct_num() == KEY_ACTION_DOWN) {
+                                    //如果是按下，将按下数组中的0位变为1；
+                                    Valid_down_del[listData_id.get(j).getIndex()] = 1;
+                                    //根据按下位置，将按下命令数组中的相应的0，改为响应命令；
+                                    Cmd_down_del[listData_id.get(j).getIndex()] = (byte) listData_id.get(j).getKey_cmd();
+                                } else {
+                                    Valid_up_del[listData_id.get(j).getIndex()] = 1;
+                                    Cmd_up_del[listData_id.get(j).getIndex()] = (byte) listData_id.get(j).getKey_cmd();
+                                }
+                            }
+
+                            //因为数据传递时，高位、低位和现实中相反，so循环赋值；
+                            String down_v = "";
+                            for (int j = 0; j < Valid_down_del.length; j++) {
+                                down_v += Valid_down_del[Valid_down_del.length - 1 - j];
+                            }
+                            //将改好的2#字符串转成10#；
+                            BigInteger bi_down = new BigInteger(down_v, 2);  //转换成BigInteger类型
+                            int v_down = Integer.parseInt(bi_down.toString(10)); //参数2指定的是转化成X进制，默认10进制
+
+
+                            String up_v = "";
+                            for (int j = 0; j < Valid_up_del.length; j++) {
+                                up_v += Valid_up_del[Valid_down_del.length - 1 - j];
+                            }
+                            BigInteger bi_up = new BigInteger(up_v, 2);  //转换成BigInteger类型
+                            int v_up = Integer.parseInt(bi_up.toString(10)); //参数2指定的是转化成X进制，默认10进制
+
+                            //将相应的数据加入到上传按键实体中；
+                            bean.setKey_cpuCanID(key_cpuCanID_del);
+                            bean.setKeyDownValid(v_down);
+                            bean.setKeyUpValid(v_up);
+                            bean.setKeyDownCmd(Cmd_down_del);
+                            bean.setKeyUpCmd(Cmd_up_del);
+                            //将每个上传按键实体加入实体集合中；
+                            bean_list_del.add(bean);
+
+
+                            //将以上数据加入到上传实体中；
+                            data_del.setDevUnitID(GlobalVars.getDevid());
+                            data_del.setChn_opitem_rows(bean_list_del);
+                            data_del.setDatType(BOARD_DEL);
+                            data_del.setSubType1(0);
+                            data_del.setSubType2(0);
+                            data_del.setDevType(devtype);
+                            data_del.setDevID(devid);
+                            data_del.setOut_cpuCanID(uid);
+                            data_del.setChn_opitem(bean_list_del.size());
                             dialog.dismiss();
+                            Gson gson_del = new Gson();
+                            System.out.println(gson_del.toJson(data_del));
+                            MyApplication.sendMsg(gson_del.toJson(data_del).toString());
+                            del_Position = position;
+                            initDialog("正在删除...");
                         }
                     });
                     builder.create().show();
@@ -739,7 +863,6 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
     /**
      * 设备适配器；
      */
-
     private int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv, R.drawable.jidinghe, R.drawable.dengguang, R.drawable.chuanglian};
 
     class EquipmentAdapter extends BaseAdapter {

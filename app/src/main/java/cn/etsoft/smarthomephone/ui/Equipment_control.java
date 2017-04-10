@@ -1,6 +1,7 @@
 package cn.etsoft.smarthomephone.ui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareCurtain;
 import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
+import cn.etsoft.smarthomephone.view.Circle_Progress;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 
 /**
@@ -41,6 +43,15 @@ public class Equipment_control extends Activity implements View.OnClickListener 
     private Dev_Adapter adapter;
     private List<WareDev> devs;
     private int edit_dev_id = -1;
+    private Dialog mDialog;
+
+    //自定义加载进度条
+    private void initDialog(String str) {
+        Circle_Progress.setText(str);
+        mDialog = Circle_Progress.createLoadingDialog(this);
+        mDialog.setCancelable(true);//允许返回
+        mDialog.show();//显示
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +65,8 @@ public class Equipment_control extends Activity implements View.OnClickListener 
         final Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+                if (mDialog != null)
+                    mDialog.dismiss();
                 if (msg.what == 7) {
                     if (MyApplication.getWareData().getDev_result() != null
                             && MyApplication.getWareData().getDev_result().getSubType2() == 1) {
@@ -81,7 +94,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                             }
                         }
                         if (MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevType() == 4) {
-                            for (int i = 0; i <MyApplication.getWareData().getCurtains().size() ; i++) {
+                            for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
                                 if (MyApplication.getWareData().getCurtains().size() <= i && MyApplication.getWareData().getCurtains().get(i).getDev().getDevId()
                                         == MyApplication.getWareData().getDev_result().getDev_rows().get(0).getDevID()
                                         && MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId()
@@ -106,7 +119,9 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                             equi_control.setAdapter(adapter);
                         }
 
-                        Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Equipment_control.this, "删除成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Equipment_control.this, "删除失败", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -122,7 +137,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                                 return;
                             }
                         }
-                        Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Equipment_control.this, "添加成功", Toast.LENGTH_SHORT).show();
                         WareDev dev1 = new WareDev();
                         if (result.getDev_rows().get(0).getDevType() == 0) {
                             WareAirCondDev dev = new WareAirCondDev();
@@ -168,7 +183,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                             equi_control.setAdapter(adapter);
                         }
                     } else {
-                        Toast.makeText(Equipment_control.this, "操作失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Equipment_control.this, "添加失败", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -188,10 +203,10 @@ public class Equipment_control extends Activity implements View.OnClickListener 
 //                        adapter = new Dev_Adapter();
 //                        equi_control.setAdapter(adapter);
 
-                        Toast.makeText(Equipment_control.this, "操作成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Equipment_control.this, "编辑成功", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        Toast.makeText(Equipment_control.this, "操作失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Equipment_control.this, "编辑失败", Toast.LENGTH_SHORT).show();
                     }
                 }
                 MyApplication.getWareData().setDev_result(null);
@@ -259,7 +274,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
 //                                "devID": 6,
 //                                "cmd": 1
 //                       }
-
+                        dialog.dismiss();
                         final String chn_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                                 "\"datType\":" + 7 + "," +
                                 "\"subType1\":0," +
@@ -270,7 +285,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                                 "\"cmd\":" + 1 + "}";
 
                         MyApplication.sendMsg(chn_str);
-                        dialog.dismiss();
+                        initDialog("正在删除...");
                     }
                 });
                 builder.create().show();
@@ -337,7 +352,7 @@ public class Equipment_control extends Activity implements View.OnClickListener 
                     R.drawable.jidinghe, R.drawable.dengguang, R.drawable.chuanglian};
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(Equipment_control.this).inflate(R.layout.equipment_listview_control_item, null);
+                convertView = LayoutInflater.from(Equipment_control.this).inflate(R.layout.equipment_listview_control_item2, null);
                 viewHolder = new ViewHolder();
 
                 viewHolder.title = (TextView) convertView.findViewById(R.id.equipment_tv);
