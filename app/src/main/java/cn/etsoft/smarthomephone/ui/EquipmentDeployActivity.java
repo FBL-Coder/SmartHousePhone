@@ -226,11 +226,11 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
         if (MyApplication.getWareData().getChnOpItems() == null || MyApplication.getWareData().getChnOpItems().size() == 0) {
             input_out_iv_nodata.setVisibility(View.VISIBLE);
-            if (adapter == null){
-                adapter = new Swipe_CpnAdapter(this, listData,mListener);
-                lv.setAdapter(adapter);
-            }else {
+            if (adapter != null)
                 adapter.notifyDataSetChanged(listData);
+            else {
+                adapter = new Swipe_CpnAdapter(this, listData, mListener);
+                lv.setAdapter(adapter);
             }
             return;
         }
@@ -244,8 +244,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
             List<Integer> list_Key_up = Sixteen2Two.decimal2Binary(ChnOpItem.get(k).getKeyUpValid());
             List<String> list_Name = new ArrayList<>();
             for (int i = 0; i < MyApplication.getWareData().getKeyInputs().size(); i++) {
-                if (ChnOpItem.get(k).getDevUnitID()
-                        .equals(MyApplication.getWareData().getKeyInputs().get(i).getDevUnitID())) {
+                if (ChnOpItem.get(k).getDevUnitID().equals(MyApplication.getWareData().getKeyInputs().get(i).getDevUnitID())) {
                     for (int j = 0; j < MyApplication.getWareData().getKeyInputs().get(i).getKeyName().length; j++) {
                         list_Name.add(MyApplication.getWareData().getKeyInputs().get(i).getKeyName()[j]);
                     }
@@ -325,11 +324,11 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 }
             }
         }
-        if (adapter == null){
-            adapter = new Swipe_CpnAdapter(this, listData,mListener);
-            lv.setAdapter(adapter);
-        }else {
+        if (adapter != null)
             adapter.notifyDataSetChanged(listData);
+        else {
+            adapter = new Swipe_CpnAdapter(this, listData, mListener);
+            lv.setAdapter(adapter);
         }
     }
     @Override
@@ -427,26 +426,11 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                                 return;
                             }
                         }
-/*{
-                        "chn_opitem_rows":	[{
-                        "key_cpuCanID":	"50ff6c067184515640421267",
-                                "keyDownValid":	0,
-                                "keyUpValid":	49,
-                                "keyUpCmd":	[3, 0, 0, 0, 3, 1],
-                        "keyDownCmd":	[0, 0, 0, 0, 0, 0]
-                    }],
-                        "devUnitID":	"37ffdb05424e323416702443",
-                            "datType":	14,
-                            "subType1":	1,
-                            "subType2":	1,
-                            "chn_opitem":	1
-                    }*/
-
                         //根据以上注释掉的数据结构，将已有数据已此格式寄存；
-                        byte[] Valid_down_del = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
-                        byte[] Valid_up_del = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
-                        byte[] Cmd_down_del = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键相应的命令
-                        byte[] Cmd_up_del = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
+                        byte[] Valid_down_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
+                        byte[] Valid_up_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
+                        byte[] Cmd_down_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键相应的命令
+                        byte[] Cmd_up_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
                         String key_cpuCanID_del = "";//按键板的id；
                         UpBoardKeyData data_del = new UpBoardKeyData();//上传数据实体；
                         List<UpBoardKeyData.ChnOpitemRowsBean> bean_list_del = new ArrayList<>();//按键板实体集合；
@@ -771,10 +755,10 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         public void onClick(DialogInterface dialog, int which) {
 //根据以上注释掉的数据结构，将已有数据已此格式寄存；
 
-                            byte[] Valid_down_del = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
-                            byte[] Valid_up_del = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
-                            byte[] Cmd_down_del = new byte[]{0, 0, 0, 0, 0, 0};//存放按下键相应的命令
-                            byte[] Cmd_up_del = new byte[]{0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
+                            byte[] Valid_down_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
+                            byte[] Valid_up_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
+                            byte[] Cmd_down_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键相应的命令
+                            byte[] Cmd_up_del = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
                             String key_cpuCanID_del = "";//按键板的id；
                             UpBoardKeyData data_del = new UpBoardKeyData();//上传数据实体；
                             List<UpBoardKeyData.ChnOpitemRowsBean> bean_list_del = new ArrayList<>();//按键板实体集合；
