@@ -9,13 +9,15 @@ public class WareBoardKeyInput implements Serializable {
 	private static final long serialVersionUID = 8372972355485111907L;
 	private String devUnitID; //12
 	private String boardName; //8
+	private String roomName;
 	private byte boardType;
 	private byte keyCnt;
 	private byte bResetKey;
 	private byte ledBkType;
 	private String keyName[]; //6-12
-	private byte keyAllCtrlType[]; //6
 	private String canCpuID; //12
+	private byte keyinput;
+	private int keyAllCtrlType[]; //6
 	public void setCanCpuID(String canCpuID) {
 		this.canCpuID = canCpuID;
 	}
@@ -84,17 +86,32 @@ public class WareBoardKeyInput implements Serializable {
 		this.keyName = keyName;
 	}
 
-	public byte[] getKeyAllCtrlType() {
-		return keyAllCtrlType;
-	}
-
-	public void setKeyAllCtrlType(byte[] keyAllCtrlType) {
-		this.keyAllCtrlType = keyAllCtrlType;
-	}
 	//解决8个按键只有6个按键名的问题
 	public int[] getKeyIsSelect() {
 		if (keyIsSelect == null || keyIsSelect.length < 8)
 			return keyIsSelect = new int[8];
 		return keyIsSelect;
 	}
+	public int[] getKeyAllCtrlType() {
+		return keyAllCtrlType;
+	}
+
+	public void setKeyAllCtrlType(int[] keyAllCtrlType) {
+		this.keyAllCtrlType = keyAllCtrlType;
+	}
+	public byte getKeyinput() {
+		return keyinput;
+	}
+
+	public void setKeyinput(byte keyinput) {
+		this.keyinput = keyinput;
+	}
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
+	}
+
+	public String getRoomName() {
+		return roomName;
+	}
+
 }

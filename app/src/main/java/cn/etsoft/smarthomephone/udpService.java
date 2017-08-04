@@ -26,6 +26,7 @@ import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
 import cn.etsoft.smarthomephone.domain.Condition_Event_Bean;
 import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.domain.GroupSet_Data;
+import cn.etsoft.smarthomephone.domain.KyeInputResult;
 import cn.etsoft.smarthomephone.domain.SaveDevControl_Result;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult;
@@ -245,6 +246,12 @@ public class udpService extends Service {
                 if (subType2 == 1) {
                     isFreshData = true;
                     getKyeInputBoard(info);
+                }
+                break;
+            case 9: //e_udpPro_getBoards
+                if (subType1 == 1) {
+                    isFreshData = true;
+                    getKyeInputResult(info);
                 }
                 break;
             case 11: // e_udpPro_getKeyOpItems
@@ -1226,7 +1233,12 @@ public class udpService extends Service {
             System.out.println(e.toString());
         }
     }
-
+    public void getKyeInputResult(String info) {
+        Gson gson = new Gson();
+        KyeInputResult result = gson.fromJson(info, KyeInputResult.class);
+        MyApplication.getWareData().setKyeInputResult(result);
+        getKyeInputBoard(info);
+    }
     public void getKyeInputBoard(String info) {
 
 //        返回数据类型；
@@ -1262,40 +1274,51 @@ public class udpService extends Service {
                 isFreshData = false;
                 return;
             }
-
             JSONArray array = jsonObject.getJSONArray("keyinput_rows");
             for (int i = 0; i < array.length(); i++) {
                 boolean isContains = false;
                 WareBoardKeyInput input = new WareBoardKeyInput();
                 JSONObject object = array.getJSONObject(i);
-                input.setDevUnitID(object.getString("canCpuID"));
+                input.setDevUnitID(jsonObject.getString("devUnitID"));
+                input.setCanCpuID(object.getString("canCpuID"));
                 input.setBoardName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(object.getString("boardName"))));
                 input.setBoardType((byte) object.getInt("boardType"));
                 input.setKeyCnt((byte) object.getInt("keyCnt"));
+                input.setbResetKey((byte) object.getInt("bResetKey"));
                 input.setLedBkType((byte) object.getInt("ledBkType"));
-
+                input.setKeyinput((byte) jsonObject.getInt("keyinput"));
+                input.setRoomName(object.getString("roomName"));
                 JSONArray array1 = object.getJSONArray("keyName_rows");
                 String[] name = new String[array1.length()];
                 for (int j = 0; j < array1.length(); j++) {
                     name[j] = CommonUtils.getGBstr(CommonUtils.hexStringToBytes(array1.getString(j)));
                 }
                 input.setKeyName(name);
-
+                JSONArray array2 = object.getJSONArray("keyAllCtrlType_rows");
+                int[] key = new int[array2.length()];
+                for (int j = 0; j < array2.length(); j++) {
+                    key[j] = array2.getInt(j);
+                }
+                input.setKeyAllCtrlType(key);
                 if (MyApplication.getWareData().getKeyInputs().size() > 0) {
+                    int KeyInputPosition = 0;
                     for (int k = 0; k < MyApplication.getWareData().getKeyInputs().size(); k++) {
-                        if (MyApplication.getWareData().getKeyInputs().get(k).getBoardName().equals(input.getBoardName()) && input.getDevUnitID().equals(MyApplication.getWareData().getKeyInputs().get(k).getDevUnitID())) {
+//                        if (MyApplication.getWareData().getKeyInputs().get(k).getBoardName().equals(input.getBoardName()) && input.getDevUnitID().equals(MyApplication.getWareData().getKeyInputs().get(k).getDevUnitID())) {
+                        if (input.getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(k).getCanCpuID())) {
+                            KeyInputPosition = k;
                             isContains = true;
                         }
                     }
                     if (!isContains)
                         MyApplication.getWareData().getKeyInputs().add(input);
-                    else
-                        isFreshData = false;
+                    else {
+                        MyApplication.getWareData().getKeyInputs().set(KeyInputPosition, input);
+                    }
                 } else {
                     MyApplication.getWareData().getKeyInputs().add(input);
                 }
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             isFreshData = false;
             System.out.println(e.toString());
         }

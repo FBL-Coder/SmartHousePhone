@@ -9,6 +9,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import cn.etsoft.smarthomephone.Fragment.EditDevFragment;
+import cn.etsoft.smarthomephone.Fragment.EditModuleFragment;
 import cn.etsoft.smarthomephone.R;
 
 /**
@@ -47,14 +48,14 @@ public class Equipment_control extends FragmentActivity {
                             ft.show(fragment1);
                         }
                         break;
-//                    case R.id.edit_module:
-//                        if (fragment2 == null) {
-//                            fragment2 = new EditModuleFragment(Equipment_control.this);
-//                            ft.add(R.id.group, fragment2, fragment2Tag);
-//                        } else {
-//                            ft.show(fragment2);
-//                        }
-//                        break;
+                    case R.id.edit_module:
+                        if (fragment2 == null) {
+                            fragment2 = new EditModuleFragment(Equipment_control.this);
+                            ft.add(R.id.group, fragment2, fragment2Tag);
+                        } else {
+                            ft.show(fragment2);
+                        }
+                        break;
                     default:
                         break;
                 }

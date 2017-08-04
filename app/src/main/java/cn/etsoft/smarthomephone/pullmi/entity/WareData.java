@@ -11,6 +11,7 @@ import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
 import cn.etsoft.smarthomephone.domain.Condition_Event_Bean;
 import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.domain.GroupSet_Data;
+import cn.etsoft.smarthomephone.domain.KyeInputResult;
 import cn.etsoft.smarthomephone.domain.SaveDevControl_Result;
 import cn.etsoft.smarthomephone.domain.SearchNet;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
@@ -278,7 +279,14 @@ public class WareData implements Serializable {
     public void setSaveDev_result(SaveDevControl_Result saveDev_result) {
         this.saveDev_result = saveDev_result;
     }
+    private KyeInputResult kyeInputResult;
+    public KyeInputResult getKyeInputResult() {
+        return kyeInputResult;
+    }
 
+    public void setKyeInputResult(KyeInputResult kyeInputResult) {
+        this.kyeInputResult = kyeInputResult;
+    }
     public void setKeyInputs(List<WareBoardKeyInput> keyInputs) {
         this.keyInputs = keyInputs;
     }

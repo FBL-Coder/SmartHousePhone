@@ -187,7 +187,10 @@
         <activity
             android:name=".Fragment.EditDevFragment"
             android:screenOrientation="portrait" />
-
+        <!--输入模块编辑详情-->
+        <activity
+            android:name=".ui.EditModuleActivity"
+            android:screenOrientation="portrait" />
         <!--设备详情-->
         <activity
             android:name=".ui.Devs_Detail_Activity"
