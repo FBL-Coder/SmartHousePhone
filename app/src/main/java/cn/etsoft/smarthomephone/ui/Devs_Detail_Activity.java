@@ -78,7 +78,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         setContentView(R.layout.dec_detail_activity);
         initView();
     }
-
+    private List<String> message_save;
+    private List<String> message_get;
     /**
      * 初始化组件以及数据
      */
@@ -103,8 +104,29 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         if (dev.getType() == 0) {
             dev_type.setText("空调");
             for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
-                if (MyApplication.getWareData().getAirConds().get(i).getDev().getDevId() == dev.getDevId()) {
-                    dev_way.setText(MyApplication.getWareData().getAirConds().get(i).getPowChn() + "");
+                if (MyApplication.getWareData().getAirConds().get(i).getDev().getCanCpuId() == dev.getCanCpuId()) {
+                    String message1 = "";
+                    int PowChn = MyApplication.getWareData().getAirConds().get(i).getPowChn();
+                    String PowChnList = Integer.toBinaryString(PowChn);
+                    List<Integer> index_list = new ArrayList<>();
+                    message_get = new ArrayList<>();
+                    for (int j = 0; j < PowChnList.length(); j++) {
+                        if (PowChnList.charAt(PowChnList.length() - j - 1) == '1') {
+                            index_list.add(PowChnList.length() - j - 1);
+                            message1 += j + 1 + ".";
+                            message_get.add(String.valueOf(j + 1));
+                        }
+                    }
+                    if (message_get.size() > 5) {
+                        message1 = "";
+                        for (int k = 0; k < 5; k++) {
+                            message1 += message_get.get(k) + ".";
+                        }
+                    }
+                    if (!"".equals(message1)) {
+                        message1 = message1.substring(0, message1.lastIndexOf("."));
+                    }
+                    dev_way.setText(message1);
                 }
             }
         } else if (dev.getType() == 1) {
@@ -119,14 +141,37 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             dev_type.setText("灯光");
             for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
                 if (MyApplication.getWareData().getLights().get(i).getDev().getDevId() == dev.getDevId()) {
-                    dev_way.setText(MyApplication.getWareData().getLights().get(i).getPowChn() + "");
+                    int PowChn = MyApplication.getWareData().getLights().get(i).getPowChn();
+                    dev_way.setText(PowChn + "");
                 }
             }
         } else if (dev.getType() == 4) {
             dev_type.setText("窗帘");
             for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
                 if (MyApplication.getWareData().getCurtains().get(i).getDev().getDevId() == dev.getDevId()) {
-                    dev_way.setText(MyApplication.getWareData().getCurtains().get(i).getPowChn() + "");
+                    String message1 = "";
+                    int PowChn = MyApplication.getWareData().getCurtains().get(i).getPowChn();
+
+                    String PowChnList = Integer.toBinaryString(PowChn);
+                    List<Integer> index_list = new ArrayList<>();
+                    message_get = new ArrayList<>();
+                    for (int j = 0; j < PowChnList.length(); j++) {
+                        if (PowChnList.charAt(PowChnList.length() - j - 1) == '1') {
+                            index_list.add(PowChnList.length() - j - 1);
+                            message1 += j + 1 + ".";
+                            message_get.add(String.valueOf(j + 1));
+                        }
+                    }
+                    if (message_get.size() > 3) {
+                        message1 = "";
+                        for (int k = 0; k < 3; k++) {
+                            message1 += message_get.get(k) + ".";
+                        }
+                    }
+                    if (!"".equals(message1)) {
+                        message1 = message1.substring(0, message1.lastIndexOf("."));
+                    }
+                    dev_way.setText(message1);
                 }
             }
         }
