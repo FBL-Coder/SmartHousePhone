@@ -44,13 +44,19 @@ import cn.etsoft.smarthomephone.view.Circle_Progress;
  */
 public class Devs_Detail_Activity extends Activity implements View.OnClickListener {
 
-    private TextView dev_type, dev_room, dev_save, title,dev_way;
+    private TextView dev_type, dev_room, dev_save, title, dev_way;
     private EditText dev_name;
     private ImageView back;
     private WareDev dev;
     private int id;
     private PopupWindow popupWindow;
     private Dialog mDialog;
+    private List<String> message_save;
+    private List<String> message_get;
+    private PopupWindowAdapter_channel popupWindowAdapter_channel;
+    // Hashtable.keySet()降序 TreeMap.keySet()升序 HashMap.keySet()乱序 LinkedHashMap.keySet()原序
+    private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
+    private int data_save;
 
     //自定义加载进度条
     private void initDialog(String str) {
@@ -89,12 +95,12 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         setContentView(R.layout.dec_detail_activity);
         initView();
     }
-    private List<String> message_save;
-    private List<String> message_get;
+
     /**
      * 初始化组件以及数据
      */
     private void initView() {
+        message_save = new ArrayList<>();
         id = getIntent().getIntExtra("id", 0);
         dev = MyApplication.getWareData().getDevs().get(id);
 
@@ -187,7 +193,12 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         }
         dev_way.setOnClickListener(this);
         dev_save.setOnClickListener(this);
-        back.setOnClickListener(this);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         dev_room.setOnClickListener(this);
     }
 
@@ -232,7 +243,9 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             }
         });
     }
+
     private List<Integer> list_channel;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -307,7 +320,12 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                         }
                     }
                 }
-                dev.setDevName(dev_name.getText().toString());
+                if ("".equals(dev_name.getText().toString())) {
+                    ToastUtil.showToast(Devs_Detail_Activity.this, "设备名称不能为空");
+                    return;
+                } else {
+                    dev.setDevName(dev_name.getText().toString());
+                }
                 dev.setRoomName(dev_room.getText().toString());
 ////                发送：
 //            {
@@ -337,6 +355,9 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                         "\"cmd\":" + 1 + "}";
                 MyApplication.sendMsg(chn_str);
                 initDialog("正在保存...");
+                if (mDialog != null)
+                    mDialog.dismiss();
+                finish();
                 break;
             case R.id.dev_room:
                 final List<String> home_text = new ArrayList<>();
@@ -360,7 +381,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     popupWindow.dismiss();
                     popupWindow = null;
                 } else {
-                    initPopupWindow(v,home_text);
+                    initPopupWindow(v, home_text);
                     popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
@@ -438,7 +459,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 break;
         }
     }
-    public String Sutf2Sgbk (String string){
+
+    public String Sutf2Sgbk(String string) {
 
         byte[] data = {0};
         try {
@@ -446,15 +468,11 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
         String str_gb = CommonUtils.bytesToHexString(data);
         LogUtils.LOGE("情景模式名称:%s", str_gb);
         return str_gb;
     }
-    private PopupWindowAdapter_channel popupWindowAdapter_channel;
-    // Hashtable.keySet()降序 TreeMap.keySet()升序 HashMap.keySet()乱序 LinkedHashMap.keySet()原序
-    private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
-    private int data_save;
+
     /**
      * 初始化自定义设备的状态以及设备PopupWindow
      */
@@ -619,6 +637,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
     /**
      * 得到字符串中的数字和
+     *
      * @param str
      * @return
      */
@@ -626,8 +645,10 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         str = reverseString(str);
         return Integer.valueOf(str, 2);
     }
+
     /**
      * 倒置字符串
+     *
      * @param str
      * @return
      */

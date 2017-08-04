@@ -6,10 +6,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthomephone.domain.AddDevControl_Result;
 import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
 import cn.etsoft.smarthomephone.domain.Condition_Event_Bean;
 import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.domain.GroupSet_Data;
+import cn.etsoft.smarthomephone.domain.SaveDevControl_Result;
 import cn.etsoft.smarthomephone.domain.SearchNet;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult;
@@ -262,7 +264,20 @@ public class WareData implements Serializable {
         }
         return keyInputs;
     }
-
+    private AddDevControl_Result addDev_result;
+    public AddDevControl_Result getAddDev_result() {
+        return addDev_result;
+    }
+    public void setAddDev_result(AddDevControl_Result addDev_result) {
+        this.addDev_result = addDev_result;
+    }
+    private SaveDevControl_Result saveDev_result;
+    public SaveDevControl_Result getSaveDev_result() {
+        return saveDev_result;
+    }
+    public void setSaveDev_result(SaveDevControl_Result saveDev_result) {
+        this.saveDev_result = saveDev_result;
+    }
 
     public void setKeyInputs(List<WareBoardKeyInput> keyInputs) {
         this.keyInputs = keyInputs;

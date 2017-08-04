@@ -21,10 +21,12 @@ import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthomephone.domain.AddDevControl_Result;
 import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
 import cn.etsoft.smarthomephone.domain.Condition_Event_Bean;
 import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.domain.GroupSet_Data;
+import cn.etsoft.smarthomephone.domain.SaveDevControl_Result;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult_alarm;
@@ -214,21 +216,23 @@ public class udpService extends Service {
                     refreshDevData(info);
                 }
                 break;
-            case 5: // ctrlDev
-                if (subType1 == 1) {
+            case 5: // e_udpPro_addDev  添加设备
+                if (subType1 == 1 && subType2 == 1) {
+                    //删除设备
+                    addDev_result(info);
                     isFreshData = true;
-                    deldev_result(info);
 
                 }
                 break;
-            case 6: // ctrlDev
-                if (subType1 == 1) {
-                    deldev_result(info);
+            case 6: // e_udpPro_editDev  编辑设备
+                if (subType1 == 1 && subType2 == 1) {
+                    saveDev_result(info);
                     isFreshData = true;
                 }
                 break;
-            case 7: // delDev
+            case 7: // e_udpPro_delDev  删除设备
                 if (subType1 == 1) {
+                    //删除设备
                     deldev_result(info);
                     isFreshData = true;
                 }
@@ -1128,6 +1132,19 @@ public class udpService extends Service {
         Gson gson = new Gson();
         DevControl_Result result = gson.fromJson(info, DevControl_Result.class);
         MyApplication.getWareData().setDev_result(result);
+    }
+
+    //高级设置--设备信息--设备添加（保存）
+    public void addDev_result(String info) {
+        Gson gson = new Gson();
+        AddDevControl_Result result = gson.fromJson(info, AddDevControl_Result.class);
+        MyApplication.getWareData().setAddDev_result(result);
+    }
+    //高级设置--设备信息--设备编辑（保存）
+    public void saveDev_result(String info) {
+        Gson gson = new Gson();
+        SaveDevControl_Result result = gson.fromJson(info, SaveDevControl_Result.class);
+        MyApplication.getWareData().setSaveDev_result(result);
     }
 
     public void getkeyOutBoard(String info) {

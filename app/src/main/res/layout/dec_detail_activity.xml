@@ -37,7 +37,8 @@
             android:layout_weight="1"
             android:maxLength="6"
             android:gravity="center_vertical"
-            android:textColor="#000"
+            android:textColor="@color/color_000"
+            android:textColorHint="@color/color_565656"
             android:textSize="@dimen/sp_16" />
     </LinearLayout>
 
