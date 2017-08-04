@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_viewpager"
+    android:orientation="vertical">
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dp_0"-->
+        <!--android:layout_weight="1"-->
+        <!--android:orientation="vertical"-->
+        <!--android:scaleType="centerCrop">-->
+
+        <include layout="@layout/title_bar" />
+    <!--</LinearLayout>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <GridView
+            android:id="@+id/light_gv"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_weight="1"
+            android:clipToPadding="true"
+            android:horizontalSpacing="@dimen/dp_10"
+            android:numColumns="3"
+            android:scrollbars="none"
+            android:verticalSpacing="@dimen/dp_10" />
+
+
+        <LinearLayout
+            android:id="@+id/add_equipment_Layout_ll"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:layout_weight="1"
+            android:background="@color/color_DCDCDC"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_25"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
+                android:drawablePadding="@dimen/dp_5"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_10"
+                android:text="未添加设备列表"
+                android:textColor="@color/color_898C92"
+                android:textSize="@dimen/sp_16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_25"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:gravity="center"
+                    android:text="设备房间"
+                    android:textColor="@color/color_898C92"
+                    android:textSize="@dimen/sp_16" />
+
+                <TextView
+                    android:id="@+id/tv_equipment_parlour"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/save_click_selector"
+                    android:drawableRight="@drawable/more"
+                    android:gravity="center"
+                    android:paddingRight="@dimen/dp_15"
+                    android:textColor="@color/color_fff"
+                    android:textSize="@dimen/sp_16" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/equipment_loyout_lv"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0"
+                android:layout_weight="1"
+                android:background="@color/color_DCDCDC"></ListView>
+
+            <TextView
+                android:id="@+id/equipment_close"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_35"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/save_click_selector"
+                android:gravity="center"
+                android:text="关闭"
+                android:textColor="@color/color_fff"
+                android:textSize="@dimen/sp_16" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
