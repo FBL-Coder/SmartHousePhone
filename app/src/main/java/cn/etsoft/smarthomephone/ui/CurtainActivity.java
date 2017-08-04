@@ -29,7 +29,7 @@ import cn.etsoft.smarthomephone.weidget.CustomDialog;
 
 /**
  * Created by Say GoBay on 2016/9/1.
- * 窗帘也页面
+ * 窗帘页面
  */
 public class CurtainActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private GridView gridView;
@@ -42,7 +42,6 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     private List<WareCurtain> Curtains;
     private WareCurtain curtain;
     private int position_room = -1;
-
     private boolean IsCanClick = false;
 
     @Override
@@ -92,32 +91,32 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
         else
-            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewpage_num", 0)));
+            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewPage_num", 0)));
         if (MyApplication.getWareData().getCurtains().size() == 0) {
             ToastUtil.showToast(CurtainActivity.this, "请添加窗帘");
             return;
         }
+        //所有窗帘
         AllCurtain = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
             AllCurtain.add(MyApplication.getWareData().getCurtains().get(i));
         }
         Curtains = new ArrayList<>();
-
         //根据房间id获取设备；
         for (int i = 0; i < AllCurtain.size(); i++) {
             if (AllCurtain.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
                 Curtains.add(AllCurtain.get(i));
             }
         }
-        if (Curtains.size() == 0) {//如果这个房间没有电视，则不显示设备；
+        if (Curtains.size() == 0) {//如果这个房间没有窗帘，则显示"没有窗帘";
             IsCanClick = false;
             name_cur.setText("没有窗帘");
             return;
-        } else if (Curtains.size() == 1) {//电视是一个，刚刚好；
+        } else if (Curtains.size() == 1) {//窗帘是一个，刚刚好；
             IsCanClick = true;
             curtain = Curtains.get(0);
             name_cur.setText(Curtains.get(0).getDev().getDevName());
-        } else if (Curtains.size() > 1) {//如果一个房间多个电视，则继续选择提示。
+        } else if (Curtains.size() > 1) {//如果一个房间多个窗帘，则提示"一个房间最多一个窗帘"
             IsCanClick = false;
             ToastUtil.showToast(CurtainActivity.this, "一个房间最多一个窗帘");
             return;
@@ -139,10 +138,12 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick && curtain != null) {
+            //连续点击，间隔小于1秒，不做反应
             if (System.currentTimeMillis() - TimeExit < 1000) {
                 TimeExit = System.currentTimeMillis();
                 return;
             }
+            //给点击按钮添加点击音效
             MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":4" +
@@ -178,12 +179,12 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     }
 
     /**
-     * 初始化自定义dialog
+     * 选择房间的dialog
      */
     CustomDialog dialog;
 
     public void getRoomDialog() {
-        ListView dia_listview;
+        ListView dia_listView;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
 
         //获得当前窗体
@@ -201,10 +202,10 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
         dialog.show();
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
-        dia_listview = (ListView) dialog.findViewById(R.id.air_select);
-        dia_listview.setAdapter(new Room_Select_Adapter(CurtainActivity.this, MyApplication.getRoom_list()));
+        dia_listView = (ListView) dialog.findViewById(R.id.air_select);
+        dia_listView.setAdapter(new Room_Select_Adapter(CurtainActivity.this, MyApplication.getRoom_list()));
 
-        dia_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
@@ -212,6 +213,5 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
                 upData();
             }
         });
-
     }
 }

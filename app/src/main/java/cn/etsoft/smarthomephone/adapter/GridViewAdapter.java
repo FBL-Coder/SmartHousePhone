@@ -24,7 +24,7 @@ public class GridViewAdapter extends BaseAdapter {
 
     public GridViewAdapter(int[] image, String[] title, Context context) {
         super();
-        listViewItems = new ArrayList<GridViewBean>();
+        listViewItems = new ArrayList<>();
         mInflater = LayoutInflater.from(context);
         for (int i = 0; i < image.length; i++) {
             GridViewBean item = new GridViewBean( image[i] , title[i]);

@@ -13,6 +13,7 @@ import android.widget.ScrollView;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.BoardInOutAdapter;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.ui.ParlourFourActivity;
@@ -20,6 +21,7 @@ import cn.etsoft.smarthomephone.ui.ParlourFourActivity;
 
 /**
  * Created by Say GoBay on 2016/8/25.
+ * 组合设置--输入
  */
 public class InPutFragment extends Fragment implements AdapterView.OnItemClickListener {
     private ScrollView sv;
@@ -41,9 +43,12 @@ public class InPutFragment extends Fragment implements AdapterView.OnItemClickLi
         lv = (ListView) view.findViewById(R.id.group_lv);
         sv = (ScrollView) view.findViewById(R.id.group_sv);
         sv.smoothScrollTo(0, 0);
-        if(MyApplication.getWareData().getKeyInputs().size() > 0) {
+        if (MyApplication.getWareData().getKeyInputs().size() > 0) {
             lv.setAdapter(new BoardInOutAdapter(getActivity(), null, MyApplication.getWareData().getKeyInputs(), UdpProPkt.E_BOARD_TYPE.e_board_keyInput.getValue()));
             lv.setOnItemClickListener(this);
+        } else if (MyApplication.getWareData().getKeyInputs() == null || MyApplication.getWareData().getKeyInputs().size() == 0) {
+            ToastUtil.showToast(getActivity(), "没有收到输入板信息");
+            return;
         }
     }
 

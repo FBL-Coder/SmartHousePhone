@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
@@ -32,7 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
 import cn.etsoft.smarthomephone.domain.City;
+import cn.etsoft.smarthomephone.domain.User;
 import cn.etsoft.smarthomephone.domain.Weather_All_Bean;
 import cn.etsoft.smarthomephone.domain.Weather_Bean;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
@@ -40,6 +43,7 @@ import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.pullmi.entity.WareData;
+import cn.etsoft.smarthomephone.pullmi.entity.WareKeyOpItem;
 import cn.etsoft.smarthomephone.ui.HomeActivity;
 import cn.etsoft.smarthomephone.ui.WelcomeActivity;
 import cn.etsoft.smarthomephone.utils.CityDB;
@@ -93,7 +97,7 @@ public class MyApplication extends Application implements udpService.Callback, N
     private static List<Activity> activities;
 
     public static List<Activity> getActivities() {
-        if(activities == null){
+        if (activities == null) {
             activities = new ArrayList<>();
         }
         return activities;
@@ -151,6 +155,7 @@ public class MyApplication extends Application implements udpService.Callback, N
 
     private SoundPool sp;//声明一个SoundPool
     private int music;//定义一个整型用load（）；来设置suondID
+    private int music1;//定义一个整型用load（）；来设置suondID
 
     @Override
     public void onCreate() {
@@ -221,6 +226,31 @@ public class MyApplication extends Application implements udpService.Callback, N
 
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
+        music1 = sp.load(this, R.raw.jingbao, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
+    }
+
+
+    //区分发82返回的0 0 1包还是发33返回的 0 0 1包，做标记
+    private boolean isSearch;
+
+    public boolean isSearch() {
+        return isSearch;
+    }
+
+    public void setSearch(boolean search) {
+        isSearch = search;
+    }
+
+
+    //是否是跳过登录进入的设置界面
+    private boolean isSkip;
+
+    public boolean isSkip() {
+        return isSkip;
+    }
+
+    public void setSkip(boolean skip) {
+        isSkip = skip;
     }
 
     public SoundPool getSp() {
@@ -230,6 +260,7 @@ public class MyApplication extends Application implements udpService.Callback, N
         return sp;
     }
 
+    //点击按键音效
     public int getMusic() {
         if (music == 0) {
             music = sp.load(getActivity(), R.raw.key_sound, 1);
@@ -237,6 +268,13 @@ public class MyApplication extends Application implements udpService.Callback, N
         return music;
     }
 
+    //警报声音
+    public int getMusic1() {
+        if (music1 == 0) {
+            music1 = sp.load(getActivity(), R.raw.jingbao, 1);
+        }
+        return music1;
+    }
 
     private void initCityList() {
         mCityList = new ArrayList<City>();
@@ -374,11 +412,33 @@ public class MyApplication extends Application implements udpService.Callback, N
      */
 
 
-
     public void getWareData(int what, WareData wareData) {
         MyApplication.wareData = wareData;
         onGetWareDataListener.upDataWareData(what);
+        if (what == 100) {
+            Intent intent = new Intent();
+            intent.setPackage("cn.etsoft.smarthomephone");
+            intent.setAction("service.socket.com");
+            startService(intent);
+        }
+
+        //在任何页面，触发安防警报要发出警报信息
+        if (what == 32 && MyApplication.getWareData().getSafetyResult_alarm() != null && MyApplication.getWareData().getSafetyResult_alarm().getSubType1() == 2) {
+            int SecDat = MyApplication.getWareData().getSafetyResult_alarm().getSecDat();
+            //对SecDat进行二进制转码，数字为1的位置即为触发警报的防区
+            String SecDatList = Integer.toBinaryString(SecDat);
+
+            Intent intent = new Intent();
+            if (!SecDatList.contains("1"))
+                return;
+            intent.putExtra("index", SecDatList);
+            intent.setPackage("cn.etsoft.smarthomephone");
+            intent.setAction("cc.test.com");
+            startService(intent);
+            MyApplication.getWareData().setSafetyResult_alarm(null);
+        }
     }
+
     /**
      * 情景备用全局数据
      */
@@ -394,6 +454,7 @@ public class MyApplication extends Application implements udpService.Callback, N
 
     /**
      * 获取主页对象
+     *
      * @return
      */
     public static HomeActivity getmHomeActivity() {
@@ -402,6 +463,7 @@ public class MyApplication extends Application implements udpService.Callback, N
 
     /**
      * 赋值主页对象
+     *
      * @param mHomeActivity
      */
     public static void setmHomeActivity(HomeActivity mHomeActivity) {
@@ -419,7 +481,32 @@ public class MyApplication extends Application implements udpService.Callback, N
     public List<Weather_Bean> getWeathers_list() {
         return weathers_list;
     }
+    /**
+     * 控制设置备用全局数据-按键情景；
+     */
+    private ChnOpItem_scene key_scene_data;
 
+    public ChnOpItem_scene getKey_scene_data() {
+        return key_scene_data;
+    }
+
+    public void setKey_scene_data(ChnOpItem_scene key_scene_data) {
+        this.key_scene_data = key_scene_data;
+    }
+    /**
+     * 控制设置备用全局数据-输入；
+     */
+    private List<WareKeyOpItem> input_key_data;
+
+    public List<WareKeyOpItem> getInput_key_data() {
+        if (input_key_data == null)
+            return new ArrayList<>();
+        return input_key_data;
+    }
+
+    public void setInput_key_data(List<WareKeyOpItem> input_key_data) {
+        this.input_key_data = input_key_data;
+    }
 
     /**
      * 用户注册发送数据
@@ -431,7 +518,7 @@ public class MyApplication extends Application implements udpService.Callback, N
         final String str = "{" +
                 "\"userName\":\"" + id + "\"," +
                 "\"passwd\":\"" + pos + "\"," +
-                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_add_user.getValue() + "," +
+                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_regeditUser.getValue() + "," +
                 "\"subType1\":0," +
                 "\"subType2\":0}";
         sendMsg(str);
@@ -447,7 +534,7 @@ public class MyApplication extends Application implements udpService.Callback, N
         final String str = "{" +
                 "\"userName\":\"" + id + "\"," +
                 "\"passwd\":\"" + pos + "\"," +
-                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_login.getValue() + "," +
+                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_loginUser.getValue() + "," +
                 "\"subType1\":0," +
                 "\"subType2\":0}";
         sendMsg(str);
@@ -462,7 +549,7 @@ public class MyApplication extends Application implements udpService.Callback, N
         final String str = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                 "\"devPass\":\"" + GlobalVars.getDevpass() + "\"," +
-                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_boardCast.getValue() + "," +
+                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getBroadCast.getValue() + "," +
                 "\"uuid\":\"" + appid + "\"," +
                 "\"subType1\":0," +
                 "\"subType2\":0}";
@@ -584,6 +671,7 @@ public class MyApplication extends Application implements udpService.Callback, N
     public void setAllHandler(Handler handler) {
         this.handler = handler;
     }
+
     /**
      * 启动服务；
      *
@@ -660,5 +748,31 @@ public class MyApplication extends Application implements udpService.Callback, N
      */
     public interface OnGetWareDataListener {
         void upDataWareData(int what);
+    }
+
+    /**
+     * 获取用户面板数据
+     */
+    public static void getUserData() {
+//        {
+//              "userName": "17089111219",
+//              "passwd": "123456",
+//              "devUnitID": "39ffd905484d303429620443",
+//              "datType": 86,
+//              "subType1": 0,
+//              "subType2": 0
+//        }
+        sharedPreferences = context.getSharedPreferences("profile",
+                Context.MODE_PRIVATE);
+        User user = new Gson().fromJson(sharedPreferences.getString("user", ""), User.class);
+        final String chn_str = "{" +
+                "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
+                "\"passwd\":\"" + user.getPass() + "\"," +
+                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getShortcutKey.getValue() + "," +
+                "\"userName\":\"" + user.getId() + "\"," +
+                "\"subType1\":0," +
+                "\"subType2\":0" +
+                "}";
+        sendMsg(chn_str);
     }
 }

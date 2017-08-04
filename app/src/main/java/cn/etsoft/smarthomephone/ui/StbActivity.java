@@ -94,35 +94,36 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
     }
 
     private void upData() {
-
+        //房间
         if (MyApplication.getRoom_list().size() == 0)
             return;
         //房间名称；
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
         else
-            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewpage_num", 0)));
+            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewPage_num", 0)));
+
         if (MyApplication.getWareData().getTvs().size() == 0) {
             ToastUtil.showToast(StbActivity.this, "请添加机顶盒");
             return;
         }
+        //所有机顶盒
         AllWareSetBox = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getStbs().size(); i++) {
             AllWareSetBox.add(MyApplication.getWareData().getStbs().get(i));
         }
         wareSetBoxs = new ArrayList<>();
-
         //根据房间id获取设备；
         for (int i = 0; i < AllWareSetBox.size(); i++) {
             if (AllWareSetBox.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
                 wareSetBoxs.add(AllWareSetBox.get(i));
             }
         }
-        if (wareSetBoxs.size() == 0) {//如果这个房间没有电视，则不显示设备；
+        if (wareSetBoxs.size() == 0) {//如果这个房间没有机顶盒，则不显示设备；
             IsCanClick = false;
             name_stb.setText(title_bar_tv_room.getText() + "没有找到机顶盒");
             return;
-        } else if (wareSetBoxs.size() == 1) {//电视是一个，刚刚好；
+        } else if (wareSetBoxs.size() == 1) {//机顶盒是一个，刚刚好；
             IsCanClick = true;
             wareSetBox = wareSetBoxs.get(0);
             title_bar_tv_room.setText(title_bar_tv_room.getText());
@@ -144,11 +145,12 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         if (v == title_bar_iv_or && MyApplication.getRoom_list().size() > 0)
             getRoomDialog();
         if (IsCanClick && wareSetBox != null) {
-
+            //连续点击，间隔小于1秒，不做反应
             if (System.currentTimeMillis() - TimeExit < 1000) {
                 TimeExit = System.currentTimeMillis();
                 return;
             }
+            //给点击按钮添加点击音效
             MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":4" +
@@ -194,12 +196,12 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
 
 
     /**
-     * 初始化自定义dialog
+     * 选择房间的dialog
      */
     CustomDialog dialog;
 
     public void getRoomDialog() {
-        ListView dia_listview;
+        ListView dia_listView;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
 
         //获得当前窗体
@@ -218,10 +220,10 @@ public class StbActivity extends Activity implements AdapterView.OnItemClickList
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
 
-        dia_listview = (ListView) dialog.findViewById(R.id.air_select);
-        dia_listview.setAdapter(new Room_Select_Adapter(StbActivity.this, MyApplication.getRoom_list()));
+        dia_listView = (ListView) dialog.findViewById(R.id.air_select);
+        dia_listView.setAdapter(new Room_Select_Adapter(StbActivity.this, MyApplication.getRoom_list()));
 
-        dia_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();

@@ -79,7 +79,7 @@ public class SceneActivity extends Activity {
         gridView = (GridView) findViewById(R.id.light_gv);
         gridView.setSelector(R.drawable.selector_gridview_item);
 
-        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+        MyApplication.mInstance.setOnGetWareDataListener( new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
                 if (MyApplication.getWareData().getSceneEvents() != null && MyApplication.getWareData().getSceneEvents().size() > 0) {

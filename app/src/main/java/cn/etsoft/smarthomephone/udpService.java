@@ -21,8 +21,15 @@ import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
+import cn.etsoft.smarthomephone.domain.Condition_Event_Bean;
 import cn.etsoft.smarthomephone.domain.DevControl_Result;
+import cn.etsoft.smarthomephone.domain.GroupSet_Data;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
+import cn.etsoft.smarthomephone.domain.SetSafetyResult;
+import cn.etsoft.smarthomephone.domain.SetSafetyResult_alarm;
+import cn.etsoft.smarthomephone.domain.Timer_Data;
+import cn.etsoft.smarthomephone.domain.UserBean;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
@@ -143,6 +150,9 @@ public class udpService extends Service {
             Log.i("接收信息", sub.trim());
         }
     }
+    //警报时间间隔
+    long time = 0;
+
     public void extractData(String info, Handler mhandler) {
         // TODO Auto-generated method stub
         int datType = 0;
@@ -159,15 +169,15 @@ public class udpService extends Service {
         if (datType != 35 || datType != 2)
             show(info);
         switch (datType) {
-            case 64:
+            case 84:
                 deleteNetReslut(info, subType2);
-            case 63:
+            case 83:
                 addNewNetReslut(subType2);
                 break;
-            case 62:
+            case 82:
                 getUserResult(subType2);
                 break;
-            case 61:
+            case 81:
                 addUserResult(subType2);
                 break;
             case 0:// e_udpPro_getRcuinfo
@@ -274,6 +284,19 @@ public class udpService extends Service {
                     myApp.getHandler().sendEmptyMessage(MSG_SETCHNOPITEM_INFO);*/
                 }
                 break;
+            case 17: // 获取定时数据
+                if (subType2 == 1) {
+                    getTimerData(info);
+                    isFreshData = true;
+
+                }
+                break;
+            case 19: // e_udpPro_setChnOpitems
+                if (subType2 == 1) {
+                    setTimerData_back(info);
+                    isFreshData = true;
+                }
+                break;
             case 22: // e_udpPro_getSceneEvents
                 if (subType2 == 1) {
                     isFreshData = true;
@@ -309,10 +332,75 @@ public class udpService extends Service {
 //                    isFreshData = true;
                 }
                 break;
+            case 27: // 获取触发事件数据
+                if (subType2 == 1) {
+                    getConditionData(info);
+                    isFreshData = true;
+                }
+                break;
+            case 29: // 保存触发事件数据
+                if (subType2 == 1) {
+                    isFreshData = true;
+                }
+                break;
+            case 32://e_udpPro_security_info
+                if (subType1 == 4 && subType2 == 255) {
+                    //查询联网模块防区信息
+                    setSafetyEvents(info);
+                    isFreshData = true;
+                } else if (subType1 == 5) {
+                    //修改联网模块防区信息
+                    safety_result(info);
+                    isFreshData = true;
+                } else if (subType1 == 2) {
+                    //解决多个警报5秒自动消失问题
+                    if (System.currentTimeMillis() - time > 5000) {
+                        time = System.currentTimeMillis();
+                        //防区报警信息
+                        safety_alarm(info);
+                        isFreshData = true;
+                    }
+                } else if (subType1 == 1) {
+                    //布防、撤防
+                    safety(info);
+                    isFreshData = true;
+                } else if (subType1 == 7 && subType2 == 1) {
+                    //对码
+                    isFreshData = true;
+                }
+                break;
             case 35:// e_udpPro_chns_status
 
-//                ctrlDevReply(info);
-//                isFreshData = true;
+                ctrlDevReply(info);
+                isFreshData = true;
+                break;
+            case 58: // e_udpPro_get_key2scene
+                if (subType1 == 1) {
+                    isFreshData = true;
+                    getChnOpItem_scene(info);
+                }
+                break;
+            case 59: // e_udpPro_set_key2scene
+                if (subType1 == 1) {
+                    setKeyOpItem_result(info);
+                    isFreshData = true;
+                }
+                break;
+            case 66: // trigger
+                if (subType2 == 255) {
+                    getGroupSetData(info);
+                    isFreshData = true;
+                }
+                if (subType1 == 2 && subType2 == 1) {
+                    setGroupSetData(info);
+                    isFreshData = true;
+                }
+                break;
+            case 86: // e_udpPro_getShortcutKey
+                if (subType2 == 0) {
+                    isFreshData = true;
+                    getUserEvents(info);
+                }
                 break;
         }
 
@@ -320,6 +408,196 @@ public class udpService extends Service {
             handler.sendMessage(handler.obtainMessage(datType, wareData));
             isFreshData = false;
         }
+    }
+    public void setGroupSetData(String info) {
+//        {
+//            "devUnitID":	"39ffd905484d303429620443",
+//                "datType":	66,
+//                "subType1":	2,
+//                "subType2":	1,
+//                "secs_trigger_rows":	[{
+//            "triggerName":	"c6e6b9d6b99d38b9a9b9b9b9",
+//                    "triggerSecs":	0,
+//                    "triggerId":	0,
+//                    "reportServ":	1,
+//                    "valid":	1,
+//                    "devCnt":	2,
+//                    "run_dev_item":	[{
+//                "canCpuID":	"36ffd7054842373507701843",
+//                        "devID":	2,
+//                        "devType":	3,
+//                        "lmVal":	0,
+//                        "rev2":	0,
+//                        "rev3":	0,
+//                        "bOnOff":	1,
+//                        "param1":	0,
+//                        "param2":	0
+//            }, {
+//                "canCpuID":	"36ffd7054842373507701843",
+//                        "devID":	3,
+//                        "devType":	3,
+//                        "lmVal":	0,
+//                        "rev2":	0,
+//                        "rev3":	0,
+//                        "bOnOff":	1,
+//                        "param1":	0,
+//                        "param2":	0
+//            }]
+//        }],
+//            "itemCnt":	1
+//        }
+
+        try {
+            JSONObject jsonObject = new JSONObject(info);
+            JSONArray jsonArray = jsonObject.getJSONArray("secs_trigger_rows");
+            GroupSet_Data.SecsTriggerRowsBean bean = new GroupSet_Data.SecsTriggerRowsBean();
+            List<GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean> list_dev = new ArrayList<>();
+            for (int i = 0; i < MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().size(); i++) {
+                if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(i).getTriggerId()
+                        == jsonArray.getJSONObject(0).getInt("triggerId")) {
+                    bean.setTriggerName(jsonArray.getJSONObject(0).getString("triggerName"));
+                    bean.setReportServ(jsonArray.getJSONObject(0).getInt("reportServ"));
+                    bean.setTriggerId(jsonArray.getJSONObject(0).getInt("triggerId"));
+                    bean.setDevCnt(jsonArray.getJSONObject(0).getInt("devCnt"));
+                    bean.setValid(jsonArray.getJSONObject(0).getInt("valid"));
+                    JSONArray jsonArray_dev = jsonArray.getJSONObject(0).getJSONArray("run_dev_item");
+                    for (int j = 0; j < jsonArray_dev.length(); j++) {
+                        GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean decbean = new GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean();
+                        decbean.setCanCpuID(jsonArray_dev.getJSONObject(j).getString("canCpuID"));
+                        decbean.setBOnOff(jsonArray_dev.getJSONObject(j).getInt("bOnOff"));
+                        decbean.setDevID(jsonArray_dev.getJSONObject(j).getInt("devID"));
+                        decbean.setDevType(jsonArray_dev.getJSONObject(j).getInt("devType"));
+                        list_dev.add(decbean);
+                    }
+                    bean.setRun_dev_item(list_dev);
+                    MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().set(i,bean);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Exception", "数据异常"+e);
+        }
+    }
+    public void getGroupSetData(String info) {
+        Gson gson = new Gson();
+        Log.i("JSON",info);
+        GroupSet_Data result = gson.fromJson(info, GroupSet_Data.class);
+        MyApplication.getWareData().setGroupSet_Data(result);
+    }
+
+    //保存定时器 数据返回
+    public void setTimerData_back(String info) {
+//        {
+//            "devUnitID":	"39ffd805484d303416600643",
+//                "datType":	19,
+//                "subType1":	0,
+//                "subType2":	1,
+//                "timerEvent_rows":	[{
+//            "timSta":	[9, 5, 0, 3],
+//            "timEnd":	[13, 5, 0, 0],
+//            "timerName":	"b6a8cab1c6f7310000000000",
+//                    "devCnt":	3,
+//                    "eventId":	1,
+//                    "valid":	0,
+//                    "rev3":	0,
+//                    "run_dev_item":	[{
+//                "canCpuID":	"36ffd7054842373507781843",
+//                        "devID":	7,
+//                        "devType":	3,
+//                        "lmVal":	0,
+//                        "rev2":	0,
+//                        "rev3":	0,
+//                        "bOnOff":	1,
+//                        "param1":	0,
+//                        "param2":	0
+//            }, {
+//                "canCpuID":	"36ffd7054842373507781843",
+//                        "devID":	8,
+//                        "devType":	3,
+//                        "lmVal":	0,
+//                        "rev2":	0,
+//                        "rev3":	0,
+//                        "bOnOff":	1,
+//                        "param1":	0,
+//                        "param2":	0
+//            }, {
+//                "canCpuID":	"36ffd7054842373507781843",
+//                        "devID":	9,
+//                        "devType":	3,
+//                        "lmVal":	0,
+//                        "rev2":	0,
+//                        "rev3":	0,
+//                        "bOnOff":	1,
+//                        "param1":	0,
+//                        "param2":	0
+//            }]
+//        }],
+//            "itemCnt":	1
+//        }
+    }
+    //获取触发器数据
+    public void getConditionData(String info) {
+        MyApplication.getWareData().setTimer_data(null);
+        Gson gson = new Gson();
+        Condition_Event_Bean result = gson.fromJson(info, Condition_Event_Bean.class);
+        MyApplication.getWareData().setCondition_event_bean(result);
+    }
+
+    //获取定时器数据
+    public void getTimerData(String info) {
+        MyApplication.getWareData().setTimer_data(null);
+        Gson gson = new Gson();
+        Timer_Data result = gson.fromJson(info, Timer_Data.class);
+        MyApplication.getWareData().setTimer_data(result);
+    }
+
+    //撤防、布防
+    public void safety(String info) {
+        MyApplication.getWareData().getChnOpItems().clear();
+        Gson gson = new Gson();
+        SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
+        MyApplication.getWareData().setResult(result);
+    }
+
+    //防区警报信息
+    public void safety_alarm(String info) {
+        MyApplication.getWareData().getChnOpItems().clear();
+        Gson gson = new Gson();
+        SetSafetyResult_alarm result = gson.fromJson(info, SetSafetyResult_alarm.class);
+        MyApplication.getWareData().setSafetyResult_alarm(result);
+    }
+
+    //修改联网模块防区信息
+    public void safety_result(String info) {
+        try {
+            MyApplication.getWareData().getChnOpItems().clear();
+            Gson gson = new Gson();
+            SetEquipmentResult result = gson.fromJson(info, SetEquipmentResult.class);
+            MyApplication.getWareData().setResult(result);
+        } catch (Exception e) {
+            Log.e("Exception", e + "");
+        }
+    }
+
+    /**
+     * 查询联网模块防区信息
+     *
+     * @param info
+     */
+    public void setSafetyEvents(String info) {
+        Gson gson = new Gson();
+        SetSafetyResult result = gson.fromJson(info, SetSafetyResult.class);
+        MyApplication.getWareData().setResult_safety(result);
+    }
+
+    /**
+     * 查询联网模块防区信息
+     *
+     * @param info
+     */
+    public void getChnOpItem_scene(String info) {
+        Gson gson = new Gson();
+        ChnOpItem_scene result = gson.fromJson(info, ChnOpItem_scene.class);
+        MyApplication.getWareData().setChnOpItem_scene(result);
     }
 
     private void addUserResult(int subType2) {
@@ -1204,7 +1482,66 @@ public class udpService extends Service {
         }
     }
 
+    public void getUserEvents(String info) {
+//        情景模式返回数据类型；
+//        scene_return
+//        {
+//            "devUnitID": "37ffdb05424e323416702443",
+//                "datType": 22,
+//                "subType1": 1,
+//                "subType2": 0,
+//                "scene_rows": [
+//            {
+//                "sceneName": "c8abbfaac4a3cabd00000000",
+//                    "devCnt": 0,
+//                    "eventID": 0
+//            },
+//            {
+//                "sceneName": "c8abb9d8c4a3cabd00000000",
+//                    "devCnt": 0,
+//                    "eventID": 1
+//            }
+//            ],
+//            "scene": 2
+//        }
+        Gson gson = new Gson();
+        UserBean userBean = gson.fromJson(info, UserBean.class);
+        MyApplication.getWareData().setUserBeen(userBean);
 
+
+//        try {
+//            JSONObject jsonObject = new JSONObject(info);
+//
+//            JSONArray array = jsonObject.getJSONArray("dev_rows");
+//
+//            List<UserBean> list = new ArrayList<>();
+//
+//            for (int i = 0; i < array.length(); i++) {
+//
+//                UserBean event = new UserBean();
+//                JSONObject objcet = array.getJSONObject(i);
+//
+//                event.setUserName(objcet.getString("userName"));
+//                event.setPasswd(objcet.getString("passwd"));
+//                event.setDevUnitID(objcet.getString("devUnitID"));
+//                event.setDev_rows(new ArrayList<UserBean.DevRowsBean>());
+//                JSONArray dev_rows = objcet.getJSONArray("dev_rows");
+//                for (int j = 0; j < dev_rows.length(); j++) {
+//                    JSONObject object2 = dev_rows.getJSONObject(j);
+//                    UserBean.DevRowsBean item = new UserBean.DevRowsBean();
+//                    item.setCanCpuID(object2.getString("canCpuID"));
+//                    item.setDevType(object2.getInt("devType"));
+//                    item.setDevID(object2.getInt("devID"));
+//                    event.getDev_rows().add(item);
+//                }
+//                list.add(event);
+//            }
+//            MyApplication.getWareData().setUserBeen((UserBean) list);
+//        } catch (JSONException e) {
+//            isFreshData = false;
+//            System.out.println(e.toString());
+//        }
+    }
     public void ctrlDevReply(String info) {
 
 //        灯返回数据类型；

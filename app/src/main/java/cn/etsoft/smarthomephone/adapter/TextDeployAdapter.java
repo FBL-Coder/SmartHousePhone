@@ -16,6 +16,7 @@ import cn.etsoft.smarthomephone.domain.ParlourFourBean;
 
 /**
  * Created by Say GoBay on 2016/8/29.
+ * 组合设置--输入板配置页面适配器
  */
 public class TextDeployAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
@@ -24,7 +25,7 @@ public class TextDeployAdapter extends BaseAdapter {
 
     public TextDeployAdapter(String[] title, String[] text, String[] deploy, Context context, IClick listener) {
         super();
-        listViewItems = new ArrayList<ParlourFourBean>();
+        listViewItems = new ArrayList<>();
         mInflater = LayoutInflater.from(context);
         mListener = listener;
         for (int i = 0; i < title.length; i++) {
@@ -35,7 +36,7 @@ public class TextDeployAdapter extends BaseAdapter {
 
     public TextDeployAdapter(List<String> title, List<String> text, List<String> deploy, Context context, IClick listener) {
         super();
-        listViewItems = new ArrayList<ParlourFourBean>();
+        listViewItems = new ArrayList<>();
         mInflater = LayoutInflater.from(context);
         mListener = listener;
 

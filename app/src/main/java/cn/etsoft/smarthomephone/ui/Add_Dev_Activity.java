@@ -3,6 +3,8 @@ package cn.etsoft.smarthomephone.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,8 +50,31 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     private void initDialog(String str) {
         Circle_Progress.setText(str);
         mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
+        //允许返回
+        mDialog.setCancelable(true);
+        //显示
+        mDialog.show();
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                mDialog.dismiss();
+            }
+        };
+        //加载数据进度条，5秒数据没加载出来自动消失
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    if (mDialog.isShowing()) {
+                        handler.sendMessage(handler.obtainMessage());
+                    }
+                } catch (Exception e) {
+                    System.out.println(e + "");
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -172,7 +197,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     popupWindow = null;
                 } else {
                     initPopupWindow(type_text, 1);
-                    popupWindow.showAsDropDown(v, -widthOff, 0);
+                    popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
             case R.id.add_dev_room:
@@ -181,7 +206,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     popupWindow = null;
                 } else {
                     initPopupWindow(home_text, 2);
-                    popupWindow.showAsDropDown(v, -widthOff, 0);
+                    popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
             case R.id.add_dev_board:
@@ -190,7 +215,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     popupWindow = null;
                 } else {
                     initPopupWindow(Board_text, 3);
-                    popupWindow.showAsDropDown(v, -widthOff, 0);
+                    popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
             case R.id.add_dev_way:
@@ -239,7 +264,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     popupWindow = null;
                 } else {
                     initPopupWindow(list_way_ok, 4);
-                    popupWindow.showAsDropDown(v, -widthOff, 0);
+                    popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
             case R.id.add_dev_save:

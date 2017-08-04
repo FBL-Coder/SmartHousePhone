@@ -66,8 +66,31 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     private void initDialog(String str) {
         Circle_Progress.setText(str);
         mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
+        //允许返回
+        mDialog.setCancelable(true);
+        //显示
+        mDialog.show();
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                mDialog.dismiss();
+            }
+        };
+        //加载数据进度条，5秒数据没加载出来自动消失
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    if (mDialog.isShowing()) {
+                        handler.sendMessage(handler.obtainMessage());
+                    }
+                } catch (Exception e) {
+                    System.out.println(e + "");
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -214,7 +237,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 finish();
             }
         });
-        builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
+         builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

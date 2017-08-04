@@ -6,8 +6,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
+import cn.etsoft.smarthomephone.domain.Condition_Event_Bean;
 import cn.etsoft.smarthomephone.domain.DevControl_Result;
+import cn.etsoft.smarthomephone.domain.GroupSet_Data;
+import cn.etsoft.smarthomephone.domain.SearchNet;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
+import cn.etsoft.smarthomephone.domain.SetSafetyResult;
+import cn.etsoft.smarthomephone.domain.SetSafetyResult_alarm;
+import cn.etsoft.smarthomephone.domain.Timer_Data;
+import cn.etsoft.smarthomephone.domain.UserBean;
 
 public class WareData implements Serializable {
 
@@ -32,6 +40,74 @@ public class WareData implements Serializable {
     private boolean DATA_LOCAL_FLAG;
     private int DeleteNetReslut;
     private String DeleteDevid;
+    //高级设置-按键情景模块
+    private ChnOpItem_scene chnOpItem_scene;
+    public ChnOpItem_scene getChnOpItem_scene() {
+        if (chnOpItem_scene == null)
+            return new ChnOpItem_scene();
+        return chnOpItem_scene;
+    }
+
+    public void setChnOpItem_scene(ChnOpItem_scene chnOpItem_scene) {
+        this.chnOpItem_scene = chnOpItem_scene;
+    }
+    //防区模块显示信息
+    private SetSafetyResult result_safety;
+    public SetSafetyResult getResult_safety() {
+        return result_safety;
+    }
+
+    public void setResult_safety(SetSafetyResult result_safety) {
+        this.result_safety = result_safety;
+    }
+    //防区模块报警
+    private SetSafetyResult_alarm safetyResult_alarm;
+    public SetSafetyResult_alarm getSafetyResult_alarm() {
+        return safetyResult_alarm;
+    }
+
+    public void setSafetyResult_alarm(SetSafetyResult_alarm safetyResult_alarm) {
+        this.safetyResult_alarm = safetyResult_alarm;
+    }
+    //定时设置
+    private Timer_Data timer_data;
+    public Timer_Data getTimer_data() {
+        return timer_data;
+    }
+    public void setTimer_data(Timer_Data timer_data) {
+        this.timer_data = timer_data;
+    }
+    //环境事件
+    private Condition_Event_Bean condition_event_bean;
+    public Condition_Event_Bean getCondition_event_bean() {
+        return condition_event_bean;
+    }
+
+    public void setCondition_event_bean(Condition_Event_Bean condition_event_bean) {
+        this.condition_event_bean = condition_event_bean;
+    }
+    //组合设置
+    private GroupSet_Data groupSet_Data;
+    public GroupSet_Data getGroupSet_Data() {
+        return groupSet_Data;
+    }
+
+    public void setGroupSet_Data(GroupSet_Data groupSet_Data) {
+        this.groupSet_Data = groupSet_Data;
+    }
+
+    //联网模块（搜索多个联网模块）
+    public List<SearchNet> rcuInfo_searches;
+
+    public List<SearchNet> getRcuInfo_searches() {
+        if (rcuInfo_searches == null)
+            rcuInfo_searches = new ArrayList<>();
+        return rcuInfo_searches;
+    }
+
+    public void setRcuInfo_searches(List<SearchNet> rcuInfo_searches) {
+        this.rcuInfo_searches = rcuInfo_searches;
+    }
 
     public WareData() {
 
@@ -78,6 +154,14 @@ public class WareData implements Serializable {
         if (chnOpItems == null) {
             setChnOpItems(new ArrayList<WareChnOpItem>());
         }
+    }
+    private UserBean userBeen;
+    public UserBean getUserBeen() {
+        return userBeen;
+    }
+
+    public void setUserBeen(UserBean userBeen) {
+        this.userBeen = userBeen;
     }
 
     public List<RcuInfo> getRcuInfos() {
@@ -173,8 +257,12 @@ public class WareData implements Serializable {
     }
 
     public List<WareBoardKeyInput> getKeyInputs() {
+        if (keyInputs == null) {
+            setKeyInputs(new ArrayList<WareBoardKeyInput>());
+        }
         return keyInputs;
     }
+
 
     public void setKeyInputs(List<WareBoardKeyInput> keyInputs) {
         this.keyInputs = keyInputs;

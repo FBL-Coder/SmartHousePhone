@@ -184,6 +184,7 @@
     <color name="color_565656">#565656</color>
 
     <color name="color_DCDCDC">#DCDCDC</color>
+    <color name="color_9AAFC0">#9AAFC0</color>
 
     <color name="color_55222223">#55222223</color>
 
@@ -194,6 +195,7 @@
     <color name="color_EEB032">#eeb032</color>
 
     <color name="color_F6F7F7">#F6F7F7</color>
+    <color name="color_55F6F7F7">#55F6F7F7</color>
 
     <color name="color_EDEDED">#EDEDED</color>
     <color name="color_3F51B5">#3F51B5</color>

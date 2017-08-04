@@ -26,8 +26,8 @@ import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 public class SystemSetActivity extends Activity implements AdapterView.OnItemClickListener {
     private GridView gridView;
     private LinearLayout ll;
-    private int[] image = {R.drawable.systemsetup2, R.drawable.systemsetup3, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.equipmentcontrol};
-    private String[] text = {"联网模块", "房间设置", "情景设置", "组合设置", "设备控制"};
+    private String[] text = {"联网模块", "远程IP", "模块详情", "用户界面", "控制设置", "设备信息", "情景设置", "安防设置", "定时设置", "环境事件", "组合设置"};
+    private int[] image = {R.drawable.systemsetup2, R.drawable.systemsetup3, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.equipmentcontrol,R.drawable.systemsetup2, R.drawable.systemsetup3, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.equipmentcontrol,R.drawable.systemsetup2};
     private ImageView back, title_bar_iv_or;
     private TextView title, title_bar_tv_room, name_cur;
 
@@ -131,25 +131,57 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
                 startActivity(intent);
                 break;
             case 1:
-                intent = new Intent(SystemSetActivity.this, RoomActivity.class);
+                intent = new Intent(SystemSetActivity.this, IpActivity.class);
                 intent.putExtra("title", text[1]);
                 startActivity(intent);
                 break;
             case 2:
-                intent = new Intent(SystemSetActivity.this, SceneSetActivity.class);
+                intent = new Intent(SystemSetActivity.this, ModuleDetailActivity.class);
                 intent.putExtra("title", text[2]);
                 startActivity(intent);
                 break;
             case 3:
-                intent = new Intent(SystemSetActivity.this, GroupActivity.class);
+                intent = new Intent(SystemSetActivity.this, UserActivity.class);
                 intent.putExtra("title", text[3]);
+                intent.putExtra("tag","user");
                 startActivity(intent);
                 break;
             case 4:
-                intent = new Intent(SystemSetActivity.this, Equipment_control.class);
+                intent = new Intent(SystemSetActivity.this, ControlActivity.class);
                 intent.putExtra("title", text[4]);
                 startActivity(intent);
                 break;
+            case 5:
+                intent = new Intent(SystemSetActivity.this, Equipment_control.class);
+                intent.putExtra("title", text[5]);
+                startActivity(intent);
+                break;
+            case 6:
+                intent = new Intent(SystemSetActivity.this, SceneSetActivity.class);
+                intent.putExtra("title", text[6]);
+                startActivity(intent);
+                break;
+            case 7:
+                intent = new Intent(SystemSetActivity.this, SafetyActivity.class);
+                intent.putExtra("title", text[7]);
+                startActivity(intent);
+                break;
+            case 8:
+                intent = new Intent(SystemSetActivity.this, TimerActivity.class);
+                intent.putExtra("title", text[8]);
+                startActivity(intent);
+                break;
+            case 9:
+                intent = new Intent(SystemSetActivity.this, ConditionEventActivity.class);
+                intent.putExtra("title", text[9]);
+                startActivity(intent);
+                break;
+            case 10:
+                intent = new Intent(SystemSetActivity.this, GroupSetActivity.class);
+                intent.putExtra("title", text[10]);
+                startActivity(intent);
+                break;
+
         }
     }
 }

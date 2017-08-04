@@ -130,10 +130,13 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         homeRadioGroup = (RadioGroup) findViewById(R.id.rg_home);
         ((RadioButton) homeRadioGroup.findViewById(R.id.rb_home_home)).setChecked(true);
         transaction = fragmentManager.beginTransaction();
-        initLoaction();
+        //定位
+        initLocation();
     }
 
-
+    /**
+     * 定位回调监听
+     */
     private void getLocationClientOption() {
         //初始化AMapLocationClientOption对象
         AMapLocationClientOption mLocationOption = new AMapLocationClientOption();
@@ -158,6 +161,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         String url = PM2D5_BASE_URL + mCurCity.getNumber();
         // L.i("weather url: " + url);
         Log.i("DATA", "请求网址  " + url);
+        // 请求服务器，获取返回数据
         String weatherResult = connServerForResult(url);
         Log.i("DATA", "返回结果" + weatherResult);
 
@@ -176,7 +180,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
-    // 请求服务器，获取返回数据
+    /**
+     * 请求服务器，获取返回数据
+      */
     private String connServerForResult(String url) {
         HttpGet httpRequest = new HttpGet(url);
         //天气key
@@ -197,8 +203,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         return strResult; // 返回结果
     }
 
-
-    private void initLoaction() {
+    /**
+     * 定位
+     */
+    private void initLocation() {
 
         mLocationClient = new AMapLocationClient(MyApplication.getContext());
         //设置定位回调监听
@@ -426,8 +434,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         mViewPager.setPageTransformer(true, new DepthPageTransformer());
         // 设置填充ViewPager页面的适配器
         mViewPager.setAdapter(new MyAdapter());
-        // 设置一个监听器，当ViewPage
-        // 中的页面改变时调用
+        // 设置一个监听器，当ViewPage中的页面改变时调用
         mViewPager.setOnPageChangeListener(new MyPageChangeListener());
     }
 

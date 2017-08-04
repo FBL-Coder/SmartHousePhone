@@ -19,31 +19,31 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareLight;
  */
 public class LightAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
-    private List<WareLight> wareLIght;
+    private List<WareLight> wareLight;
     private Context context;
 
-    public LightAdapter(List<WareLight> wareLIght, Context context) {
-        this.wareLIght = wareLIght;
+    public LightAdapter(List<WareLight> wareLight, Context context) {
+        this.wareLight = wareLight;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        if (null != wareLIght) {
-            return wareLIght.size();
+        if (null != wareLight) {
+            return wareLight.size();
         } else {
             return 0;
         }
     }
 
-    public void notifyDataSetChanged(List<WareLight> wareLIght) {
-        this.wareLIght = wareLIght;
+    public void notifyDataSetChanged(List<WareLight> wareLight) {
+        this.wareLight = wareLight;
         super.notifyDataSetChanged();
     }
 
     @Override
     public Object getItem(int position) {
-        return wareLIght.get(position);
+        return wareLight.get(position);
     }
 
     @Override
@@ -66,12 +66,12 @@ public class LightAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (wareLIght.get(position).getbOnOff() == 0) {
+        if (wareLight.get(position).getbOnOff() == 0) {
             viewHolder.image.setBackgroundResource(R.drawable.lightoff);//关闭
         } else {
             viewHolder.image.setBackgroundResource(R.drawable.lighton);//打开
         }
-        viewHolder.title.setText(wareLIght.get(position).getDev().getDevName());
+        viewHolder.title.setText(wareLight.get(position).getDev().getDevName());
 
         return convertView;
     }

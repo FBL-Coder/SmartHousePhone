@@ -2,6 +2,7 @@ package cn.etsoft.smarthomephone.weidget;
 
 /**
  * Created by Say GoBay on 2016/8/30.
+ * 系统设置--情景设置：左滑显示删除按钮的自定义SwipeListView
  */
 
 import android.content.Context;

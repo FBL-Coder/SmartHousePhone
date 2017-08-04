@@ -13,21 +13,19 @@ import android.widget.ScrollView;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.BoardInOutAdapter;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.ui.ParlourFourOutActivity;
 
 /**
  * Created by Say GoBay on 2016/8/25.
+ * 组合设置--输出页面
  */
-public class OutPutFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class OutPutFragment extends Fragment implements AdapterView.OnItemClickListener {
     private ScrollView sv;
     private ListView lv;
-    private int[] image = {R.drawable.ketingsijian, R.drawable.chufangsanjian,
-            R.drawable.ketingchuanglian, R.drawable.ketingkongtiao};
-    private int[] hui = {R.drawable.huijiantou, R.drawable.huijiantou, R.drawable.huijiantou,
-            R.drawable.huijiantou};
-    private String[] title = {"一楼客厅四键", "厨房三键", "一楼客厅窗帘", "一楼客厅空调"};
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +34,7 @@ public class OutPutFragment extends Fragment implements AdapterView.OnItemClickL
         initListView(view);
         return view;
     }
+
     /**
      * 初始化ListView
      */
@@ -43,11 +42,15 @@ public class OutPutFragment extends Fragment implements AdapterView.OnItemClickL
         lv = (ListView) view.findViewById(R.id.group_lv);
         sv = (ScrollView) view.findViewById(R.id.group_sv);
         sv.smoothScrollTo(0, 0);
-        if(MyApplication.getWareData().getBoardChnouts().size() > 0) {
-            lv.setAdapter(new BoardInOutAdapter(getActivity(), MyApplication.getWareData().getBoardChnouts() , null, UdpProPkt.E_BOARD_TYPE.e_board_chnOut.getValue()));
+        if (MyApplication.getWareData().getBoardChnouts().size() > 0) {
+            lv.setAdapter(new BoardInOutAdapter(getActivity(), MyApplication.getWareData().getBoardChnouts(), null, UdpProPkt.E_BOARD_TYPE.e_board_chnOut.getValue()));
             lv.setOnItemClickListener(this);
+        } else if (MyApplication.getWareData().getBoardChnouts() == null || MyApplication.getWareData().getBoardChnouts().size() == 0) {
+            ToastUtil.showToast(getActivity(), "没有收到输出板信息");
+            return;
         }
     }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), ParlourFourOutActivity.class);

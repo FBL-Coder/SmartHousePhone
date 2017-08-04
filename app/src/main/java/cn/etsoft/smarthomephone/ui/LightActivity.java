@@ -104,10 +104,12 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
+            //连续点击，间隔小于1秒，不做反应
             if (System.currentTimeMillis() - TimeExit < 1000) {
                 TimeExit = System.currentTimeMillis();
                 return;
             }
+            //给点击按钮添加点击音效
             MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             if (wareLight.get(position).getbTuneEn() == 0) {
                 String ctlStr;
@@ -147,12 +149,12 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
 
 
     /**
-     * 初始化自定义dialog
+     * 选择房间的dialog
      */
     CustomDialog dialog;
 
     public void getRoomDialog() {
-        ListView dia_listview;
+        ListView dia_listView;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
         //获得当前窗体
         Window window = dialog.getWindow();
@@ -170,10 +172,10 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
 
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
-        dia_listview = (ListView) dialog.findViewById(R.id.air_select);
-        dia_listview.setAdapter(new Room_Select_Adapter(LightActivity.this, room_list));
+        dia_listView = (ListView) dialog.findViewById(R.id.air_select);
+        dia_listView.setAdapter(new Room_Select_Adapter(LightActivity.this, room_list));
 
-        dia_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
@@ -200,8 +202,10 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
             ToastUtil.showToast(LightActivity.this, "没有灯具，请添加");
             return;
         }
+        //房间
         if (MyApplication.getRoom_list().size() == 0)
             return;
+        //所有灯
         AllLight = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
             AllLight.add(MyApplication.getWareData().getLights().get(i));
@@ -213,14 +217,14 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
         else
-            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewpage_num", 0)));
+            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewPage_num", 0)));
         //根据房间id获取设备；
         for (int i = 0; i < AllLight.size(); i++) {
             if (AllLight.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
                 wareLight.add(AllLight.get(i));
             }
         }
-
+        //房间里的灯
         if (wareLight.size() == 0) {
             lightAdapter = new LightAdapter(new ArrayList<WareLight>(), this);
             gridView.setAdapter(lightAdapter);

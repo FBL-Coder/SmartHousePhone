@@ -2,6 +2,7 @@ package cn.etsoft.smarthomephone.domain;
 
 /**
  * Created by Say GoBay on 2016/8/24.
+ * 情景设置的bean类
  */
 public class SceneSetBean {
         private int imageId;

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareDev;
 
 /**
  * Created by Say GoBay on 2016/8/26.
+ * 组合设置--输出板配置页面
  */
 public class ParlourFourOutActivity extends Activity implements AdapterView.OnItemClickListener {
     private TextView mTitle;
@@ -63,9 +63,13 @@ public class ParlourFourOutActivity extends Activity implements AdapterView.OnIt
         });
         mTitle.setText(title);
         uid = getIntent().getExtras().getString("uid");
+        //名称
         LTitle = new ArrayList<>();
+        //测试
         LText = new ArrayList<>();
+        //配置
         LDeploy = new ArrayList<>();
+        //设备
         devs = new ArrayList<>();
     }
 
@@ -93,8 +97,6 @@ public class ParlourFourOutActivity extends Activity implements AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(this, "listview的item被点击了！，点击的位置是-->" + position,
-                Toast.LENGTH_SHORT).show();
     }
 
     /**

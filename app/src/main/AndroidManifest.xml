@@ -85,6 +85,10 @@
         <activity
             android:name=".ui.HomeActivity"
             android:screenOrientation="portrait" />
+        <!--用户界面-->
+        <activity
+            android:name=".ui.UserActivity"
+            android:screenOrientation="portrait" />
         <!--空调-->
         <activity
             android:name=".ui.AirConditionActivity"
@@ -113,13 +117,16 @@
         <activity
             android:name=".ui.SystemSetActivity"
             android:screenOrientation="portrait" />
+        <!--模块详情-->
+        <activity android:name=".ui.ModuleDetailActivity"
+            android:screenOrientation="portrait" />
         <!--联网模块-->
         <activity
             android:name=".ui.NetWorkActivity"
             android:screenOrientation="portrait" />
         <!--房间设置-->
         <activity
-            android:name=".ui.RoomActivity"
+            android:name=".ui.IpActivity"
             android:screenOrientation="portrait" />
         <!--情景设置-->
         <activity
@@ -132,7 +139,7 @@
         <!--一楼客厅-->
         <!--组合设置-->
         <activity
-            android:name=".ui.GroupActivity"
+            android:name=".ui.ControlActivity"
             android:screenOrientation="portrait" />
         <!--组合设置-一楼客厅四键-->
         <activity
@@ -158,15 +165,27 @@
         <activity
             android:name=".ui.AddActivity"
             android:screenOrientation="portrait" />
+        <!--组合设置-按键情景-输入板-->
+        <activity
+            android:name=".ui.KeySceneActivity"
+            android:screenOrientation="portrait" />
+        <!--组合设置-按键情景-设备-->
+        <activity
+            android:name=".ui.KeySceneActivity_dev"
+            android:screenOrientation="portrait" />
         <!--远程IP-->
         <!--联网模块详情-->
         <activity
             android:name=".ui.SetNewWorkActivity"
             android:screenOrientation="portrait" />
+        <!--设备信息-->
+        <activity
+            android:name=".ui.Equipment_control"
+            android:screenOrientation="portrait" />
 
         <!--联网模块详情-->
         <activity
-            android:name=".ui.Equipment_control"
+            android:name=".Fragment.EditDevFragment"
             android:screenOrientation="portrait" />
 
         <!--设备详情-->
@@ -177,6 +196,42 @@
         <!--添加设备-->
         <activity
             android:name=".ui.Add_Dev_Activity"
+            android:screenOrientation="portrait" />
+        <!--安防设置-->
+        <activity
+            android:name=".ui.SafetyActivity"
+            android:screenOrientation="portrait" />
+        <!--安防设置-详情-->
+        <activity
+            android:name=".ui.SafetyActivity_details"
+            android:screenOrientation="portrait" />
+        <!--定时设置-->
+        <activity
+            android:name=".ui.TimerActivity"
+            android:screenOrientation="portrait" />
+        <!--定时设置-详情-->
+        <activity
+            android:name=".ui.TimerActivity_details"
+            android:screenOrientation="portrait" />
+        <!--环境事件-->
+        <activity
+            android:name=".ui.ConditionEventActivity"
+            android:screenOrientation="portrait" />
+        <!--环境事件-详情-->
+        <activity
+            android:name=".ui.ConditionEventActivity_details"
+            android:screenOrientation="portrait" />
+        <!--组合设置-->
+        <activity
+            android:name=".ui.GroupSetActivity"
+            android:screenOrientation="portrait" />
+        <!--组合设置-详情-->
+        <activity
+            android:name=".ui.GroupSetActivity_details"
+            android:screenOrientation="portrait" />
+        <!--登录界面-->
+        <activity
+            android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />
 
         <!--服务-->
@@ -248,6 +303,18 @@
                 <category android:name="cn.etsoft.smarthomephone" />
             </intent-filter>
         </activity>
+        <!-- 报警服务 -->
+        <service android:name=".ServiceSubclass">
+            <intent-filter >
+                <action android:name="cc.test.com"/>
+            </intent-filter>
+        </service>
+        <!-- Socket监听服务 -->
+        <service android:name=".ServiceSocket">
+            <intent-filter >
+                <action android:name="service.socket.com"/>
+            </intent-filter>
+        </service>
         <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"

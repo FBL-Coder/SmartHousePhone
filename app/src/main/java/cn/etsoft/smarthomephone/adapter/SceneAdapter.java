@@ -19,6 +19,7 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareSceneEvent;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 情景适配器
  */
 public class SceneAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
@@ -81,7 +82,7 @@ public class SceneAdapter extends BaseAdapter {
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //给点击情景按钮添加点击音效
                 MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
                 createSceneEvents(mWareSceneEvents.get(position).getEventld());
             }
@@ -94,6 +95,7 @@ public class SceneAdapter extends BaseAdapter {
     long TimeExit = 0;
 
     private void createSceneEvents(int eventId) {
+        //连续点击，间隔小于1秒，不做反应
         if (System.currentTimeMillis() - TimeExit < 1000) {
             TimeExit = System.currentTimeMillis();
             return;

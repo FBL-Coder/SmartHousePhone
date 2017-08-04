@@ -12,6 +12,9 @@ public class WareDev implements Serializable {
     private int devId;
     private int devCtrlType; // 取值范围E_DEV_TYPE
 
+    private boolean isSelect;
+    private byte bOnOff;
+
     public String getCanCpuId() {
         return canCpuId;
     }
@@ -58,5 +61,20 @@ public class WareDev implements Serializable {
 
     public void setDevCtrlType(byte devCtrlType) {
         this.devCtrlType = devCtrlType;
+    }
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
+
+    public byte getbOnOff() {
+        return bOnOff;
+    }
+
+    public void setbOnOff(byte bOnOff) {
+        this.bOnOff = bOnOff;
     }
 }

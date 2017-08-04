@@ -138,12 +138,12 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
 
 
     /**
-     * 初始化自定义dialog
+     * 选择房间的dialog
      */
     CustomDialog dialog;
 
     public void getRoomDialog() {
-        ListView dia_listview;
+        ListView dia_listView;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
 
         //获得当前窗体
@@ -161,10 +161,10 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
         dialog.show();
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
-        dia_listview = (ListView) dialog.findViewById(R.id.air_select);
-        dia_listview.setAdapter(new Room_Select_Adapter(TvActivity.this, MyApplication.getRoom_list()));
+        dia_listView = (ListView) dialog.findViewById(R.id.air_select);
+        dia_listView.setAdapter(new Room_Select_Adapter(TvActivity.this, MyApplication.getRoom_list()));
 
-        dia_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
@@ -177,24 +177,25 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
 
 
     private void upData() {
-
+        //房间
         if (MyApplication.getRoom_list().size() == 0)
             return;
         //房间名称；
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
         else
-            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewpage_num", 0)));
+            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewPage_num", 0)));
         if (MyApplication.getWareData().getTvs().size() == 0) {
             ToastUtil.showToast(TvActivity.this, "请添加电视");
             return;
         }
+        //所有电视
         AllTv = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getTvs().size(); i++) {
             AllTv.add(MyApplication.getWareData().getTvs().get(i));
         }
-        Tvs = new ArrayList<>();
 
+        Tvs = new ArrayList<>();
         //根据房间id获取设备；
         for (int i = 0; i < AllTv.size(); i++) {
             if (AllTv.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
@@ -232,11 +233,12 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick && tv != null) {
-
+            //连续点击，间隔小于1秒，不做反应
             if (System.currentTimeMillis() - TimeExit < 1000) {
                 TimeExit = System.currentTimeMillis();
                 return;
             }
+            //给点击按钮添加点击音效
             MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":4" +

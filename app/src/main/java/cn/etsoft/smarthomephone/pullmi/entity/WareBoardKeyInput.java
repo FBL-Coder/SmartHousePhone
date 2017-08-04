@@ -15,6 +15,18 @@ public class WareBoardKeyInput implements Serializable {
 	private byte ledBkType;
 	private String keyName[]; //6-12
 	private byte keyAllCtrlType[]; //6
+	private String canCpuID; //12
+	public void setCanCpuID(String canCpuID) {
+		this.canCpuID = canCpuID;
+	}
+	public String getCanCpuID() {
+		return canCpuID;
+	}
+	/**
+	 * KeyAdapter_keyScene所需属性
+	 * 选中为1，不然为0，默认为键名数组长度的int数组全为0；
+	 */
+	private int keyIsSelect[]; //6-12
 
 	public String getDevUnitID() {
 		return devUnitID;
@@ -78,5 +90,11 @@ public class WareBoardKeyInput implements Serializable {
 
 	public void setKeyAllCtrlType(byte[] keyAllCtrlType) {
 		this.keyAllCtrlType = keyAllCtrlType;
+	}
+	//解决8个按键只有6个按键名的问题
+	public int[] getKeyIsSelect() {
+		if (keyIsSelect == null || keyIsSelect.length < 8)
+			return keyIsSelect = new int[8];
+		return keyIsSelect;
 	}
 }

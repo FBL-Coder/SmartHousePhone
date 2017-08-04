@@ -53,8 +53,31 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     private void initDialog(String str) {
         Circle_Progress.setText(str);
         mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
+        //允许返回
+        mDialog.setCancelable(true);
+        //显示
+        mDialog.show();
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                mDialog.dismiss();
+            }
+        };
+        //加载数据进度条，5秒数据没加载出来自动消失
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    if (mDialog.isShowing()) {
+                        handler.sendMessage(handler.obtainMessage());
+                    }
+                } catch (Exception e) {
+                    System.out.println(e + "");
+                }
+            }
+        }).start();
     }
 
 
@@ -169,7 +192,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 if (MyApplication.getWareData().getSceneEvents().size() == 8) {
                     ToastUtil.showToast(SceneSetActivity.this, "最多添加8个情景模式");
                     return;
-                }
+                  }
                 getDialog();
             }
         } else {
@@ -227,7 +250,6 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
 
     /**
      * 新增情景模式
-     *
      * @param eventID
      * @param name
      */
@@ -263,7 +285,6 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
 
     /**
      * 删除情景模式
-     *
      * @param eventID
      * @param name
      */
@@ -320,10 +341,10 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                         public void onClick(DialogInterface dialog, int i) {
                             dialog.dismiss();
                             initDialog("正在删除...");
-                            byte sceneid = MyApplication.getWareData().getSceneEvents().get(position).getEventld();
+                            byte sceneId = MyApplication.getWareData().getSceneEvents().get(position).getEventld();
                             String name = MyApplication.getWareData().getSceneEvents().get(position).getSceneName();
                             //删除情景模式
-                            del_scene(sceneid, name);
+                            del_scene(sceneId, name);
                         }
                     });
                     builder.create().show();

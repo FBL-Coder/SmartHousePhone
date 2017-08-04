@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.pullmi.entity.WareSceneEvent;
 import cn.etsoft.smarthomephone.weidget.SwipeItemLayout;
 
@@ -26,21 +27,22 @@ public class SystemAdapter extends BaseAdapter {
             R.drawable.yingyuanmoshi, R.drawable.jiuqingmoshi,
             R.drawable.huikemoshi};
     private IClick mListener;
+    private Context context;
 
     public SystemAdapter(Context context, List<WareSceneEvent> lst, IClick listener) {
+        this.context = context;
         mInflater = LayoutInflater.from(context);
         listViewItems = lst;
         mSceneEvents = new ArrayList<>();
         mSceneEvents.addAll(listViewItems);
+        //最后是"新增情景",所以要加一个
         mSceneEvents.add(null);
-
         mListener = listener;
     }
 
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-
         mSceneEvents.clear();
         mSceneEvents.addAll(listViewItems);
         mSceneEvents.add(null);
@@ -82,20 +84,32 @@ public class SystemAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (listViewItems.size() == 0){
+        if (listViewItems.size() == 0) {
             viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
             viewHolder.title.setText("新增模式");
             viewHolder.hui.setVisibility(View.GONE);
             return convertView;
         }
         if (listViewItems.size() > 0) {
-            if (position < listViewItems.size()) {
-                viewHolder.image.setImageResource(image[position%5 ]);
+            if (position < 2) {
+                viewHolder.image.setImageResource(image[position % 5]);
+                viewHolder.title.setText(mSceneEvents.get(position).getSceneName());
+                viewHolder.hui.setImageResource(R.drawable.huijiantou);
+
+                viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ToastUtil.showToast(context, "全开、全关模式不可删除");
+                    }
+                });
+                viewHolder.delete.setTag(position);
+            } else if (position < listViewItems.size()) {
+                viewHolder.image.setImageResource(image[position % 5]);
                 viewHolder.title.setText(mSceneEvents.get(position).getSceneName());
                 viewHolder.hui.setImageResource(R.drawable.huijiantou);
 
                 if (mSceneEvents.get(position).getEventld() != 0) {
-                    if(mSceneEvents.get(position).getEventld() != 1) {
+                    if (mSceneEvents.get(position).getEventld() != 1) {
                         viewHolder.delete.setOnClickListener(mListener);
                         viewHolder.delete.setTag(position);
                     }
@@ -104,6 +118,7 @@ public class SystemAdapter extends BaseAdapter {
                 viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
                 viewHolder.title.setText("新增模式");
                 viewHolder.hui.setVisibility(View.GONE);
+                viewHolder.delete.setVisibility(View.GONE);
             }
         }
         return convertView;

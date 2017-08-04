@@ -18,7 +18,7 @@ import cn.etsoft.smarthomephone.adapter.TextDeployAdapter;
 
 /**
  * Created by Say GoBay on 2016/8/24.
- * 输入输出板配置页面
+ * 输入板配置页面
  */
 public class ParlourFourActivity extends Activity implements AdapterView.OnItemClickListener {
     private TextView title;
@@ -70,9 +70,7 @@ public class ParlourFourActivity extends Activity implements AdapterView.OnItemC
                 for (int i = 0; i < size; i++)
                     if (title.getText().toString().equals(MyApplication.getWareData().getKeyInputs().get(i).getBoardName())) {
                         index = i;
-                        lv.setAdapter(new TextDeployAdapter(
-                                MyApplication.getWareData().getKeyInputs().get(i).getKeyName(),
-                                text, deploy, this, mListener));
+                        lv.setAdapter(new TextDeployAdapter(MyApplication.getWareData().getKeyInputs().get(i).getKeyName(), text, deploy, this, mListener));
                         lv.setOnItemClickListener(this);
                     }
             }

@@ -67,7 +67,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aircondition);
-
+        //初始化控件
         initView();
         //初始化GridView
         initGridView();
@@ -87,12 +87,15 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
 
 
     private void upData() {
+        //房间
         if (MyApplication.getRoom_list().size() == 0)
             return;
+        //空调
         if (MyApplication.getWareData().getAirConds().size() == 0) {
             ToastUtil.showToast(AirConditionActivity.this, "请添加空调");
             return;
         }
+        //所有空调
         AllAic = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
             AllAic.add(MyApplication.getWareData().getAirConds().get(i));
@@ -100,7 +103,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         AirConds = new ArrayList<>();
         //房间集合
         room_list = MyApplication.getRoom_list();
-
+        //房间按钮的点击
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +117,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         if (position_room != -1)
             title_bar_tv_room.setText(MyApplication.getRoom_list().get(position_room));
         else
-            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewpage_num", 0)));
+            title_bar_tv_room.setText(MyApplication.getRoom_list().get(getIntent().getIntExtra("viewPage_num", 0)));
         //根据房间id获取设备；
         for (int i = 0; i < AllAic.size(); i++) {
             if (AllAic.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
@@ -133,12 +136,12 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         } else if (AirConds.size() == 1) {//空调是一个，刚刚好；
             wareAirCondDev = AirConds.get(0);
             IsCanClick = true;
-            initdata();
+            initData();
         } else if (AirConds.size() > 1) {//如果一个房间多个空调，继续选择。
             if (IsSelectAir) { //选择过后，控制空调，防止数据刷新时 继续弹出选择空调；
                 wareAirCondDev = AirConds.get(air_select_position);
                 IsCanClick = true;
-                initdata();
+                initData();
             } else {
                 IsCanClick = true;
                 getSelectDialog(AirConds);
@@ -147,12 +150,12 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     }
 
     /**
-     * 初始化自定义dialog
+     * 选择房间的dialog
      */
     CustomDialog dialog;
 
     public void getRoomDialog() {
-        ListView dia_listview;
+        ListView dia_listView;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
 
         //获得当前窗体
@@ -170,10 +173,10 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         dialog.show();
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
-        dia_listview = (ListView) dialog.findViewById(R.id.air_select);
-        dia_listview.setAdapter(new Room_Select_Adapter(AirConditionActivity.this, room_list));
+        dia_listView = (ListView) dialog.findViewById(R.id.air_select);
+        dia_listView.setAdapter(new Room_Select_Adapter(AirConditionActivity.this, room_list));
 
-        dia_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
@@ -186,27 +189,27 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     }
 
     /**
-     * 初始化自定义dialog
+     * 选择空调的dialog
+     * 如果一个房间有多个空调，要进行空调的选择
      */
-
     public void getSelectDialog(final List<WareAirCondDev> AirConds) {
-        ListView dia_listview;
+        ListView dia_listView;
         dialog = new CustomDialog(this, R.style.customDialog_null, R.layout.air_select_item);
         dialog.show();
         TextView view = (TextView) dialog.findViewById(R.id.select_room);
         view.setText("请选择空调");
         view.setTextColor(Color.BLACK);
-        dia_listview = (ListView) dialog.findViewById(R.id.air_select);
-        dia_listview.setAdapter(new Aic_Select_Adapter(AirConds));
+        dia_listView = (ListView) dialog.findViewById(R.id.air_select);
+        dia_listView.setAdapter(new Aic_Select_Adapter(AirConds));
 
-        dia_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
                 air_select_position = position;
                 IsSelectAir = true;
                 wareAirCondDev = AirConds.get(position);
-                initdata();
+                initData();
             }
         });
     }
@@ -268,13 +271,16 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     }
 
     long TimeExit = 0;
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (IsCanClick) {
+            //连续点击，间隔小于1秒，不做反应
             if (System.currentTimeMillis() - TimeExit < 1000) {
                 TimeExit = System.currentTimeMillis();
                 return;
             }
+            //给点击按钮添加点击音效
             MyApplication.mInstance.getSp().play(MyApplication.mInstance.getMusic(), 1, 1, 0, 0, 1);
             String str_Fixed = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                     ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
@@ -489,7 +495,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
     }
 
 
-    public void initdata() {
+    public void initData() {
         if (wareAirCondDev == null) {
             return;
         }
@@ -517,7 +523,10 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         }
     }
 
-
+    /**
+     * 选择空调的适配器
+     * 如果一个房间有多个空调，要进行空调的选择
+     */
     class Aic_Select_Adapter extends BaseAdapter {
         private List<WareAirCondDev> AirConds;
 

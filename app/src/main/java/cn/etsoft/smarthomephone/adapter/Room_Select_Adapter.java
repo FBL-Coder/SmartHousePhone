@@ -14,6 +14,7 @@ import cn.etsoft.smarthomephone.R;
 
 /**
  * 作者：FBL  时间： 2017/2/17.
+ * 选择房间的适配器
  */
 public class Room_Select_Adapter extends BaseAdapter {
 

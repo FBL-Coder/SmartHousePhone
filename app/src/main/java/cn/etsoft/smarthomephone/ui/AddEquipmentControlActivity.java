@@ -28,7 +28,6 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.IClick_PZ;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
 import cn.etsoft.smarthomephone.adapter.SwipeAdapter;
@@ -43,11 +42,11 @@ import cn.etsoft.smarthomephone.weidget.SwipeListView;
 
 /**
  * Created by Say GoBay on 2016/8/29.
- * 集体输入板或输出板设置
+ * 组合设置--输入板配置设备页面
  */
 public class AddEquipmentControlActivity extends Activity implements View.OnClickListener {
     private TextView mTitle, equipment_close, tv_equipment_parlour, ref_equipment, del_equipment, save_equipment;
-    private ImageView back, input_out_iv_nodata;
+    private ImageView back, input_out_iv_noData;
     private RelativeLayout add_equipment_btn;
     private SwipeListView lv;
     private ListView add_equipment_Layout_lv;
@@ -61,8 +60,8 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
     private List<String> home_text;
     private List<WareDev> mWareDev_room;
     private List<WareDev> mWareDev;
-    private EquipmentAdapter Equipadapter;
-    private int DATTYPE_SET = 12, DATTYPE_DEL = 13, POP_TYPE_DOWNUP = 1, POP_TYPE_STATE = 0, POP_TYPR_ROOM = 2, DEL_ALL = 110;
+    private EquipmentAdapter equipmentAdapter;
+    private int DATTYPE_SET = 12, DATTYPE_DEL = 13, POP_TYPE_DOWNUP = 1, POP_TYPE_STATE = 0, POP_TYPE_ROOM = 2, DEL_ALL = 110;
     private Dialog mDialog;
     private int del_Position = 0;
 
@@ -93,19 +92,21 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                     MyApplication.getWareData().setResult(null);
 
                 }
+                //删除某一条
                 if (del_Position != DEL_ALL && MyApplication.getWareData().getResult() != null
                         && MyApplication.getWareData().getResult().getResult() == 1) {
                     Toast.makeText(AddEquipmentControlActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     MyApplication.getWareData().setResult(null);
                     keyOpItems.remove(del_Position);
                     del_Position = 0;
-                    if (adapter != null)
+                    if (adapter != null) {
                         adapter.notifyDataSetChanged(keyOpItems);
-                    else {
+                    } else {
                         adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener);
                         lv.setAdapter(adapter);
                     }
                 }
+                //全部删除
                 if (del_Position == DEL_ALL && MyApplication.getWareData().getResult() != null
                         && MyApplication.getWareData().getResult().getResult() == 1) {
                     Toast.makeText(AddEquipmentControlActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
@@ -115,7 +116,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                     if (adapter != null)
                         adapter.notifyDataSetChanged(keyOpItems);
                     else {
-                        adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener, input_out_iv_nodata);
+                        adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener, input_out_iv_noData);
                         lv.setAdapter(adapter);
                     }
                 }
@@ -136,7 +137,6 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 mDialog.dismiss();
-                ToastUtil.showToast(AddEquipmentControlActivity.this, "数据加载失败");
             }
         };
         new Thread(new Runnable() {
@@ -167,12 +167,13 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
         dev = new ArrayList<>();
         home_text = new ArrayList<>();
         mWareDev_room = new ArrayList<>();
+        //所有设备
         mWareDev = MyApplication.getWareData().getDevs();
 
         for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
             mWareDev_room.add(MyApplication.getWareData().getDevs().get(i));
         }
-
+        //去重
         for (int i = 0; i < mWareDev_room.size() - 1; i++) {
             for (int j = mWareDev_room.size() - 1; j > i; j--) {
                 if (mWareDev_room.get(i).getRoomName().equals(mWareDev_room.get(j).getRoomName())) {
@@ -180,6 +181,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 }
             }
         }
+        //设备的房间名集合
         for (int i = 0; i < mWareDev_room.size(); i++) {
             home_text.add(mWareDev_room.get(i).getRoomName());
         }
@@ -200,7 +202,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
      * 初始化控件
      */
     private void initView() {
-        input_out_iv_nodata = (ImageView) findViewById(R.id.input_out_iv_nodata);
+        input_out_iv_noData = (ImageView) findViewById(R.id.input_out_iv_nodata);
         add_equipment_btn = (RelativeLayout) findViewById(R.id.equipment_out_rl);
         equipment_close = (TextView) findViewById(R.id.equipment_close);
         tv_equipment_parlour = (TextView) findViewById(R.id.tv_equipment_parlour);
@@ -226,22 +228,22 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
      */
     private void initListView() {
         if (MyApplication.getWareData().getKeyOpItems() == null || MyApplication.getWareData().getKeyOpItems().size() == 0) {
-            input_out_iv_nodata.setVisibility(View.VISIBLE);
-            if (adapter != null)
+            input_out_iv_noData.setVisibility(View.VISIBLE);
+            if (adapter != null) {
                 adapter.notifyDataSetChanged(keyOpItems);
-            else {
+            }else {
                 adapter = new SwipeAdapter(this, keyOpItems, mListener);
                 lv.setAdapter(adapter);
             }
             return;
         }
-        input_out_iv_nodata.setVisibility(View.GONE);
+        input_out_iv_noData.setVisibility(View.GONE);
         for (int i = 0; i < MyApplication.getWareData().getKeyOpItems().size(); i++) {
             keyOpItems.add(MyApplication.getWareData().getKeyOpItems().get(i));
         }
-        if (adapter != null)
+        if (adapter != null) {
             adapter.notifyDataSetChanged(keyOpItems);
-        else {
+        } else {
             adapter = new SwipeAdapter(this, keyOpItems, mListener);
             lv.setAdapter(adapter);
         }
@@ -254,9 +256,9 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 finish();
                 break;
             case R.id.equipment_out_rl:
-                //添加页面的item点击，以及listview的初始化
-                Equipadapter = new EquipmentAdapter(dev, this);
-                add_equipment_Layout_lv.setAdapter(Equipadapter);
+                //添加页面的item点击，以及listView的初始化
+                equipmentAdapter = new EquipmentAdapter(dev, this);
+                add_equipment_Layout_lv.setAdapter(equipmentAdapter);
 
                 add_equipment_Layout_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -279,11 +281,11 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                         }
                         if (tag) {
                             keyOpItems.add(item);
-                            input_out_iv_nodata.setVisibility(View.GONE);
-                            if (adapter != null)
+                            input_out_iv_noData.setVisibility(View.GONE);
+                            if (adapter != null) {
                                 adapter.notifyDataSetChanged(keyOpItems);
-                            else {
-                                adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener, input_out_iv_nodata);
+                            }else {
+                                adapter = new SwipeAdapter(AddEquipmentControlActivity.this, keyOpItems, mListener, input_out_iv_noData);
                                 lv.setAdapter(adapter);
                             }
                         }
@@ -299,7 +301,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 break;
             case R.id.ref_equipment:
                 //刷新
-                input_out_iv_nodata.setVisibility(View.GONE);
+                input_out_iv_noData.setVisibility(View.GONE);
                 initData();
                 break;
             case R.id.del_equipment:
@@ -394,8 +396,8 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                     popupWindow.dismiss();
                     popupWindow = null;
                 } else {
-                    initPopupWindow(v, -1, home_text, POP_TYPR_ROOM);
-                    popupWindow.showAsDropDown(v, -widthOff, 0);
+                    initPopupWindow(v, -1, home_text, POP_TYPE_ROOM);
+                    popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
         }
@@ -438,11 +440,11 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                             dev.add(mWareDev.get(i));
 
                     }
-                    if (Equipadapter != null)
-                        Equipadapter.notifyDataSetChanged();
+                    if (equipmentAdapter != null)
+                        equipmentAdapter.notifyDataSetChanged();
                     else {
-                        Equipadapter = new EquipmentAdapter(dev, AddEquipmentControlActivity.this);
-                        add_equipment_Layout_lv.setAdapter(Equipadapter);
+                        equipmentAdapter = new EquipmentAdapter(dev, AddEquipmentControlActivity.this);
+                        add_equipment_Layout_lv.setAdapter(equipmentAdapter);
                     }
                 }
                 popupWindow.dismiss();
@@ -453,7 +455,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
         popupWindow.setFocusable(true);
         popupWindow.update();
         // 自定义view添加触摸事件
-        customView.setOnTouchListener(new View.OnTouchListener() {
+        customView.setOnTouchListener(  new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (popupWindow != null && popupWindow.isShowing()) {
@@ -468,7 +470,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
     /**
      * 实现类，响应按钮点击事件
      */
-    private IClick_PZ mListener = new IClick_PZ() {
+    private IClick_PZ mListener =   new IClick_PZ() {
         @Override
         public void listViewItemClick(final int position, View v) {
             int widthOff = getWindow().getWindowManager().getDefaultDisplay().getWidth() / 500;

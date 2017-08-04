@@ -29,7 +29,6 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.IClick_PZ;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter;
 import cn.etsoft.smarthomephone.adapter.Swipe_CpnAdapter;
@@ -46,24 +45,24 @@ import cn.etsoft.smarthomephone.weidget.SwipeListView;
 
 /**
  * Created by Say GoBay on 2016/8/29.
- * 输出板设备编辑页面
+ * 组合设置--输出板设备编辑页面
  */
 public class EquipmentDeployActivity extends Activity implements View.OnClickListener {
     private TextView mTitle, equipment_close, tv_equipment_parlour, ref_equipment, del_equipment, save_equipment;
     private RelativeLayout add_equipment_btn;
-    private ImageView back, input_out_iv_nodata;
+    private ImageView back, input_out_iv_noData;
     private SwipeListView lv;
     private ListView add_equipment_Layout_lv;
     private PopupWindow popupWindow;
     private LinearLayout add_equipment_Layout_ll;
-    private int devtype;
-    private int devid;
+    private int devType;
+    private int devId;
     private String uid;
     private List<WareChnOpItem> ChnOpItem;
     private Swipe_CpnAdapter adapter = null;
     private List<String> Board_text;
-    private EquipmentAdapter Equipadapter;
-    private int POP_TYPE_DOWNUP = 1, POP_TYPE_STATE = 0, POP_TYPR_BOARD = 2;
+    private EquipmentAdapter equipmentAdapter;
+    private int POP_TYPE_DOWNUP = 1, POP_TYPE_STATE = 0, POP_TYPE_BOARD = 2;
 
     private int KEY_ACTION_DOWN = 0, KEY_ACTION_UP = 1;
     private int BOARD_UP = 15, BOARD_DEL = 16;
@@ -85,14 +84,13 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 mDialog.dismiss();
-                ToastUtil.showToast(EquipmentDeployActivity.this, "数据加载失败");
             }
         };
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(3500);
+                    Thread.sleep(5000);
                     if (mDialog.isShowing()) {
                         handler.sendMessage(handler.obtainMessage());
                     }
@@ -120,13 +118,12 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     listData.clear();
                     initListView();
                 }
-                if (what == 15 && MyApplication.getWareData().getResult() != null
-                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                if (what == 15 && MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getResult() == 1) {
                     Toast.makeText(EquipmentDeployActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                     MyApplication.getWareData().setResult(null);
                 }
-                if (del_Position != DEL_ALL && MyApplication.getWareData().getResult() != null
-                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                //删除某一条目
+                if (del_Position != DEL_ALL && MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getResult() == 1) {
                     Toast.makeText(EquipmentDeployActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     MyApplication.getWareData().setResult(null);
                     listData.remove(del_Position);
@@ -138,8 +135,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         lv.setAdapter(adapter);
                     }
                 }
-                if (del_Position == DEL_ALL && MyApplication.getWareData().getResult() != null
-                        && MyApplication.getWareData().getResult().getResult() == 1) {
+                //删除所有
+                if (del_Position == DEL_ALL && MyApplication.getWareData().getResult() != null   && MyApplication.getWareData().getResult().getResult() == 1) {
                     Toast.makeText(EquipmentDeployActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     MyApplication.getWareData().setResult(null);
                     listData.clear();
@@ -174,22 +171,22 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 finish();
             }
         });
-        devtype = getIntent().getIntExtra("devType", -1);
-        devid = getIntent().getIntExtra("devID", -1);
+        devType = getIntent().getIntExtra("devType", -1);
+        devId = getIntent().getIntExtra("devID", -1);
         uid = getIntent().getExtras().getString("uid");
         System.out.println("加载数据");
         Board_text = new ArrayList<>();
+        //按键名
         list_board = MyApplication.getWareData().getKeyInputs();
         for (int i = 0; i < list_board.size(); i++) {
             Board_text.add(list_board.get(i).getBoardName());
         }
-
     }
 
     public void initData() {
         ChnOpItem = new ArrayList<>();
         listData = new ArrayList<>();
-        MyApplication.getChnItemInfo(uid, devtype, devid);
+        MyApplication.getChnItemInfo(uid, devType, devId);
         initDialog("正在加载...");
     }
 
@@ -197,7 +194,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
      * 初始化控件
      */
     private void initView() {
-        input_out_iv_nodata = (ImageView) findViewById(R.id.input_out_iv_nodata);
+        input_out_iv_noData = (ImageView) findViewById(R.id.input_out_iv_nodata);
         add_equipment_btn = (RelativeLayout) findViewById(R.id.equipment_out_rl);
         equipment_close = (TextView) findViewById(R.id.equipment_close);
         tv_equipment_parlour = (TextView) findViewById(R.id.tv_equipment_parlour);
@@ -225,7 +222,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
     private void initListView() {
 
         if (MyApplication.getWareData().getChnOpItems() == null || MyApplication.getWareData().getChnOpItems().size() == 0) {
-            input_out_iv_nodata.setVisibility(View.VISIBLE);
+            input_out_iv_noData.setVisibility(View.VISIBLE);
             if (adapter != null)
                 adapter.notifyDataSetChanged(listData);
             else {
@@ -234,7 +231,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
             }
             return;
         }
-        input_out_iv_nodata.setVisibility(View.GONE);
+        input_out_iv_noData.setVisibility(View.GONE);
         for (int i = 0; i < MyApplication.getWareData().getChnOpItems().size(); i++) {
             ChnOpItem.add(MyApplication.getWareData().getChnOpItems().get(i));
         }
@@ -257,7 +254,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     PrintCmd cmd = new PrintCmd();
                     cmd.setDevUnitID(ChnOpItem.get(k).getDevUnitID());
                     cmd.setIndex(list_Key_down.get(i));
-                    cmd.setDevType(devtype);
+                    cmd.setDevType(devType);
 //                    if (list_Key_down.get(i) > 5)
 //                        list_Key_down.get(i) = 5;
                     cmd.setKey_cmd(ChnOpItem.get(k).getKeyDownCmd()[list_Key_down.get(i)]);
@@ -276,7 +273,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     PrintCmd cmd = new PrintCmd();
                     cmd.setDevUnitID(ChnOpItem.get(k).getDevUnitID());
                     cmd.setIndex(list_Key_down.get(i));
-                    cmd.setDevType(devtype);
+                    cmd.setDevType(devType);
 //                    if (list_Key_down.get(i) > 5)
 //                        list_Key_down.get(i) = 5;
                     cmd.setKey_cmd(ChnOpItem.get(k).getKeyDownCmd()[list_Key_down.get(i)]);
@@ -293,7 +290,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     PrintCmd cmd = new PrintCmd();
                     cmd.setDevUnitID(ChnOpItem.get(k).getDevUnitID());
                     cmd.setIndex(list_Key_up.get(i));
-                    cmd.setDevType(devtype);
+                    cmd.setDevType(devType);
 //                    if(list_Key_up.get(i)>5)
 //                        list_Key_up.get(i) = 5;
                     cmd.setKey_cmd(ChnOpItem.get(k).getKeyUpCmd()[list_Key_up.get(i)]);
@@ -312,7 +309,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     PrintCmd cmd = new PrintCmd();
                     cmd.setDevUnitID(ChnOpItem.get(k).getDevUnitID());
                     cmd.setIndex(list_Key_up.get(i));
-                    cmd.setDevType(devtype);
+                    cmd.setDevType(devType);
                     cmd.setKey_cmd(ChnOpItem.get(k).getKeyUpCmd()[list_Key_up.get(i)]);
                     cmd.setKeyAct_num(KEY_ACTION_UP);
                     if (list_Name.size() == 0)
@@ -336,15 +333,15 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.equipment_out_rl:
                 if (list_board.size() == 0) {
-                    Toast.makeText(EquipmentDeployActivity.this, "没有可用出输入板", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EquipmentDeployActivity.this, "没有可用的输入板", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 tv_equipment_parlour.setText(list_board.get(0).getBoardName());
                 tv_equipment_parlour.setTag(list_board.get(0));
-                //添加页面的item点击，以及listview的初始化
+                //添加页面的item点击，以及listView的初始化
 
-                Equipadapter = new EquipmentAdapter(list_board.get(0).getKeyName(), this);
-                add_equipment_Layout_lv.setAdapter(Equipadapter);
+                equipmentAdapter = new EquipmentAdapter(list_board.get(0).getKeyName(), this);
+                add_equipment_Layout_lv.setAdapter(equipmentAdapter);
 
                 add_equipment_Layout_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -354,25 +351,24 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         item.setKeyname(list_board.get(0).getKeyName()[position]);
                         item.setKeyAct_num(2);
                         item.setKey_cmd(0);
-                        item.setDevType(devtype);
+                        item.setDevType(devType);
                         item.setListener(mListener);
                         item.setDevUnitID(((WareBoardKeyInput) tv_equipment_parlour.getTag()).getDevUnitID());
 
                         boolean tag = true;
                         for (int i = 0; i < listData.size(); i++) {
-                            if (listData.get(i).getIndex() == position
-                                    && listData.get(i).getDevUnitID().equals(item.getDevUnitID())) {
+                            if (listData.get(i).getIndex() == position && listData.get(i).getDevUnitID().equals(item.getDevUnitID())) {
                                 tag = false;
                                 Toast.makeText(EquipmentDeployActivity.this, "设备已存在！", Toast.LENGTH_SHORT).show();
                             }
                         }
                         if (tag) {
                             listData.add(item);
-                            input_out_iv_nodata.setVisibility(View.GONE);
+                            input_out_iv_noData.setVisibility(View.GONE);
                             if (adapter != null)
                                 adapter.notifyDataSetChanged(listData);
                             else {
-                                adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData,mListener,input_out_iv_nodata);
+                                adapter = new Swipe_CpnAdapter(EquipmentDeployActivity.this, listData,mListener,input_out_iv_noData);
                                 lv.setAdapter(adapter);
                             }
                         }
@@ -388,7 +384,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 break;
             case R.id.ref_equipment:
                 //刷新
-                input_out_iv_nodata.setVisibility(View.GONE);
+                input_out_iv_noData.setVisibility(View.GONE);
                 if (listData != null) {
                     listData.clear();
                     if (adapter != null)
@@ -412,7 +408,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         dialog.dismiss();
                     }
                 });
-                builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("删除",  new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (listData.size() == 0) {
@@ -434,7 +430,6 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         String key_cpuCanID_del = "";//按键板的id；
                         UpBoardKeyData data_del = new UpBoardKeyData();//上传数据实体；
                         List<UpBoardKeyData.ChnOpitemRowsBean> bean_list_del = new ArrayList<>();//按键板实体集合；
-
 
                         for (int i = 0; i < listData.size(); i++) {//循环所有数据；
 
@@ -499,8 +494,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         data_del.setDatType(BOARD_DEL);
                         data_del.setSubType1(0);
                         data_del.setSubType2(0);
-                        data_del.setDevType(devtype);
-                        data_del.setDevID(devid);
+                        data_del.setDevType(devType);
+                        data_del.setDevID(devId);
                         data_del.setOut_cpuCanID(uid);
                         data_del.setChn_opitem(bean_list_del.size());
 
@@ -562,7 +557,6 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                             Valid_up[listData_id.get(j).getIndex()] = 1;
                             Cmd_up[listData_id.get(j).getIndex()] = (byte) listData_id.get(j).getKey_cmd();
                         }
-
                     }
 
                     //因为数据传递时，高位、低位和现实中相反，so循环赋值；
@@ -574,8 +568,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     BigInteger bi_down = new BigInteger(down_v, 2);  //转换成BigInteger类型
                     int v_down = Integer.parseInt(bi_down.toString(10)); //参数2指定的是转化成X进制，默认10进制
 
-
-                    String up_v = "";
+                     String up_v = "";
                     for (int j = 0; j < Valid_up.length; j++) {
                         up_v += Valid_up[Valid_down.length - 1 - j];
                     }
@@ -598,8 +591,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                 data.setDatType(BOARD_UP);
                 data.setSubType1(0);
                 data.setSubType2(0);
-                data.setDevType(devtype);
-                data.setDevID(devid);
+                data.setDevType(devType);
+                data.setDevID(devId);
                 data.setOut_cpuCanID(uid);
                 data.setChn_opitem(bean_list.size());
 
@@ -616,7 +609,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     popupWindow.dismiss();
                     popupWindow = null;
                 } else {
-                    initPopupWindow(v, -1, Board_text, POP_TYPR_BOARD);
+                    initPopupWindow(v, -1, Board_text, POP_TYPE_BOARD);
                     popupWindow.showAsDropDown(v, -widthOff, 0);
                 }
                 break;
@@ -656,17 +649,17 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     listData.get(parent_position).setKeyAct_num((byte) position);
                 else {
                     tv.setTag(list_board.get(position));
-                    if (Equipadapter != null)
-                        Equipadapter.notifyDataSetChanged();
+                    if (equipmentAdapter != null)
+                        equipmentAdapter.notifyDataSetChanged();
                     else {
-                        Equipadapter = new EquipmentAdapter(list_board.get(position).getKeyName(), EquipmentDeployActivity.this);
-                        add_equipment_Layout_lv.setAdapter(Equipadapter);
+                        equipmentAdapter = new EquipmentAdapter(list_board.get(position).getKeyName(), EquipmentDeployActivity.this);
+                        add_equipment_Layout_lv.setAdapter(equipmentAdapter);
                     }
                 }
                 popupWindow.dismiss();
             }
         });
-        //popupwindow页面之外可点
+        //popupWindow页面之外可点
         popupWindow.setOutsideTouchable(true);
         popupWindow.setFocusable(true);
         popupWindow.update();
@@ -826,8 +819,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                             data_del.setDatType(BOARD_DEL);
                             data_del.setSubType1(0);
                             data_del.setSubType2(0);
-                            data_del.setDevType(devtype);
-                            data_del.setDevID(devid);
+                            data_del.setDevType(devType);
+                            data_del.setDevID(devId);
                             data_del.setOut_cpuCanID(uid);
                             data_del.setChn_opitem(bean_list_del.size());
                             dialog.dismiss();

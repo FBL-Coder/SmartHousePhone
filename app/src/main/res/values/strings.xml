@@ -235,7 +235,7 @@
     <string name="add_button_control">新增按键控制</string>
     <string name="output">输出</string>
     <string name="input">输入</string>
-    <string name="infrared">红外</string>
+    <string name="keyScene">按键情景</string>
     <string name="home_page">首页</string>
     <string name="setting">设置</string>
     <string name="username">用户名</string>

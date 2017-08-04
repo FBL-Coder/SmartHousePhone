@@ -19,6 +19,7 @@ import cn.etsoft.smarthomephone.ui.LightActivity;
 import cn.etsoft.smarthomephone.ui.SceneActivity;
 import cn.etsoft.smarthomephone.ui.StbActivity;
 import cn.etsoft.smarthomephone.ui.TvActivity;
+import cn.etsoft.smarthomephone.ui.UserActivity;
 import cn.semtec.community2.MyApplication;
 
 /**
@@ -28,10 +29,10 @@ import cn.semtec.community2.MyApplication;
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GridView gridView;
-    private int[] image = {R.drawable.kt, R.drawable.ds, R.drawable.jdh, R.drawable.light_home,
+    private int[] image = {R.drawable.ms,R.drawable.kt, R.drawable.ds, R.drawable.jdh, R.drawable.light_home,
             R.drawable.cl, R.drawable.qj, R.drawable.jk, R.drawable.cz, R.drawable.ms,};
-    private String[] title = {"空调", "电视", "机顶盒", "灯光", "窗帘", "情景", "门禁", "插座", "门锁"};
-    private int HomeAct_viewpage_pisition;
+    private String[] title = {"用户界面","空调", "电视", "机顶盒", "灯光", "窗帘", "情景", "门禁", "插座", "门锁"};
+    private int HomeAct_viewPage_position;
 
     @Nullable
     @Override
@@ -44,7 +45,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             @Override
             public void getViewPageNum(int position) {
 //                ToastUtil.showToast(getActivity(), "主页ViewPage数值:" + position + "");
-                HomeAct_viewpage_pisition = position;
+                HomeAct_viewPage_position = position;
             }
         });
         return view;
@@ -52,7 +53,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     /**
      * 初始化GridView
-     *
      * @param view
      */
     private void initGridView(View view) {
@@ -66,44 +66,50 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = null;
         switch (position) {
-            //空调
+            //用户界面
             case 0:
-                intent = new Intent(getActivity(), AirConditionActivity.class);
+                intent = new Intent(getActivity(), UserActivity.class);
                 intent.putExtra("title", title[0]);
+                intent.putExtra("tag", "home");
                 break;
-            //电视
+            //空调
             case 1:
-                intent = new Intent(getActivity(), TvActivity.class);
+                intent = new Intent(getActivity(), AirConditionActivity.class);
                 intent.putExtra("title", title[1]);
                 break;
-            //机顶盒
+            //电视
             case 2:
-                intent = new Intent(getActivity(), StbActivity.class);
+                intent = new Intent(getActivity(), TvActivity.class);
                 intent.putExtra("title", title[2]);
                 break;
-            //灯光
+            //机顶盒
             case 3:
-                intent = new Intent(getActivity(), LightActivity.class);
+                intent = new Intent(getActivity(), StbActivity.class);
                 intent.putExtra("title", title[3]);
                 break;
-            //窗帘
+            //灯光
             case 4:
-                intent = new Intent(getActivity(), CurtainActivity.class);
+                intent = new Intent(getActivity(), LightActivity.class);
                 intent.putExtra("title", title[4]);
                 break;
-            //情景
+            //窗帘
             case 5:
-                intent = new Intent(getActivity(), SceneActivity.class);
+                intent = new Intent(getActivity(), CurtainActivity.class);
                 intent.putExtra("title", title[5]);
+                break;
+            //情景
+            case 6:
+                intent = new Intent(getActivity(), SceneActivity.class);
+                intent.putExtra("title", title[6]);
 
                 break;
             //门禁
-            case 6:
+            case 7:
                 startActivity(new Intent(getActivity(), cn.semtec.community2.WelcomeActivity.class));
                 break;
         }
         if (intent != null) {
-            intent.putExtra("viewpage_num", HomeAct_viewpage_pisition);
+            intent.putExtra("viewPage_num", HomeAct_viewPage_position);
             startActivity(intent);
         }
     }
