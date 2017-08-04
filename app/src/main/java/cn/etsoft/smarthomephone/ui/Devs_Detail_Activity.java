@@ -33,7 +33,7 @@ import cn.etsoft.smarthomephone.view.Circle_Progress;
  */
 public class Devs_Detail_Activity extends Activity implements View.OnClickListener {
 
-    private TextView dev_type, dev_room, dev_save, dev_back, title,dev_way;
+    private TextView dev_type, dev_room, dev_save, title,dev_way;
     private EditText dev_name;
     private ImageView back;
     private WareDev dev;
@@ -91,7 +91,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         dev_type = (TextView) findViewById(R.id.dev_type);
         dev_room = (TextView) findViewById(R.id.dev_room);
         dev_save = (TextView) findViewById(R.id.dev_save);
-        dev_back = (TextView) findViewById(R.id.dev_back);
         dev_name = (EditText) findViewById(R.id.dev_name);
         dev_way = (TextView) findViewById(R.id.dev_way);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
@@ -177,7 +176,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         }
         dev_way.setOnClickListener(this);
         dev_save.setOnClickListener(this);
-        dev_back.setOnClickListener(this);
         back.setOnClickListener(this);
         dev_room.setOnClickListener(this);
     }
@@ -230,14 +228,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        int widthOff = getWindow().getWindowManager().getDefaultDisplay().getWidth() / 500;
         switch (v.getId()) {
-
             case R.id.title_bar_iv_back:
-            case R.id.dev_back:
-                finish();
-                break;
-
             case R.id.dev_save:
 
                 if (dev.getType() == 0) {

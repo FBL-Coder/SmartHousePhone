@@ -143,18 +143,6 @@
             android:textColor="#fff"
             android:textSize="@dimen/sp_18"
             android:layout_margin="@dimen/dp_5"/>
-
-        <TextView
-            android:id="@+id/dev_back"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/dp_5"
-            android:background="@drawable/save_click_selector"
-            android:gravity="center"
-            android:text="返 回"
-            android:textColor="#fff"
-            android:textSize="@dimen/sp_18" />
     </LinearLayout>
 
 
