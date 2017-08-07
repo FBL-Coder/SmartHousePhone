@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
@@ -141,6 +142,10 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
                 startActivity(intent);
                 break;
             case 3:
+                if (MyApplication.mInstance.isSkip()) {
+                    ToastUtil.showToast(this, "跳过登录不能体验此功能");
+                    return;
+                }
                 intent = new Intent(SystemSetActivity.this, UserActivity.class);
                 intent.putExtra("title", text[3]);
                 intent.putExtra("tag","user");

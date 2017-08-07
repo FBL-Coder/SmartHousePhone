@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
 import cn.etsoft.smarthomephone.ui.AirConditionActivity;
 import cn.etsoft.smarthomephone.ui.CurtainActivity;
@@ -68,6 +69,10 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         switch (position) {
             //用户界面
             case 0:
+                if (MyApplication.mInstance.isSkip()) {
+                    ToastUtil.showToast(getActivity(), "跳过登录不能体验此功能");
+                    return;
+                }
                 intent = new Intent(getActivity(), UserActivity.class);
                 intent.putExtra("title", title[0]);
                 intent.putExtra("tag", "home");

@@ -190,10 +190,18 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences sharedPreferences = getSharedPreferences("profile",
+                        Context.MODE_PRIVATE);
+                String jsondata = sharedPreferences.getString("list", "");
+                if ("".equals(jsondata))
+                    if (MyApplication.mInstance.isSkip()) {
+                        finish();
+                    } else {
+                        System.exit(0);
+                    }
                 finish();
             }
         });
-        sharedPreferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
     }
 
     /**
@@ -744,5 +752,19 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
                 dialog.dismiss();
                 break;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        SharedPreferences sharedPreferences = getSharedPreferences("profile",
+                Context.MODE_PRIVATE);
+        String jsondata = sharedPreferences.getString("list", "");
+        if ("".equals(jsondata))
+            if (MyApplication.mInstance.isSkip()) {
+                finish();
+            } else {
+                System.exit(0);
+            }
+        else
+            super.onBackPressed();
     }
 }

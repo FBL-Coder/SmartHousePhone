@@ -156,6 +156,14 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
 
     @Override
     protected void onResume() {
+        SharedPreferences sharedPreferences = getSharedPreferences("profile",
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("list", "");
+        editor.putString("user", "");
+        editor.putString("rcuInfo_list", "");
+        editor.commit();
+        initEvent();
         super.onResume();
         preference = MyApplication.getSharedPreferenceUtil();
         cellphone = preference.getString("cellphone");
