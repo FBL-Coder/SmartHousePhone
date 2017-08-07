@@ -76,6 +76,10 @@
         <activity
             android:name=".ui.GuideActivity"
             android:screenOrientation="portrait" />
+        <!--主页安防-->
+        <activity
+            android:name=".ui.SafetyActivity_home"
+            android:screenOrientation="portrait" />
         <!--注册页面-->
         <activity
             android:name=".ui.RegisterActivity"

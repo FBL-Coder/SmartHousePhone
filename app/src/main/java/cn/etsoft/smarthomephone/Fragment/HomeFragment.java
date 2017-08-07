@@ -17,6 +17,7 @@ import cn.etsoft.smarthomephone.ui.AirConditionActivity;
 import cn.etsoft.smarthomephone.ui.CurtainActivity;
 import cn.etsoft.smarthomephone.ui.HomeActivity;
 import cn.etsoft.smarthomephone.ui.LightActivity;
+import cn.etsoft.smarthomephone.ui.SafetyActivity_home;
 import cn.etsoft.smarthomephone.ui.SceneActivity;
 import cn.etsoft.smarthomephone.ui.StbActivity;
 import cn.etsoft.smarthomephone.ui.TvActivity;
@@ -31,8 +32,8 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private GridView gridView;
     private int[] image = {R.drawable.ms,R.drawable.kt, R.drawable.ds, R.drawable.jdh, R.drawable.light_home,
-            R.drawable.cl, R.drawable.qj, R.drawable.jk, R.drawable.cz, R.drawable.ms,};
-    private String[] title = {"用户界面","空调", "电视", "机顶盒", "灯光", "窗帘", "情景", "门禁", "插座", "门锁"};
+            R.drawable.cl, R.drawable.qj, R.drawable.jk, R.drawable.cz, R.drawable.ms,R.drawable.cz};
+    private String[] title = {"用户界面","空调", "电视", "机顶盒", "灯光", "窗帘", "情景", "门禁", "插座", "门锁","安防"};
     private int HomeAct_viewPage_position;
 
     @Nullable
@@ -111,6 +112,9 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             //门禁
             case 7:
                 startActivity(new Intent(getActivity(), cn.semtec.community2.WelcomeActivity.class));
+                break;
+            case 10:
+                startActivity(new Intent(getActivity(), SafetyActivity_home.class));
                 break;
         }
         if (intent != null) {
