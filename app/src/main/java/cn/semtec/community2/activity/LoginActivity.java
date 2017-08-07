@@ -87,14 +87,44 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
             editor.putString("appid", APPID);
             editor.commit();
         }
+        initEvent();
+//        instace = this;
+
+
+//        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+//            @Override
+//            public void upDataWareData(int what) {
+//                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_loginUser.getValue()) {
+//                    if (MyApplication.getWareData().getLogin_result() == 0) {
+//                        cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登陆成功");
+//                        user = new User();
+//                        user.setId(cellphone);
+//                        user.setPass(password);
+//                        Gson gson = new Gson();
+//                        String str = gson.toJson(user);
+//                        editor.putString("user", str);
+//                        editor.commit();
+//                        startActivity(new Intent(LoginActivity.this, WelcomeActivity.class).putExtra("login", LOGIN_OK));
+//                        finish();
+//                    } else {
+//                        cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登录失败");
+//                        return;
+//                    }
+//                }
+//            }
+//        });
+//        setView();
+//        setListener();
+    }
+    long time = 0;
+
+    public void initEvent() {
         instace = this;
-
-
-        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+        cn.etsoft.smarthomephone.MyApplication.mInstance.setOnGetWareDataListener(new cn.etsoft.smarthomephone.MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
                 if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_loginUser.getValue()) {
-                    if (MyApplication.getWareData().getLogin_result() == 0) {
+                    if (cn.etsoft.smarthomephone.MyApplication.getWareData().getLogin_result() == 0) {
                         cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登陆成功");
                         user = new User();
                         user.setId(cellphone);
@@ -103,6 +133,10 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                         String str = gson.toJson(user);
                         editor.putString("user", str);
                         editor.commit();
+                        if (System.currentTimeMillis() - time < 2000)
+                            return;
+                        time = System.currentTimeMillis();
+                        cn.etsoft.smarthomephone.MyApplication.mInstance.setSkip(false);
                         startActivity(new Intent(LoginActivity.this, WelcomeActivity.class).putExtra("login", LOGIN_OK));
                         finish();
                     } else {
@@ -110,6 +144,10 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                         return;
                     }
                 }
+//                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue()) {
+//
+//
+//                }
             }
         });
         setView();
@@ -155,6 +193,11 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_tourist:
+                cn.etsoft.smarthomephone.MyApplication.mInstance.setSkip(true);
+                Intent intent = new Intent(this, cn.etsoft.smarthomephone.ui.NetWorkActivity.class);
+                startActivity(intent);
+                break;
             case R.id.btn_login:
                 cellphone = et_account.getText().toString();
                 password = et_password.getText().toString();

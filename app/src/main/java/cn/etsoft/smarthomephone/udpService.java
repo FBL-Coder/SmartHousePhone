@@ -28,6 +28,7 @@ import cn.etsoft.smarthomephone.domain.DevControl_Result;
 import cn.etsoft.smarthomephone.domain.GroupSet_Data;
 import cn.etsoft.smarthomephone.domain.KyeInputResult;
 import cn.etsoft.smarthomephone.domain.SaveDevControl_Result;
+import cn.etsoft.smarthomephone.domain.SearchNet;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
 import cn.etsoft.smarthomephone.domain.SetGroupSet;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult;
@@ -187,7 +188,12 @@ public class udpService extends Service {
                 break;
             case 0:// e_udpPro_getRcuinfo
                 if (subType2 == 1) {
-                    setRcuInfo(info);
+                    if (MyApplication.mInstance.isSearch() == false) {
+                        //设置联网模块信息
+                        setRcuInfo(info);
+                    } else if (MyApplication.mInstance.isSearch() == true) {
+                        setRcuInfo_search(info);
+                    }
                 }
                 break;
             case 3: // getDevsInfo
@@ -422,76 +428,29 @@ public class udpService extends Service {
             isFreshData = false;
         }
     }
+    /**
+     * 联网模块--搜索联网
+     *
+     * @param info
+     */
+    public void setRcuInfo_search(String info) {
+        List<SearchNet> rcuInfo_searches = MyApplication.getWareData().getRcuInfo_searches();
+        Gson gson = new Gson();
+        SearchNet result = gson.fromJson(info, SearchNet.class);
+        boolean IsExit = true;
+        for (int i = 0; i < rcuInfo_searches.size(); i++) {
+            if ((result.getDevUnitID().equals(rcuInfo_searches.get(i).getDevUnitID())) || (result.getRcu_rows().get(0).getCanCpuID().equals(rcuInfo_searches.get(i).getRcu_rows().get(0).getCanCpuID()))) {
+                IsExit = false;
+            }
+        }
+        if (IsExit) {
+            rcuInfo_searches.add(result);
+        }
+        Log.i("NET", "搜索数据解析");
+        MyApplication.getWareData().setRcuInfo_searches(rcuInfo_searches);
+        isFreshData = true;
+    }
 
-    //    public void setGroupSetData(String info) {
-////        {
-////            "devUnitID":	"39ffd905484d303429620443",
-////                "datType":	66,
-////                "subType1":	2,
-////                "subType2":	1,
-////                "secs_trigger_rows":	[{
-////            "triggerName":	"c6e6b9d6b99d38b9a9b9b9b9",
-////                    "triggerSecs":	0,
-////                    "triggerId":	0,
-////                    "reportServ":	1,
-////                    "valid":	1,
-////                    "devCnt":	2,
-////                    "run_dev_item":	[{
-////                "canCpuID":	"36ffd7054842373507701843",
-////                        "devID":	2,
-////                        "devType":	3,
-////                        "lmVal":	0,
-////                        "rev2":	0,
-////                        "rev3":	0,
-////                        "bOnOff":	1,
-////                        "param1":	0,
-////                        "param2":	0
-////            }, {
-////                "canCpuID":	"36ffd7054842373507701843",
-////                        "devID":	3,
-////                        "devType":	3,
-////                        "lmVal":	0,
-////                        "rev2":	0,
-////                        "rev3":	0,
-////                        "bOnOff":	1,
-////                        "param1":	0,
-////                        "param2":	0
-////            }]
-////        }],
-////            "itemCnt":	1
-////        }
-//
-//        try {
-//            JSONObject jsonObject = new JSONObject(info);
-//            JSONArray jsonArray = jsonObject.getJSONArray("secs_trigger_rows");
-//            GroupSet_Data.SecsTriggerRowsBean bean = new GroupSet_Data.SecsTriggerRowsBean();
-//            List<GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean> list_dev = new ArrayList<>();
-//            for (int i = 0; i < MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().size(); i++) {
-//                if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(i).getTriggerId()
-//                        == jsonArray.getJSONObject(0).getInt("triggerId")) {
-//                    bean.setTriggerName(jsonArray.getJSONObject(0).getString("triggerName"));
-//                    bean.setReportServ(jsonArray.getJSONObject(0).getInt("reportServ"));
-//                    bean.setTriggerId(jsonArray.getJSONObject(0).getInt("triggerId"));
-//                    bean.setTriggerSecs(jsonArray.getJSONObject(0).getInt("triggerSecs"));
-//                    bean.setDevCnt(jsonArray.getJSONObject(0).getInt("devCnt"));
-//                    bean.setValid(jsonArray.getJSONObject(0).getInt("valid"));
-//                    JSONArray jsonArray_dev = jsonArray.getJSONObject(0).getJSONArray("run_dev_item");
-//                    for (int j = 0; j < jsonArray_dev.length(); j++) {
-//                        GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean decbean = new GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean();
-//                        decbean.setCanCpuID(jsonArray_dev.getJSONObject(j).getString("canCpuID"));
-//                        decbean.setBOnOff(jsonArray_dev.getJSONObject(j).getInt("bOnOff"));
-//                        decbean.setDevID(jsonArray_dev.getJSONObject(j).getInt("devID"));
-//                        decbean.setDevType(jsonArray_dev.getJSONObject(j).getInt("devType"));
-//                        list_dev.add(decbean);
-//                    }
-//                    bean.setRun_dev_item(list_dev);
-//                    MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().set(i,bean);
-//                }
-//            }
-//        } catch (Exception e) {
-//            Log.e("Exception", "数据异常"+e);
-//        }
-//    }
     public void getGroupSetData(String info) {
         Gson gson = new Gson();
         Log.i("JSON", info);

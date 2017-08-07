@@ -128,6 +128,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textColor="@color/white1"
+                android:text="跳过登录"
                 android:textSize="14dp" />
 
             <TextView
