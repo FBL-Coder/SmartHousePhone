@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -51,19 +50,20 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareTv;
 import cn.etsoft.smarthomephone.utils.ToastUtil;
 import cn.etsoft.smarthomephone.view.Circle_Progress;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
+import cn.etsoft.smarthomephone.weidget.VerticalPageSeekBar;
 
 /**
  * Created by Say GoBay on 2017/6/2.
  * 系统设置--组合设置--详情
  */
-public class GroupSetActivity_details extends Activity implements View.OnClickListener {
+public class GroupSetActivity_details extends Activity implements View.OnClickListener, VerticalPageSeekBar.OnSeekBarPageChangeListener {
     private ImageView back;
-    private TextView title, save, tv_enabled, event_way, add_dev_groupSet, add_dev_Layout_close, tv_text_parlour, safety;
+    private TextView title, save, tv_enabled, event_way, add_dev_groupSet, add_dev_Layout_close, tv_text_parlour;
     private Dialog mDialog;
     private EditText et_name;
     private GridView gridView_groupSet;
     private LinearLayout add_dev_Layout_ll;
-    private ListView add_dev_Layout_lv;
+    private ListView add_dev_Layout_lv, safety;
     private List<String> home_text;
     //添加设备房间position；
     private List<WareDev> dev;
@@ -78,7 +78,24 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     private List<GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean> common_dev;
     //添加设备房间position；
     private int home_position;
-    private List<String> safety_list;
+    private List<String> safetyName;
+    //页码进度条
+    private VerticalPageSeekBar mPageSeekBar;
+    // 一页最多多少条数据
+    protected int mMaxShowLinesPage = 5;
+    // 当前是第几页
+    protected int mCurrentSelectPageIndex = 0;
+    // 当前有多少页
+    protected int mPagesCount = 0;
+    // 当前的有效记录数
+    protected int mRecordCount = 0;
+    // 存放每页数据第一条数据的索引
+    protected ArrayList<Integer> mEveryPageOffestArray = new ArrayList<>();
+    // 当前页面的每一项的偏移数据 方便检索数据和删除数据
+    protected ArrayList<Integer> mPageItemsIndex = new ArrayList<>();
+
+    private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
+    private SafetyAdapter_group SafetyAdapter_group;
 
     //自定义加载进度条
     private void initDialog(String str) {
@@ -124,20 +141,23 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         initTitleBar();
         //初始化组件
         initView();
-        initGridView(GroupSet_position);
-        initData(GroupSet_position);
+        initGridView();
+        initData();
+        initView_safety();
         MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
                 if (what == 66) {
                     if (mDialog != null)
                         mDialog.dismiss();
-                    initGridView(GroupSet_position);
-                    initData(GroupSet_position);
-//                    if (GroupSet_position != 0) {
-//                        MyApplication.sendMsg(ctlStr);
-                    ToastUtil.showToast(GroupSetActivity_details.this, "保存成功");
-//                    }
+                    if (MyApplication.getWareData().getSetGroupSet() != null && MyApplication.getWareData().getSetGroupSet().getSubType1() == 2 && MyApplication.getWareData().getSetGroupSet().getSubType2() == 1) {
+                        MyApplication.sendMsg(ctlStr);
+                        ToastUtil.showToast(GroupSetActivity_details.this, "保存成功");
+                        MyApplication.getWareData().setSetGroupSet(null);
+                    }
+                    initGridView();
+                    initData();
+                    initView_safety();
                 }
             }
         });
@@ -175,7 +195,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         add_dev_groupSet = (TextView) findViewById(R.id.add_dev_groupSet);
         et_name = (EditText) findViewById(R.id.name);
         gridView_groupSet = (GridView) findViewById(R.id.gridView_groupSet);
-        safety = (TextView) findViewById(R.id.safety);
 
         //添加设备布局
         add_dev_Layout_lv = (ListView) findViewById(R.id.equipment_loyout_lv);
@@ -189,7 +208,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         tv_enabled.setOnClickListener(this);
         add_dev_groupSet.setOnClickListener(this);
         et_name.setOnClickListener(this);
-        safety.setOnClickListener(this);
 
     }
 
@@ -198,7 +216,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     /**
      * 初始化GridView
      */
-    public void initGridView(int GroupSet_position) {
+    public void initGridView() {
         if (MyApplication.getWareData().getGroupSet_Data() == null || MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().size() == 0)
             return;
         common_dev = new ArrayList<>();
@@ -251,31 +269,257 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     /**
      * 初始化数据
      *
-     * @param groupSet_position
      */
-    public void initData(int groupSet_position) {
+    public void initData() {
         home_text = MyApplication.getRoom_list();
         if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().size() == 0)
             return;
         et_name.setText("");
-        et_name.setHint(MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(groupSet_position).getTriggerName());
-        if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(groupSet_position).getRun_dev_item() == null
-                || MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(groupSet_position).getRun_dev_item().size() == 0) {
-            tv_enabled.setText("禁用");
+        et_name.setHint(MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getTriggerName());
+        if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getRun_dev_item() == null
+                || MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getRun_dev_item().size() == 0) {
         } else {
-            if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(groupSet_position).getValid() == 1)
+            if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getValid() == 1)
                 tv_enabled.setText("启用");
             else tv_enabled.setText("禁用");
 
-            if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(groupSet_position).getReportServ() == 1)
+            if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getReportServ() == 1)
                 event_way.setText("是");
             else event_way.setText("否");
         }
-        safety_list = new ArrayList<>();
+    }
+
+    private int data_start = 0;
+
+    private void initView_safety() {
+        safetyName = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
-            safety_list.add(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecName());
+            safetyName.add(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecName());
+        }
+        if (MyApplication.getWareData().getGroupSet_Data() == null || MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().size() == 0)
+            return;
+        data_start = (int) MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getTriggerSecs();
+
+        String weekSelect_2 = reverseString(Integer.toBinaryString(data_start));
+        for (int i = 0; i < weekSelect_2.toCharArray().length; i++) {
+            if (weekSelect_2.toCharArray()[i] == '1') {
+                map.put(i, true);
+            } else {
+                map.remove(i);
+            }
+        }
+        mPageSeekBar = (VerticalPageSeekBar) findViewById(R.id.seekBar);
+        mPageSeekBar.setSeekBarPageChangeListener(this);
+        ImageView imageViewUp = (ImageView) findViewById(R.id.imageViewUp);
+        imageViewUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPrePage();
+            }
+        });
+        ImageView imageViewDown = (ImageView) findViewById(R.id.imageViewDown);
+        imageViewDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAftPage();
+            }
+        });
+
+        safety = (ListView) findViewById(R.id.safety);
+        SafetyAdapter_group = new SafetyAdapter_group(this);
+        safety.setAdapter(SafetyAdapter_group);
+        initResetListView(0);
+    }
+
+    //初始化进度条管理数据显示
+    protected void initResetListView(int pageIndex) {
+        mRecordCount = safetyName.size();
+
+        // 计算有多少页数据
+        mPagesCount = mRecordCount / mMaxShowLinesPage + (mRecordCount % mMaxShowLinesPage == 0 ? 0 : 1);
+
+        // 判断 页面数目是2的时候, 简化为1页
+//        if (mPagesCount == 2) {
+//            mMaxShowLinesPage = mMaxShowLinesPage * 2;
+//            mPagesCount = 1;
+//        } else {
+//            mMaxShowLinesPage = 5;
+//        }
+
+        // 设置当前选中也为0
+        mCurrentSelectPageIndex = pageIndex;
+        if (mCurrentSelectPageIndex >= mPagesCount)
+            mCurrentSelectPageIndex = mPagesCount - 1;
+        //刷新每一页的首偏移
+        setResetEveryPageOffestArray();
+        //根据首偏移，得到这一页偏移序号
+        setResetPageItemsIndex(mCurrentSelectPageIndex);
+        //上下按键翻页，需要同时滚动进度条效果.如果只有两页数据，不显示进度条
+        setSelectPageControl(mCurrentSelectPageIndex, mPagesCount, false);
+        //总共几页，设置到进度条控件
+        mPageSeekBar.setPagesCount(mPagesCount);
+    }
+
+    //刷新每一页的首偏移
+    protected void setResetEveryPageOffestArray() {
+        int nValidItemNums = 0;
+        mEveryPageOffestArray.clear();
+        //记住每页的首偏移序号
+        for (int i = 0; i < mPagesCount; i++) {
+            int nRecordIndex = GetCountSpecialPage(i);
+            mEveryPageOffestArray.add(nValidItemNums);
+            nValidItemNums = nValidItemNums + nRecordIndex;
         }
 
+        if (nValidItemNums != mRecordCount) {
+            mRecordCount = nValidItemNums;
+            // 计算有多少页数据
+            mPagesCount = mRecordCount / mMaxShowLinesPage + (mRecordCount % mMaxShowLinesPage == 0 ? 0 : 1);
+        }
+    }
+
+    //根据首偏移，得到这一页偏移序号
+    protected void setResetPageItemsIndex(int pageIndex) {
+        if (pageIndex >= mEveryPageOffestArray.size()) return;
+        int pageItemsCount = GetCountSpecialPage(pageIndex);
+        int nRecordIndex = mEveryPageOffestArray.get(pageIndex).intValue();
+        mPageItemsIndex.clear();
+        //首偏移开始累加
+        for (int i = nRecordIndex; i < pageItemsCount + nRecordIndex; i++) {
+            mPageItemsIndex.add(i);
+        }
+
+        //刷新listview的适配器
+        if (SafetyAdapter_group != null) {
+            SafetyAdapter_group.notifyDataSetChanged();
+        }
+    }
+
+    // 获取当前页面多少数据
+    protected int GetCountSpecialPage(int nPage) {
+        if (nPage < 0) return 0;
+        if (nPage < (mPagesCount - 1)) return mMaxShowLinesPage;
+        //如果是最后一页，就是总的数据减去前面几页*每一页的数据
+        //因为页码是从0开始，所以这里是最后一页
+        if (nPage == mPagesCount - 1) return mRecordCount - mMaxShowLinesPage * (mPagesCount - 1);
+        return 0;
+    }
+
+    //上一页
+    protected void setPrePage() {
+        if (mCurrentSelectPageIndex == 0) return;
+        mCurrentSelectPageIndex -= 1;
+        //根据首偏移，得到这一页偏移序号
+        setResetPageItemsIndex(mCurrentSelectPageIndex);
+        // 翻页控件
+        setSelectPageControl(mCurrentSelectPageIndex, mPagesCount, true);
+    }
+
+    //下一页
+    protected void setAftPage() {
+        if (mCurrentSelectPageIndex == (mPagesCount - 1)) return;
+        mCurrentSelectPageIndex += 1;
+        //根据首偏移，得到这一页偏移序号
+        setResetPageItemsIndex(mCurrentSelectPageIndex);
+        // 翻页控件
+        setSelectPageControl(mCurrentSelectPageIndex, mPagesCount, true);
+    }
+
+    //进度条滑动改变的数据，进行刷新
+    protected void setPageChanged(int index, boolean isSetProgress) {
+        if (index < 0 || index >= mPagesCount || mCurrentSelectPageIndex == index) return;
+        mCurrentSelectPageIndex = index;
+
+        // 刷新每一项的索引数据
+        setResetPageItemsIndex(mCurrentSelectPageIndex);
+        // 翻页控件
+        setSelectPageControl(mCurrentSelectPageIndex, mPagesCount, isSetProgress);
+    }
+
+    //上下按键翻页，需要同时滚动进度条效果.如果只有两页数据，不显示进度条
+    protected void setSelectPageControl(int index, int count, boolean isSet) {
+        View selectPageBar = findViewById(R.id.layoutShow);
+        if (selectPageBar != null) {
+            //如果只有两页数据，不显示进度条
+            if (count <= 1) selectPageBar.setVisibility(View.GONE);
+            else selectPageBar.setVisibility(View.VISIBLE);
+            //上下按键翻页，需要同时滚动进度条效果
+            if (mPageSeekBar != null && isSet == true)
+                mPageSeekBar.setProgressSpecialPage(mCurrentSelectPageIndex, mPagesCount);
+        }
+    }
+
+    //进度条滑动改变的数据，进行刷新
+    @Override
+    public void setSeekBarPageChanged(int page) {
+        setPageChanged(page, false);
+    }
+
+    /**
+     * 防区的适配器
+     */
+    private class ViewHolder {
+        private TextView name;
+        public CheckBox checkBox;
+    }
+
+    private class SafetyAdapter_group extends BaseAdapter {
+        private Context mContext;
+        private LayoutInflater mLayoutInflater;
+
+
+        public SafetyAdapter_group(Context context) {
+            mContext = context;
+            mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            return mPageItemsIndex.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return 0;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = mLayoutInflater.inflate(R.layout.listview_safety_item, null);
+                viewHolder = new ViewHolder();
+                viewHolder.name = (TextView) convertView.findViewById(R.id.name);
+                viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.name.setText(safetyName.get(mPageItemsIndex.get(position).intValue()));
+
+            viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked == true) {
+                        map.put(mPageItemsIndex.get(position).intValue(), true);
+                    } else {
+                        map.remove(mPageItemsIndex.get(position).intValue());
+                    }
+                }
+            });
+
+            if (map != null && map.containsKey(mPageItemsIndex.get(position).intValue())) {
+                viewHolder.checkBox.setChecked(true);
+            } else {
+                viewHolder.checkBox.setChecked(false);
+            }
+            return convertView;
+        }
     }
 
     @Override
@@ -329,7 +573,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                             //  "devCnt": 1,
                             bean.setDevCnt(common_dev.size());
                             //"eventId":	0,
-                            bean.setTriggerId(MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getTriggerId());
+                            bean.setTriggerId(GroupSet_position);
                             // "run_dev_item":
                             bean.setRun_dev_item(common_dev);
 
@@ -353,12 +597,30 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                                 bean.setValid(1);
                             else
                                 bean.setValid(0);
-
                             //是否上报服务器
                             if ("是".equals(event_way.getText().toString()))
                                 bean.setReportServ(1);
                             else bean.setReportServ(0);
-
+                            int length = MyApplication.getWareData().getResult_safety().getSec_info_rows().size();
+                            int[] data = new int[length];
+                            if (map.keySet().toArray().length == 0) {
+                                ToastUtil.showToast(GroupSetActivity_details.this, "请选择防区");
+                                return;
+                            }
+                            for (int i = 0; i < length; i++) {
+                                for (int k = 0; k < map.keySet().toArray().length; k++) {
+                                    int key = (Integer) map.keySet().toArray()[k];
+                                    if (i == key) {
+                                        data[i] = 1;
+                                        break;
+                                    } else data[i] = 0;
+                                }
+                            }
+                            String data_str = "";
+                            for (int i = 0; i < data.length; i++) {
+                                data_str += data[i];
+                            }
+                            bean.setTriggerSecs(str2num(data_str));
                             envEvent_rows.add(bean);
                             time_data.setDatType(66);
                             time_data.setDevUnitID(GlobalVars.getDevid());
@@ -441,10 +703,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                     }
                 });
                 add_dev_Layout_ll.setVisibility(View.VISIBLE);
-                break;
-            case R.id.safety: //关联防区
-                initPopupWindow_channel(safety, safety_list);
-                popupWindow.showAsDropDown(v, 0, 0);
                 break;
             case R.id.enabled: //启用开关
                 List<String> Enabled = new ArrayList<>();
@@ -537,89 +795,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         });
     }
 
-    private PopupWindowAdapter_channel popupWindowAdapter_channel;
-    private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
-    private List<String> message_save;
-    private int data_save;
-
-    /**
-     * 初始化自定义设备的状态以及设备PopupWindow
-     */
-    private void initPopupWindow_channel(final View textView, List<String> list_channel) {
-        //获取自定义布局文件pop.xml的视图
-        final View customView = getLayoutInflater().from(this).inflate(R.layout.popupwindow_equipment_listview2, null);
-        customView.setBackgroundResource(R.drawable.selectbg);
-        popupWindow = new PopupWindow(customView, textView.getWidth(), 300);
-        ListView list_pop = (ListView) customView.findViewById(R.id.popupWindow_equipment_lv);
-        Button time_ok = (Button) customView.findViewById(R.id.time_ok);
-        Button time_cancel = (Button) customView.findViewById(R.id.time_cancel);
-        popupWindowAdapter_channel = new PopupWindowAdapter_channel(this, list_channel);
-        list_pop.setAdapter(popupWindowAdapter_channel);
-        time_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int length = MyApplication.getWareData().getResult_safety().getSec_info_rows().size();
-                int[] data = new int[length];
-                String message = "";
-                if (map.keySet().toArray().length == 0) {
-                    ToastUtil.showToast(GroupSetActivity_details.this, "请选择防区");
-                    return;
-                }
-                for (int i = 0; i < length; i++) {
-                    for (int k = 0; k < map.keySet().toArray().length; k++) {
-                        int key = (Integer) map.keySet().toArray()[k];
-                        if (i == (key - 1)) {
-                            data[i] = 1;
-                            break;
-                        } else data[i] = 0;
-                    }
-                }
-                String data_str = "";
-                for (int i = 0; i < data.length; i++) {
-                    data_str += data[i];
-                }
-                message_save = new ArrayList<>();
-                for (int i = 0; i < map.keySet().toArray().length; i++) {
-                    message += String.valueOf(map.keySet().toArray()[i]) + ".";
-                    message_save.add(String.valueOf(map.keySet().toArray()[i]));
-                }
-
-                if (!"".equals(message)) {
-                    message = message.substring(0, message.lastIndexOf("."));
-                }
-                data_save = str2num(data_str);
-                TextView tv = (TextView) textView;
-                tv.setText(message);
-                popupWindow.dismiss();
-                map.clear();
-            }
-        });
-        time_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (map != null) {
-                    map.clear();
-                }
-                popupWindow.dismiss();
-            }
-        });
-        //popupWindow页面之外可点
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setFocusable(true);
-        popupWindow.update();
-        // 自定义view添加触摸事件
-        customView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (popupWindow != null && popupWindow.isShowing()) {
-                    popupWindow.dismiss();
-                    popupWindow = null;
-                }
-                return false;
-            }
-        });
-    }
-
     /**
      * 得到字符串中的数字和
      *
@@ -647,78 +822,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
             arr[limit - i] = tmp;
         }
         return new String(arr);
-    }
-
-    /**
-     * 防区的适配器
-     */
-    private class ViewHolder {
-        public TextView text;
-        public CheckBox checkBox;
-    }
-
-    private class PopupWindowAdapter_channel extends BaseAdapter {
-        private Context mContext;
-        private LayoutInflater mLayoutInflater;
-        private List<String> list_channel;
-
-
-        public PopupWindowAdapter_channel(Context context, List<String> list_channel) {
-            mContext = context;
-            this.list_channel = list_channel;
-            mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public int getCount() {
-            if (null != list_channel) {
-                return list_channel.size();
-            } else {
-                return 0;
-            }
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return list_channel.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder;
-            if (convertView == null) {
-                convertView = mLayoutInflater.inflate(R.layout.popupwindow_listview_item2, null);
-                viewHolder = new ViewHolder();
-                viewHolder.text = (TextView) convertView.findViewById(R.id.popupWindow_equipment_tv);
-                viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.popupWindow_equipment_cb);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-            viewHolder.text.setText(String.valueOf(list_channel.get(position)));
-            viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked == true) {
-                        map.put(position, true);
-                    } else {
-                        map.remove(list_channel.get(position));
-                    }
-                }
-            });
-
-            if (map != null && map.containsKey(list_channel.get(position))) {
-                viewHolder.checkBox.setChecked(true);
-            } else {
-                viewHolder.checkBox.setChecked(false);
-            }
-            return convertView;
-        }
     }
 
     /**

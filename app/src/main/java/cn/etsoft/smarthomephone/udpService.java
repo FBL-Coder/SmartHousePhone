@@ -29,6 +29,7 @@ import cn.etsoft.smarthomephone.domain.GroupSet_Data;
 import cn.etsoft.smarthomephone.domain.KyeInputResult;
 import cn.etsoft.smarthomephone.domain.SaveDevControl_Result;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
+import cn.etsoft.smarthomephone.domain.SetGroupSet;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult_alarm;
 import cn.etsoft.smarthomephone.domain.Timer_Data;
@@ -364,10 +365,14 @@ public class udpService extends Service {
                     //修改联网模块防区信息
                     safety_result(info);
                     isFreshData = true;
-                } else if (subType1 == 2 && subType2 == 0) {
-                    //防区报警信息
-                    safety_alarm(info);
-                    isFreshData = true;
+                } else if (subType1 == 2) {
+                    //解决多个警报5秒自动消失问题
+                    if (System.currentTimeMillis() - time > 5000) {
+                        time = System.currentTimeMillis();
+                        //防区报警信息
+                        safety_alarm(info);
+                        isFreshData = true;
+                    }
                 } else if (subType1 == 1) {
                     //布防、撤防
                     safety(info);
@@ -395,7 +400,7 @@ public class udpService extends Service {
                 }
                 break;
             case 66: // trigger
-                if (subType2 == 255) {
+                if (subType1 == 1 && subType2 == 255) {
                     getGroupSetData(info);
                     isFreshData = true;
                 }
@@ -418,80 +423,87 @@ public class udpService extends Service {
         }
     }
 
-    public void setGroupSetData(String info) {
-//        {
-//            "devUnitID":	"39ffd905484d303429620443",
-//                "datType":	66,
-//                "subType1":	2,
-//                "subType2":	1,
-//                "secs_trigger_rows":	[{
-//            "triggerName":	"c6e6b9d6b99d38b9a9b9b9b9",
-//                    "triggerSecs":	0,
-//                    "triggerId":	0,
-//                    "reportServ":	1,
-//                    "valid":	1,
-//                    "devCnt":	2,
-//                    "run_dev_item":	[{
-//                "canCpuID":	"36ffd7054842373507701843",
-//                        "devID":	2,
-//                        "devType":	3,
-//                        "lmVal":	0,
-//                        "rev2":	0,
-//                        "rev3":	0,
-//                        "bOnOff":	1,
-//                        "param1":	0,
-//                        "param2":	0
-//            }, {
-//                "canCpuID":	"36ffd7054842373507701843",
-//                        "devID":	3,
-//                        "devType":	3,
-//                        "lmVal":	0,
-//                        "rev2":	0,
-//                        "rev3":	0,
-//                        "bOnOff":	1,
-//                        "param1":	0,
-//                        "param2":	0
-//            }]
-//        }],
-//            "itemCnt":	1
+    //    public void setGroupSetData(String info) {
+////        {
+////            "devUnitID":	"39ffd905484d303429620443",
+////                "datType":	66,
+////                "subType1":	2,
+////                "subType2":	1,
+////                "secs_trigger_rows":	[{
+////            "triggerName":	"c6e6b9d6b99d38b9a9b9b9b9",
+////                    "triggerSecs":	0,
+////                    "triggerId":	0,
+////                    "reportServ":	1,
+////                    "valid":	1,
+////                    "devCnt":	2,
+////                    "run_dev_item":	[{
+////                "canCpuID":	"36ffd7054842373507701843",
+////                        "devID":	2,
+////                        "devType":	3,
+////                        "lmVal":	0,
+////                        "rev2":	0,
+////                        "rev3":	0,
+////                        "bOnOff":	1,
+////                        "param1":	0,
+////                        "param2":	0
+////            }, {
+////                "canCpuID":	"36ffd7054842373507701843",
+////                        "devID":	3,
+////                        "devType":	3,
+////                        "lmVal":	0,
+////                        "rev2":	0,
+////                        "rev3":	0,
+////                        "bOnOff":	1,
+////                        "param1":	0,
+////                        "param2":	0
+////            }]
+////        }],
+////            "itemCnt":	1
+////        }
+//
+//        try {
+//            JSONObject jsonObject = new JSONObject(info);
+//            JSONArray jsonArray = jsonObject.getJSONArray("secs_trigger_rows");
+//            GroupSet_Data.SecsTriggerRowsBean bean = new GroupSet_Data.SecsTriggerRowsBean();
+//            List<GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean> list_dev = new ArrayList<>();
+//            for (int i = 0; i < MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().size(); i++) {
+//                if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(i).getTriggerId()
+//                        == jsonArray.getJSONObject(0).getInt("triggerId")) {
+//                    bean.setTriggerName(jsonArray.getJSONObject(0).getString("triggerName"));
+//                    bean.setReportServ(jsonArray.getJSONObject(0).getInt("reportServ"));
+//                    bean.setTriggerId(jsonArray.getJSONObject(0).getInt("triggerId"));
+//                    bean.setTriggerSecs(jsonArray.getJSONObject(0).getInt("triggerSecs"));
+//                    bean.setDevCnt(jsonArray.getJSONObject(0).getInt("devCnt"));
+//                    bean.setValid(jsonArray.getJSONObject(0).getInt("valid"));
+//                    JSONArray jsonArray_dev = jsonArray.getJSONObject(0).getJSONArray("run_dev_item");
+//                    for (int j = 0; j < jsonArray_dev.length(); j++) {
+//                        GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean decbean = new GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean();
+//                        decbean.setCanCpuID(jsonArray_dev.getJSONObject(j).getString("canCpuID"));
+//                        decbean.setBOnOff(jsonArray_dev.getJSONObject(j).getInt("bOnOff"));
+//                        decbean.setDevID(jsonArray_dev.getJSONObject(j).getInt("devID"));
+//                        decbean.setDevType(jsonArray_dev.getJSONObject(j).getInt("devType"));
+//                        list_dev.add(decbean);
+//                    }
+//                    bean.setRun_dev_item(list_dev);
+//                    MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().set(i,bean);
+//                }
+//            }
+//        } catch (Exception e) {
+//            Log.e("Exception", "数据异常"+e);
 //        }
-
-        try {
-            JSONObject jsonObject = new JSONObject(info);
-            JSONArray jsonArray = jsonObject.getJSONArray("secs_trigger_rows");
-            GroupSet_Data.SecsTriggerRowsBean bean = new GroupSet_Data.SecsTriggerRowsBean();
-            List<GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean> list_dev = new ArrayList<>();
-            for (int i = 0; i < MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().size(); i++) {
-                if (MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(i).getTriggerId()
-                        == jsonArray.getJSONObject(0).getInt("triggerId")) {
-                    bean.setTriggerName(jsonArray.getJSONObject(0).getString("triggerName"));
-                    bean.setReportServ(jsonArray.getJSONObject(0).getInt("reportServ"));
-                    bean.setTriggerId(jsonArray.getJSONObject(0).getInt("triggerId"));
-                    bean.setDevCnt(jsonArray.getJSONObject(0).getInt("devCnt"));
-                    bean.setValid(jsonArray.getJSONObject(0).getInt("valid"));
-                    JSONArray jsonArray_dev = jsonArray.getJSONObject(0).getJSONArray("run_dev_item");
-                    for (int j = 0; j < jsonArray_dev.length(); j++) {
-                        GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean decbean = new GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean();
-                        decbean.setCanCpuID(jsonArray_dev.getJSONObject(j).getString("canCpuID"));
-                        decbean.setBOnOff(jsonArray_dev.getJSONObject(j).getInt("bOnOff"));
-                        decbean.setDevID(jsonArray_dev.getJSONObject(j).getInt("devID"));
-                        decbean.setDevType(jsonArray_dev.getJSONObject(j).getInt("devType"));
-                        list_dev.add(decbean);
-                    }
-                    bean.setRun_dev_item(list_dev);
-                    MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().set(i, bean);
-                }
-            }
-        } catch (Exception e) {
-            Log.e("Exception", "数据异常" + e);
-        }
-    }
-
+//    }
     public void getGroupSetData(String info) {
         Gson gson = new Gson();
         Log.i("JSON", info);
         GroupSet_Data result = gson.fromJson(info, GroupSet_Data.class);
         MyApplication.getWareData().setGroupSet_Data(result);
+    }
+
+    public void setGroupSetData(String info) {
+        Gson gson = new Gson();
+        Log.i("JSON", info);
+        SetGroupSet result = gson.fromJson(info, SetGroupSet.class);
+        MyApplication.getWareData().setSetGroupSet(result);
     }
 
     //保存定时器 数据返回

@@ -15,6 +15,7 @@ import cn.etsoft.smarthomephone.domain.KyeInputResult;
 import cn.etsoft.smarthomephone.domain.SaveDevControl_Result;
 import cn.etsoft.smarthomephone.domain.SearchNet;
 import cn.etsoft.smarthomephone.domain.SetEquipmentResult;
+import cn.etsoft.smarthomephone.domain.SetGroupSet;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult_alarm;
 import cn.etsoft.smarthomephone.domain.Timer_Data;
@@ -97,6 +98,16 @@ public class WareData implements Serializable {
 
     public void setGroupSet_Data(GroupSet_Data groupSet_Data) {
         this.groupSet_Data = groupSet_Data;
+    }
+    //组合设置
+    private SetGroupSet SetGroupSet;
+
+    public SetGroupSet getSetGroupSet() {
+        return SetGroupSet;
+    }
+
+    public void setSetGroupSet(SetGroupSet setGroupSet) {
+        this.SetGroupSet = setGroupSet;
     }
 
     //联网模块（搜索多个联网模块）
