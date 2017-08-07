@@ -124,7 +124,41 @@
 
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_weight="0.5"
+        android:background="@color/color_33ffffff"
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="match_parent"
+            android:text="关联防区"
+            android:gravity="center"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/color_fff"
+            />
+
+        <TextView
+            android:id="@+id/safety"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_weight="0.6"
+            android:background="@drawable/save_click_selector"
+            android:clickable="true"
+            android:layout_margin="@dimen/dp_5"
+            android:drawableRight="@drawable/more"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:paddingRight="@dimen/dp_5"
+            android:textColor="@color/color_fff"
+            android:textSize="@dimen/sp_14" />
+
+    </LinearLayout>
 
 
     <LinearLayout

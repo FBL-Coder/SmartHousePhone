@@ -153,6 +153,7 @@ public class udpService extends Service {
             Log.i("接收信息", sub.trim());
         }
     }
+
     //警报时间间隔
     long time = 0;
 
@@ -363,14 +364,10 @@ public class udpService extends Service {
                     //修改联网模块防区信息
                     safety_result(info);
                     isFreshData = true;
-                } else if (subType1 == 2) {
-                    //解决多个警报5秒自动消失问题
-                    if (System.currentTimeMillis() - time > 5000) {
-                        time = System.currentTimeMillis();
-                        //防区报警信息
-                        safety_alarm(info);
-                        isFreshData = true;
-                    }
+                } else if (subType1 == 2 && subType2 == 0) {
+                    //防区报警信息
+                    safety_alarm(info);
+                    isFreshData = true;
                 } else if (subType1 == 1) {
                     //布防、撤防
                     safety(info);
@@ -420,6 +417,7 @@ public class udpService extends Service {
             isFreshData = false;
         }
     }
+
     public void setGroupSetData(String info) {
 //        {
 //            "devUnitID":	"39ffd905484d303429620443",
@@ -481,16 +479,17 @@ public class udpService extends Service {
                         list_dev.add(decbean);
                     }
                     bean.setRun_dev_item(list_dev);
-                    MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().set(i,bean);
+                    MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().set(i, bean);
                 }
             }
         } catch (Exception e) {
-            Log.e("Exception", "数据异常"+e);
+            Log.e("Exception", "数据异常" + e);
         }
     }
+
     public void getGroupSetData(String info) {
         Gson gson = new Gson();
-        Log.i("JSON",info);
+        Log.i("JSON", info);
         GroupSet_Data result = gson.fromJson(info, GroupSet_Data.class);
         MyApplication.getWareData().setGroupSet_Data(result);
     }
@@ -545,6 +544,7 @@ public class udpService extends Service {
 //            "itemCnt":	1
 //        }
     }
+
     //获取触发器数据
     public void getConditionData(String info) {
         MyApplication.getWareData().setTimer_data(null);
@@ -1147,6 +1147,7 @@ public class udpService extends Service {
         AddDevControl_Result result = gson.fromJson(info, AddDevControl_Result.class);
         MyApplication.getWareData().setAddDev_result(result);
     }
+
     //高级设置--设备信息--设备编辑（保存）
     public void saveDev_result(String info) {
         Gson gson = new Gson();
@@ -1233,12 +1234,14 @@ public class udpService extends Service {
             System.out.println(e.toString());
         }
     }
+
     public void getKyeInputResult(String info) {
         Gson gson = new Gson();
         KyeInputResult result = gson.fromJson(info, KyeInputResult.class);
         MyApplication.getWareData().setKyeInputResult(result);
         getKyeInputBoard(info);
     }
+
     public void getKyeInputBoard(String info) {
 
 //        返回数据类型；
@@ -1456,7 +1459,7 @@ public class udpService extends Service {
             }
         } catch (JSONException e) {
             isFreshData = false;
-            System.out.println(""+e);
+            System.out.println("" + e);
         }
     }
 
@@ -1582,6 +1585,7 @@ public class udpService extends Service {
 //            System.out.println(e.toString());
 //        }
     }
+
     public void ctrlDevReply(String info) {
 
 //        灯返回数据类型；

@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -31,6 +34,7 @@ import com.google.gson.Gson;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
@@ -54,7 +58,7 @@ import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
  */
 public class GroupSetActivity_details extends Activity implements View.OnClickListener {
     private ImageView back;
-    private TextView title, save, tv_enabled, event_way, add_dev_groupSet, add_dev_Layout_close, tv_text_parlour;
+    private TextView title, save, tv_enabled, event_way, add_dev_groupSet, add_dev_Layout_close, tv_text_parlour, safety;
     private Dialog mDialog;
     private EditText et_name;
     private GridView gridView_groupSet;
@@ -74,6 +78,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     private List<GroupSet_Data.SecsTriggerRowsBean.RunDevItemBean> common_dev;
     //添加设备房间position；
     private int home_position;
+    private List<String> safety_list;
 
     //自定义加载进度条
     private void initDialog(String str) {
@@ -131,7 +136,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                     initData(GroupSet_position);
 //                    if (GroupSet_position != 0) {
 //                        MyApplication.sendMsg(ctlStr);
-                        ToastUtil.showToast(GroupSetActivity_details.this, "保存成功");
+                    ToastUtil.showToast(GroupSetActivity_details.this, "保存成功");
 //                    }
                 }
             }
@@ -170,6 +175,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         add_dev_groupSet = (TextView) findViewById(R.id.add_dev_groupSet);
         et_name = (EditText) findViewById(R.id.name);
         gridView_groupSet = (GridView) findViewById(R.id.gridView_groupSet);
+        safety = (TextView) findViewById(R.id.safety);
 
         //添加设备布局
         add_dev_Layout_lv = (ListView) findViewById(R.id.equipment_loyout_lv);
@@ -183,6 +189,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         tv_enabled.setOnClickListener(this);
         add_dev_groupSet.setOnClickListener(this);
         et_name.setOnClickListener(this);
+        safety.setOnClickListener(this);
 
     }
 
@@ -222,7 +229,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
 //                        initDialog("正在删除...");
                         common_dev.remove(position_delete);
                         gridViewAdapter_groupSet.notifyDataSetChanged(common_dev);
-                        ToastUtil.showToast(GroupSetActivity_details.this,"删除成功");
+                        ToastUtil.showToast(GroupSetActivity_details.this, "删除成功");
                     }
                 });
                 builder.create().show();
@@ -264,6 +271,11 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                 event_way.setText("是");
             else event_way.setText("否");
         }
+        safety_list = new ArrayList<>();
+        for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
+            safety_list.add(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecName());
+        }
+
     }
 
     @Override
@@ -430,6 +442,10 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                 });
                 add_dev_Layout_ll.setVisibility(View.VISIBLE);
                 break;
+            case R.id.safety: //关联防区
+                initPopupWindow_channel(safety, safety_list);
+                popupWindow.showAsDropDown(v, 0, 0);
+                break;
             case R.id.enabled: //启用开关
                 List<String> Enabled = new ArrayList<>();
                 Enabled.add("禁用");
@@ -519,6 +535,190 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                 return false;
             }
         });
+    }
+
+    private PopupWindowAdapter_channel popupWindowAdapter_channel;
+    private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
+    private List<String> message_save;
+    private int data_save;
+
+    /**
+     * 初始化自定义设备的状态以及设备PopupWindow
+     */
+    private void initPopupWindow_channel(final View textView, List<String> list_channel) {
+        //获取自定义布局文件pop.xml的视图
+        final View customView = getLayoutInflater().from(this).inflate(R.layout.popupwindow_equipment_listview2, null);
+        customView.setBackgroundResource(R.drawable.selectbg);
+        popupWindow = new PopupWindow(customView, textView.getWidth(), 300);
+        ListView list_pop = (ListView) customView.findViewById(R.id.popupWindow_equipment_lv);
+        Button time_ok = (Button) customView.findViewById(R.id.time_ok);
+        Button time_cancel = (Button) customView.findViewById(R.id.time_cancel);
+        popupWindowAdapter_channel = new PopupWindowAdapter_channel(this, list_channel);
+        list_pop.setAdapter(popupWindowAdapter_channel);
+        time_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int length = MyApplication.getWareData().getResult_safety().getSec_info_rows().size();
+                int[] data = new int[length];
+                String message = "";
+                if (map.keySet().toArray().length == 0) {
+                    ToastUtil.showToast(GroupSetActivity_details.this, "请选择防区");
+                    return;
+                }
+                for (int i = 0; i < length; i++) {
+                    for (int k = 0; k < map.keySet().toArray().length; k++) {
+                        int key = (Integer) map.keySet().toArray()[k];
+                        if (i == (key - 1)) {
+                            data[i] = 1;
+                            break;
+                        } else data[i] = 0;
+                    }
+                }
+                String data_str = "";
+                for (int i = 0; i < data.length; i++) {
+                    data_str += data[i];
+                }
+                message_save = new ArrayList<>();
+                for (int i = 0; i < map.keySet().toArray().length; i++) {
+                    message += String.valueOf(map.keySet().toArray()[i]) + ".";
+                    message_save.add(String.valueOf(map.keySet().toArray()[i]));
+                }
+
+                if (!"".equals(message)) {
+                    message = message.substring(0, message.lastIndexOf("."));
+                }
+                data_save = str2num(data_str);
+                TextView tv = (TextView) textView;
+                tv.setText(message);
+                popupWindow.dismiss();
+                map.clear();
+            }
+        });
+        time_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (map != null) {
+                    map.clear();
+                }
+                popupWindow.dismiss();
+            }
+        });
+        //popupWindow页面之外可点
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        // 自定义view添加触摸事件
+        customView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                }
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 得到字符串中的数字和
+     *
+     * @param str
+     * @return
+     */
+    public int str2num(String str) {
+        str = reverseString(str);
+        return Integer.valueOf(str, 2);
+    }
+
+    /**
+     * 倒置字符串
+     *
+     * @param str
+     * @return
+     */
+    public static String reverseString(String str) {
+        char[] arr = str.toCharArray();
+        int middle = arr.length >> 1;//EQ length/2
+        int limit = arr.length - 1;
+        for (int i = 0; i < middle; i++) {
+            char tmp = arr[i];
+            arr[i] = arr[limit - i];
+            arr[limit - i] = tmp;
+        }
+        return new String(arr);
+    }
+
+    /**
+     * 防区的适配器
+     */
+    private class ViewHolder {
+        public TextView text;
+        public CheckBox checkBox;
+    }
+
+    private class PopupWindowAdapter_channel extends BaseAdapter {
+        private Context mContext;
+        private LayoutInflater mLayoutInflater;
+        private List<String> list_channel;
+
+
+        public PopupWindowAdapter_channel(Context context, List<String> list_channel) {
+            mContext = context;
+            this.list_channel = list_channel;
+            mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            if (null != list_channel) {
+                return list_channel.size();
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list_channel.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
+            if (convertView == null) {
+                convertView = mLayoutInflater.inflate(R.layout.popupwindow_listview_item2, null);
+                viewHolder = new ViewHolder();
+                viewHolder.text = (TextView) convertView.findViewById(R.id.popupWindow_equipment_tv);
+                viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.popupWindow_equipment_cb);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            viewHolder.text.setText(String.valueOf(list_channel.get(position)));
+            viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked == true) {
+                        map.put(position, true);
+                    } else {
+                        map.remove(list_channel.get(position));
+                    }
+                }
+            });
+
+            if (map != null && map.containsKey(list_channel.get(position))) {
+                viewHolder.checkBox.setChecked(true);
+            } else {
+                viewHolder.checkBox.setChecked(false);
+            }
+            return convertView;
+        }
     }
 
     /**

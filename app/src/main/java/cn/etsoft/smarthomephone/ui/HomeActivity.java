@@ -470,6 +470,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         if (text_room.size() < 1)
             return;
         initViewPager();
+        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                ",\"datType\":32" +
+                ",\"subType1\":3" +
+                ",\"subType2\":255" +
+                "}";
+        MyApplication.sendMsg(ctlStr);
     }
 
     /**
