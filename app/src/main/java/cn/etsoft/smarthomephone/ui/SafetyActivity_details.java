@@ -60,7 +60,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     private GridView gridView_safety;
     private LinearLayout add_dev_Layout_ll;
     private ListView add_dev_Layout_lv;
-    private List<String> safety_state_data, safety_scene_name;
+    private List<String> safety_state_data, safety_scene_name,safety_state_data1;
     private List<String> home_text;
     //添加设备房间position；
     private int home_position;
@@ -129,16 +129,18 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                         MyApplication.sendMsg(ctlStr);
                         return;
                     }
-                    if (MyApplication.getWareData().getResult_safety() != null && MyApplication.getWareData().getResult_safety().getSubType2() == 255
-                            && MyApplication.getWareData().getResult_safety().getSubType1() == 4) {
+                    if (MyApplication.getWareData().getResult_safety() != null && MyApplication.getWareData().getResult_safety().getSubType2() == 255 && MyApplication.getWareData().getResult_safety().getSubType1() == 4) {
                         initGridView(Safety_position);
                         initData(Safety_position);
                     }
-                    if (MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1) {
+                    if (MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1 && MyApplication.getWareData().getResult().getSubType2() != 255) {
                         ToastUtil.showToast(SafetyActivity_details.this, "布防成功");
                         SharedPreferences sharedPreferences1 = getSharedPreferences("profile",
                                 Context.MODE_PRIVATE);
                         sharedPreferences1.edit().putInt("safety_style", MyApplication.getWareData().getResult().getSubType2()).commit();
+                        initData(Safety_position);
+                    } else if (MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1 && MyApplication.getWareData().getResult().getSubType2() == 255) {
+                        ToastUtil.showToast(SafetyActivity_details.this, "撤防成功");
                         initData(Safety_position);
                     }
                 }
@@ -208,7 +210,12 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         safety_state_data.add("在家布防");
         safety_state_data.add("外出布防");
         safety_state_data.add("撤防状态");
+        safety_state_data1 = new ArrayList<>();
+        safety_state_data1.add("24小时布防");
+        safety_state_data1.add("在家布防");
+        safety_state_data1.add("外出布防");
         safety_scene_name = new ArrayList<>();
+        safety_scene_name.add("无");
         if (MyApplication.getWareData().getSceneEvents() != null)
             for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
                 safety_scene_name.add(MyApplication.getWareData().getSceneEvents().get(i).getSceneName());
@@ -275,14 +282,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
      */
     public void initData(int timer_position) {
         home_text = MyApplication.getRoom_list();
-        //全局布防类型
-        int safety_type_position = getSharedPreferences("profile", Context.MODE_PRIVATE)
-                .getInt("safety_style", 0);
-        if (safety_type_position == 255)
-            safety_type_position = 3;
-        safety_type.setText(safety_state_data.get(safety_type_position));
-
-        if (MyApplication.getWareData().getResult_safety().getSec_info_rows() == null && MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0)
+        if (MyApplication.getWareData().getResult_safety() == null || MyApplication.getWareData().getResult_safety().getSec_info_rows() == null && MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0)
             return;
         safety_name.setText("");
         safety_name.setHint(MyApplication.getWareData().getResult_safety()
@@ -290,33 +290,39 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         //某一安防里的设备为空或长度为0时
         if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getRun_dev_item() == null
                 || MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getRun_dev_item().size() == 0) {
-            safety_enabled.setText("禁用");
-            safety_scene.setText("选择情景");
-            safety_state.setText("选择状态");
-        } else {
-            if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getValid() == 1)
-                safety_enabled.setText("启用");
-            else safety_enabled.setText("禁用");
-            //布防类型是"撤防状态"
-            if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getSecType() == 255)
+//            safety_enabled.setText("禁用");
+//            safety_scene.setText("选择情景");
+//            safety_state.setText("选择状态");
+            ToastUtil.showToast(this, "该防区没有设备");
+        }
+        if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getValid() == 1)
+            safety_enabled.setText("启用");
+        else safety_enabled.setText("禁用");
+        //布防类型是"撤防状态"
+        if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getSecType() == 255)
+            safety_state.setText(safety_state_data.get(3));
+        else {//布防类型是"24小时布防"、"在家布防"、"外出布防"
+            try {
+                safety_state.setText(safety_state_data.get(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getSecType()));
+            } catch (Exception e) {
                 safety_state.setText(safety_state_data.get(3));
-            else {//布防类型是"24小时布防"、"在家布防"、"外出布防"
-                try {
-                    safety_state.setText(safety_state_data.get(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getSecType()));
-                } catch (Exception e) {
-                    safety_state.setText(safety_state_data.get(3));
-                }
             }
+        }
+        if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSceneId() == 255) {
+            safety_scene.setText(safety_scene_name.get(0));
+        } else {
             //情景
-            if (MyApplication.getWareData().getSceneEvents() != null)
+            if (MyApplication.getWareData().getSceneEvents() != null) {
                 for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
                     if (MyApplication.getWareData().getSceneEvents().get(i).getEventld()
                             == MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSceneId()) {
-                        safety_scene.setText(MyApplication.getWareData().getSceneEvents().get(i).getSceneName());
+                        safety_scene.setText(MyApplication.getWareData()
+                                .getSceneEvents().get(i).getSceneName());
                     }
                 }
-            else
+            } else {
                 safety_scene.setText("选择情景");
+            }
         }
     }
 
@@ -371,7 +377,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             bean.setSecDev(common_dev.size());
                             bean.setDevCnt(common_dev.size());
                             bean.setItemCnt(1);
-                            bean.setSecId(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecId());
+                            bean.setSecId(Safety_position);
                             bean.setRun_dev_item(common_dev);
                             if ("".equals(safety_name.getText().toString())) {
                                 bean.setSecName(CommonUtils.bytesToHexString(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecName().getBytes("GB2312")));
@@ -380,7 +386,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                                     //名称名称
                                     bean.setSecName(CommonUtils.bytesToHexString(safety_name.getText().toString().getBytes("GB2312")));
                                 } catch (UnsupportedEncodingException e) {
-                                    ToastUtil.showToast(SafetyActivity_details.this, "定时器名称不合适");
+                                    ToastUtil.showToast(SafetyActivity_details.this, "安防名称不合适");
                                     return;
                                 }
                             }
@@ -400,17 +406,21 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                                 }
                             }
 
-                            //关联情景
-                            for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
-                                if (safety_scene.getText().toString().equals(MyApplication.getWareData().getSceneEvents().get(i).getSceneName()))
-                                    bean.setSceneId(i);
+                            if ("无".equals(safety_scene.getText().toString())) {
+                                bean.setSceneId(255);
+                            }else {
+                                //关联情景
+                                for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
+                                    if (safety_scene.getText().toString().equals(MyApplication.getWareData().getSceneEvents().get(i).getSceneName()))
+                                        bean.setSceneId(i);
+                                }
                             }
                             timerEvent_rows.add(bean);
                             safetyResult.setDatType(32);
                             safetyResult.setDevUnitID(GlobalVars.getDevid());
                             safetyResult.setSubType1(5);
                             safetyResult.setItemCnt(1);
-                            safetyResult.setSubType2(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecId());
+                            safetyResult.setSubType2(Safety_position);
                             safetyResult.setSec_info_rows(timerEvent_rows);
                             Gson gson = new Gson();
                             Log.e("保存安防数据", gson.toJson(safetyResult));
@@ -563,23 +573,28 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                 popupWindow.showAsDropDown(view, 0, 0);
                 break;
             case R.id.safety_type:// type
-                initRadioPopupWindow(safety_type, safety_state_data);
+                initRadioPopupWindow(safety_type, safety_state_data1);
                 popupWindow.showAsDropDown(view, 0, 0);
                 break;
             case R.id.safety_all_close://全部撤防
-                //TODO  全局撤防待完成
+                String ctlStr2 = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                        ",\"datType\":32" +
+                        ",\"subType1\":0" +
+                        ",\"subType2\":255" +
+                        "}";
+                MyApplication.sendMsg(ctlStr2);
                 getSharedPreferences("profile",
                         Context.MODE_PRIVATE).edit().putBoolean("IsDisarming", true).commit();
-                ToastUtil.showToast(this, "撤防成功");
                 break;
             case R.id.safety_all_open://全部布防
                 //TODO  全局布防待完成
                 int subType2 = 0;
                 for (int i = 0; i < safety_state_data.size(); i++) {
                     if (safety_type.getText().toString().equals(safety_state_data.get(i)))
-                        if (i == 3)
-                            subType2 = 255;
-                        else subType2 = i;
+//                        if (i == 3)
+//                            subType2 = 255;
+//                        else subType2 = i;
+                        subType2 = i;
                 }
                 String ctlStr1 = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                         ",\"datType\":32" +
