@@ -63,6 +63,13 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         initView();
         //加载数据
         initData();
+        MyApplication.setOnGetSafetyDataListener(new MyApplication.OnGetSafetyDataListener() {
+            @Override
+            public void getSafetyData() {
+                safety_Data = Dtat_Cache.readFile_safety(true);
+                initData();
+            }
+        });
     }
 
     /**

@@ -52,7 +52,7 @@ import cn.etsoft.smarthomephone.pullmi.entity.WareData;
 import cn.etsoft.smarthomephone.pullmi.entity.WareKeyOpItem;
 import cn.etsoft.smarthomephone.pullmi.utils.Dtat_Cache;
 import cn.etsoft.smarthomephone.ui.HomeActivity;
-import cn.etsoft.smarthomephone.ui.UserActivity;
+import cn.etsoft.smarthomephone.ui.SafetyActivity_home;
 import cn.etsoft.smarthomephone.ui.WelcomeActivity;
 import cn.etsoft.smarthomephone.utils.CityDB;
 
@@ -488,7 +488,7 @@ public class MyApplication extends Application implements udpService.Callback, N
                 notification.flags = notification.FLAG_AUTO_CANCEL;
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                Intent intent = new Intent(this, UserActivity.class);
+                Intent intent = new Intent(this, SafetyActivity_home.class);
 //                intent.putExtra("title", "MESSAGE");
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                         intent, 0);
