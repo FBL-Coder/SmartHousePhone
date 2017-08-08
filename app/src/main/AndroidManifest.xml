@@ -72,13 +72,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--引导页面-->
         <!--主页安防-->
         <activity
             android:name=".ui.SafetyActivity_home"
             android:screenOrientation="portrait" />
-        <!--注册页面-->
-        <!--登录页面-->
         <!--主页面-->
         <activity
             android:name=".ui.HomeActivity"
@@ -122,7 +119,7 @@
         <activity
             android:name=".ui.NetWorkActivity"
             android:screenOrientation="portrait" />
-        <!--房间设置-->
+        <!--远程Ip-->
         <activity
             android:name=".ui.IpActivity"
             android:screenOrientation="portrait" />
@@ -134,7 +131,6 @@
         <activity
             android:name=".ui.SceneSettingActivity"
             android:screenOrientation="portrait" />
-        <!--一楼客厅-->
         <!--组合设置-->
         <activity
             android:name=".ui.ControlActivity"
@@ -143,7 +139,6 @@
         <activity
             android:name=".ui.ParlourFourActivity"
             android:screenOrientation="portrait" />
-        <!--组合设置-一楼客厅四键-配置-->
         <!--组合设置-一楼客厅四键-->
         <activity
             android:name=".ui.ParlourFourOutActivity"
@@ -165,16 +160,9 @@
         <activity
             android:name=".ui.KeySceneActivity_dev"
             android:screenOrientation="portrait" />
-        <!--远程IP-->
-        <!--联网模块详情-->
         <!--设备信息-->
         <activity
             android:name=".ui.Equipment_control"
-            android:screenOrientation="portrait" />
-
-        <!--联网模块详情-->
-        <activity
-            android:name=".Fragment.EditDevFragment"
             android:screenOrientation="portrait" />
         <!--输入模块编辑详情-->
         <activity
@@ -295,8 +283,6 @@
                 <category android:name="cn.etsoft.smarthomephone" />
             </intent-filter>
         </activity>
-        <!-- 报警服务 -->
-        <!-- Socket监听服务 -->
         <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"

@@ -113,7 +113,7 @@ public class UserActivity extends Activity implements View.OnClickListener{
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         title.setTextColor(0xffffffff);
         edit = (TextView) findViewById(R.id.title_bar_tv_room);
-        title.setText(getIntent().getStringExtra("title")+"控制");
+        title.setText(getIntent().getStringExtra("title"));
         if (getIntent().getStringExtra("tag").equals("home")) {
             IsHome = true;
             edit.setVisibility(View.GONE);
