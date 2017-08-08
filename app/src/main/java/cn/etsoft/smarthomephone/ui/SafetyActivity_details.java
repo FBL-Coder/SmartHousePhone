@@ -60,7 +60,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     private GridView gridView_safety;
     private LinearLayout add_dev_Layout_ll;
     private ListView add_dev_Layout_lv;
-    private List<String> safety_state_data, safety_scene_name,safety_state_data1;
+    private List<String> safety_state_data, safety_scene_name, safety_state_data1;
     private List<String> home_text;
     //添加设备房间position；
     private int home_position;
@@ -111,7 +111,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_safety_details);
+        setContentView(R.layout.activity_safety_details1);
         //初始化标题栏
         initTitleBar();
         //初始化组件
@@ -221,7 +221,9 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                 safety_scene_name.add(MyApplication.getWareData().getSceneEvents().get(i).getSceneName());
             }
     }
+
     int position_delete;
+
     /**
      * 初始化GridView
      */
@@ -256,7 +258,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
 //                        initDialog("正在删除...");
                         common_dev.remove(position_delete);
                         mGridViewAdapter_Safety.notifyDataSetChanged(common_dev);
-                        ToastUtil.showToast(SafetyActivity_details.this,"删除成功");
+                        ToastUtil.showToast(SafetyActivity_details.this, "删除成功");
                     }
                 });
                 builder.create().show();
@@ -329,7 +331,8 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        common_dev.clear();
+        if (common_dev != null)
+            common_dev.clear();
     }
 
     /**
@@ -408,7 +411,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
 
                             if ("无".equals(safety_scene.getText().toString())) {
                                 bean.setSceneId(255);
-                            }else {
+                            } else {
                                 //关联情景
                                 for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
                                     if (safety_scene.getText().toString().equals(MyApplication.getWareData().getSceneEvents().get(i).getSceneName()))
