@@ -60,7 +60,7 @@ public class ModuleEditAdapter extends BaseAdapter {
         final ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(this.context).inflate(R.layout.gridview_item_light6, null, false);
+            convertView = LayoutInflater.from(this.context).inflate(R.layout.gridview_item_light2, null, false);
             viewHolder.appliance = (ImageView) convertView.findViewById(R.id.appliance);
             viewHolder.sure = (ImageView) convertView.findViewById(R.id.sure);
             viewHolder.cancel = (ImageView) convertView.findViewById(R.id.cancel);

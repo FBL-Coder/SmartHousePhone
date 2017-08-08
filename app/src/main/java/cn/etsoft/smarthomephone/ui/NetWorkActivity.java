@@ -410,7 +410,7 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
             ViewHolder viewHolder;
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = LinearLayout.inflate(NetWorkActivity.this, R.layout.equi_list_item2, null);
+                convertView = LinearLayout.inflate(NetWorkActivity.this, R.layout.equi_list_item, null);
                 viewHolder.equi_name = (TextView) convertView.findViewById(R.id.equi_name);
                 viewHolder.equi_iv_use = (ImageView) convertView.findViewById(R.id.equi_iv_use);
                 convertView.setTag(viewHolder);
@@ -508,7 +508,7 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
             ViewHolder viewHolder;
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = LinearLayout.inflate(NetWorkActivity.this, R.layout.equi_list_item3, null);
+                convertView = LinearLayout.inflate(NetWorkActivity.this, R.layout.equi_list_item, null);
                 viewHolder.equi_name = (TextView) convertView.findViewById(R.id.equi_name);
                 viewHolder.equi_iv_use = (ImageView) convertView.findViewById(R.id.equi_iv_use);
                 convertView.setTag(viewHolder);

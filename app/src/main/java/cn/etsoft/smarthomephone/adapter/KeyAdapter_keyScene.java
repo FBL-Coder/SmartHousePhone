@@ -127,7 +127,7 @@ public class KeyAdapter_keyScene extends BaseAdapter {
         final ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(this.context).inflate(R.layout.gridview_item_light2, null, false);
+            convertView = LayoutInflater.from(this.context).inflate(R.layout.gridview_item_light, null, false);
             viewHolder.appliance = (ImageView) convertView.findViewById(R.id.appliance);
             viewHolder.mark = (ImageView) convertView.findViewById(R.id.mark);
             viewHolder.title = (TextView) convertView.findViewById(R.id.title);
