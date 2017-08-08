@@ -66,7 +66,7 @@ public class EditModuleActivity extends Activity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_module);
+        setContentView(R.layout.activity_edit_module1);
         //初始化标题栏
         initTitleBar();
         //初始化组件
