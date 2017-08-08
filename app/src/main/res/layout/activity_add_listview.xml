@@ -11,7 +11,7 @@
         android:layout_height="@dimen/dp_70"
         android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
-        android:background="@drawable/tiao"
+        android:background="@drawable/tiao1"
         android:drawableLeft="@drawable/liebiao"
         android:drawablePadding="@dimen/dp_20"
         android:gravity="center_vertical"
