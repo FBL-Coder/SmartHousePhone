@@ -29,12 +29,12 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.ModuleEditAdapter;
 import cn.etsoft.smarthomephone.adapter.PopupWindowAdapter2;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.WareBoardKeyInput;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 import cn.etsoft.smarthomephone.view.Circle_Progress;
 import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
 

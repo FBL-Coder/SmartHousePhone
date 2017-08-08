@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2016/9/1.

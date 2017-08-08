@@ -13,11 +13,11 @@ import java.io.UnsupportedEncodingException;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 import cn.etsoft.smarthomephone.pullmi.utils.LogUtils;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2017/8/3.

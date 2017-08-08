@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2016/10/13.

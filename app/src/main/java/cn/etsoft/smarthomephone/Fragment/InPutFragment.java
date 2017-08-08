@@ -13,10 +13,10 @@ import android.widget.ScrollView;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.BoardInOutAdapter;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
 import cn.etsoft.smarthomephone.ui.ParlourFourActivity;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 
 
 /**

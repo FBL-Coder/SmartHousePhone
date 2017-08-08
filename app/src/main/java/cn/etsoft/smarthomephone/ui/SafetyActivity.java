@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.SafetyAdapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 import cn.etsoft.smarthomephone.view.Circle_Progress;
 
 /**

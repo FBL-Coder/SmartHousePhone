@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.UiUtils.ToastUtil;
 import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
 import cn.etsoft.smarthomephone.ui.AirConditionActivity;
 import cn.etsoft.smarthomephone.ui.CurtainActivity;
@@ -22,6 +21,7 @@ import cn.etsoft.smarthomephone.ui.SceneActivity;
 import cn.etsoft.smarthomephone.ui.StbActivity;
 import cn.etsoft.smarthomephone.ui.TvActivity;
 import cn.etsoft.smarthomephone.ui.UserActivity;
+import cn.etsoft.smarthomephone.utils.ToastUtil;
 import cn.semtec.community2.MyApplication;
 
 /**
