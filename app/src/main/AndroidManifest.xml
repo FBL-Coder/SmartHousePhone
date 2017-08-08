@@ -296,17 +296,7 @@
             </intent-filter>
         </activity>
         <!-- 报警服务 -->
-        <service android:name=".ServiceSubclass">
-            <intent-filter >
-                <action android:name="cc.test.com"/>
-            </intent-filter>
-        </service>
         <!-- Socket监听服务 -->
-        <service android:name=".ServiceSocket">
-            <intent-filter >
-                <action android:name="service.socket.com"/>
-            </intent-filter>
-        </service>
         <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"
