@@ -73,17 +73,11 @@
             </intent-filter>
         </activity>
         <!--引导页面-->
-        <activity
-            android:name=".ui.GuideActivity"
-            android:screenOrientation="portrait" />
         <!--主页安防-->
         <activity
             android:name=".ui.SafetyActivity_home"
             android:screenOrientation="portrait" />
         <!--注册页面-->
-        <activity
-            android:name=".ui.RegisterActivity"
-            android:screenOrientation="portrait" />
         <!--登录页面-->
         <!--主页面-->
         <activity
@@ -150,9 +144,6 @@
             android:name=".ui.ParlourFourActivity"
             android:screenOrientation="portrait" />
         <!--组合设置-一楼客厅四键-配置-->
-        <activity
-            android:name=".ui.EquipmentControlActivity"
-            android:screenOrientation="portrait" />
         <!--组合设置-一楼客厅四键-->
         <activity
             android:name=".ui.ParlourFourOutActivity"
@@ -165,10 +156,7 @@
         <activity
             android:name=".ui.EquipmentDeployActivity"
             android:screenOrientation="portrait" />
-        <!--组合设置-一楼客厅四键-配置-新增控制列表-->
-        <activity
-            android:name=".ui.AddActivity"
-            android:screenOrientation="portrait" />
+
         <!--组合设置-按键情景-输入板-->
         <activity
             android:name=".ui.KeySceneActivity"
@@ -179,9 +167,6 @@
             android:screenOrientation="portrait" />
         <!--远程IP-->
         <!--联网模块详情-->
-        <activity
-            android:name=".ui.SetNewWorkActivity"
-            android:screenOrientation="portrait" />
         <!--设备信息-->
         <activity
             android:name=".ui.Equipment_control"
