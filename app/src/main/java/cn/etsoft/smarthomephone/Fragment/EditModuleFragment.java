@@ -67,7 +67,6 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemCl
         Bundle bundle = new Bundle();
         bundle.putString("title", MyApplication.getWareData().getKeyInputs().get(position).getBoardName());
         bundle.putInt("keyInput_position",keyInput_position);
-//        bundle.putString("uid", MyApplication.getWareData().getKeyInputs().get(position).getBoardName());
         intent.putExtras(bundle);
         startActivity(intent);
     }
