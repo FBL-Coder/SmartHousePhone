@@ -2,242 +2,244 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_viewpager"
     android:orientation="vertical">
 
-    <include layout="@layout/title_bar" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:layout_weight="0.5"
-        android:background="@color/color_33ffffff"
-        android:orientation="horizontal">
+        android:layout_weight="1.3"
+        android:background="@drawable/tu2"
+        android:orientation="vertical"
+        >
+        <include layout="@layout/title_bar"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:padding="@dimen/dp_2"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.6"
-            android:layout_height="match_parent"
-            android:text="定时器名称"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:gravity="center"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_fff"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.6"
+                android:layout_height="match_parent"
+                android:text="定时器名称"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_fff"/>
 
-        <EditText
-            android:id="@+id/name"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_weight="1"
-            android:textSize="@dimen/sp_14"
-            android:textColorHint="@color/white1"
-            android:background="@color/color_10AEFF"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="@color/color_fff"
-            android:padding="@dimen/dp_5" />
-        <TextView
-            android:id="@+id/add_dev_timer"
-            android:layout_width="@dimen/dp_0"
-            android:layout_weight="0.6"
-            android:background="@color/color_8AB928"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/dp_5"
-            android:gravity="center"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"
-            android:textColor="@color/color_fff"
-            android:text="添加设备"/>
-
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:layout_weight="0.5"
-        android:background="@color/color_33ffffff"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.4"
-            android:layout_height="match_parent"
-            android:text="日期"
-            android:gravity="center"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_fff"
-            />
-
-        <TextView
-            android:id="@+id/time_week"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_weight="1.4"
-            android:background="@drawable/save_click_selector"
-            android:clickable="true"
-            android:text="点击选择星期"
-            android:textStyle="bold"
-            android:layout_margin="@dimen/dp_5"
-            android:drawableRight="@drawable/more"
-            android:gravity="center"
-            android:paddingRight="@dimen/dp_5"
-            android:textColor="@color/color_fff"
-            android:textSize="@dimen/sp_14" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.4"
-            android:layout_height="match_parent"
-            android:text="使能"
-            android:gravity="center"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_fff"
-            />
-
-        <TextView
-            android:id="@+id/enabled"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_weight="0.6"
-            android:background="@drawable/save_click_selector"
-            android:clickable="true"
-            android:layout_margin="@dimen/dp_5"
-            android:drawableRight="@drawable/more"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:paddingRight="@dimen/dp_5"
-            android:text="禁用"
-            android:textColor="@color/color_fff"
-            android:textSize="@dimen/sp_14" />
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:layout_weight="0.5"
-        android:background="@color/color_33ffffff"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.4"
-            android:layout_height="match_parent"
-            android:text="周重复"
-            android:gravity="center"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_fff"/>
-        <TextView
-            android:id="@+id/week_repeat"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_weight="0.6"
-            android:background="@drawable/save_click_selector"
-            android:clickable="true"
-            android:layout_margin="@dimen/dp_5"
-            android:drawableRight="@drawable/more"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:paddingRight="@dimen/dp_5"
-            android:text="否"
-            android:textColor="@color/color_fff"
-            android:textSize="@dimen/sp_14" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.4"
-            android:layout_height="match_parent"
-            android:text="是否全网"
-            android:gravity="center"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/color_fff"/>
-
-        <TextView
-            android:id="@+id/all_network"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_weight="0.6"
-            android:background="@drawable/save_click_selector"
-            android:clickable="true"
-            android:layout_margin="@dimen/dp_5"
-            android:drawableRight="@drawable/more"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingRight="@dimen/dp_5"
-            android:text="否"
-            android:textColor="@color/color_fff"
-            android:textSize="@dimen/sp_14" />
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_weight="1"
+                android:textSize="@dimen/sp_14"
+                android:textColorHint="@color/white1"
+                android:background="@color/color_10AEFF"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/color_fff"
+                android:padding="@dimen/dp_5" />
+            <TextView
+                android:id="@+id/add_dev_timer"
+                android:layout_width="@dimen/dp_0"
+                android:layout_weight="0.6"
+                android:background="@color/color_8AB928"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dp_5"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                android:textColor="@color/color_fff"
+                android:text="添加设备"/>
 
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:layout_weight="0.5"
-        android:background="@color/color_33ffffff"
-        android:orientation="horizontal">
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:padding="@dimen/dp_2"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="match_parent"
+                android:text="日期"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_fff"
+                />
 
-        <TextView
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:text="开始时间"
-            android:textColor="@color/color_fff"
-            android:gravity="center"
-            android:padding="@dimen/dp_5"
-            android:textSize="@dimen/sp_14"
-            />
+            <TextView
+                android:id="@+id/time_week"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1.4"
+                android:background="@drawable/save_click_selector"
+                android:clickable="true"
+                android:text="点击选择星期"
+                android:textStyle="bold"
+                android:layout_margin="@dimen/dp_2"
+                android:drawableRight="@drawable/more"
+                android:gravity="center"
+                android:paddingRight="@dimen/dp_5"
+                android:textColor="@color/color_fff"
+                android:textSize="@dimen/sp_14" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="match_parent"
+                android:text="使能"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_fff"
+                />
 
-        <TextView
-            android:id="@+id/time_start"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="-10dp"
-            android:background="@drawable/save_click_selector"
-            android:clickable="true"
-            android:text="点击选择时间"
-            android:layout_margin="@dimen/dp_5"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:padding="@dimen/dp_5"
-            android:textColor="@color/color_fff"
-            android:textSize="@dimen/sp_14" />
+            <TextView
+                android:id="@+id/enabled"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_weight="0.6"
+                android:background="@drawable/save_click_selector"
+                android:clickable="true"
+                android:layout_margin="@dimen/dp_5"
+                android:drawableRight="@drawable/more"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:paddingRight="@dimen/dp_5"
+                android:text="禁用"
+                android:textColor="@color/color_fff"
+                android:textSize="@dimen/sp_14" />
 
-        <TextView
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:text="结束时间"
-            android:textColor="@color/color_fff"
-            android:gravity="center"
-            android:padding="@dimen/dp_5"
-            android:textSize="@dimen/sp_14"
-            />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:padding="@dimen/dp_2"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/time_end"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="-10dp"
-            android:background="@drawable/save_click_selector"
-            android:clickable="true"
-            android:text="点击选择时间"
-            android:layout_margin="@dimen/dp_5"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:padding="@dimen/dp_5"
-            android:textColor="@color/color_fff"
-            android:textSize="@dimen/sp_14" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="match_parent"
+                android:text="周重复"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_fff"/>
+            <TextView
+                android:id="@+id/week_repeat"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_weight="0.6"
+                android:background="@drawable/save_click_selector"
+                android:clickable="true"
+                android:layout_margin="@dimen/dp_5"
+                android:drawableRight="@drawable/more"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:paddingRight="@dimen/dp_5"
+                android:text="否"
+                android:textColor="@color/color_fff"
+                android:textSize="@dimen/sp_14" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:layout_height="match_parent"
+                android:text="是否全网"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/color_fff"/>
+
+            <TextView
+                android:id="@+id/all_network"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_weight="0.6"
+                android:background="@drawable/save_click_selector"
+                android:clickable="true"
+                android:layout_margin="@dimen/dp_5"
+                android:drawableRight="@drawable/more"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:paddingRight="@dimen/dp_5"
+                android:text="否"
+                android:textColor="@color/color_fff"
+                android:textSize="@dimen/sp_14" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0"
+            android:padding="@dimen/dp_2"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7"
+                android:text="开始时间"
+                android:textColor="@color/color_fff"
+                android:gravity="center"
+                android:padding="@dimen/dp_5"
+                android:textSize="@dimen/sp_14"
+                />
+
+            <TextView
+                android:id="@+id/time_start"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="-10dp"
+                android:background="@drawable/save_click_selector"
+                android:clickable="true"
+                android:text="点击选择时间"
+                android:layout_margin="@dimen/dp_5"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:padding="@dimen/dp_5"
+                android:textColor="@color/color_fff"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7"
+                android:text="结束时间"
+                android:textColor="@color/color_fff"
+                android:gravity="center"
+                android:padding="@dimen/dp_5"
+                android:textSize="@dimen/sp_14"
+                />
+
+            <TextView
+                android:id="@+id/time_end"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="-10dp"
+                android:background="@drawable/save_click_selector"
+                android:clickable="true"
+                android:text="点击选择时间"
+                android:layout_margin="@dimen/dp_5"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:padding="@dimen/dp_5"
+                android:textColor="@color/color_fff"
+                android:textSize="@dimen/sp_14" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -246,7 +248,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
         android:orientation="vertical"
-        android:layout_weight="4">
+        android:layout_weight="2.5">
 
         <GridView
             android:id="@+id/gridView_timer"
