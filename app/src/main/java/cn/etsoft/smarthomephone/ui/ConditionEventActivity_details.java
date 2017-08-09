@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -132,12 +134,14 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
                     if (Condition_position != 0) {
                         ToastUtil.showToast(ConditionEventActivity_details.this, "保存成功");
                     }
+                    initTitleBar();
                 }
                 if (what == 29) {
                     MyApplication.sendMsg(ctlStr);
                     if (Condition_position == 0) {
                         ToastUtil.showToast(ConditionEventActivity_details.this, "保存成功");
                     }
+                    initTitleBar();
                 }
             }
         });
@@ -152,7 +156,9 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
         save = (TextView) findViewById(R.id.title_bar_tv_room);
         Condition_position = getIntent().getExtras().getInt("Condition_position");
         title.setTextColor(0xffffffff);
-        title.setText(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getEventName());
+        title.setText("");
+        title.setHint(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getEventName());
+        title.setHintTextColor(0xffffffff);
         back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,6 +285,22 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
             event_way.setText("" + Event_Way.get(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getThType()));
             event_type.setText("" + Event_type.get(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getEnvType()));
         }
+        et_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                title.setText(et_name.getText().toString());
+            }
+        });
     }
 
     @Override
