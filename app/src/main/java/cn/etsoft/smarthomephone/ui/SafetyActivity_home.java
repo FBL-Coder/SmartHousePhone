@@ -31,10 +31,10 @@ import cn.etsoft.smarthomephone.weidget.CustomDatePicker;
  * Created by Say GoBay on 2017/8/7.
  */
 public class SafetyActivity_home extends Activity implements View.OnClickListener {
-    private TextView safety, screen, title;
+    private TextView safety, title;
     private CustomDatePicker time_start, time_end;
     private ListView listView;
-    private ImageView back;
+    private ImageView back,screen;
     private List<String> safetyName;
     private PopupWindow popupWindow;
     private int safety_position = 0;
@@ -124,7 +124,7 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         time_start = (CustomDatePicker) findViewById(R.id.time_start);
         time_end = (CustomDatePicker) findViewById(R.id.time_end);
         safety = (TextView) findViewById(R.id.safety);
-        screen = (TextView) findViewById(R.id.screen);
+        screen = (ImageView) findViewById(R.id.screen);
         listView = (ListView) findViewById(R.id.listView);
         if (MyApplication.getWareData().getResult_safety() == null || MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0)
             return;
