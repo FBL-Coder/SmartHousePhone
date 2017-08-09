@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -155,6 +157,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                         ToastUtil.showToast(GroupSetActivity_details.this, "保存成功");
                         MyApplication.getWareData().setSetGroupSet(null);
                     }
+                    initTitleBar();
                     initGridView();
                     initData();
                     initView_safety();
@@ -172,7 +175,9 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         save = (TextView) findViewById(R.id.title_bar_tv_room);
         GroupSet_position = getIntent().getExtras().getInt("GroupSet_position");
         title.setTextColor(0xffffffff);
-        title.setText(MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getTriggerName());
+        title.setText("");
+        title.setHint(MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getTriggerName());
+        title.setHintTextColor(0xffffffff);
         back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,6 +292,22 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                 event_way.setText("是");
             else event_way.setText("否");
         }
+        et_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                title.setText(et_name.getText().toString());
+            }
+        });
     }
 
     private int data_start = 0;
