@@ -72,6 +72,8 @@ public class SafetyActivity extends Activity implements AdapterView.OnItemClickL
         initDialog("初始化数据中...");
         //初始化标题栏
         initTitleBar();
+        //初始化ListView
+        initListView();
         MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int what) {
@@ -134,6 +136,7 @@ public class SafetyActivity extends Activity implements AdapterView.OnItemClickL
         Intent intent = new Intent(this, SafetyActivity_details.class);
         Safety_position = position;
         Bundle bundle = new Bundle();
+//        bundle.putString("title", MyApplication.getWareData().getResult_safety().getSec_info_rows().get(position).getSecName());
         bundle.putInt("Safety_position", Safety_position);
         intent.putExtras(bundle);
         startActivity(intent);

@@ -64,6 +64,7 @@ public class EditModuleFragment extends Fragment implements AdapterView.OnItemCl
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), EditModuleActivity.class);
+        keyInput_position = position;
         Bundle bundle = new Bundle();
         bundle.putString("title", MyApplication.getWareData().getKeyInputs().get(position).getBoardName());
         bundle.putInt("keyInput_position",keyInput_position);

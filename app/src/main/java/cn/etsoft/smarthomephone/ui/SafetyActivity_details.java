@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -127,9 +129,11 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                         //保存成功之后获取最新数据
                         MyApplication.getWareData().setResult(null);
                         MyApplication.sendMsg(ctlStr);
+                        initTitleBar();
                         return;
                     }
                     if (MyApplication.getWareData().getResult_safety() != null && MyApplication.getWareData().getResult_safety().getSubType2() == 255 && MyApplication.getWareData().getResult_safety().getSubType1() == 4) {
+                        initTitleBar();
                         initGridView(Safety_position);
                         initData(Safety_position);
                     }
@@ -158,7 +162,9 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         save = (TextView) findViewById(R.id.title_bar_tv_room);
         Safety_position = getIntent().getExtras().getInt("Safety_position");
         title.setTextColor(0xffffffff);
-        title.setText(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecName());
+        title.setText("");
+        title.setHint(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecName());
+        title.setHintTextColor(0xffffffff);
         back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,6 +332,22 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                 safety_scene.setText("选择情景");
             }
         }
+        safety_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                title.setText(safety_name.getText().toString());
+            }
+        });
     }
 
     @Override
