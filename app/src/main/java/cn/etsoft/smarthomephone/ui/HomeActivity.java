@@ -83,7 +83,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private TextView textView_banner, loaction_text, temp_text, hum_text, pm_25, breath_text, weather_text, ref_home;
     private ViewPagerCompat mViewPager;
     private List<Integer> mImgIds_img = new ArrayList<>();
-    private int[] mImgIds = new int[]{R.drawable.banner_parlour};
+    private int[] mImgIds = new int[]{R.drawable.tu5};
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
 
     private LinearLayout ll_home_dots;

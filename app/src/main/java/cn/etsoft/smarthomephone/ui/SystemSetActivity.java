@@ -28,7 +28,7 @@ public class SystemSetActivity extends Activity implements AdapterView.OnItemCli
     private GridView gridView;
     private LinearLayout ll;
     private String[] text = {"联网模块", "远程IP", "模块详情", "用户界面", "控制设置", "设备信息", "情景设置", "安防设置", "定时设置", "环境事件", "组合设置"};
-    private int[] image = {R.drawable.systemsetup2, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.systemsetup3, R.drawable.systemsetup2, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.systemsetup3,R.drawable.systemsetup2, R.drawable.systemsetup4, R.drawable.systemsetup5};
+    private int[] image = {R.drawable.systemsetup2, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.systemsetup4, R.drawable.equipmentcontrol, R.drawable.systemsetup4, R.drawable.systemsetup5, R.drawable.systemsetup3,R.drawable.systemsetup2, R.drawable.systemsetup4, R.drawable.systemsetup5};
     private ImageView back, title_bar_iv_or;
     private TextView title, title_bar_tv_room, name_cur;
 

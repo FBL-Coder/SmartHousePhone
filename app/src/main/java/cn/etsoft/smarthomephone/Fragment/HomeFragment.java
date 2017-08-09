@@ -31,8 +31,8 @@ import cn.semtec.community2.MyApplication;
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GridView gridView;
-    private int[] image = {R.drawable.ms,R.drawable.kt, R.drawable.ds, R.drawable.jdh, R.drawable.light_home,
-            R.drawable.cl, R.drawable.qj, R.drawable.jk, R.drawable.cz, R.drawable.ms,R.drawable.cz};
+    private int[] image = {R.drawable.user_home,R.drawable.air_home, R.drawable.tv_home, R.drawable.stb_home, R.drawable.light_home,
+            R.drawable.curtain_home, R.drawable.scene_home, R.drawable.control_home, R.drawable.socket_home, R.drawable.door_home,R.drawable.safety_home};
     private String[] title = {"用户界面","空调", "电视", "机顶盒", "灯光", "窗帘", "情景", "门禁", "插座", "门锁","安防"};
     private int HomeAct_viewPage_position;
 
