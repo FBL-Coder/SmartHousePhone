@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -137,12 +139,14 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                     if (Timer_position != 0) {
                         ToastUtil.showToast(TimerActivity_details.this, "保存成功");
                     }
+                    initTitleBar();
                 }
                 if (what == 19) {
                     MyApplication.sendMsg(ctlStr);
                     if (Timer_position == 0) {
                         ToastUtil.showToast(TimerActivity_details.this, "保存成功");
                     }
+                    initTitleBar();
                 }
             }
         });
@@ -157,7 +161,9 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
         save = (TextView) findViewById(R.id.title_bar_tv_room);
         Timer_position = getIntent().getExtras().getInt("Timer_position");
         title.setTextColor(0xffffffff);
-        title.setText(MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(Timer_position).getTimerName());
+        title.setText("");
+        title.setHint(MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(Timer_position).getTimerName());
+        title.setHintTextColor(0xffffffff);
         back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,6 +310,22 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
             else tv_week_repeat.setText("否");
             tv_all_network.setText("是");
         }
+        et_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                title.setText(et_name.getText().toString());
+            }
+        });
     }
 
     @Override
