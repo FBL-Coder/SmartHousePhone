@@ -198,7 +198,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         dialog.show();
         TextView view = (TextView) dialog.findViewById(R.id.select_room);
         view.setText("请选择空调");
-        view.setTextColor(Color.BLACK);
+        view.setTextColor(Color.WHITE);
         dia_listView = (ListView) dialog.findViewById(R.id.air_select);
         dia_listView.setAdapter(new Aic_Select_Adapter(AirConds));
 
@@ -559,7 +559,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                 viewHolder = new ViewHolder();
                 viewHolder.title = (TextView) convertView.findViewById(R.id.equipment_tv);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.equipment_iv);
-                viewHolder.title.setTextColor(Color.BLACK);
+                viewHolder.title.setTextColor(Color.WHITE);
 
                 convertView.setTag(viewHolder);
             } else
