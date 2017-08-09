@@ -273,7 +273,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
 
     /**
      * 初始化数据
-     *
      */
     public void initData() {
         home_text = MyApplication.getRoom_list();
@@ -546,7 +545,8 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        common_dev.clear();
+        if (common_dev != null)
+            common_dev.clear();
     }
 
     /**

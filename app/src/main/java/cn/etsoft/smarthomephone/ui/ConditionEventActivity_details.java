@@ -198,7 +198,9 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
         add_dev_condition.setOnClickListener(this);
         et_name.setOnClickListener(this);
     }
+
     int position_delete;
+
     /**
      * 初始化GridView
      */
@@ -306,7 +308,8 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        common_dev.clear();
+        if (common_dev != null)
+            common_dev.clear();
     }
 
     /**

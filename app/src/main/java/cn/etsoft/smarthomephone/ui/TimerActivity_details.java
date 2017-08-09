@@ -331,7 +331,8 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        common_dev.clear();
+        if (common_dev != null)
+            common_dev.clear();
     }
 
     /**
