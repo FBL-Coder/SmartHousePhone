@@ -520,6 +520,9 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         } else if (wareAirCondDev.getSelSpd()
                 == UdpProPkt.E_AIR_CMD.e_air_spdHigh.getValue()) {
             wind.setText("风速 : 高风");
+        }else if (wareAirCondDev.getSelSpd()
+                == UdpProPkt.E_AIR_CMD.e_air_spdAuto.getValue()) {
+            wind.setText("风速 : 自动");
         }
     }
 
