@@ -6,5 +6,5 @@
     <item android:state_pressed="true" >
         <color android:color="@color/color_DCDCDC"/>
     </item>
-	<item android:drawable="@color/color_fff"></item>
+	<!--<item android:drawable="@color/color_fff"></item>-->
 </selector>
