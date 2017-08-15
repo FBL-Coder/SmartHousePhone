@@ -35,6 +35,7 @@ import cn.etsoft.smarthomephone.domain.SetSafetyResult;
 import cn.etsoft.smarthomephone.domain.SetSafetyResult_alarm;
 import cn.etsoft.smarthomephone.domain.Timer_Data;
 import cn.etsoft.smarthomephone.domain.UserBean;
+import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.common.CommonUtils;
 import cn.etsoft.smarthomephone.pullmi.entity.RcuInfo;
 import cn.etsoft.smarthomephone.pullmi.entity.WareAirCondDev;
@@ -164,8 +165,14 @@ public class udpService extends Service {
         int datType = 0;
         int subType2 = 0;
         int subType1 = 0;
+        String devUnitID = "";
         try {
             JSONObject jsonObject = new JSONObject(info);
+            devUnitID = jsonObject.getString("devUnitID");
+            if (MyApplication.mInstance.isSkip() == false)
+                if (!devUnitID.equals(GlobalVars.getDevid())) {
+                    return;
+                }
             datType = jsonObject.getInt("datType");
             subType1 = jsonObject.getInt("subType1");
             subType2 = jsonObject.getInt("subType2");
@@ -424,6 +431,7 @@ public class udpService extends Service {
             isFreshData = false;
         }
     }
+
     /**
      * 联网模块--搜索联网
      *
