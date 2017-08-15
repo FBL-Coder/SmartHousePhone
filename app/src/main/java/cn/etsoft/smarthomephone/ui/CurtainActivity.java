@@ -19,7 +19,7 @@ import java.util.List;
 
 import cn.etsoft.smarthomephone.MyApplication;
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
+import cn.etsoft.smarthomephone.adapter.GridViewAdapter_air;
 import cn.etsoft.smarthomephone.adapter.Room_Select_Adapter;
 import cn.etsoft.smarthomephone.pullmi.app.GlobalVars;
 import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
@@ -129,7 +129,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
      */
     private void initGridView() {
         gridView = (GridView) findViewById(R.id.light_gv);
-        gridView.setAdapter(new GridViewAdapter(image, text, this));
+        gridView.setAdapter(new GridViewAdapter_air(image, text, this));
         gridView.setSelector(R.drawable.selector_gridview_item);
         gridView.setOnItemClickListener(this);
     }
