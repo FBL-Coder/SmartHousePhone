@@ -169,14 +169,24 @@ public class udpService extends Service {
         try {
             JSONObject jsonObject = new JSONObject(info);
             devUnitID = jsonObject.getString("devUnitID");
-            if (MyApplication.mInstance.isSkip() == false)
-                if (!devUnitID.equals(GlobalVars.getDevid())) {
-                    return;
+            if (MyApplication.mInstance.isSkip() == false) {
+                if (MyApplication.mInstance.isSearch() == true) {
+                    if (!devUnitID.equals(GlobalVars.getDevid())) {
+                        Log.i("devUnitID", devUnitID);
+                        Log.i("devUnitID1", GlobalVars.getDevid());
+                        return;
+                    }
                 }
-            datType = jsonObject.getInt("datType");
-            subType1 = jsonObject.getInt("subType1");
-            subType2 = jsonObject.getInt("subType2");
+            }
         } catch (JSONException e) {
+            System.out.println(e.toString());
+        }
+        try {
+            JSONObject jsonObject1 = new JSONObject(info);
+            datType = jsonObject1.getInt("datType");
+            subType1 = jsonObject1.getInt("subType1");
+            subType2 = jsonObject1.getInt("subType2");
+        } catch (Exception e) {
             System.out.println(e.toString());
         }
         if (datType != 35 || datType != 2)
