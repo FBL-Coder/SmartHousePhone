@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.adapter.GridViewAdapter;
+import cn.etsoft.smarthomephone.adapter.GridViewAdapter_air;
 import cn.etsoft.smarthomephone.ui.SystemSetActivity;
 
 /**
@@ -36,7 +36,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
      */
     private void initGridView(View view) {
         gridView = (GridView) view.findViewById(R.id.home_gv);
-        gridView.setAdapter(new GridViewAdapter(image, title, getActivity()));
+        gridView.setAdapter(new GridViewAdapter_air(image, title, getActivity()));
         gridView.setSelector(R.drawable.selector_gridview_item);
         gridView.setOnItemClickListener(this);
     }
