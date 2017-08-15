@@ -1,7 +1,6 @@
 package cn.etsoft.smarthomephone.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,11 +58,10 @@ public class SceneAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             mInflater = LayoutInflater.from(context);
-            convertView = mInflater.inflate(R.layout.home_gridview_item, null);
+            convertView = mInflater.inflate(R.layout.home_gridview_item_air, null);
             viewHolder = new ViewHolder();
             viewHolder.image = (ImageView) convertView.findViewById(R.id.home_gv_image);
             viewHolder.title = (TextView) convertView.findViewById(R.id.home_gv_title);
-            viewHolder.title.setTextColor(Color.BLACK);
 
             convertView.setTag(viewHolder);
         } else {
