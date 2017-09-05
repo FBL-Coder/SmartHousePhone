@@ -69,7 +69,6 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 intent.putExtra("title", title[5]);
                 startActivity(intent);
                 break;
-
         }
     }
 }
