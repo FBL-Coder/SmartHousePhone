@@ -18,10 +18,11 @@ import cn.etsoft.smarthomephone.ui.SystemSetActivity;
  * Created by Say GoBay on 2016/9/1.
  * 设置碎片
  */
-public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener {
     private GridView gridView;
     private int[] image = {R.drawable.setgohome, R.drawable.setalloff, R.drawable.setfullopen, R.drawable.setlight, R.drawable.setcurtain, R.drawable.setsystemsetup};
     private String[] title = {"回家", "设备全关", "设备全开", "灯光总控", "窗帘总控", "系统设置"};
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,8 +31,10 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
         initGridView(view);
         return view;
     }
+
     /**
      * 初始化GridView
+     *
      * @param view
      */
     private void initGridView(View view) {
@@ -40,6 +43,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
         gridView.setSelector(R.drawable.selector_gridview_item);
         gridView.setOnItemClickListener(this);
     }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent;
@@ -61,8 +65,8 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 break;
             //系统设置
             case 5:
-                intent = new Intent(getActivity(),SystemSetActivity.class);
-                intent.putExtra("title",title[5]);
+                intent = new Intent(getActivity(), SystemSetActivity.class);
+                intent.putExtra("title", title[5]);
                 startActivity(intent);
                 break;
 
