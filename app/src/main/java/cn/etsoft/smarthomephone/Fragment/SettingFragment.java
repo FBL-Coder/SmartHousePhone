@@ -18,7 +18,7 @@ import cn.etsoft.smarthomephone.ui.SystemSetActivity;
  * Created by Say GoBay on 2016/9/1.
  * 设置碎片
  */
-public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener {
     private GridView gridView;
     private int[] image = {R.drawable.setgohome, R.drawable.setalloff, R.drawable.setfullopen, R.drawable.setlight, R.drawable.setcurtain, R.drawable.setsystemsetup};
     private String[] title = {"回家", "设备全关", "设备全开", "灯光总控", "窗帘总控", "系统设置"};
@@ -65,7 +65,6 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 intent.putExtra("title",title[5]);
                 startActivity(intent);
                 break;
-
         }
     }
 }
