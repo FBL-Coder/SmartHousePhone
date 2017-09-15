@@ -54,11 +54,11 @@ import cn.etsoft.smarthomephone.weidget.CustomDialog_comment;
  * Created by Say GoBay on 2017/5/19.
  * 首页（系统设置）--用户界面
  */
-public class UserActivity extends Activity implements View.OnClickListener{
+public class UserActivity extends Activity implements View.OnClickListener {
     private GridView gridView_user;
     private LinearLayout ll;
     private ImageView back;
-    private TextView title, edit,equipment_close,tv_equipment_parlour;
+    private TextView title, edit, equipment_close, tv_equipment_parlour;
     private GridViewAdapter_user gridViewAdapter_user;
     private PopupWindow popupWindow;
     private Gson gson;
@@ -75,10 +75,14 @@ public class UserActivity extends Activity implements View.OnClickListener{
     private SharedPreferences sharedPreferences;
     private List<WareDev> dev;
     private int POP_TYPE_ROOM = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyApplication.getUserData();
+        try {
+            MyApplication.getUserData();
+        } catch (Exception e) {
+        }
         gson = new Gson();
         setContentView(R.layout.activity_user);
         //初始化控件
@@ -364,6 +368,7 @@ public class UserActivity extends Activity implements View.OnClickListener{
 
     /**
      * 空调控制  头命令字符串
+     *
      * @param i 集合树阴
      * @return
      */
@@ -380,6 +385,8 @@ public class UserActivity extends Activity implements View.OnClickListener{
 
     @Override
     protected void onStop() {
+        if (common_dev == null)
+            return;
         String savData = gson.toJson(common_dev);
         sharedPreferences = getSharedPreferences("profile",
                 Context.MODE_PRIVATE);

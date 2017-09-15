@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -58,7 +59,7 @@ import cn.etsoft.smarthomephone.weidget.SwipeListView;
  */
 public class NetWorkActivity extends Activity implements View.OnClickListener {
     private ImageView back;
-    private TextView title;
+    private TextView title,title_bar_tv_room;
     private EditText name, id, pwd;
     private Button sure, cancel;
     private Equi_ListAdapter adapter;
@@ -186,6 +187,47 @@ public class NetWorkActivity extends Activity implements View.OnClickListener {
     private void initTitleBar() {
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         title = (TextView) findViewById(R.id.title_bar_tv_title);
+
+        title_bar_tv_room = (TextView) findViewById(R.id.title_bar_tv_room);
+        title_bar_tv_room.setVisibility(View.VISIBLE);
+        title_bar_tv_room.setText("退出登录");
+        title_bar_tv_room.setTextColor(Color.BLACK);
+        title_bar_tv_room.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(NetWorkActivity.this);
+                builder.setMessage("您确定要退出登录？");
+                builder.setTitle("提示");
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferences sharedPreferences = getSharedPreferences("profile",
+                                Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("list", "");
+                        editor.putString("user", "");
+                        editor.commit();
+                        String a = sharedPreferences.getString("list", "");
+                        String b = sharedPreferences.getString("user", "");
+                        GlobalVars.setDevid("");
+                        GlobalVars.setDevpass("");
+
+                        if (MyApplication.getmHomeActivity() != null)
+                            MyApplication.getmHomeActivity().finish();
+                        startActivity(new Intent(NetWorkActivity.this, cn.semtec.community2.activity.LoginActivity.class));
+                        dialogInterface.dismiss();
+                        finish();
+                    }
+                });
+                builder.create().show();
+            }
+        });
         title.setText("联网模块设置");
         back.setOnClickListener(new View.OnClickListener() {
             @Override

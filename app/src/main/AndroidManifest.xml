@@ -109,9 +109,6 @@
             android:name=".ui.SceneActivity"
             android:screenOrientation="portrait" />
         <!--系统设置-->
-        <activity
-            android:name=".ui.SystemSetActivity"
-            android:screenOrientation="portrait" />
         <!--模块详情-->
         <activity android:name=".ui.ModuleDetailActivity"
             android:screenOrientation="portrait" />
