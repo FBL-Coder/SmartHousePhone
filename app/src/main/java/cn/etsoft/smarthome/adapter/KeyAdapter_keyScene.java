@@ -1,4 +1,4 @@
-package cn.etsoft.smarthomephone.adapter;
+package cn.etsoft.smarthome.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,9 +12,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.etsoft.smarthomephone.MyApplication;
-import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.domain.ChnOpItem_scene;
+import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.R;
+import cn.etsoft.smarthome.domain.ChnOpItem_scene;
 
 /**
  * Created by Say GoBay on 2016/9/1.
@@ -73,7 +73,8 @@ public class KeyAdapter_keyScene extends BaseAdapter {
             }
             //打开只看选中按键的时候，赋值
             for (int k = 0; k < items.size(); k++) {
-                if (items.get(k).getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getDevUnitID()) &&
+                //TODO  不一定合适
+                if (items.get(k).getKeyUId().equals(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getCanCpuID()) &&
                         items.get(k).getEventId() == SceneId) {
                     int index = items.get(k).getKeyIndex();
                     MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getKeyIsSelect()[index] = 1;
@@ -146,7 +147,8 @@ public class KeyAdapter_keyScene extends BaseAdapter {
             }
         } else {
             for (int i = 0; i < items.size(); i++) {
-                if (items.get(i).getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getDevUnitID()) &&
+                //TODO 不一定合适
+                if (items.get(i).getKeyUId().equals(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getCanCpuID()) &&
                         items.get(i).getEventId() == SceneId) {
                     int index = items.get(i).getKeyIndex();
                     //index位置的按键名称与原始按键名称进行匹配，相同的时候，此按键进行选中操作
@@ -176,7 +178,8 @@ public class KeyAdapter_keyScene extends BaseAdapter {
                     MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getKeyIsSelect()[position] = 0;
                     //如果是选中，去掉选中之后，将选中的数据去掉
                     for (int i = 0; i < items.size(); i++) {
-                        if (items.get(i).getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getDevUnitID()) &&
+                        //TODO 不一定合适
+                        if (items.get(i).getKeyUId().equals(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getCanCpuID()) &&
                                 items.get(i).getEventId() == SceneId) {
                             items.remove(i);
                         }
@@ -185,7 +188,8 @@ public class KeyAdapter_keyScene extends BaseAdapter {
                     viewHolder.mark.setImageResource(R.drawable.selected);
                     //如果是未选中，选中之后，将选中的数据添加进去
                     ChnOpItem_scene.Key2sceneItemBean item = new ChnOpItem_scene.Key2sceneItemBean();
-                    item.setCanCpuID(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getDevUnitID());
+                    //TODO 不一定合适
+                    item.setKeyUId(MyApplication.getWareData().getKeyInputs().get(keyInputPosition).getCanCpuID());
                     item.setEventId(SceneId);
                     item.setKeyIndex(position);
                     items.add(item);
