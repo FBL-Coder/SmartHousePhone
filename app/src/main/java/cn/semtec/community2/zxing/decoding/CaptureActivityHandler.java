@@ -30,7 +30,7 @@ import com.google.zxing.Result;
 
 import java.util.Vector;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.zxing.activity.CaptureActivity;
 import cn.semtec.community2.zxing.camera.CameraManager;
 import cn.semtec.community2.zxing.view.ViewfinderResultPointCallback;

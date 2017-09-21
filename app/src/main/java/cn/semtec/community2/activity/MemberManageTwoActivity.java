@@ -16,7 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.model.MyHttpUtil;
 import cn.semtec.community2.tool.Constants;
 import cn.semtec.community2.util.CatchUtil;

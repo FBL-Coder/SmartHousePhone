@@ -22,7 +22,7 @@ import com.google.zxing.Result;
 import java.io.IOException;
 import java.util.Vector;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.zxing.camera.CameraManager;
 import cn.semtec.community2.zxing.decoding.CaptureActivityHandler;
 import cn.semtec.community2.zxing.decoding.InactivityTimer;

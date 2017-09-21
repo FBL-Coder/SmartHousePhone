@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 public class SliderView extends LinearLayout {
 //	private static final String TAG = "SlideView";

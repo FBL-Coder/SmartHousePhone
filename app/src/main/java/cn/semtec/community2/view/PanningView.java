@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 public class PanningView extends ImageView {
 

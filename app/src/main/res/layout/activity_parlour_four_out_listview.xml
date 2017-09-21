@@ -14,12 +14,12 @@
         android:layout_marginTop="@dimen/dp_5"
         android:scrollbars="none">
 
-        <cn.etsoft.smarthomephone.weidget.ListViewForScrollView
+        <cn.etsoft.smarthome.weidget.ListViewForScrollView
             android:id="@+id/out_lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/color_00000000"
             android:dividerHeight="@dimen/dp_10">
-        </cn.etsoft.smarthomephone.weidget.ListViewForScrollView>
+        </cn.etsoft.smarthome.weidget.ListViewForScrollView>
     </ScrollView>
 </LinearLayout>

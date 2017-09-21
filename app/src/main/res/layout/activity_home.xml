@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="200dp">
 
-        <cn.etsoft.smarthomephone.view.ViewPagerCompat
+        <cn.etsoft.smarthome.view.ViewPagerCompat
             android:id="@+id/home_fragemnt_vp"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_200"
             android:background="@drawable/tu5">
 
-        </cn.etsoft.smarthomephone.view.ViewPagerCompat>
+        </cn.etsoft.smarthome.view.ViewPagerCompat>
 
         <TextView
             android:id="@+id/home_tv_ref"

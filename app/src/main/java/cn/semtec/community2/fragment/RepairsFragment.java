@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 public class RepairsFragment extends Fragment {
     private View layout;

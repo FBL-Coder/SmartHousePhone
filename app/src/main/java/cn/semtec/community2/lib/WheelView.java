@@ -20,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.adapter.WheelAdapter;
 import cn.semtec.community2.listener.OnItemSelectedListener;
 

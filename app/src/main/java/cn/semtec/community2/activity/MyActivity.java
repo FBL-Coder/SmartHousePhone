@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.adapter.MyActAdapter;
 import cn.semtec.community2.zxing.activity.CaptureActivity;
 

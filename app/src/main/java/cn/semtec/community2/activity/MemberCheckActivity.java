@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.adapter.MemberCheckAdapter;
 import cn.semtec.community2.model.MyHttpUtil;
 import cn.semtec.community2.tool.Constants;

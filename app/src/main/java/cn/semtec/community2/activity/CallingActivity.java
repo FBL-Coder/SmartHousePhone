@@ -29,7 +29,7 @@ import org.linphone.squirrel.squirrelCallImpl;
 import java.io.File;
 import java.util.Date;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.MyApplication;
 import cn.semtec.community2.database.DBhelper;
 import cn.semtec.community2.util.CatchUtil;

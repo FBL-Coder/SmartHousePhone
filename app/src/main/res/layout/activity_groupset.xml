@@ -181,7 +181,7 @@
                         android:background="@null"
                         />
 
-                    <cn.etsoft.smarthomephone.weidget.VerticalPageSeekBar
+                    <cn.etsoft.smarthome.weidget.VerticalPageSeekBar
                         android:id="@+id/seekBar"
                         android:layout_width="match_parent"
                         android:progressDrawable="@color/text666"

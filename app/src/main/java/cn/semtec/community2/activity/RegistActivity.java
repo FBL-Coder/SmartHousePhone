@@ -2,10 +2,12 @@ package cn.semtec.community2.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -19,12 +21,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
-import cn.semtec.community2.MyApplication;
+import cn.etsoft.smarthome.R;
+import cn.etsoft.smarthome.domain.Http_Result;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.semtec.community2.model.MyHttpUtil;
 import cn.semtec.community2.tool.Constants;
 import cn.semtec.community2.util.CatchUtil;
@@ -39,8 +47,6 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
     private EditText et_verify;
     private Button btn_verify;
     private View btn_commit;
-    //    private CheckBox check_clause;
-//    private View tv_clause;
     private String cellphone;
     private String verify;
     private String password;
@@ -135,50 +141,27 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
                 params.setBodyEntity(entity);
             } catch (UnsupportedEncodingException e1) {
                 CatchUtil.catchM(e1);
+                cancelProgress();
             }
             String url = Constants.CONTENT_NEW;
             MyHttpUtil httpUtil = new MyHttpUtil(HttpRequest.HttpMethod.POST, url, params, new RequestCallBack<String>() {
                 @Override
                 public void onSuccess(ResponseInfo<String> responseInfo) {
-                    cancelProgress();
                     String mResult = responseInfo.result.toString();
                     try {
                         JSONObject jo = new JSONObject(mResult);
                         if (jo.getInt("returnCode") == ADDOK) {
                             //添加智能家居后台用户注册
-                            MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-                                @Override
-                                public void upDataWareData(int what) {
-                                    if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_regeditUser.getValue()) {
-                                        if (MyApplication.getWareData().getAddUser_reslut() == ADDOK) {
-
-                                            Bundle bundle = new Bundle();
-                                            bundle.putString("id", cellphone);
-                                            bundle.putString("pass", password);
-                                            ToastUtil.s(RegistActivity.this, getString(R.string.regist_regist_s));
-                                            LogUtils.i(getString(R.string.regist_regist_s));
-                                            MyApplication.getSharedPreferenceUtil().putString("cellphone", cellphone);
-                                            MyApplication.getSharedPreferenceUtil().putString("password", password);
-                                            setResult(0, getIntent().putExtra("bundle", bundle));
-                                            finish();
-                                        } else if (MyApplication.getWareData().getLogin_result() == 1) {
-                                            cn.etsoft.smarthomephone.utils.ToastUtil.showToast(RegistActivity.this, "用户名已存在");
-                                            return;
-                                        } else {
-                                            cn.etsoft.smarthomephone.utils.ToastUtil.showToast(RegistActivity.this, "注册失败");
-                                            return;
-                                        }
-                                    }
-                                }
-                            });
-                            MyApplication.addUserData(cellphone, password);
+                            register(et_phone,et_password);
 
                         } else {
                             ToastUtil.s(RegistActivity.this, jo.getString("msg"));
                             LogUtils.i(jo.getString("msg"));
+                            cancelProgress();
                         }
                     } catch (JSONException e) {
                         CatchUtil.catchM(e);
+                        cancelProgress();
                         ToastUtil.s(RegistActivity.this, getString(R.string.data_abnormal));
                         LogUtils.i(getString(R.string.data_abnormal));
                     }
@@ -192,11 +175,60 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
                 }
 
             });
-            showProgress();
             httpUtil.send();
         } catch (Exception e) {
             CatchUtil.catchM(e);
         }
+    }
+
+    public void register( EditText mRegisterId, EditText mRegisterPass) {
+        final String id_input = mRegisterId.getText().toString();
+        final String pass_input = mRegisterPass.getText().toString();
+
+        if (!(HTTPRequest_BackCode.id_rule.matcher(id_input).matches() && HTTPRequest_BackCode.pass_rule.matcher(pass_input).matches())) {
+            ToastUtil.s(this,"账号或密码输入人不正确");
+            cancelProgress();
+            return;
+        }
+
+        Map<String, String> param = new HashMap<>();
+        param.put("userName", id_input);
+        param.put("passwd", pass_input);
+        OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.REGISTER, param, new HttpCallback() {
+            @Override
+            public void onSuccess(ResultDesc resultDesc) {
+                super.onSuccess(resultDesc);
+                cancelProgress();
+                Log.i("REGISTER", resultDesc.getResult());
+                Gson gson = new Gson();
+                Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
+                if (result.getCode() == HTTPRequest_BackCode.REGISTER_OK){
+                    // 注册成功
+                    Intent intent = getIntent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ID",id_input);
+                    bundle.putString("PASS",pass_input);
+                    intent.putExtra("bundle",bundle);
+                    setResult(0,intent);
+                    finish();
+                }else if (result.getCode() == HTTPRequest_BackCode.REGISTER_EXIST){
+                    //账号已存在
+                    ToastUtil.s(RegistActivity.this,"账号已存在，请重新输入");
+
+                }else {
+                    //注册失败
+                    ToastUtil.s(RegistActivity.this,"注册失败，请稍后再试");
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                super.onFailure(code, message);
+                //注册失败
+                cancelProgress();
+                ToastUtil.s(RegistActivity.this,"注册失败，网络不可用或服务器异常");
+            }
+        });
     }
 
     // 获取验证码

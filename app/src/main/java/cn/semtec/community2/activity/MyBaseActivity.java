@@ -22,7 +22,7 @@ public class MyBaseActivity extends Activity {
             buffer.setCanceledOnTouchOutside(false);
         }
         buffer.show();
-        buffer.getWindow().setContentView(cn.etsoft.smarthomephone.R.layout.buffer_bar);
+        buffer.getWindow().setContentView(cn.etsoft.smarthome.R.layout.buffer_bar);
     }
 
     protected void cancelProgress() {

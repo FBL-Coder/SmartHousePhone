@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.activity.MemberCheckTwoActivity;
 import cn.semtec.community2.model.MyHttpUtil;
 import cn.semtec.community2.tool.Constants;

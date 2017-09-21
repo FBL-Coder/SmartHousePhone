@@ -19,7 +19,7 @@ import cn.semtec.community2.util.Util;
  * ..allowI 版本号..时间 后台ID
  * 数据库version是否需要更改
  */
-public class MyApplication extends cn.etsoft.smarthomephone.MyApplication {
+public class MyApplication extends cn.etsoft.smarthome.MyApplication {
     public static MyApplication instance;
     private static SharedPreferenceUtil preference;
     private static HttpUtils httpUtils;

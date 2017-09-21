@@ -46,6 +46,7 @@
         android:background="@drawable/back_bg"
         android:layout_centerVertical="true"
         android:padding="5dp"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_alignParentRight="true"
         android:src="@drawable/xinzeng"
         android:visibility="gone"/>

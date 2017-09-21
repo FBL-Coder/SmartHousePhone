@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_0"
                 android:layout_weight="6">
-                <cn.etsoft.smarthomephone.weidget.SwipeListView
+                <cn.etsoft.smarthome.weidget.SwipeListView
                     android:id="@+id/equipment_out_lv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

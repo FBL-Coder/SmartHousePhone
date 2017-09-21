@@ -25,7 +25,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.activity.BaseActivity;
 import cn.semtec.community2.activity.CallingActivity;
 import cn.semtec.community2.activity.IncomingActivity;
@@ -173,7 +173,7 @@ public class SIPService extends Service {
                         // 获取NotificationManager实例
                         Notification notify = mBuilder.build();
                         notify.flags |= Notification.FLAG_NO_CLEAR;
-                        notificationManager.notify(0, notify);
+//                        notificationManager.notify(0, notify);
                     }
                 });
             }

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 /**
  * 动态密码开门适配器

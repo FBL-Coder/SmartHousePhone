@@ -6,7 +6,7 @@ import android.media.MediaPlayer;
 
 import cc.ldsd.common.util.SipCompress;
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.activity.BaseActivity;
 import cn.semtec.community2.util.ToastUtil;
 import voice.encoder.DataEncoder;

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.activity.PictureActivity;
 import cn.semtec.community2.adapter.PictureFragmentAdapter;
 import cn.semtec.community2.database.DBhelper;

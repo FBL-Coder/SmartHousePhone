@@ -30,7 +30,7 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import java.util.Hashtable;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.zxing.activity.CaptureActivity;
 import cn.semtec.community2.zxing.camera.CameraManager;
 import cn.semtec.community2.zxing.camera.PlanarYUVLuminanceSource;

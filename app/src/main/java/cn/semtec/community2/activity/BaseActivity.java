@@ -56,7 +56,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.adapter.DeviceListAdapter;
 import cn.semtec.community2.adapter.ViewPagerAdapter;
 import cn.semtec.community2.entity.BluetoochEntity;

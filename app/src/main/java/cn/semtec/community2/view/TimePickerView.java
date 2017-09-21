@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 
 /**

@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.os.CountDownTimer;
 import android.widget.TextView;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 
 /**

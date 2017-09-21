@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.MyApplication;
 import cn.semtec.community2.adapter.MessageActivityAdapter;
 import cn.semtec.community2.database.DBhelper;

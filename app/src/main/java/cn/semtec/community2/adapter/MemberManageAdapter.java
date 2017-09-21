@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 public class MemberManageAdapter extends BaseAdapter {
     private ArrayList<HashMap<String, String>> mList;

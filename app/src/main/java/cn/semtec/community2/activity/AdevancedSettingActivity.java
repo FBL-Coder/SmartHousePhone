@@ -23,7 +23,7 @@ import org.linphone.squirrel.squirrelCallImpl;
 import java.util.Calendar;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.fragment.VideoFragment;
 import cn.semtec.community2.model.MyHttpUtil;
 import cn.semtec.community2.tool.Constants;

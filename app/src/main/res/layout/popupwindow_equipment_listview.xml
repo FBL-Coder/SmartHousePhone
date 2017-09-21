@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:scrollbars="none">
 
-        <cn.etsoft.smarthomephone.weidget.ListViewForScrollView
+        <cn.etsoft.smarthome.weidget.ListViewForScrollView
             android:id="@+id/popupWindow_equipment_lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

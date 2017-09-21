@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 public class PullToRefreshListView extends ListView implements OnScrollListener{
 	  private final static int RELEASE_To_REFRESH = 0;// 下拉过程的状态值  

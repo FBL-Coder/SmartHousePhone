@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.model.MyHttpUtil;
 import cn.semtec.community2.tool.Constants;
 import cn.semtec.community2.util.CatchUtil;

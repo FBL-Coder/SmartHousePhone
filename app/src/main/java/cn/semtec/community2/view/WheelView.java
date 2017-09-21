@@ -505,30 +505,30 @@ public class WheelView extends View {
 	private void init(Context context, AttributeSet attrs) {
 
 		TypedArray attribute = context.obtainStyledAttributes(attrs,
-				cn.etsoft.smarthomephone.R.styleable.WheelView);
+				cn.etsoft.smarthome.R.styleable.WheelView);
 		unitHeight = (int) attribute.getDimension(
-				cn.etsoft.smarthomephone.R.styleable.WheelView_unitHight, 32);
+				cn.etsoft.smarthome.R.styleable.WheelView_unitHight, 32);
 		normalFont = attribute.getDimension(
-				cn.etsoft.smarthomephone.R.styleable.WheelView_normalTextSize, 14.0f);
+				cn.etsoft.smarthome.R.styleable.WheelView_normalTextSize, 14.0f);
 		selectedFont = attribute.getDimension(
-				cn.etsoft.smarthomephone.R.styleable.WheelView_selectedTextSize, 22.0f);
-		itemNumber = attribute.getInt(cn.etsoft.smarthomephone.R.styleable.WheelView_itemNumber, 7);
-		normalColor = attribute.getColor(cn.etsoft.smarthomephone.R.styleable.WheelView_normalTextColor,
+				cn.etsoft.smarthome.R.styleable.WheelView_selectedTextSize, 22.0f);
+		itemNumber = attribute.getInt(cn.etsoft.smarthome.R.styleable.WheelView_itemNumber, 7);
+		normalColor = attribute.getColor(cn.etsoft.smarthome.R.styleable.WheelView_normalTextColor,
 				0xff000000);
 		selectedColor = attribute.getColor(
-				cn.etsoft.smarthomephone.R.styleable.WheelView_selectedTextColor, 0xffff0000);
-		lineColor = attribute.getColor(cn.etsoft.smarthomephone.R.styleable.WheelView_lineColor,
+				cn.etsoft.smarthome.R.styleable.WheelView_selectedTextColor, 0xffff0000);
+		lineColor = attribute.getColor(cn.etsoft.smarthome.R.styleable.WheelView_lineColor,
 				0xff000000);
 		bottomLineColor = attribute.getColor(
-				cn.etsoft.smarthomephone.R.styleable.WheelView_bottomLineColor, 0xffDADADA);
+				cn.etsoft.smarthome.R.styleable.WheelView_bottomLineColor, 0xffDADADA);
 		lineWidth = attribute
-				.getDimension(cn.etsoft.smarthomephone.R.styleable.WheelView_lineHeight, 2f);
+				.getDimension(cn.etsoft.smarthome.R.styleable.WheelView_lineHeight, 2f);
 		firstLineAndSecondLineSpace = attribute.getDimension(
-				cn.etsoft.smarthomephone.R.styleable.WheelView_firstLineAndSecondLineSpace, 40f);
-		maskHight = attribute.getDimension(cn.etsoft.smarthomephone.R.styleable.WheelView_maskHight,
+				cn.etsoft.smarthome.R.styleable.WheelView_firstLineAndSecondLineSpace, 40f);
+		maskHight = attribute.getDimension(cn.etsoft.smarthome.R.styleable.WheelView_maskHight,
 				48.0f);
-		noEmpty = attribute.getBoolean(cn.etsoft.smarthomephone.R.styleable.WheelView_noEmpty, true);
-		isEnable = attribute.getBoolean(cn.etsoft.smarthomephone.R.styleable.WheelView_isEnable, true);
+		noEmpty = attribute.getBoolean(cn.etsoft.smarthome.R.styleable.WheelView_noEmpty, true);
+		isEnable = attribute.getBoolean(cn.etsoft.smarthome.R.styleable.WheelView_isEnable, true);
 		attribute.recycle();
 
 		controlHeight = itemNumber * unitHeight;

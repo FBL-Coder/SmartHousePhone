@@ -7,7 +7,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.tool.Constants;
 
 public class MessageUrlActivity extends MyBaseActivity {

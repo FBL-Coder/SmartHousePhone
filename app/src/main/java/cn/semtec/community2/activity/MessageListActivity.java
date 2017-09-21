@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.adapter.MessageListAdapter;
 import cn.semtec.community2.database.DBhelper;
 import cn.semtec.community2.view.SliderListView;

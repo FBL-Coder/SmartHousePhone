@@ -2,7 +2,6 @@ package cn.semtec.community2.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,18 +15,33 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import cn.etsoft.smarthomephone.R;
-import cn.etsoft.smarthomephone.domain.User;
-import cn.etsoft.smarthomephone.pullmi.entity.UdpProPkt;
-import cn.etsoft.smarthomephone.ui.WelcomeActivity;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
+import cn.etsoft.smarthome.R;
+import cn.etsoft.smarthome.domain.Http_Result;
+import cn.etsoft.smarthome.domain.RcuInfo;
+import cn.etsoft.smarthome.domain.WareData;
+import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
+import cn.etsoft.smarthome.ui.HomeActivity;
+import cn.etsoft.smarthome.ui.NewWorkSetActivity;
+import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.semtec.community2.MyApplication;
 import cn.semtec.community2.model.LoginHelper;
 import cn.semtec.community2.model.MyHttpUtil;
-import cn.semtec.community2.util.SharedPreferenceUtil;
 import cn.semtec.community2.util.ToastUtil;
+
+import static android.content.ContentValues.TAG;
 
 public class LoginActivity extends MyBaseActivity implements OnClickListener {
 
@@ -36,24 +50,16 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
     private EditText et_account;
     private EditText et_password;
     private TextView btn_forget, btn_tourist;
-//    private PanningView image;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-
-    private SharedPreferenceUtil preference;
     private String cellphone;
     private String password;
     public static LoginActivity instace;
-    private String APPID;
-    private User user;
-    private int LOGIN_OK = 1;
 
     public Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case MyHttpUtil.SUCCESS0:
-                    MyApplication.sendUserData(cellphone, password);
-//                    finish();
+                    MyApplication.mApplication.setVisitor(false);
+                    login(cellphone, password);
                     break;
                 case MyHttpUtil.SUCCESSELSE:
                     ToastUtil.l(LoginActivity.this, getString(R.string.login_error));
@@ -74,109 +80,92 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
         }
     };
 
+    public void login(String input_id, String input_pass) {
+        if (!(HTTPRequest_BackCode.id_rule.matcher(input_id).matches() && HTTPRequest_BackCode.pass_rule.matcher(input_pass).matches())) {
+            ToastUtil.s(this, "账号或密码输入人不正确");
+            return;
+        }
+        showProgress();
+        Map<String, String> param = new HashMap<>();
+        param.put("userName", input_id);
+        param.put("passwd", input_pass);
+        OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.LOGIN, param, new HttpCallback() {
+            @Override
+            public void onSuccess(ResultDesc resultDesc) {
+                cancelProgress();
+                Log.i("LOGIN", resultDesc.getResult());
+                super.onSuccess(resultDesc);
+                Log.i(TAG, "onSuccess: " + resultDesc.getResult());
+                Gson gson = new Gson();
+                Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
+
+                if (result.getCode() == HTTPRequest_BackCode.LOGIN_OK) {
+                    // 登陆成功
+                    ToastUtil.s(LoginActivity.this, "登陆成功");
+                    Log.i(TAG, "onSuccess: " + resultDesc.getResult());
+                    setRcuInfoList(result);
+                } else if (result.getCode() == HTTPRequest_BackCode.LOGIN_ERROR) {
+                    // 登陆失败
+                    ToastUtil.s(LoginActivity.this, "登陆失败，请稍后再试");
+
+                } else if (result.getCode() == HTTPRequest_BackCode.LOGIN_USER_NOTFIND) {
+                    //用户不存在
+                    ToastUtil.s(LoginActivity.this, "登陆失败，用户不存在");
+                } else if (result.getCode() == HTTPRequest_BackCode.LOGIN_ERROR_Exception) {
+                    //服务器查询失败
+                    ToastUtil.s(LoginActivity.this, "登陆失败，服务器查询失败");
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                super.onFailure(code, message);
+                cancelProgress();
+                Log.i(TAG, "onFailure: " + code + "****" + message);
+                //登陆失败
+                ToastUtil.s(LoginActivity.this, "登陆失败，网络不可用或服务器异常");
+            }
+        });
+    }
+
+
+    public void setRcuInfoList(Http_Result result) {
+        if (result == null)
+            return;
+        Gson gson = new Gson();
+        List<RcuInfo> rcuInfos = new ArrayList<>();
+        for (int i = 0; i < result.getData().size(); i++) {
+            RcuInfo rcuInfo = new RcuInfo();
+            rcuInfo.setCanCpuName(result.getData().get(i).getCanCpuName());
+            rcuInfo.setDevUnitID(result.getData().get(i).getDevUnitID());
+            rcuInfo.setDevUnitPass(result.getData().get(i).getDevPass());
+            rcuInfos.add(rcuInfo);
+        }
+        AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, cellphone);
+        AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, password);
+        AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, gson.toJson(rcuInfos));
+        if (rcuInfos.size() != 1)
+            startActivity(new Intent(this, NewWorkSetActivity.class));
+        else {
+            GlobalVars.setDevid(result.getData().get(0).getDevUnitID());
+            GlobalVars.setDevpass(result.getData().get(0).getDevPass());
+            startActivity(new Intent(this, HomeActivity.class));
+            SendDataUtil.getNetWorkInfo();
+        }
+        finish();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        sharedPreferences = getSharedPreferences("profile", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        if ((sharedPreferences.getString("appid", "") == null || "".equals(sharedPreferences.getString("appid", ""))) && sharedPreferences.getString("appid", "").length() < 5) {
-            UUID uuid = UUID.randomUUID();
-            APPID = uuid.toString().replace("-", "");
-            Log.i("APPID", "唯一识别码为:" + APPID);
-            editor.putString("appid", APPID);
-            editor.commit();
-        }
         initEvent();
-//        instace = this;
-
-
-//        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-//            @Override
-//            public void upDataWareData(int what) {
-//                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_loginUser.getValue()) {
-//                    if (MyApplication.getWareData().getLogin_result() == 0) {
-//                        cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登陆成功");
-//                        user = new User();
-//                        user.setId(cellphone);
-//                        user.setPass(password);
-//                        Gson gson = new Gson();
-//                        String str = gson.toJson(user);
-//                        editor.putString("user", str);
-//                        editor.commit();
-//                        startActivity(new Intent(LoginActivity.this, WelcomeActivity.class).putExtra("login", LOGIN_OK));
-//                        finish();
-//                    } else {
-//                        cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登录失败");
-//                        return;
-//                    }
-//                }
-//            }
-//        });
-//        setView();
-//        setListener();
     }
-    long time = 0;
 
     public void initEvent() {
-        instace = this;
-        cn.etsoft.smarthomephone.MyApplication.mInstance.setOnGetWareDataListener(new cn.etsoft.smarthomephone.MyApplication.OnGetWareDataListener() {
-            @Override
-            public void upDataWareData(int what) {
-                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_loginUser.getValue()) {
-                    if (cn.etsoft.smarthomephone.MyApplication.getWareData().getLogin_result() == 0) {
-                        cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登陆成功");
-                        user = new User();
-                        user.setId(cellphone);
-                        user.setPass(password);
-                        Gson gson = new Gson();
-                        String str = gson.toJson(user);
-                        editor.putString("user", str);
-                        editor.commit();
-                        if (System.currentTimeMillis() - time < 2000)
-                            return;
-                        time = System.currentTimeMillis();
-                        cn.etsoft.smarthomephone.MyApplication.mInstance.setSkip(false);
-                        startActivity(new Intent(LoginActivity.this, WelcomeActivity.class).putExtra("login", LOGIN_OK));
-                        finish();
-                    } else {
-                        cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登录失败");
-                        return;
-                    }
-                }
-//                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue()) {
-//
-//
-//                }
-            }
-        });
         setView();
         setListener();
-    }
-
-    @Override
-    protected void onResume() {
-        SharedPreferences sharedPreferences = getSharedPreferences("profile",
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("list", "");
-        editor.putString("user", "");
-        editor.putString("rcuInfo_list", "");
-        editor.commit();
-        initEvent();
-        super.onResume();
-        preference = MyApplication.getSharedPreferenceUtil();
-        cellphone = preference.getString("cellphone");
-        password = preference.getString("password");
-        et_account.setText(cellphone);
-        et_password.setText(password);
-//        image.startPanning();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-//        image.stopPanning();
     }
 
     private void setView() {
@@ -186,9 +175,6 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
         btn_tourist = (TextView) findViewById(R.id.btn_tourist);
         et_account = (EditText) findViewById(R.id.et_account);
         et_password = (EditText) findViewById(R.id.et_password);
-
-//        image = (PanningView) findViewById(R.id.image);
-//        image.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.login_bg));
     }
 
 
@@ -202,8 +188,18 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_tourist:
-                cn.etsoft.smarthomephone.MyApplication.mInstance.setSkip(true);
-                Intent intent = new Intent(this, cn.etsoft.smarthomephone.ui.NetWorkActivity.class);
+                cn.etsoft.smarthome.MyApplication.mApplication.setVisitor(true);
+                Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
+                MyApplication.setNewWareData();
+                GlobalVars.setDevid("");
+                GlobalVars.setDevpass("");
+                GlobalVars.setUserid("");
+                AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
+                AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
+                AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
+                AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
+                AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
+                Intent intent = new Intent(this, cn.etsoft.smarthome.ui.NewWorkSetActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btn_login:
@@ -235,26 +231,10 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             Bundle bundle = data.getBundleExtra("bundle");
-            String id = bundle.getString("id");
-            String pass = bundle.getString("pass");
-            MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-                @Override
-                public void upDataWareData(int what) {
-                    if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_loginUser.getValue()) {
-                        if (MyApplication.getWareData().getLogin_result() == 0) {
-                            cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登陆成功");
-                            Gson gson = new Gson();
-                            String str = gson.toJson(user);
-                            editor.putString("user", str);
-                            editor.commit();
-                            startActivity(new Intent(LoginActivity.this, WelcomeActivity.class).putExtra("login", LOGIN_OK));
-                            finish();
-                        } else {
-                            cn.etsoft.smarthomephone.utils.ToastUtil.showToast(LoginActivity.this, "登录失败");
-                        }
-                    }
-                }
-            });
+            et_account.setText(bundle.getString("id"));
+            et_password.setText(bundle.getString("pass"));
+            cellphone = bundle.getString("id");
+            password = bundle.getString("pass");
         }
     }
 
@@ -284,9 +264,9 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
         return onTouchEvent(ev);
     }
 
-    public  boolean isShouldHideInput(View v, MotionEvent event) {
+    public boolean isShouldHideInput(View v, MotionEvent event) {
         if (v != null && (v instanceof EditText)) {
-            int[] leftTop = { 0, 0 };
+            int[] leftTop = {0, 0};
             //获取输入框当前的location位置
             v.getLocationInWindow(leftTop);
             int left = leftTop[0];

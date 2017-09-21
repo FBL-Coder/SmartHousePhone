@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.database.DBhelper;
 import cn.semtec.community2.view.SliderView;
 

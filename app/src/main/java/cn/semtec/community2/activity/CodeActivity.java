@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.Hashtable;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 
 public class CodeActivity extends MyBaseActivity {
     private ImageView iv_code;

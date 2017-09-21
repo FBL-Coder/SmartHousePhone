@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.activity.BaseActivity;
 import cn.semtec.community2.activity.CodeActivity;
 import cn.semtec.community2.entity.HouseProperty;

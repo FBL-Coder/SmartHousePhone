@@ -19,7 +19,7 @@ import org.linphone.squirrel.squirrelCallImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.MyApplication;
 import cn.semtec.community2.activity.CallingActivity;
 import cn.semtec.community2.util.ToastUtil;

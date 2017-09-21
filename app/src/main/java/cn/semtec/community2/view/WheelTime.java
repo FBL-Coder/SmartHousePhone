@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.activity.AddPassActivity;
 import cn.semtec.community2.adapter.NumericWheelAdapter;
 import cn.semtec.community2.lib.WheelView;

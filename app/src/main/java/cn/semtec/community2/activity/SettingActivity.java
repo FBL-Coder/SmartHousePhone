@@ -23,7 +23,7 @@ import org.linphone.squirrel.squirrelCallImpl;
 import java.io.File;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.database.DBhelper;
 import cn.semtec.community2.entity.HouseProperty;
 import cn.semtec.community2.fragment.VideoFragment;

@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.activity.MessageActivity;
 import cn.semtec.community2.activity.MessageUrlActivity;
 

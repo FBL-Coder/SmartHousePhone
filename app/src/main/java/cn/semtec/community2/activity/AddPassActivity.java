@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import cn.semtec.community2.MyApplication;
-import cn.etsoft.smarthomephone.R;
+import cn.etsoft.smarthome.R;
 import cn.semtec.community2.database.DBhelper;
 import cn.semtec.community2.fragment.VideoFragment;
 import cn.semtec.community2.util.PickerViewAnimateUtil;
