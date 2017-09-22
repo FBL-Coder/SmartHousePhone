@@ -33,12 +33,12 @@ import cn.semtec.community2.MyApplication;
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GridView gridView;
-    private int[] image = {R.drawable.user_home, R.drawable.air_home, R.drawable.tv_home, R.drawable.stb_home, R.drawable.light_home,
+    private int[] image = {R.drawable.air_home, R.drawable.tv_home,
+            R.drawable.stb_home, R.drawable.light_home,
             R.drawable.curtain_home, R.drawable.scene_home, R.drawable.control_home,
-            R.drawable.socket_home, R.drawable.door_home, R.drawable.safety_home,
-            R.mipmap.ic_launcher, R.mipmap.ic_launcher};
-    private String[] title = {"用户界面", "空调", "电视", "机顶盒", "灯光",
-            "窗帘", "情景", "门禁", "插座", "门锁", "安防", "新风", "地暖"};
+             R.drawable.safety_home, R.drawable.freshair, R.drawable.floorheat};
+    private String[] title = {"空调", "电视", "机顶盒", "灯光",
+            "窗帘", "情景", "门禁","安防", "新风", "地暖"};
     private int HomeAct_viewPage_position;
 
     @Nullable
@@ -73,60 +73,60 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = null;
         switch (position) {
-            //用户界面
-            case 0:
-                if (MyApplication.mApplication.isSeekNet()) {
-                    ToastUtil.showText("跳过登录不能体验此功能");
-                    return;
-                }
-                intent = new Intent(getActivity(), UserActivity.class);
-                intent.putExtra("title", title[0]);
-                intent.putExtra("tag", "home");
-                break;
+//            //用户界面
+//            case 0:
+//                if (MyApplication.mApplication.isSeekNet()) {
+//                    ToastUtil.showText("跳过登录不能体验此功能");
+//                    return;
+//                }
+//                intent = new Intent(getActivity(), UserActivity.class);
+//                intent.putExtra("title", title[0]);
+//                intent.putExtra("tag", "home");
+//                break;
             //空调
-            case 1:
+            case 0:
                 intent = new Intent(getActivity(), AirConditionActivity.class);
                 intent.putExtra("title", title[1]);
                 break;
             //电视
-            case 2:
+            case 1:
                 intent = new Intent(getActivity(), TvActivity.class);
                 intent.putExtra("title", title[2]);
                 break;
             //机顶盒
-            case 3:
+            case 2:
                 intent = new Intent(getActivity(), StbActivity.class);
                 intent.putExtra("title", title[3]);
                 break;
             //灯光
-            case 4:
+            case 3:
                 intent = new Intent(getActivity(), LightActivity.class);
                 intent.putExtra("title", title[4]);
                 break;
             //窗帘
-            case 5:
+            case 4:
                 intent = new Intent(getActivity(), CurtainActivity.class);
                 intent.putExtra("title", title[5]);
                 break;
             //情景
-            case 6:
+            case 5:
                 intent = new Intent(getActivity(), SceneActivity.class);
                 intent.putExtra("title", title[6]);
                 break;
             //新风
-            case 11:
+            case 10:
                 intent = new Intent(getActivity(), FreshairActivity.class);
                 break;
             //门禁
-            case 8:
+            case 6:
                 startActivity(new Intent(getActivity(), cn.semtec.community2.WelcomeActivity.class));
                 break;
             //地暖
-            case 12:
+            case 11:
                 intent = new Intent(getActivity(), FloorHeatActivity.class);
                 break;
             //报警记录
-            case 10:
+            case 9:
                 startActivity(new Intent(getActivity(), SafetyActivity_home.class));
                 break;
         }

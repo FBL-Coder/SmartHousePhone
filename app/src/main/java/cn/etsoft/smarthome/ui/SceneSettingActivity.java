@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
@@ -31,9 +32,11 @@ import cn.etsoft.smarthome.domain.WareAirCondDev;
 import cn.etsoft.smarthome.domain.WareCurtain;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareLight;
+import cn.etsoft.smarthome.domain.WareSceneDevItem;
 import cn.etsoft.smarthome.domain.WareSetBox;
 import cn.etsoft.smarthome.domain.WareTv;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDialog;
@@ -48,7 +51,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     private ImageView back, title_bar_iv_or;
     private List<WareDev> mWareDev;
     private List<WareDev> listViewItems;
-    private byte eventId;
+    private int eventId;
     private boolean IsCanClick = false;
     private int position_room = -1;
     private List<String> room_list;
@@ -94,20 +97,26 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview);
-        //初始化标题栏
-        initTitleBar();
-        upData();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (mDialog != null)
-                    mDialog.dismiss();
-                if (datType == 24) {
+                if (datType == 24 && subtype2 == 1) {
                     ToastUtil.showText("保存成功");
+                    SendDataUtil.getSceneInfo();
+                    if (mDialog != null)
+                        mDialog.dismiss();
                     finish();
                 }
             }
         });
+        //初始化标题栏
+        initTitleBar();
+        listViewItems = WareDataHliper.initCopyWareData().getCopyDevs();
+        for (int i = 0; i < listViewItems.size(); i++) {
+            listViewItems.get(i).setSelect(false);
+            listViewItems.get(i).setbOnOff(0);
+        }
+        upData();
     }
 
     /**
@@ -124,7 +133,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         title_bar_iv_or.setImageResource(R.drawable.fj);
         title.setText(getIntent().getBundleExtra("bundle").getString("sceneName"));
         back.setOnClickListener(this);
-        eventId = getIntent().getBundleExtra("bundle").getByte("eventId");
+        eventId = getIntent().getBundleExtra("bundle").getInt("eventId", 0);
         title_bar_iv_or.setOnClickListener(this);
     }
 
@@ -179,11 +188,32 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     }
 
     private void upData() {
-        if (MyApplication.getWareData().getRooms().size() == 0 || MyApplication.getWareData().getDevs() == null ||
-                MyApplication.getWareData().getDevs().size() == 0)
+        if (MyApplication.getWareData().getRooms().size() == 0 ||
+                WareDataHliper.initCopyWareData().getCopyDevs().size() == 0)
             return;
         IsCanClick = true;
-        listViewItems = MyApplication.getWareData().getDevs();
+        List<WareSceneDevItem> items = new ArrayList<>();
+        try {
+            for (int i = 0; i < WareDataHliper.initCopyWareData().getCopyScenes().size(); i++) {
+                if (WareDataHliper.initCopyWareData().getCopyScenes().get(i).getEventId() == eventId) {
+                    items = WareDataHliper.initCopyWareData().getCopyScenes().get(i).getItemAry();
+                }
+            }
+        } catch (Exception e) {
+            ToastUtil.showText("情景选择出错");
+            finish();
+        }
+        for (int i = 0; i < items.size(); i++) {
+            for (int j = 0; j < listViewItems.size(); j++) {
+                if (items.get(i).getDevID() == listViewItems.get(j).getDevId()
+                        && items.get(i).getCanCpuID().equals(listViewItems.get(j).getCanCpuId())
+                        && items.get(i).getDevType() == listViewItems.get(j).getType()) {
+                    listViewItems.get(j).setSelect(true);
+                    listViewItems.get(j).setbOnOff(items.get(i).getbOnOff());
+                }
+            }
+        }
+
         mWareDev = new ArrayList<>();
         //房间集合
         room_list = MyApplication.getWareData().getRooms();
@@ -222,105 +252,21 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 String div;
                 String more_data = "";
                 String data_str = "";
-                for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {//循环所有设备
-                    WareDev dev = MyApplication.getWareData().getDevs().get(i);//拿到其中一个设备
+                for (int i = 0; i < listViewItems.size(); i++) {//循环所有设备
+                    WareDev dev = listViewItems.get(i);//拿到其中一个设备
                     div = ",";
-                    if (dev.getType() == 0) {
-                        for (int j = 0; j < MyApplication.getWareData().getAirConds().size(); j++) {
-                            WareAirCondDev AirCondDev = MyApplication.getWareData().getAirConds().get(j);
-                            if (dev.getCanCpuId().equals(AirCondDev.getDev().getCanCpuId()) && dev.getDevId() == AirCondDev.getDev().getDevId()) {
-                                if (AirCondDev.getbOnOff() == 1) {
-                                    data_str = "{" +
-                                            "\"uid\":\"" + dev.getCanCpuId() + "\"," +
-                                            "\"devType\":" + dev.getType() + "," +
-                                            "\"devID\":" + dev.getDevId() + "," +
-                                            "\"bOnOff\":" + AirCondDev.getbOnOff() + "," +
-                                            "\"lmVal\":0," +
-                                            "\"rev2\":0," +
-                                            "\"rev3\":0," +
-                                            "\"param1\":0," +
-                                            "\"param2\":0}" + div;
-                                    num++;
-                                }
-                            }
-                        }
-                    } else if (dev.getType() == 1) {
-                        for (int j = 0; j < MyApplication.getWareData().getTvs().size(); j++) {
-                            WareTv tv = MyApplication.getWareData().getTvs().get(j);
-                            if (dev.getCanCpuId().equals(tv.getDev().getCanCpuId()) && dev.getDevId() == tv.getDev().getDevId()) {
-                                if (tv.getbOnOff() == 1) {
-                                    data_str = "{" +
-                                            "\"uid\":\"" + dev.getCanCpuId() + "\"," +
-                                            "\"devType\":" + dev.getType() + "," +
-                                            "\"devID\":" + dev.getDevId() + "," +
-                                            "\"bOnOff\":" + tv.getbOnOff() + "," +
-                                            "\"lmVal\":0," +
-                                            "\"rev2\":0," +
-                                            "\"rev3\":0," +
-                                            "\"param1\":0," +
-                                            "\"param2\":0}" + div;
-                                    num++;
-
-                                }
-                            }
-                        }
-                    } else if (dev.getType() == 2) {
-                        for (int j = 0; j < MyApplication.getWareData().getStbs().size(); j++) {
-                            WareSetBox box = MyApplication.getWareData().getStbs().get(j);
-                            if (dev.getCanCpuId().equals(box.getDev().getCanCpuId()) && dev.getDevId() == box.getDev().getDevId()) {
-                                if (box.getbOnOff() == 1) {
-                                    data_str = "{" +
-                                            "\"uid\":\"" + dev.getCanCpuId() + "\"," +
-                                            "\"devType\":" + dev.getType() + "," +
-                                            "\"devID\":" + dev.getDevId() + "," +
-                                            "\"bOnOff\":" + box.getbOnOff() + "," +
-                                            "\"lmVal\":0," +
-                                            "\"rev2\":0," +
-                                            "\"rev3\":0," +
-                                            "\"param1\":0," +
-                                            "\"param2\":0}" + div;
-                                    num++;
-                                }
-                            }
-                        }
-                    } else if (dev.getType() == 3) {
-                        for (int j = 0; j < MyApplication.getWareData().getLights().size(); j++) {
-                            WareLight Light = MyApplication.getWareData().getLights().get(j);
-                            if (dev.getCanCpuId().equals(Light.getDev().getCanCpuId()) && dev.getDevId() == Light.getDev().getDevId()) {
-                                if (Light.getbOnOff() == 1) {
-                                    data_str = "{" +
-                                            "\"uid\":\"" + dev.getCanCpuId() + "\"," +
-                                            "\"devType\":" + dev.getType() + "," +
-                                            "\"devID\":" + dev.getDevId() + "," +
-                                            "\"bOnOff\":" + Light.getbOnOff() + "," +
-                                            "\"lmVal\":0," +
-                                            "\"rev2\":0," +
-                                            "\"rev3\":0," +
-                                            "\"param1\":0," +
-                                            "\"param2\":0}" + div;
-                                    num++;
-                                }
-                            }
-                        }
-                    } else if (dev.getType() == 4) {
-                        for (int j = 0; j < MyApplication.getWareData().getCurtains().size(); j++) {
-                            WareCurtain Curtain = MyApplication.getWareData().getCurtains().get(j);
-                            if (dev.getCanCpuId().equals(Curtain.getDev().getCanCpuId()) && dev.getDevId() == Curtain.getDev().getDevId()) {
-                                if (Curtain.getbOnOff() == 1) {
-                                    data_str = "{" +
-                                            "\"uid\":\"" + dev.getCanCpuId() + "\"," +
-                                            "\"devType\":" + dev.getType() + "," +
-                                            "\"devID\":" + dev.getDevId() + "," +
-                                            "\"bOnOff\":" + Curtain.getbOnOff() + "," +
-                                            "\"lmVal\":0," +
-                                            "\"rev2\":0," +
-                                            "\"rev3\":0," +
-                                            "\"param1\":0," +
-                                            "\"param2\":0}" + div;
-                                    num++;
-                                }
-                            }
-                        }
+                    if (dev.isSelect()) {
+                        data_str = "{" +
+                                "\"canCpuId\":\"" + dev.getCanCpuId() + "\"," +
+                                "\"devType\":" + dev.getType() + "," +
+                                "\"devID\":" + dev.getDevId() + "," +
+                                "\"bOnOff\":" + dev.getbOnOff() + "," +
+                                "\"lmVal\":0," +
+                                "\"rev2\":0," +
+                                "\"rev3\":0," +
+                                "\"param1\":0," +
+                                "\"param2\":0}" + div;
+                        num++;
                     }
                     more_data += data_str;
                     data_str = "";
@@ -354,6 +300,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         });
         builder.create().show();
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

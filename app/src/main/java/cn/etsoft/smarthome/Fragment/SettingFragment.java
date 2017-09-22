@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.GridViewAdapter;
 import cn.etsoft.smarthome.ui.ConditionEventActivity;
@@ -21,6 +22,7 @@ import cn.etsoft.smarthome.ui.NewWorkSetActivity;
 import cn.etsoft.smarthome.ui.SafetyActivity;
 import cn.etsoft.smarthome.ui.SceneSetActivity;
 import cn.etsoft.smarthome.ui.TimerActivity;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 
 /**
  * Created by Say GoBay on 2016/9/1.
@@ -81,6 +83,8 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 startActivity(intent);
                 break;
             case 4:
+                if (MyApplication.getWareData().getSceneEvents().size()<1)
+                    SendDataUtil.getSceneInfo();
                 intent = new Intent(getActivity(), SceneSetActivity.class);
                 intent.putExtra("title", text[4]);
                 startActivity(intent);

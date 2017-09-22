@@ -28,6 +28,7 @@ import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.WareSceneEvent;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.pullmi.utils.LogUtils;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDialog;
@@ -220,7 +221,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                         Scene_int.add((int) MyApplication.getWareData().getSceneEvents().get(i).getEventId());
                     }
                     List<Integer> Scene_id = new ArrayList<>();
-                    for (int i = 0; i < 8; i++) {
+                    for (int i = 2; i < 8; i++) {
                         Scene_id.add(i);
                     }
                     List<Integer> ID = new ArrayList<>();
@@ -258,33 +259,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
      * @param name
      */
     private void add_scene(int eventID, String name) {
-        byte[] data = {0};
-        try {
-            data = name.getBytes("GB2312");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        String str_gb = CommonUtils.bytesToHexString(data);
-        LogUtils.LOGE("情景模式名称:%s", str_gb);
-
-        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-                ",\"sceneName\":\"" + str_gb + "\"" +
-                ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_addSceneEvents.getValue() +
-                ",\"subType1\":0" +
-                ",\"subType2\":0" +
-                ",\"eventId\":" + eventID +
-                ",\"devCnt\":" + 0 +
-                ",\"itemAry\":[{" +
-                "\"uid\":\"\"" +
-                ",\"devType\":" + 0 +
-                ",\"devID\":" + 0 +
-                ",\"bOnOff\":" + 0 +
-                ",\"lmVal\":0" +
-                ",\"param1\":0" +
-                ",\"param2\":0" +
-                "}]}";
-        MyApplication.mApplication.getUdpServer().send(ctlStr);
+        SendDataUtil.addscene(eventID,name);
     }
 
     /**

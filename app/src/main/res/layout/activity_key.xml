@@ -7,30 +7,31 @@
 
     <include layout="@layout/title_bar" />
 
-    <RelativeLayout
-        android:id="@+id/choose"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_weight="0.8"
-        android:background="@color/color_33ffffff"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="是否打开‘只看可控制情景按键’模式"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:textColor="@color/color_fff"
-            android:textSize="@dimen/sp_14"/>
 
-        <ImageView
-            android:id="@+id/input_choose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/dp_8"
-            android:src="@drawable/off" />
-    </RelativeLayout>
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/choose"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dp_0"-->
+        <!--android:layout_weight="0.8"-->
+        <!--android:background="@color/color_33ffffff"-->
+        <!--&gt;-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="是否打开‘只看可控制情景按键’模式"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_marginLeft="@dimen/dp_20"-->
+            <!--android:textColor="@color/color_fff"-->
+            <!--android:textSize="@dimen/sp_14"/>-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/input_choose"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_margin="@dimen/dp_8"-->
+            <!--android:src="@drawable/off" />-->
+    <!--</RelativeLayout>-->
     <GridView
         android:id="@+id/gridView_light"
         android:layout_width="match_parent"

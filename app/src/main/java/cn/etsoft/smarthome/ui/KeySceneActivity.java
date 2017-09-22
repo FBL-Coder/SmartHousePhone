@@ -28,7 +28,7 @@ public class KeySceneActivity extends Activity implements AdapterView.OnItemClic
     private ImageView back;
     private ScrollView sv;
     private ListView lv;
-    private byte sceneId = 0;
+    private int sceneId = 0;
     private int keyInput_position = 0;
     private String title;
 
@@ -61,7 +61,7 @@ public class KeySceneActivity extends Activity implements AdapterView.OnItemClic
             }
         });
         mTitle.setText(title);
-        sceneId = getIntent().getExtras().getByte("sceneId");
+        sceneId = getIntent().getExtras().getInt("sceneId",0);
         //名称
         LTitle = new ArrayList<>();
         //测试

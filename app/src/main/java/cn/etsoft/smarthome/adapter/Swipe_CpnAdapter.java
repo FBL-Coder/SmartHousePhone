@@ -2,42 +2,36 @@ package cn.etsoft.smarthome.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthome.R;
-import cn.etsoft.smarthome.domain.Iclick_Tag;
 import cn.etsoft.smarthome.domain.PrintCmd;
-import cn.etsoft.smarthome.weidget.SwipeItemLayout;
+import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2016/8/30.
+ * 输出设置
  */
 public class Swipe_CpnAdapter extends BaseAdapter {
     private Context mContext = null;
-    List<PrintCmd> listData;
-    private IClick_PZ mListener;
-    String[] cmd_name = null;
-    String[] key_act = null;
+    private PopupWindow popupWindow;
+    private List<PrintCmd> listData;
+    private List<String> cmd_name = null;
 
-    public Swipe_CpnAdapter(Context context, List<PrintCmd> listData, IClick_PZ listener) {
+    public Swipe_CpnAdapter(Context context, List<PrintCmd> listData) {
         this.mContext = context;
-        mListener = listener;
         this.listData = listData;
-//        System.out.println(lst.get(0).getDevId() +"---------"+lst.get(1).getDevId() +"---------"+lst.get(2).getDevId());
-    }
-
-    public Swipe_CpnAdapter(Context context, List<PrintCmd> listData, IClick_PZ listener, ImageView view) {
-        this.mContext = context;
-        mListener = listener;
-        this.listData = listData;
-        if (listData.size() > 0)
-            view.setVisibility(View.GONE);
     }
 
     @Override
@@ -55,7 +49,6 @@ public class Swipe_CpnAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-
         if (listData != null)
             return listData.get(position);
         else
@@ -71,61 +64,144 @@ public class Swipe_CpnAdapter extends BaseAdapter {
     public View getView(final int position, View contentView, ViewGroup arg2) {
         ViewHolder viewHolder;
         if (contentView == null) {
-            View contentView1 = LayoutInflater.from(mContext).inflate(R.layout.equipmentdeploy_listview_item, null);
-            View contentView2 = LayoutInflater.from(mContext).inflate(R.layout.equipmentdeploy_listview_item_add, null);
-            viewHolder = new ViewHolder();
-            viewHolder.title = (TextView) contentView1.findViewById(R.id.deploy_tv);
-            viewHolder.deploy_iv = (ImageView) contentView1.findViewById(R.id.deploy_iv);
-            viewHolder.choose = (TextView) contentView1.findViewById(R.id.deploy_choose);
-            viewHolder.choose1 = (TextView) contentView1.findViewById(R.id.deploy_choose1);
-            viewHolder.delete = (TextView) contentView2.findViewById(R.id.deploy_delete);
-            contentView = new SwipeItemLayout(contentView1, contentView2, null, null);
+            contentView = LayoutInflater.from(mContext).inflate(R.layout.equipmentdeploy_listview_item, null);
+            viewHolder = new ViewHolder(contentView);
             contentView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) contentView.getTag();
         }
 
-        key_act = new String[]{"按下", "弹起", "未设置"};
+        if (listData.get(position).isSelect()) {
+            viewHolder.mDevSelectIv.setImageResource(R.drawable.select_ok);
+        } else viewHolder.mDevSelectIv.setImageResource(R.drawable.select_no);
+
         if (listData.get(position).getDevType() == 0) {
-            cmd_name = new String[]{"未设置", "开关", "模式", "风速", "温度+", "温度-"};
+            cmd_name = new ArrayList<>();
+            cmd_name.add("开关");
+            cmd_name.add("模式");
+            cmd_name.add("风速");
+            cmd_name.add("温度+");
+            cmd_name.add("温度-");
         } else if (listData.get(position).getDevType() == 3) {
-            cmd_name = new String[]{"未设置", "打开", "关闭", "开关", "变暗", "变亮"};
+            cmd_name = new ArrayList<>();
+            cmd_name.add("打开");
+            cmd_name.add("关闭");
+            cmd_name.add("变暗");
+            cmd_name.add("变亮");
         } else if (listData.get(position).getDevType() == 4) {
-            cmd_name = new String[]{"未设置", "打开", "关闭", "停止", "开关停"};
+            cmd_name = new ArrayList<>();
+            cmd_name.add("打开");
+            cmd_name.add("关闭");
+            cmd_name.add("停止");
         } else if (listData.get(position).getDevType() == 7) {
-            cmd_name = new String[]{"打开", "关闭", "高风", "中风", "低风"};
+            cmd_name = new ArrayList<>();
+            cmd_name.add("打开");
+            cmd_name.add("低风");
+            cmd_name.add("中风");
+            cmd_name.add("高风");
+            cmd_name.add("自动");
+            cmd_name.add("关闭");
         } else if (listData.get(position).getDevType() == 9) {
-            cmd_name = new String[]{"未设置", "打开", "关闭"};
+            cmd_name = new ArrayList<>();
+            cmd_name.add("打开");
+            cmd_name.add("自动");
+            cmd_name.add("关闭");
         } else {
-            cmd_name = new String[]{"未设置"};
+            cmd_name = new ArrayList<>();
+            cmd_name.add("未知");
         }
-
+        viewHolder.mDevTvName.setText(listData.get(position).getKeyname());
         try {
-            viewHolder.title.setText(listData.get(position).getKeyname());
-            viewHolder.choose.setText(cmd_name[listData.get(position).getKey_cmd()]);
-            viewHolder.choose1.setText(key_act[listData.get(position).getKeyAct_num()]);
-
-            Iclick_Tag tag = new Iclick_Tag();
-            tag.setPosition(position);
-            tag.setType(listData.get(position).getDevType());
-            tag.setText(cmd_name);
-
-            viewHolder.choose.setOnClickListener(listData.get(position).getListener());
-            viewHolder.choose.setTag(tag);
-            viewHolder.choose1.setOnClickListener(listData.get(position).getListener());
-            viewHolder.choose1.setTag(tag);
-            viewHolder.delete.setOnClickListener(listData.get(position).getListener());
-            viewHolder.delete.setTag(tag);
+            viewHolder.mDevTvCMD.setText(cmd_name.get(listData.get(position).getKey_cmd()));
         } catch (Exception e) {
-            System.out.println(e + "");
         }
+        viewHolder.mDevTvCMD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!listData.get(position).isSelect()) {
+                    ToastUtil.showText("请先选中按键");
+                    return;
+                }
+
+                initPopupWindow(view, position, cmd_name);
+                popupWindow.showAsDropDown(view, 0, 0);
+            }
+        });
+
+        viewHolder.mDevSelectIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listData.get(position).isSelect()) {
+                    listData.get(position).setSelect(false);
+                } else {
+                    listData.get(position).setSelect(true);
+                }
+                notifyDataSetChanged(listData);
+            }
+        });
         return contentView;
     }
 
+
+    /**
+     * 初始化自定义设备的状态以及设备PopupWindow
+     */
+    private void initPopupWindow(final View view_parent,
+                                 final int position_parent,
+                                 final List<String> text) {
+        //获取自定义布局文件pop.xml的视图
+        final View customView = LayoutInflater.from(mContext).inflate(R.layout.popupwindow_equipment_listview, null);
+        customView.setBackgroundResource(R.drawable.selectbg);
+
+        // 创建PopupWindow实例
+        popupWindow = new PopupWindow(customView.findViewById(R.id.popupWindow_equipment_sv),
+                view_parent.getWidth(), 300);
+
+        popupWindow.setContentView(customView);
+        ListView list_pop = (ListView) customView.findViewById(R.id.popupWindow_equipment_lv);
+        PopupWindowAdapter adapter = new PopupWindowAdapter(text, mContext);
+        list_pop.setAdapter(adapter);
+        list_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView tv = (TextView) view_parent;
+                tv.setText(text.get(position));
+                listData.get(position_parent).setKey_cmd(position);
+                popupWindow.dismiss();
+            }
+        });
+        //popupwindow页面之外可点
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        // 自定义view添加触摸事件
+        customView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                }
+                return false;
+            }
+        });
+    }
+
+
     class ViewHolder {
-        TextView choose, delete, choose1;
-        TextView title;
-        ImageView deploy_iv;
+        View view;
+        ImageView mDevSelectIv;
+        ImageView mDevIv;
+        TextView mDevTvName;
+        TextView mDevTvCMD;
+
+        ViewHolder(View view) {
+            this.view = view;
+            this.mDevSelectIv = (ImageView) view.findViewById(R.id.Dev_select_iv);
+            this.mDevIv = (ImageView) view.findViewById(R.id.Dev_iv);
+            this.mDevTvName = (TextView) view.findViewById(R.id.Dev_tv_Name);
+            this.mDevTvCMD = (TextView) view.findViewById(R.id.Dev_tv_CMD);
+        }
     }
 }
 

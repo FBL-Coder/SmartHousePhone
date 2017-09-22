@@ -420,7 +420,7 @@ public class UDPServer implements Runnable {
             case 24: // e_udpPro_editSceneEvents
                 if (subType2 == 1) {
                     isFreshData = true;
-                    getSceneEvents(info);
+//                    getSceneEvents(info);
                 }
                 break;
             case 25: // e_udpPro_delSceneEvents

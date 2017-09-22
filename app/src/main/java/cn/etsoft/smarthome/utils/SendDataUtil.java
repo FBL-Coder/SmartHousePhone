@@ -150,15 +150,7 @@ public class SendDataUtil {
                 ",\"subType2\":0" +
                 ",\"eventId\":" + sceneid +
                 ",\"devCnt\":" + 0 +
-                ",\"itemAry\":[{" +
-                "\"canCpuId\":\"\"" +
-                ",\"devType\":" + 0 +
-                ",\"devID\":" + 0 +
-                ",\"bOnOff\":" + 0 +
-                ",\"lmVal\":0" +
-                ",\"param1\":0" +
-                ",\"param2\":0" +
-                "}]}";
+                ",\"itemAry\":[]}";
         MyApplication.mApplication.getUdpServer().send(str);
     }
 

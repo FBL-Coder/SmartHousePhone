@@ -34,7 +34,6 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
     private int keyInput_position = 0;
     private GridView gridView;
     private boolean IsClose = false;
-    private ImageView input_choose;
     private KeyAdapter_keyScene keyAdapter_keyscene;
     private Dialog mDialog;
     private ChnOpItem_scene listData_all;
@@ -145,8 +144,8 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
      */
     private void initGridView() {
         gridView = (GridView) findViewById(R.id.gridView_light);
-        input_choose = (ImageView) findViewById(R.id.input_choose);
-        input_choose.setOnClickListener(this);
+//        input_choose = (ImageView) findViewById(R.id.input_choose);
+//        input_choose.setOnClickListener(this);
     }
 
     private void initData() {
@@ -161,16 +160,16 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
             return;
         }
         switch (view.getId()) {
-            case R.id.input_choose:
-                if (IsClose) {
-                    IsClose = false;
-                    input_choose.setImageResource(R.drawable.off);
-                } else {
-                    IsClose = true;
-                    input_choose.setImageResource(R.drawable.on);
-                }
-                onGetIsChooseListener.getOutChoose(IsClose);
-                break;
+//            case R.id.input_choose:
+//                if (IsClose) {
+//                    IsClose = false;
+//                    input_choose.setImageResource(R.drawable.off);
+//                } else {
+//                    IsClose = true;
+//                    input_choose.setImageResource(R.drawable.on);
+//                }
+//                onGetIsChooseListener.getOutChoose(IsClose);
+//                break;
             case R.id.title_bar_tv_room:
                 if (MyApplication.getWareData().getChnOpItem_scene() == null) {
                     ToastUtil.showText("没有按键信息，不能保存");

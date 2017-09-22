@@ -10,8 +10,10 @@ import java.util.List;
 public class Sixteen2Two {
 
     public static List<Integer> decimal2Binary(int decimalSource) {
-        BigInteger bi = new BigInteger(String.valueOf(decimalSource));  //转换成BigInteger类型
-        char[] charArray = bi.toString(2).toCharArray(); //参数2指定的是转化成X进制，默认10进制
+        String Way_str = new StringBuffer(Integer.toBinaryString(decimalSource)).reverse().toString();
+        char[] charArray  = Way_str.toCharArray();
+//        BigInteger bi = new BigInteger(String.valueOf(decimalSource));  //转换成BigInteger类型
+//        char[] charArray = bi.toString(2).toCharArray(); //参数2指定的是转化成X进制，默认10进制
         List<Integer> Switch = new ArrayList<>();
         for (int i = 0; i < charArray.length; i++) {
             if ('1' == charArray[charArray.length - 1 - i]) {

@@ -16,6 +16,7 @@ import android.view.Window;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -132,6 +133,11 @@ public class MyApplication extends Application {
         super.onCreate();
         //初始化天气数据
         new WratherUtil(this);
+
+        /**
+        * 腾讯 bugly
+        */
+        CrashReport.initCrashReport(MyApplication.getContext(), "f623f31b48", true);
 
         mApplication = MyApplication.this;
 

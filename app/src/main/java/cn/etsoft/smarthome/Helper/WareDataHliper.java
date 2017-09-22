@@ -9,6 +9,7 @@ import cn.etsoft.smarthome.domain.Condition_Event_Bean;
 import cn.etsoft.smarthome.domain.GroupSet_Data;
 import cn.etsoft.smarthome.domain.SetSafetyResult;
 import cn.etsoft.smarthome.domain.Timer_Data;
+import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareSceneDevItem;
 import cn.etsoft.smarthome.domain.WareSceneEvent;
 
@@ -33,6 +34,7 @@ public class WareDataHliper {
     private List<GroupSet_Data.SecsTriggerRowsBean> mSecsTriggerRowsBean;
     private ChnOpItem_scene mChnOpItem_scene;
     private List<ChnOpItem_scene.Key2sceneItemBean> itemBeans;
+    private List<WareDev> mWareDev;
 
 
     public static WareDataHliper initCopyWareData() {
@@ -44,6 +46,15 @@ public class WareDataHliper {
     public void startCopySceneData() {
         mSceneEvents = new ArrayList<>();
         mSceneEvents.addAll(MyApplication.getWareData().getSceneEvents());
+    }
+
+    public void startCopyDevs() {
+        mWareDev = new ArrayList<>();
+        for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+            MyApplication.getWareData().getDevs().get(i).setSelect(false);
+            MyApplication.getWareData().getDevs().get(i).setCmd(0);
+            mWareDev.add(MyApplication.getWareData().getDevs().get(i));
+        }
     }
 
     public void startCopyTimerData() {
@@ -112,6 +123,11 @@ public class WareDataHliper {
     public List<WareSceneEvent> getCopyScenes() {
         startCopySceneData();
         return mSceneEvents;
+    }
+
+    public List<WareDev> getCopyDevs() {
+        startCopyDevs();
+        return mWareDev;
     }
 
     public Timer_Data getCopyTimers() {

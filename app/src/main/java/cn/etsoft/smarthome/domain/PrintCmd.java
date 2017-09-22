@@ -10,13 +10,13 @@ import cn.etsoft.smarthome.adapter.IClick_PZ;
  */
 public class PrintCmd implements Serializable {
     String DevUnitID;
+    String keyboardid;
     int index;
     int devType;
     int keyAct_num;
     int key_cmd;
     boolean isSelect = false;
     String keyname;
-    IClick_PZ listener;
 
     public String getDevUnitID() {
         return DevUnitID;
@@ -24,6 +24,15 @@ public class PrintCmd implements Serializable {
 
     public void setDevUnitID(String devUnitID) {
         DevUnitID = devUnitID;
+    }
+
+
+    public String getKeyboardid() {
+        return keyboardid;
+    }
+
+    public void setKeyboardid(String keyboardid) {
+        this.keyboardid = keyboardid;
     }
 
     public int getKey_cmd() {
@@ -74,12 +83,4 @@ public class PrintCmd implements Serializable {
         this.keyname = keyname;
     }
 
-
-    public IClick_PZ getListener() {
-        return listener;
-    }
-
-    public void setListener(IClick_PZ listener) {
-        this.listener = listener;
-    }
 }

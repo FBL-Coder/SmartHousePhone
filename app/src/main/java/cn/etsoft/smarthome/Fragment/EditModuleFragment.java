@@ -21,6 +21,7 @@ import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2017/8/4.
+ * 编辑按键属性
  */
 public class EditModuleFragment extends Fragment implements AdapterView.OnItemClickListener {
 
