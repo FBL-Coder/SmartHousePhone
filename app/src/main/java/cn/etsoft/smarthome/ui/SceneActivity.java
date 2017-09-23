@@ -17,6 +17,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.SceneAdapter;
 import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.domain.WareSceneEvent;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 
 /**
  * Created by Say GoBay on 2016/9/1.
@@ -27,9 +28,6 @@ public class SceneActivity extends Activity {
     private LinearLayout ll;
     private ImageView back;
     private TextView title, name_cur;
-
-    private boolean IsCanClick = false;
-    private WareData wareData;
     private List<WareSceneEvent> mSceneEvents;
 
     @Override
@@ -37,6 +35,10 @@ public class SceneActivity extends Activity {
 //        MyApplication.getSceneInfo();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scene);
+        if (MyApplication.getWareData().getSceneEvents().size() == 0) {
+            SendDataUtil.getSceneInfo();
+            MyApplication.mApplication.showLoadDialog(this);
+        }
         //初始化标题栏
         initTitleBar();
         //初始化控件
@@ -78,25 +80,21 @@ public class SceneActivity extends Activity {
     private void initGridView() {
         gridView = (GridView) findViewById(R.id.light_gv);
         gridView.setSelector(R.drawable.selector_gridview_item);
-
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 22 && MyApplication.getWareData().getSceneEvents() != null
                         && MyApplication.getWareData().getSceneEvents().size() > 0) {
-                    IsCanClick = true;
+                    MyApplication.mApplication.dismissLoadDialog();
                     gridView.setAdapter(new SceneAdapter(getListData(), SceneActivity.this));
                     gridView.setSelector(R.drawable.selector_gridview_item);
                 }
             }
         });
 
-        if (MyApplication.getWareData().getSceneEvents() != null && MyApplication.getWareData().getSceneEvents().size() > 0) {
-            IsCanClick = true;
+        if (MyApplication.getWareData().getSceneEvents().size() > 0) {
             gridView.setAdapter(new SceneAdapter(getListData(), SceneActivity.this));
             gridView.setSelector(R.drawable.selector_gridview_item);
-        } else {
-            Toast.makeText(SceneActivity.this, "没有找到情景模式", Toast.LENGTH_SHORT).show();
         }
     }
 

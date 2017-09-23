@@ -60,7 +60,6 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     private ImageView back;
     private TextView title, save, safety_match_code, safety_enabled, safety_state, safety_scene, safety_type, safety_all_close, safety_all_open, add_dev_safety, add_dev_Layout_close, tv_text_parlour;
     private ListView lv;
-    private Dialog mDialog;
     private EditText safety_name;
     private GridView gridView_safety;
     private LinearLayout add_dev_Layout_ll;
@@ -79,33 +78,6 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     private int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv_0, R.drawable.jidinghe, R.drawable.dengguang, R.drawable.chuanglian};
     private SafetyActivity_details.EquipmentAdapter equipmentAdapter;
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,13 +90,12 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
 
-                if (mDialog != null)
-                    mDialog.dismiss();
+                MyApplication.mApplication.dismissLoadDialog();
                 if (datType == 32) {
                     if (MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 5) {
                         ToastUtil.showText("保存成功");
                         //保存成功之后获取最新数据
-//                        SendDataUtil.getSafetyInfo();
+                        SendDataUtil.getSafetyInfo();
                         initTitleBar();
                         return;
                     }
@@ -138,13 +109,12 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                         AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, MyApplication.getWareData().getResult().getSubType2());
                         initData(Safety_position);
                     } else if (MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1 && MyApplication.getWareData().getResult().getSubType2() == 255) {
-                        ToastUtil.showText(  "撤防成功");
+                        ToastUtil.showText("撤防成功");
                         initData(Safety_position);
                     }
                 }
             }
         });
-        SendDataUtil.getSafetyInfo();
     }
 
     /**
@@ -258,7 +228,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
 //                        initDialog("正在删除...");
                         common_dev.remove(position_delete);
                         mGridViewAdapter_Safety.notifyDataSetChanged(common_dev);
-                        ToastUtil.showText(  "删除成功");
+                        ToastUtil.showText("删除成功");
                     }
                 });
                 builder.create().show();
@@ -402,7 +372,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                                     //名称名称
                                     bean.setSecName(CommonUtils.bytesToHexString(safety_name.getText().toString().getBytes("GB2312")));
                                 } catch (UnsupportedEncodingException e) {
-                                    ToastUtil.showText(  "安防名称不合适");
+                                    ToastUtil.showText("安防名称不合适");
                                     return;
                                 }
                             }
@@ -440,13 +410,12 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             safetyResult.setSec_info_rows(timerEvent_rows);
                             Gson gson = new Gson();
                             Log.e("保存安防数据", gson.toJson(safetyResult));
-                            initDialog("保存数据中...");
+                            MyApplication.mApplication.showLoadDialog(SafetyActivity_details.this);
                             MyApplication.mApplication.getUdpServer().send(gson.toJson(safetyResult));
                         } catch (Exception e) {
-                            if (mDialog != null)
-                                mDialog.dismiss();
+                            MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存安防数据", "保存数据异常" + e);
-                            ToastUtil.showText(  "保存数据异常,请检查数据是否合适");
+                            ToastUtil.showText("保存数据异常,请检查数据是否合适");
                         }
                     }
                 });
@@ -476,7 +445,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                         }
                         if (tag) {
                             if (common_dev.size() == 4) {
-                                ToastUtil.showText(  "安防设备最多4个！");
+                                ToastUtil.showText("安防设备最多4个！");
                                 return;
                             }
                             SetSafetyResult.SecInfoRowsBean.RunDevItemBean bean = new SetSafetyResult.SecInfoRowsBean.RunDevItemBean();
@@ -538,7 +507,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             //名称名称
                             bean.setSecName(CommonUtils.bytesToHexString(safety_name.getText().toString().getBytes("GB2312")));
                         } catch (UnsupportedEncodingException e) {
-                            ToastUtil.showText(  "定时器名称不合适");
+                            ToastUtil.showText("定时器名称不合适");
                             return;
                         }
                     }
@@ -571,11 +540,10 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     safetyResult.setSec_info_rows(timerEvent_rows);
                     Gson gson = new Gson();
                     Log.e("对码数据", gson.toJson(safetyResult));
-                    initDialog("正在进行...");
+                   MyApplication.mApplication.showLoadDialog(SafetyActivity_details.this);
                     MyApplication.mApplication.getUdpServer().send(gson.toJson(safetyResult));
                 } catch (Exception e) {
-                    if (mDialog != null)
-                        mDialog.dismiss();
+                    MyApplication.mApplication.dismissLoadDialog();
                     Log.e("对码数据", "对码数据异常" + e);
                     ToastUtil.showText("对码数据异常,请检查数据是否合适");
                 }
@@ -820,7 +788,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                         }
                     }
                 }
-            }else if (type_dev == 7){
+            } else if (type_dev == 7) {
                 for (int j = 0; j < MyApplication.getWareData().getFreshAirs().size(); j++) {
                     WareFreshAir freshAir = MyApplication.getWareData().getFreshAirs().get(j);
                     if (timer_list.get(position).getDevID() == freshAir.getDev().getDevId() &&
@@ -835,7 +803,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                         }
                     }
                 }
-            }else if (type_dev == 9){
+            } else if (type_dev == 9) {
                 for (int j = 0; j < MyApplication.getWareData().getFloorHeat().size(); j++) {
                     WareFloorHeat floorHeat = MyApplication.getWareData().getFloorHeat().get(j);
                     if (timer_list.get(position).getDevID() == floorHeat.getDev().getDevId() &&

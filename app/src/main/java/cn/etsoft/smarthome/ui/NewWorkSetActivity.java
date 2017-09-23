@@ -40,7 +40,7 @@ import cn.etsoft.smarthome.weidget.SwipeListView;
  */
 
 public class NewWorkSetActivity extends Activity {
-    private TextView mDialogCancle, mDialogOk;
+    private TextView mDialogCancle, mDialogOk,mTitle;
     private ImageView mSousuo, mBack;
     private EditText mDialogName, mDialogID, mDialogPass;
     private NewModuleHandler mNewModuleHandler = new NewModuleHandler(this);
@@ -61,10 +61,13 @@ public class NewWorkSetActivity extends Activity {
     private void initView() {
         mBack = (ImageView) findViewById(R.id.title_bar_iv_back);
         mSousuo = (ImageView) findViewById(R.id.title_bar_iv_or);
+        mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
+        mTitle.setVisibility(View.VISIBLE);
         mSousuo.setImageResource(R.drawable.net_search);
         mSousuo.setVisibility(View.VISIBLE);
         mNetworkAdd = (LinearLayout) findViewById(R.id.network_add);
         mNetListView = (SwipeListView) findViewById(R.id.equi_list);
+        mTitle.setText("模块设置");
     }
 
 

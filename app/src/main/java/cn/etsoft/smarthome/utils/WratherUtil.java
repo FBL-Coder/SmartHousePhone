@@ -42,7 +42,11 @@ public class WratherUtil {
     }
 
 
+    int time = 0;
+
     private void initCityList() {
+        if (time > 3)
+            return;
         mCityList = new ArrayList<City>();
         mSections = new ArrayList<String>();
         mMap = new HashMap<String, List<City>>();
@@ -52,9 +56,13 @@ public class WratherUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-                MyApplication.mApplication.mCityDB = openCityDB();// 这个必须最先复制完,所以我放在单线程中处理
-                prepareCityList();
+                try {
+                    time++;
+                    MyApplication.mApplication.mCityDB = openCityDB();// 这个必须最先复制完,所以我放在单线程中处理
+                    prepareCityList();
+                } catch (Exception e) {
+                    initCityList();
+                }
 
             }
         }).start();

@@ -16,6 +16,7 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.ConditionAdapter;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.Circle_Progress;
 
@@ -28,63 +29,29 @@ public class ConditionEventActivity extends Activity implements AdapterView.OnIt
     private TextView title;
     private ListView lv;
     private ConditionAdapter conditionAdapter;
-    private Dialog mDialog;
     //触发器所在列表位置
     private int Condition_position;
-    String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-            ",\"datType\":27" +
-            ",\"subType1\":0" +
-            ",\"subType2\":0" +
-            "}";
-
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
-        initDialog("初始化数据中...");
+        if (MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().size() == 0) {
+            MyApplication.mApplication.showLoadDialog(this);
+            SendDataUtil.getConditionInfo();
+        } else initListView();
         //初始化标题栏
         initTitleBar();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (mDialog != null)
-                    mDialog.dismiss();
                 if (datType == 27) {
-                    mDialog.dismiss();
+                    MyApplication.mApplication.dismissLoadDialog();
                     //初始化ListView
                     initListView();
                 }
             }
         });
-        MyApplication.mApplication.getUdpServer().send(ctlStr);
     }
 
     /**
@@ -117,7 +84,7 @@ public class ConditionEventActivity extends Activity implements AdapterView.OnIt
      */
     private void initListView() {
         lv = (ListView) findViewById(R.id.sceneSet_lv);
-        mDialog.dismiss();
+        MyApplication.mApplication.dismissLoadDialog();
         if (MyApplication.getWareData().getCondition_event_bean() == null || MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().size() == 0) {
             ToastUtil.showText("没有收到触发器信息");
             return;

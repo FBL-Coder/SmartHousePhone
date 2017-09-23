@@ -61,7 +61,6 @@ import cn.etsoft.smarthome.weidget.MultiChoicePopWindow;
  * 系统设置--定时设置--详情
  */
 public class TimerActivity_details extends Activity implements View.OnClickListener {
-    private Dialog mDialog;
     private ImageView back;
     private TextView title, save, tv_time_week, tv_enabled, tv_time_start, tv_time_end, tv_week_repeat, tv_all_network, add_dev_timer, add_dev_Layout_close, tv_text_parlour;
     private int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv_0, R.drawable.jidinghe, R.drawable.dengguang, R.drawable.chuanglian};
@@ -79,45 +78,10 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
     private MultiChoicePopWindow mMultiChoicePopWindow;
     private TimePicker mTimePicker;
     private TimePickerDialog mTimePickerDialog;
-    private int DATA_TO_NETWORK;
     //添加设备房间position；
     private int home_position;
     //定时位置position
     private int Timer_position = 0;
-
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
-
-    String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-            ",\"datType\":17" +
-            ",\"subType1\":0" +
-            ",\"subType2\":0" +
-            "}";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,22 +97,19 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
 
-                if (mDialog != null)
-                    mDialog.dismiss();
                 if (datType == 17) {
-                    if (mDialog != null)
-                        mDialog.dismiss();
+                    MyApplication.mApplication.dismissLoadDialog();
                     initGridView(Timer_position);
                     initData(Timer_position);
                     if (Timer_position != 0) {
-                        ToastUtil.showText(  "保存成功");
+                        ToastUtil.showText("保存成功");
                     }
                     initTitleBar();
                 }
                 if (datType == 19) {
                     SendDataUtil.getTimerInfo();
                     if (Timer_position == 0) {
-                        ToastUtil.showText(  "保存成功");
+                        ToastUtil.showText("保存成功");
                     }
                     initTitleBar();
                 }
@@ -249,7 +210,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                         dialog.dismiss();
                         common_dev.remove(position_delete);
                         gridViewAdapter_Timer.notifyDataSetChanged(common_dev);
-                        ToastUtil.showText(  "删除成功");
+                        ToastUtil.showText("删除成功");
                     }
                 });
                 builder.create().show();
@@ -391,7 +352,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                                     //触发器名称
                                     bean.setTimerName(CommonUtils.bytesToHexString(et_name.getText().toString().getBytes("GB2312")));
                                 } catch (UnsupportedEncodingException e) {
-                                    ToastUtil.showText(  "定时器名称不合适");
+                                    ToastUtil.showText("定时器名称不合适");
                                     return;
                                 }
                             }
@@ -400,14 +361,14 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                             String time_start = tv_time_start.getText().toString();
                             String time_end = tv_time_end.getText().toString();
                             if ("点击选择时间".equals(time_start) || "点击选择时间".equals(time_end)) {
-                                ToastUtil.showText(  "请选择时间");
+                                ToastUtil.showText("请选择时间");
                                 return;
                             }
                             time_Data_start.add(Integer.parseInt(time_start.substring(0, time_start.indexOf(" : "))));
                             time_Data_start.add(Integer.parseInt(time_start.substring(time_start.indexOf(" : ") + 3)));
                             time_Data_start.add(0);
                             if (str2num(tv_time_week.getText().toString()) == 0) {
-                                ToastUtil.showText(  "请选择星期");
+                                ToastUtil.showText("请选择星期");
                                 return;
                             }
                             time_Data_start.add(str2num(tv_time_week.getText().toString()));
@@ -424,7 +385,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                             bean.setTimEnd(time_Data_end);
 
                             if (time_Data_start.get(0) > time_Data_end.get(0)) {
-                                ToastUtil.showText(  "开始时间不能比结束时间迟");
+                                ToastUtil.showText("开始时间不能比结束时间迟");
                                 return;
                             }
 
@@ -441,13 +402,12 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                             time_data.setTimerEvent_rows(timerEvent_rows);
                             Gson gson = new Gson();
                             Log.e("0000", gson.toJson(time_data));
-                            initDialog("保存数据中...");
+                            MyApplication.mApplication.showLoadDialog(TimerActivity_details.this);
                             MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data));
                         } catch (Exception e) {
-                            if (mDialog != null)
-                                mDialog.dismiss();
+                            MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存定时器数据", "保存数据异常" + e);
-                            ToastUtil.showText(  "保存数据异常,请检查数据是否合适");
+                            ToastUtil.showText("保存数据异常,请检查数据是否合适");
                         }
                     }
                 });
@@ -478,7 +438,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                         }
                         if (tag) {
                             if (common_dev.size() == 4) {
-                                ToastUtil.showText(  "定时设备最多4个！");
+                                ToastUtil.showText("定时设备最多4个！");
                                 return;
                             }
                             Timer_Data.TimerEventRowsBean.RunDevItemBean bean = new Timer_Data.TimerEventRowsBean.RunDevItemBean();
@@ -680,7 +640,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                         }
                     }
                 }
-            }else if (type_dev == 7){
+            } else if (type_dev == 7) {
                 for (int j = 0; j < MyApplication.getWareData().getFreshAirs().size(); j++) {
                     WareFreshAir freshAir = MyApplication.getWareData().getFreshAirs().get(j);
                     if (timer_list.get(position).getDevID() == freshAir.getDev().getDevId() &&
@@ -695,7 +655,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                         }
                     }
                 }
-            }else if (type_dev == 9){
+            } else if (type_dev == 9) {
                 for (int j = 0; j < MyApplication.getWareData().getFloorHeat().size(); j++) {
                     WareFloorHeat floorHeat = MyApplication.getWareData().getFloorHeat().get(j);
                     if (timer_list.get(position).getDevID() == floorHeat.getDev().getDevId() &&
@@ -799,7 +759,6 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                         data_to_network += Math.pow(2, i);
                     }
                 }
-                DATA_TO_NETWORK = data_to_network;
                 ((TextView) view).setText("星期集：" + stringBuffer.toString());
             }
         });

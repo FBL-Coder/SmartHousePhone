@@ -79,6 +79,7 @@ public class SceneAdapter extends BaseAdapter {
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MyApplication.mApplication.setSceneIsShow(true);
                 //给点击情景按钮添加点击音效
                 MyApplication.mApplication.getSp().play(MyApplication.mApplication.getMusic(), 1, 1, 0, 0, 1);
                 createSceneEvents(mWareSceneEvents.get(position).getEventId());

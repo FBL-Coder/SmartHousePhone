@@ -64,7 +64,6 @@ import cn.etsoft.smarthome.weidget.VerticalPageSeekBar;
 public class GroupSetActivity_details extends Activity implements View.OnClickListener, VerticalPageSeekBar.OnSeekBarPageChangeListener {
     private ImageView back;
     private TextView title, save, tv_enabled, event_way, add_dev_groupSet, add_dev_Layout_close, tv_text_parlour;
-    private Dialog mDialog;
     private EditText et_name;
     private GridView gridView_groupSet;
     private LinearLayout add_dev_Layout_ll;
@@ -102,40 +101,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
     private SafetyAdapter_group SafetyAdapter_group;
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
-
-    String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-            ",\"datType\":66" +
-            ",\"subType1\":0" +
-            ",\"subType2\":255" +
-            "}";
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,8 +119,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
             public void upDataWareData(int datType, int subtype1, int subtype2) {
 
                 if (datType == 66) {
-                    if (mDialog != null)
-                        mDialog.dismiss();
+                   MyApplication.mApplication.dismissLoadDialog();
                     if (MyApplication.getWareData().getmGroupSet_Data() != null
                             && MyApplication.getWareData().getmGroupSet_Data().getSubType1() == 2
                             && MyApplication.getWareData().getmGroupSet_Data().getSubType2() == 1) {
@@ -656,11 +620,10 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                             time_data.setSecs_trigger_rows(envEvent_rows);
                             Gson gson = new Gson();
                             Log.i("保存触发器数据", gson.toJson(time_data));
-                            initDialog("保存数据中...");
+                            MyApplication.mApplication.showLoadDialog(GroupSetActivity_details.this);
                             MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data));
                         } catch (Exception e) {
-                            if (mDialog != null)
-                                mDialog.dismiss();
+                           MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存触发器数据", "保存数据异常" + e);
                             ToastUtil.showText("保存数据异常,请检查数据是否合适");
                         }

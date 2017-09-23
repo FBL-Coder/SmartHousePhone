@@ -46,11 +46,21 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_light);
+
+
         //初始化标题栏
         initTitleBar();
         //初始化控件
         intView();
-        initEvent();
+
+        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 3 ||datType == 4 || datType == 35)
+                    //更新界面
+                    upData();
+            }
+        });
         //初始化GridView
         initGridView();
     }
@@ -158,17 +168,6 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         });
     }
 
-
-    private void initEvent() {
-        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-            @Override
-            public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 4)
-                    //更新界面
-                    upData();
-            }
-        });
-    }
 
     private void upData() {
         if (MyApplication.getWareData().getLights().size() == 0) {

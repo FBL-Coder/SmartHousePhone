@@ -57,41 +57,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     private List<String> room_list;
     private GridView gridView;
     private ParlourGridViewAdapter parlourGridViewAdapter;
-    private Handler mHandler;
-    private Dialog mDialog;
-    private byte sceneid = 0;
 
-
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        //允许返回
-        mDialog.setCancelable(true);
-        //显示
-        mDialog.show();
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        //加载数据进度条，5秒数据没加载出来自动消失
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +69,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 if (datType == 24 && subtype2 == 1) {
                     ToastUtil.showText("保存成功");
                     SendDataUtil.getSceneInfo();
-                    if (mDialog != null)
-                        mDialog.dismiss();
+                    MyApplication.mApplication.dismissLoadDialog();
                     finish();
                 }
             }
@@ -247,7 +212,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                initDialog("正在保存...");
+                MyApplication.mApplication.showLoadDialog(SceneSettingActivity.this);
                 int num = 0;
                 String div;
                 String more_data = "";
@@ -275,7 +240,8 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 try {
                     nameData = title.getText().toString().getBytes("GB2312");
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("数据不合适，请重新编辑");
                 }
                 String str_gb = CommonUtils.bytesToHexString(nameData);
                 Log.e("情景模式名称:%s", str_gb);
@@ -283,6 +249,8 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                     more_data = more_data.substring(0, more_data.lastIndexOf(","));
                 } catch (Exception e) {
                     System.out.println(e + "");
+                    MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("数据不合适，请重新编辑");
                 }
                 //这就是要上传的字符串:data_hoad
                 String data_hoad = "{" +

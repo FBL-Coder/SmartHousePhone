@@ -83,7 +83,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 startActivity(intent);
                 break;
             case 4:
-                if (MyApplication.getWareData().getSceneEvents().size()<1)
+                if (MyApplication.getWareData().getSceneEvents().size() == 0)
                     SendDataUtil.getSceneInfo();
                 intent = new Intent(getActivity(), SceneSetActivity.class);
                 intent.putExtra("title", text[4]);

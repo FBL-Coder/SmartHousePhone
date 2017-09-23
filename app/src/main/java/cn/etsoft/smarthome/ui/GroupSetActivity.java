@@ -28,53 +28,21 @@ public class GroupSetActivity extends Activity implements AdapterView.OnItemClic
     private TextView title;
     private ListView lv;
     private CroupSetAdapter groupSetAdapter;
-    private Dialog mDialog;
     //触发器所在列表位置
     private int GroupSet_position;
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
-        initDialog("初始化数据中...");
+        MyApplication.mApplication.showLoadDialog(this);
         //初始化标题栏
         initTitleBar();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-
-                if (mDialog != null)
-                    mDialog.dismiss();
                 if (datType == 66) {
-                    if (mDialog != null)
-                        mDialog.dismiss();
+                    MyApplication.mApplication.dismissLoadDialog();
                     //初始化ListView
                     initListView();
 //                    if (GroupSet_position != 0) {
@@ -101,6 +69,7 @@ public class GroupSetActivity extends Activity implements AdapterView.OnItemClic
             }
         });
     }
+
     //修改名称之后返回页面刷新
     @Override
     protected void onRestart() {
@@ -110,17 +79,18 @@ public class GroupSetActivity extends Activity implements AdapterView.OnItemClic
         }
         initListView();
     }
+
     /**
      * 初始化组合器名称
      */
     private void initListView() {
         lv = (ListView) findViewById(R.id.sceneSet_lv);
-        mDialog.dismiss();
+        MyApplication.mApplication.dismissLoadDialog();
         if (MyApplication.getWareData().getmGroupSet_Data() == null || MyApplication.getWareData().getmGroupSet_Data().getSecs_trigger_rows().size() == 0) {
             ToastUtil.showText("没有收到组合器信息");
             return;
         }
-        groupSetAdapter = new CroupSetAdapter(this,MyApplication.getWareData().getmGroupSet_Data());
+        groupSetAdapter = new CroupSetAdapter(this, MyApplication.getWareData().getmGroupSet_Data());
         lv.setAdapter(groupSetAdapter);
         lv.setOnItemClickListener(this);
     }

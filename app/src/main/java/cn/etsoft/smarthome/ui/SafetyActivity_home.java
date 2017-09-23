@@ -50,7 +50,6 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
     private List<Safety_Data.Safety_Time> data_data;
     private List<String> getTime;
     private List<Long> Time;
-    private Dialog mDialog;
     private long startTime = 0, endTime = 0;
 
     @Override
@@ -59,8 +58,8 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         //解决弹出键盘压缩布局的问题
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_safety_home);
-        initDialog("初始化数据中...");
-        safety_Data = Data_Cache.readFile_safety(GlobalVars.getDevid(),true);
+        MyApplication.mApplication.showLoadDialog(this);
+        safety_Data = Data_Cache.readFile_safety(GlobalVars.getDevid(), true);
         //初始化标题栏
         initTitleBar();
         //初始化控件
@@ -93,33 +92,6 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         });
     }
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     /**
      * 初始化控件
@@ -130,8 +102,6 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         safety = (TextView) findViewById(R.id.safety);
         screen = (ImageView) findViewById(R.id.screen);
         listView = (ListView) findViewById(R.id.listView);
-        if (MyApplication.getWareData().getResult_safety() == null || MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0)
-            return;
         safetyName = new ArrayList<>();
         safetyName.add("全部");
         for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
@@ -151,8 +121,8 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
      */
     private void initData() {
         if (safety_Data == null) {
+            MyApplication.mApplication.dismissLoadDialog();
             ToastUtil.showText("没有检索到信息");
-            mDialog.dismiss();
         } else {
             initData_safety(safety_position, safety_Data, startTime, endTime);
         }
@@ -249,7 +219,7 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         }
         safetyAdapter = new SafetyAdapter_home(data_data, SafetyActivity_home.this);
         listView.setAdapter(safetyAdapter);
-        mDialog.dismiss();
+        MyApplication.mApplication.dismissLoadDialog();
     }
 
     /**
@@ -271,13 +241,6 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
             } else {
                 day_get = "" + data_data_safety.get(i).getDay();
             }
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//            try {
-//                Long a = simpleDateFormat.parse(data_data_safety.get(i).getYear() + "-" + month_get + "-" + day_get).getTime();
-//                getTime.add(String.valueOf(a));
-//            } catch (ParseException e) {
-//            }
-//            Time.add(Long.valueOf(getTime.get(i)));
             getTime.add(data_data_safety.get(i).getYear() + "" + month_get + "" + day_get);
             Time.add(Long.valueOf(getTime.get(i)));
 

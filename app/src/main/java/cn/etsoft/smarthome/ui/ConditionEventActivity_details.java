@@ -61,7 +61,6 @@ import cn.etsoft.smarthome.weidget.CustomDialog_comment;
 public class ConditionEventActivity_details extends Activity implements View.OnClickListener {
     private ImageView back;
     private TextView title, save, tv_enabled, event_way, event_type, add_dev_condition, add_dev_Layout_close, tv_text_parlour;
-    private Dialog mDialog;
     private EditText input_num, et_name;
     private GridView gridView_condition;
     private LinearLayout add_dev_Layout_ll;
@@ -82,34 +81,6 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
     //添加设备房间position；
     private int home_position;
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,7 +98,7 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 27) {
-                    mDialog.dismiss();
+                    MyApplication.mApplication.dismissLoadDialog();
                     if (Condition_position != 0) {
                         ToastUtil.showText("保存成功");
                     }
@@ -423,11 +394,10 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
                             time_data.setenvEvent_rows(envEvent_rows);
                             Gson gson = new Gson();
                             Log.i("保存触发器数据", gson.toJson(time_data));
-                            initDialog("保存数据中...");
+                            MyApplication.mApplication.showLoadDialog(ConditionEventActivity_details.this);
                             MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data));
                         } catch (Exception e) {
-                            if (mDialog != null)
-                                mDialog.dismiss();
+                            MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存触发器数据", "保存数据异常" + e);
                             ToastUtil.showText("保存数据异常,请检查数据是否合适");
                         }

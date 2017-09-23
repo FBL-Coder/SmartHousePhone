@@ -35,37 +35,9 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
     private GridView gridView;
     private boolean IsClose = false;
     private KeyAdapter_keyScene keyAdapter_keyscene;
-    private Dialog mDialog;
     private ChnOpItem_scene listData_all;
     private boolean IsHaveData = false;
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +51,9 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (mDialog != null)
-                    mDialog.dismiss();
 
                 if (datType == 58 && MyApplication.getWareData().getChnOpItem_scene().getSubType1() == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     IsHaveData = true;
 //                    WareDataHliper.initCopyWareData().startCopyScene_KeysData();
                     listData_all = MyApplication.getWareData().getChnOpItem_scene();
@@ -91,11 +62,12 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                 }
 
                 if (datType == 59 && MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     Toast.makeText(KeySceneActivity_dev.this, "保存成功", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        initDialog("正在加载...");
+        MyApplication.mApplication.showLoadDialog(this);
         KeySceneActivity_dev.setOnGetKeySceneDataListener(new KeySceneActivity_dev.OnGetKeySceneDataListener() {
             @Override
             public void getKeySceneData() {
@@ -213,7 +185,6 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                         } catch (Exception e) {
                             System.out.println(e + "");
                         }
-                        initDialog("正在保存...");
                         //这就是要上传的字符串:data_hoad
                         String data_hoad = "{" +
                                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
@@ -224,6 +195,7 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                                 "\"key2scene_item\":[" + more_data + "]}";
                         Log.e("情景模式测试:", data_hoad);
                         MyApplication.mApplication.getUdpServer().send(data_hoad);
+                        MyApplication.mApplication.showLoadDialog(KeySceneActivity_dev.this);
                     }
                 });
                 builder.create().show();

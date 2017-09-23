@@ -20,6 +20,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -45,6 +46,7 @@ import cn.etsoft.smarthome.utils.GetIPAddress;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.utils.WratherUtil;
+import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.view.NotificationUtils;
 
 /**
@@ -135,8 +137,8 @@ public class MyApplication extends Application {
         new WratherUtil(this);
 
         /**
-        * 腾讯 bugly
-        */
+         * 腾讯 bugly
+         */
         CrashReport.initCrashReport(MyApplication.getContext(), "f623f31b48", true);
 
         mApplication = MyApplication.this;
@@ -167,6 +169,7 @@ public class MyApplication extends Application {
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
         queryIP();
+
     }
 
     public static void queryIP() {
@@ -190,11 +193,11 @@ public class MyApplication extends Application {
         if ("".equals(IPAddress))
             GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
         else {
-            String rcuInfo_Use_ip = rcuInfo_Use.getIpAddr();
-            if ("".equals(rcuInfo_Use_ip) || rcuInfo_Use_ip == null) {
+            String rcuInfo_Use_ip = "";
+            if (rcuInfo_Use.getIpAddr() == null || "".equals(rcuInfo_Use.getIpAddr())) {
                 GlobalVars.setIPisEqual(GlobalVars.IPDIFFERENT);
                 return;
-            }
+            } else rcuInfo_Use_ip = rcuInfo_Use.getIpAddr();
             rcuInfo_Use_ip = rcuInfo_Use_ip.substring(0, rcuInfo_Use_ip.lastIndexOf("."));
 
             IPAddress = IPAddress.substring(0, IPAddress.lastIndexOf("."));
@@ -331,53 +334,52 @@ public class MyApplication extends Application {
         return mWareData;
     }
 
-    /**
-     * 获取加载框Dialog；
-     */
-    Dialog progressDialog;
 
-    public Dialog getProgressDialog(Context context) {
-        progressDialog = new Dialog(context);
-        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        progressDialog.setContentView(R.layout.dialog_custom_progress);
-        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        progressDialog.setCancelable(false);
-        return progressDialog;
-    }
+    private Dialog mDialog;
 
-    /**
-     * 加载框显示
-     */
-    public void showLoadDialog(Activity activity) {
-        if (progressDialog == null)
-            getProgressDialog(activity);
-        if (!activity.isFinishing() && !progressDialog.isShowing())
-            progressDialog.show();
-        //加载数据进度条，5秒数据没加载出来自动消失
+    //自定义加载进度条
+    private void initDialog(Context context, String str) {
+        Circle_Progress.setText(str);
+        mDialog = Circle_Progress.createLoadingDialog(context);
+        mDialog.setCancelable(true);//允许返回
+        mDialog.show();//显示
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                ToastUtil.showText("发送超时");
+                mDialog.dismiss();
+            }
+        };
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(10000);
-                    if (progressDialog != null && progressDialog.isShowing()) {
-                        Message message = handler.obtainMessage();
-                        message.what = DIALOG_DISMISS;
-                        handler.sendMessage(message);
+                    Thread.sleep(5000);
+                    if (mDialog.isShowing()) {
+                        handler.sendMessage(handler.obtainMessage());
                     }
                 } catch (Exception e) {
-                    System.out.println(this.getClass().getName() + "行271" + e + "");
+                    System.out.println(e + "");
                 }
             }
         }).start();
     }
 
     /**
+     * 加载框显示
+     */
+    public void showLoadDialog(Activity activity) {
+        initDialog(activity, "加载数据中...");
+    }
+
+    /**
      * 隐藏加载动画框
      */
     public void dismissLoadDialog() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-            progressDialog = null;
+        if (mDialog != null) {
+            mDialog.dismiss();
+            mDialog = null;
         }
     }
 
@@ -404,6 +406,12 @@ public class MyApplication extends Application {
 
     public void setSceneIsShow(boolean sceneIsShow) {
         SceneIsShow = sceneIsShow;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                SceneIsShow = false;
+            }
+        }, 15000, 15000);
     }
 
     public boolean isSeekNet() {
@@ -537,15 +545,6 @@ public class MyApplication extends Application {
                         }
                     }
                 }, 3000, 3000);
-            }
-
-            //load 超时后自动消失
-            if (msg.what == application.DIALOG_DISMISS) {
-                if (application.progressDialog != null && application.progressDialog.isShowing()) {
-                    application.progressDialog.dismiss();
-                    ToastUtil.showText("发送超时");
-                    application.progressDialog = null;
-                }
             }
         }
 

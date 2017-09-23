@@ -36,9 +36,9 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private int[] image = {R.drawable.air_home, R.drawable.tv_home,
             R.drawable.stb_home, R.drawable.light_home,
             R.drawable.curtain_home, R.drawable.scene_home, R.drawable.control_home,
-             R.drawable.safety_home, R.drawable.freshair, R.drawable.floorheat};
+            R.drawable.safety_home, R.drawable.freshair, R.drawable.floorheat};
     private String[] title = {"空调", "电视", "机顶盒", "灯光",
-            "窗帘", "情景", "门禁","安防", "新风", "地暖"};
+            "窗帘", "情景", "门禁", "安防", "新风", "地暖"};
     private int HomeAct_viewPage_position;
 
     @Nullable
@@ -113,22 +113,24 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                 intent = new Intent(getActivity(), SceneActivity.class);
                 intent.putExtra("title", title[6]);
                 break;
-            //新风
-            case 10:
-                intent = new Intent(getActivity(), FreshairActivity.class);
-                break;
             //门禁
             case 6:
                 startActivity(new Intent(getActivity(), cn.semtec.community2.WelcomeActivity.class));
                 break;
-            //地暖
-            case 11:
-                intent = new Intent(getActivity(), FloorHeatActivity.class);
-                break;
             //报警记录
-            case 9:
+            case 7:
                 startActivity(new Intent(getActivity(), SafetyActivity_home.class));
                 break;
+            //新风
+            case 8:
+                intent = new Intent(getActivity(), FreshairActivity.class);
+                break;
+
+            //地暖
+            case 9:
+                intent = new Intent(getActivity(), FloorHeatActivity.class);
+                break;
+
         }
         if (intent != null) {
             intent.putExtra("viewPage_num", HomeAct_viewPage_position);

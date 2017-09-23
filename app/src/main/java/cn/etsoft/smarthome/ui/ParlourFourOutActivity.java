@@ -29,7 +29,6 @@ public class ParlourFourOutActivity extends Activity implements AdapterView.OnIt
     private ScrollView sv;
     private ListView lv;
     private String uid;
-    private int index = -1;
     private String title;
 
     List<String> LTitle;
@@ -83,7 +82,6 @@ public class ParlourFourOutActivity extends Activity implements AdapterView.OnIt
         if (size > 0) {
             for (int i = 0; i < size; i++) {
                 if (uid.equals(MyApplication.getWareData().getDevs().get(i).getCanCpuId())) {
-                    index = i;
                     LTitle.add(MyApplication.getWareData().getDevs().get(i).getDevName());
                     LText.add("测试");
                     LDeploy.add("配置");

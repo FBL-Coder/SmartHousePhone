@@ -29,6 +29,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 地暖控制界面
  */
 public class FloorHeatActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private GridView gridView;

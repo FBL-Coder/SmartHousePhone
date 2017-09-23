@@ -82,7 +82,6 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(GETOUTBOARDINFO);
     }
 
-
     public static void getSceneInfo() {
         String GETSCENEINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getSceneEvents.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
         MyApplication.mApplication.getUdpServer().send(GETSCENEINFO);
@@ -93,7 +92,13 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(GETDEVINFO);
     }
 
+    static long time = 0;
+
     public static void getNetWorkInfo() {
+        if (System.currentTimeMillis() - time < 5000) {
+            time = System.currentTimeMillis();
+            return;
+        }
         String GETNETWORKINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() +
                 "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue() +
                 "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
@@ -188,7 +193,7 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(str);
     }
 
-    public static void getChnItemInfo(String uid,int type,int id) {
+    public static void getChnItemInfo(String uid, int type, int id) {
         //uid  设备所在输出板ID
         final String str = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +

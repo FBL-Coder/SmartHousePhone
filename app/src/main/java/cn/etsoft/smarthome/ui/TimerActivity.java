@@ -28,53 +28,22 @@ public class TimerActivity extends Activity implements AdapterView.OnItemClickLi
     private TextView title;
     private ListView lv;
     private TimerAdapter timerAdapter;
-    private Dialog mDialog;
     //定时位置position
     private int Timer_position = 0;
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
-        initDialog("初始化数据中...");
+        MyApplication.mApplication.showLoadDialog(this);
         //初始化标题栏
         initTitleBar();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (mDialog != null)
-                    mDialog.dismiss();
+                MyApplication.mApplication.dismissLoadDialog();
                 if (datType == 17) {
-                    if(mDialog!= null)
-                        mDialog.dismiss();
                     //初始化ListView
                     initListView();
                 }
@@ -113,7 +82,6 @@ public class TimerActivity extends Activity implements AdapterView.OnItemClickLi
      */
     private void initListView() {
         lv = (ListView) findViewById(R.id.sceneSet_lv);
-        mDialog.dismiss();
         if (MyApplication.getWareData().getTimer_data() == null || MyApplication.getWareData().getTimer_data().getTimerEvent_rows().size() == 0) {
             ToastUtil.showText("没有收到定时器信息");
             return;

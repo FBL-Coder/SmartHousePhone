@@ -90,36 +90,22 @@ public class SystemAdapter extends BaseAdapter {
             viewHolder.hui.setVisibility(View.GONE);
             return convertView;
         }
-        if (listViewItems.size() > 0) {
-            if (position < 2) {
-                viewHolder.image.setImageResource(image[position % 5]);
-                viewHolder.title.setText(mSceneEvents.get(position).getSceneName());
-                viewHolder.hui.setImageResource(R.drawable.huijiantou);
+        if (listViewItems.size() > 0 && position != listViewItems.size()) {
+            viewHolder.image.setImageResource(image[position % 5]);
+            viewHolder.title.setText(mSceneEvents.get(position).getSceneName());
+            viewHolder.hui.setImageResource(R.drawable.huijiantou);
 
-                viewHolder.delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ToastUtil.showText("全开、全关模式不可删除");
-                    }
-                });
-                viewHolder.delete.setTag(position);
-            } else if (position < listViewItems.size()) {
-                viewHolder.image.setImageResource(image[position % 5]);
-                viewHolder.title.setText(mSceneEvents.get(position).getSceneName());
-                viewHolder.hui.setImageResource(R.drawable.huijiantou);
-
-                if (mSceneEvents.get(position).getEventId() != 0) {
-                    if (mSceneEvents.get(position).getEventId() != 1) {
-                        viewHolder.delete.setOnClickListener(mListener);
-                        viewHolder.delete.setTag(position);
-                    }
+            if (mSceneEvents.get(position).getEventId() != 0) {
+                if (mSceneEvents.get(position).getEventId() != 1) {
+                    viewHolder.delete.setOnClickListener(mListener);
+                    viewHolder.delete.setTag(position);
                 }
-            } else {
-                viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
-                viewHolder.title.setText("新增模式");
-                viewHolder.hui.setVisibility(View.GONE);
-                viewHolder.delete.setVisibility(View.GONE);
             }
+        } else {
+            viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
+            viewHolder.title.setText("新增模式");
+            viewHolder.hui.setVisibility(View.GONE);
+            viewHolder.delete.setVisibility(View.GONE);
         }
         return convertView;
     }

@@ -27,6 +27,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
 
 /**
  * Created by Say GoBay on 2016/9/1.
+ * 新风控制界面
  */
 public class FreshairActivity extends Activity implements View.OnClickListener {
     private GridView gridView;

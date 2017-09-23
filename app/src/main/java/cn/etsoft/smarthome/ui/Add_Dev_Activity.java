@@ -2,12 +2,9 @@ package cn.etsoft.smarthome.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,7 +35,6 @@ import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.pullmi.utils.LogUtils;
 import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
 
 /**
  * Created by fbl on 16-11-17.
@@ -54,45 +50,12 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     private List<String> home_text;
     private List<String> type_text;
     private boolean IsSave = true;
-    private Dialog mDialog;
     private int type_position = 0;
     private int board_position = 0;
-    private List<Integer> list_channel;
     private List<String> message_save;
-    private int data_save;
     private PopupWindowAdapter_channel popupWindowAdapter_channel;
     private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        //允许返回
-        mDialog.setCancelable(true);
-        //显示
-        mDialog.show();
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        //加载数据进度条，5秒数据没加载出来自动消失
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,30 +109,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         for (int i = 0; i < mWareDev_room.size(); i++) {
             home_text.add(mWareDev_room.get(i).getRoomName());
         }
-
-//        List<Integer> list_voard_cancpuid = new ArrayList<>();
-//        if (type_position == 0) {
-//            for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
-//                list_voard_cancpuid.add(MyApplication.getWareData().getAirConds().get(i).getPowChn());
-//            }
-//        } else if (type_position == 3) {
-//            for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
-//                list_voard_cancpuid.add((int) MyApplication.getWareData().getLights().get(i).getPowChn());
-//            }
-//        } else if (type_position == 4) {
-//            for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
-//                list_voard_cancpuid.add(MyApplication.getWareData().getCurtains().get(i).getPowChn());
-//            }
-//        }
-
-//        List<Integer> list_way_ok_light = new ArrayList<>();
-//        for (int i = 0; i < 11; i++) {
-//            list_way_ok_light.add(i);
-//        }
-//
-//        for (int i = 0; i < list_voard_cancpuid.size(); i++) {
-//            list_way_ok_light.remove(i);
-//        }
         type_text = new ArrayList<>();
         type_text.add("空调");
         type_text.add("电视");
@@ -489,7 +428,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"powChn\":" + Save_DevWay + "}";
 
                         MyApplication.mApplication.getUdpServer().send(chn_str);
-                        initDialog("正在添加...");
+                        MyApplication.mApplication.showLoadDialog(Add_Dev_Activity.this);
                         finish();
                     }
                 });
@@ -542,7 +481,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         //获取自定义布局文件pop.xml的视图
         final View customView = getLayoutInflater().from(this).inflate(R.layout.popupwindow_equipment_listview, null);
         customView.setBackgroundResource(R.drawable.selectbg);
-
         // 创建PopupWindow实例
         if (type == 1)
             popupWindow = new PopupWindow(findViewById(R.id.popupWindow_equipment_sv), 320, 250);
@@ -669,7 +607,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 if (!"".equals(message)) {
                     message = message.substring(0, message.lastIndexOf("、"));
                 }
-                data_save = str2num(data_str);
                 TextView tv = (TextView) textView;
                 tv.setText(message);
                 popupWindow.dismiss();
@@ -793,8 +730,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
-        if (mDialog != null)
-            mDialog.dismiss();
+       MyApplication.mApplication.dismissLoadDialog();
         super.onDestroy();
     }
 }

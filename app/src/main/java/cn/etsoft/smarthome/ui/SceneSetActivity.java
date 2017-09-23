@@ -48,81 +48,31 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
 
     private SystemAdapter systemAdapter;
     private List<WareSceneEvent> event;
-    private Dialog mDialog;
     private Handler mHandler;
-
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        //允许返回
-        mDialog.setCancelable(true);
-        //显示
-        mDialog.show();
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        //加载数据进度条，5秒数据没加载出来自动消失
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
+        if (MyApplication.getWareData().getSceneEvents().size() == 0) {
+            SendDataUtil.getSceneInfo();
+            MyApplication.mApplication.showLoadDialog(this);
+        } else {
+            WareDataHliper.initCopyWareData().startCopySceneData();
+        }
         //初始化标题栏
         initTitleBar();
         //初始化ListView
         initListView();
 
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (mDialog != null)
-                    mDialog.dismiss();
-                //初始化ListView
-                initListView();
-                super.handleMessage(msg);
-            }
-        };
-
-//        MyApplication.mInstance.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-//            @Override
-//            public void upDataWareData(int what) {
-//                if (what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_addSceneEvents.getValue()
-//                        || what == UdpProPkt.E_UDP_RPO_DAT.e_udpPro_delSceneEvents.getValue()) {
-//                    Message message = mHandler.obtainMessage();
-//                    mHandler.sendMessage(message);
-//                }
-//            }
-//        });
-
-        WareDataHliper.initCopyWareData().startCopySceneData();
-
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (mDialog != null)
-                    mDialog.dismiss();
-                if (datType == 22){
+                MyApplication.mApplication.dismissLoadDialog();
+                if (datType == 22) {
                     WareDataHliper.initCopyWareData().startCopySceneData();
+                    initListView();
                 }
                 if (datType == 23) {
                     //初始化情景的listView
@@ -153,15 +103,13 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
      * 初始化ListView
      */
     private void initListView() {
-
-        event.clear();
-        for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
-            event.add(MyApplication.getWareData().getSceneEvents().get(i));
-        }
+        event = WareDataHliper.initCopyWareData().getCopyScenes();
         lv = (SwipeListView) findViewById(R.id.sceneSet_lv);
-        systemAdapter = new SystemAdapter(this, event, mListener);
-        lv.setAdapter(systemAdapter);
-        lv.setOnItemClickListener(this);
+        if (MyApplication.getWareData().getSceneEvents().size() > 0) {
+            systemAdapter = new SystemAdapter(this, event, mListener);
+            lv.setAdapter(systemAdapter);
+            lv.setOnItemClickListener(this);
+        }
     }
 
     /**
@@ -194,13 +142,13 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 startActivity(intent);
             } else {
                 if (MyApplication.getWareData().getSceneEvents().size() == 8) {
-                    ToastUtil.showText(  "最多添加8个情景模式");
+                    ToastUtil.showText("最多添加8个情景模式");
                     return;
                 }
                 getDialog();
             }
         } else {
-            ToastUtil.showText( "数据异常");
+            ToastUtil.showText("数据异常");
         }
     }
 
@@ -212,7 +160,6 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 break;
             case R.id.scene_btn_sure:
                 dialog.dismiss();
-                initDialog("正在添加...");
                 String data = name.getText().toString();
                 if (!"".equals(data)) {
                     //新增情景模式
@@ -230,17 +177,11 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                             ID.add(Scene_id.get(i));
                         }
                     }
-//                    for (int i = 0; i < ID.size(); i++) {
-//                        Log.e("ID",ID.get(i)+"");
-//                    }
                     add_scene((byte) (int) ID.get(0), data);
-                    //新增情景模式
-//                    add_scene(event.size(), data);
-//
                     initListView();
                 } else {
                     dialog.dismiss();
-                    ToastUtil.showText(  "请填写情景名称");
+                    ToastUtil.showText("请填写情景名称");
                 }
                 break;
             case R.id.scene_btn_cancel:
@@ -259,44 +200,8 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
      * @param name
      */
     private void add_scene(int eventID, String name) {
-        SendDataUtil.addscene(eventID,name);
-    }
-
-    /**
-     * 删除情景模式
-     *
-     * @param eventID
-     * @param name
-     */
-    private void del_scene(int eventID, String name) {
-        byte[] data = {0};
-        try {
-            data = name.getBytes("GB2312");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        String str_gb = CommonUtils.bytesToHexString(data);
-        LogUtils.LOGE("情景模式名称:%s", str_gb);
-
-        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-                ",\"sceneName\":\"" + str_gb + "\"" +
-                ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_delSceneEvents.getValue() +
-                ",\"subType1\":0" +
-                ",\"subType2\":0" +
-                ",\"eventId\":" + eventID +
-                ",\"devCnt\":" + 0 +
-                ",\"itemAry\":[{" +
-                "\"uid\":\"\"" +
-                ",\"devType\":" + 0 +
-                ",\"devID\":" + 0 +
-                ",\"bOnOff\":" + 0 +
-                ",\"lmVal\":0" +
-                ",\"param1\":0" +
-                ",\"param2\":0" +
-                "}]}";
-        LogUtils.LOGE("情景模式测试数据:", ctlStr);
-        MyApplication.mApplication.getUdpServer().send(ctlStr);
+        SendDataUtil.addscene(eventID, name);
+        MyApplication.mApplication.showLoadDialog(this);
     }
 
     /**
@@ -320,11 +225,9 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                         @Override
                         public void onClick(DialogInterface dialog, int i) {
                             dialog.dismiss();
-                            initDialog("正在删除...");
-                            int sceneId = MyApplication.getWareData().getSceneEvents().get(position).getEventId();
-                            String name = MyApplication.getWareData().getSceneEvents().get(position).getSceneName();
                             //删除情景模式
-                            del_scene(sceneId, name);
+                            SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(position));
+                            MyApplication.mApplication.showLoadDialog(SceneSetActivity.this);
                         }
                     });
                     builder.create().show();

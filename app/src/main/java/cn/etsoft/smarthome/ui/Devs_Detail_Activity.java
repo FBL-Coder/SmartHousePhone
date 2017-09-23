@@ -56,44 +56,11 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
     private WareDev dev;
     private int id;
     private PopupWindow popupWindow;
-    private Dialog mDialog;
     private List<String> message_save;
-    private List<String> message_get;
     private PopupWindowAdapter_channel popupWindowAdapter_channel;
     // Hashtable.keySet()降序 TreeMap.keySet()升序 HashMap.keySet()乱序 LinkedHashMap.keySet()原序
     private TreeMap<Integer, Boolean> map = new TreeMap<>();// 存放已被选中的CheckBox
-    private int data_save;
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        //允许返回
-        mDialog.setCancelable(true);
-        //显示
-        mDialog.show();
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        //加载数据进度条，5秒数据没加载出来自动消失
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -435,11 +402,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                             "\"cmd\":" + 1 + "}";
                 }
                 MyApplication.mApplication.getUdpServer().send(chn_str);
-                initDialog("正在保存...");
-                if (mDialog != null)
-                    mDialog.dismiss();
                 finish();
-
                 break;
             case R.id.dev_room:
                 final List<String> home_text = new ArrayList<>();
@@ -628,7 +591,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 if (!"".equals(message)) {
                     message = message.substring(0, message.lastIndexOf("、"));
                 }
-                data_save = str2num(data_str);
                 TextView tv = (TextView) textView;
                 tv.setText(message);
                 popupWindow.dismiss();

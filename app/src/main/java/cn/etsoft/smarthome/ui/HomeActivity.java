@@ -1,5 +1,8 @@
 package cn.etsoft.smarthome.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,7 +39,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.etsoft.smarthome.Fragment.HomeFragment;
 import cn.etsoft.smarthome.Fragment.SettingFragment;
@@ -44,17 +49,25 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.City;
+import cn.etsoft.smarthome.domain.Http_Result;
 import cn.etsoft.smarthome.domain.WareBoardChnout;
+import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.Weather_All_Bean;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
+import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.CityDB;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.etsoft.smarthome.utils.NetUtil;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.DepthPageTransformer;
 import cn.etsoft.smarthome.view.ViewPagerCompat;
 import cn.etsoft.smarthome.weidget.CustomDialog;
+import cn.semtec.community2.activity.SettingActivity;
 
 /**
  * 主页界面
@@ -65,8 +78,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
     private Fragment homeFragment, settingFragment;
-    private TextView mTitle;
-
     public static final String PM2D5_BASE_URL = "http://jisutianqi.market.alicloudapi.com/weather/query?citycode=";
     private static final String 天气key = "APPCODE 500a3b58be714c519f83e8aa9a23810e";
     private CityDB mCityDB;
@@ -80,19 +91,21 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private List<WareDev> mWareDev_room;
     //ViewPager
     //图片标题
-    private TextView textView_banner, loaction_text, temp_text, hum_text, pm_25, breath_text, weather_text, ref_home;
+    private TextView textView_banner, loaction_text, temp_text, hum_text, pm_25, breath_text, weather_text;
+    private ImageView ref_home;
     private ViewPagerCompat mViewPager;
     private List<Integer> mImgIds_img = new ArrayList<>();
     private int[] mImgIds = new int[]{R.drawable.tu5};
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
-
     private LinearLayout ll_home_dots;
+    private boolean isSetBtu = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        SendDataUtil.getNetWorkInfo();
         //初始化控件
         initView();
         initFragment();
@@ -117,7 +130,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         mViewPager = (ViewPagerCompat) findViewById(R.id.home_fragemnt_vp);
         ll_home_dots = (LinearLayout) findViewById(R.id.ll_home_dots);
         ll_loaction = (LinearLayout) findViewById(R.id.ll_loaction);
-        ref_home = (TextView) findViewById(R.id.home_tv_ref);
+        ref_home = (ImageView) findViewById(R.id.home_tv_ref);
         temp_text = (TextView) findViewById(R.id.temp_text);
         hum_text = (TextView) findViewById(R.id.hum_text);
         pm_25 = (TextView) findViewById(R.id.pm_25);
@@ -157,6 +170,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     }
 
     Handler weather_handler;
+
     private void getSimpleWeatherInfo(boolean isRefresh) {
         String url = PM2D5_BASE_URL + mCurCity.getNumber();
         // L.i("weather url: " + url);
@@ -260,7 +274,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         }
 
 
-
         weather_handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -302,6 +315,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             }
             return null;
         }
+
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             try {
@@ -331,7 +345,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             return 0;
         }
     }
-
 
     /**
      * 当ViewPager中页面的状态发生改变时调用
@@ -424,8 +437,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         if (text_room.size() < 1)
             return;
         initViewPager();
-        SendDataUtil.getSafetyInfo();
     }
+
     /**
      * 初始化数据
      */
@@ -440,9 +453,13 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 transaction = fragmentManager.beginTransaction();
                 switch (checkedId) {
                     case R.id.rb_home_home:
+                        isSetBtu = false;
                         transaction.replace(R.id.home, homeFragment);
+                        ref_home.setImageResource(R.drawable.selector_ref);
                         break;
                     case R.id.rb_home_setting:
+                        isSetBtu = true;
+                        ref_home.setImageResource(R.mipmap.ic_launcher);
                         transaction.replace(R.id.home, settingFragment);
                         MyApplication.mApplication.setActivities(HomeActivity.this);
                         break;
@@ -491,8 +508,66 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 city_cancel.setOnClickListener(this);
                 break;
             case R.id.home_tv_ref:
-                GlobalVars.setDstip("127.0.0.1");
-                SendDataUtil.getNetWorkInfo();
+                if (isSetBtu) {
+                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
+                    builder.setTitle("提示");
+                    builder.setMessage("您是否要退出登录？");
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            Map<String, String> params = new HashMap<>();
+                            params.put("uid", GlobalVars.getUserid());
+                            OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.LOGOUT, params, new HttpCallback() {
+                                @Override
+                                public void onSuccess(ResultDesc resultDesc) {
+                                    super.onSuccess(resultDesc);
+                                    Log.i("LOGOUT", "onSuccess: " + resultDesc.getResult());
+                                    Gson gson = new Gson();
+                                    Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
+                                    if (result.getCode() == 0) {
+                                        ToastUtil.showText("退出成功");
+                                        Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
+                                        GlobalVars.setDevid("");
+                                        GlobalVars.setDevpass("");
+                                        GlobalVars.setUserid("");
+                                        AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
+                                        AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
+                                        AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
+                                        AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
+                                        AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
+                                        MyApplication.mApplication.getmHomeActivity().finish();
+                                        startActivity(new Intent(HomeActivity.this, cn.semtec.community2.activity.LoginActivity.class));
+                                        finish();
+                                    } else {
+                                        if ("".equals(result.getMsg()))
+                                            ToastUtil.showText("退出失败");
+                                        else
+                                            ToastUtil.showText(result.getMsg());
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int code, String message) {
+                                    super.onFailure(code, message);
+                                    Log.i("LOGOUT", "onFailure: " + code + message);
+                                    ToastUtil.showText("退出失败");
+                                }
+                            });
+                        }
+                    });
+                    builder.create().show();
+
+                } else {
+                    GlobalVars.setDstip("127.0.0.1");
+                    SendDataUtil.getNetWorkInfo();
+                }
                 break;
             case R.id.city_btn_sure:
                 String cityName = city_name.getText().toString();
@@ -529,5 +604,21 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
     public interface OnGetViewPageNum {
         void getViewPageNum(int position);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (MyApplication.mApplication.isVisitor()){
+            Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
+            GlobalVars.setDevid("");
+            GlobalVars.setDevpass("");
+            GlobalVars.setUserid("");
+            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
+            AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
+            AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
+            AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
+            AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
+        }
     }
 }

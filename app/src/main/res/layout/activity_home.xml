@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <RelativeLayout
@@ -17,18 +17,16 @@
 
         </cn.etsoft.smarthome.view.ViewPagerCompat>
 
-        <TextView
+        <ImageView
             android:id="@+id/home_tv_ref"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:drawableLeft="@drawable/selector_ref"
-            android:gravity="center_vertical"
-            android:text="刷新"
             android:layout_marginRight="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
-            android:textColor="@color/color_setting_text"
-            android:textSize="@dimen/sp_14" />
+            android:padding="@dimen/dp_5"
+            android:scaleType="centerCrop"
+            android:src="@drawable/selector_ref" />
 
         <LinearLayout
             android:id="@+id/ll_loaction"
@@ -60,9 +58,8 @@
                 android:id="@+id/textView_banner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dp_60"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dp_30"
                 android:textColor="@color/color_fff"
                 android:textSize="@dimen/sp_50" />
 
@@ -211,8 +208,7 @@
         android:id="@+id/home"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-    </FrameLayout>
+        android:layout_weight="1"></FrameLayout>
 
     <RadioGroup
         android:id="@+id/rg_home"
@@ -225,14 +221,13 @@
         <RadioButton
             android:id="@+id/rb_home_home"
             style="@style/BottomRadioButtonStyle"
-            android:text="@string/home_page"
             android:drawableTop="@drawable/selector_home"
-            />
+            android:text="@string/home_page" />
 
         <RadioButton
             android:id="@+id/rb_home_setting"
             style="@style/BottomRadioButtonStyle"
-            android:text="@string/setting"
-            android:drawableTop="@drawable/selector_setting" />
+            android:drawableTop="@drawable/selector_setting"
+            android:text="@string/setting" />
     </RadioGroup>
 </LinearLayout>

@@ -52,35 +52,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
     private List<PrintCmd> list_Data_single;
     private List<PrintCmd> list_Data;
     private List<WareBoardKeyInput> list_board;
-    private Dialog mDialog;
 
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(this);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +69,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 14 || datType == 15 || datType == 16) {
-                    if (mDialog != null)
-                        mDialog.dismiss();
+                    MyApplication.mApplication.dismissLoadDialog();
                 }
                 if (datType == 14) {
                     ChnOpItem.clear();
@@ -140,7 +111,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
     public void initData() {
         SendDataUtil.getChnItemInfo(uid, devType, devId);
-        initDialog("正在加载...");
+       MyApplication.mApplication.showLoadDialog(this);
     }
 
     /**
@@ -163,7 +134,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
     private void initListView() {
         if (MyApplication.getWareData().getKeyInputs().size() == 0) {
             input_out_iv_noData.setVisibility(View.VISIBLE);
-            mDialog.dismiss();
+            MyApplication.mApplication.showLoadDialog(this);
+
             return;
         }
         listData_double = new ArrayList<>();
@@ -355,7 +327,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         Gson gson = new Gson();
                         System.out.println(gson.toJson(data));
                         MyApplication.mApplication.getUdpServer().send(gson.toJson(data));
-                        initDialog("正在保存...");
+                        MyApplication.mApplication.showLoadDialog(EquipmentDeployActivity.this);
                     }
                 });
                 builder.create().show();

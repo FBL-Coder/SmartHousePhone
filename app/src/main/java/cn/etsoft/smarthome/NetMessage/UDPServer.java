@@ -5,6 +5,7 @@ import android.os.Message;
 import android.util.Log;
 
 import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -251,12 +252,29 @@ public class UDPServer implements Runnable {
                 if (subType2 == 1) {
                     if (MyApplication.mApplication.isSeekNet() == false) {
                         //设置联网模块信息
-                        MyApplication.setNewWareData();
                         setRcuInfo(info);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(5000);
+                                    if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
+                                        SendDataUtil.getSafetyInfo();
+                                    }
+                                } catch (InterruptedException e) {
+                                    if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
+                                        SendDataUtil.getSafetyInfo();
+                                    }
+                                }
+
+                            }
+                        }).start();
+
                     } else if (MyApplication.mApplication.isSeekNet() == true) {
                         setRcuInfo_search(info);
                     }
                 }
+
                 break;
             case 2:// e_udpPro_getRcuinfo
                 if (subType1 == 0 && subType2 == 0) {
@@ -632,29 +650,6 @@ public class UDPServer implements Runnable {
         if (netword_count == sleep)
             isFreshData = true;
         sleep++;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    SendDataUtil.getSceneInfo();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(3000);
-                                SendDataUtil.getSafetyInfo();
-                            } catch (InterruptedException e) {
-                                SendDataUtil.getSafetyInfo();
-                            }
-                        }
-                    }).start();
-                } catch (InterruptedException e) {
-                    SendDataUtil.getSceneInfo();
-                }
-            }
-        }).start();
     }
 
     /**

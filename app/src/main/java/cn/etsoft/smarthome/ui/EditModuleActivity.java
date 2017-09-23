@@ -40,6 +40,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog_comment;
 
 /**
  * Created by Say GoBay on 2017/8/4.
+ * 按键板设置界面
  */
 public class EditModuleActivity extends Activity implements View.OnClickListener {
     private ImageView back;
@@ -76,8 +77,7 @@ public class EditModuleActivity extends Activity implements View.OnClickListener
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
 
-                if (mDialog != null)
-                    mDialog.dismiss();
+                MyApplication.mApplication.dismissLoadDialog();
                 if (datType == 9 && subtype2 == 1) {
                     Toast.makeText(EditModuleActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                 } else if (datType == 9 && subtype2 == 0) {
@@ -130,8 +130,6 @@ public class EditModuleActivity extends Activity implements View.OnClickListener
     /**
      * 初始化数据
      */
-    String roomName;
-
     public void initData() {
         name.setText("");
         name.setHint(MyApplication.getWareData().getKeyInputs().get(keyInput_position).getBoardName());
@@ -360,7 +358,6 @@ public class EditModuleActivity extends Activity implements View.OnClickListener
                         } catch (Exception e) {
                             System.out.println(e + "");
                         }
-                        initDialog("正在保存...");
                         //这就是要上传的字符串:data_hoad
                         String data_hoad = "{" +
                                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
@@ -371,44 +368,12 @@ public class EditModuleActivity extends Activity implements View.OnClickListener
                                 "\"keyinput_rows\":[" + more_data + "]}";
                         Log.e("情景模式测试:", data_hoad);
                         MyApplication.mApplication.getUdpServer().send(data_hoad);
+                        MyApplication.mApplication.showLoadDialog(EditModuleActivity.this);
                     }
                 });
                 builder.create().show();
                 break;
         }
-    }
-
-    private Dialog mDialog;
-
-    //自定义加载进度条
-    private void initDialog(String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(EditModuleActivity.this);
-        //允许返回
-        mDialog.setCancelable(true);
-        //显示
-        mDialog.show();
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                mDialog.dismiss();
-            }
-        };
-        //加载数据进度条，5秒数据没加载出来自动消失
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
-                }
-            }
-        }).start();
     }
 
     /**

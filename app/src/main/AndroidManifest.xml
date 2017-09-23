@@ -92,6 +92,7 @@
         <!--主页面-->
         <activity
             android:name="cn.etsoft.smarthome.ui.HomeActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <!--用户界面-->
         <activity
