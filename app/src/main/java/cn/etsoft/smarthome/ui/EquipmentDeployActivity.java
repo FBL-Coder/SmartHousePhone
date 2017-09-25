@@ -2,11 +2,8 @@ package cn.etsoft.smarthome.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,7 +26,7 @@ import cn.etsoft.smarthome.domain.WareBoardKeyInput;
 import cn.etsoft.smarthome.domain.WareChnOpItem;
 import cn.etsoft.smarthome.pullmi.utils.Sixteen2Two;
 import cn.etsoft.smarthome.utils.SendDataUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
+import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2016/8/29.
@@ -111,7 +108,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
     public void initData() {
         SendDataUtil.getChnItemInfo(uid, devType, devId);
-       MyApplication.mApplication.showLoadDialog(this);
+        MyApplication.mApplication.showLoadDialog(this);
     }
 
     /**
@@ -256,8 +253,13 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                             return;
                         list_Data = new ArrayList<>();
                         for (int i = 0; i < list_Data_single.size(); i++) {
-                            if (list_Data_single.get(i).isSelect())
+                            if (list_Data_single.get(i).isSelect()) {
+                                if (list_Data_single.get(i).getKey_cmd() == 0) {
+                                    ToastUtil.showText("存在未设置，请设置指令");
+                                    return;
+                                }
                                 list_Data.add(list_Data_single.get(i));
+                            }
                         }
 
                         //根据以上注释掉的数据结构，将已有数据已此格式寄存；

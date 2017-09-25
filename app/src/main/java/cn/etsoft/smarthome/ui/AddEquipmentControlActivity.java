@@ -163,6 +163,10 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                         mWareDev_ok = new ArrayList<>();
                         for (int i = 0; i < mWareDev.size(); i++) {
                             if (mWareDev.get(i).isSelect()) {
+                                if (mWareDev.get(i).getCmd() == 0){
+                                    ToastUtil.showText("存在未设置，请设置指令");
+                                    return;
+                                }
                                 mWareDev_ok.add(mWareDev.get(i));
                             }
                         }

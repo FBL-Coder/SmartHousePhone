@@ -143,9 +143,11 @@ public class FreshairActivity extends Activity implements View.OnClickListener {
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 4||(datType == 3 && subtype2 == 7))
+                if (datType == 4||(datType == 3 && subtype2 == 7)) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     //更新界面
                     upData();
+                }
             }
         });
     }

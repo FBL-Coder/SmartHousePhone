@@ -178,12 +178,12 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.add_dev_way:
-                if ("机顶盒".equals(add_dev_type.getText()) ||
-                        "电视".equals(add_dev_type.getText())) {
-                    add_dev_way.setText("此设备不需要通道");
+                if (board_position == -1) {
+                    ToastUtil.showText("请选择输出板");
                     return;
                 }
                 List<Integer> list_voard_cancpuid = new ArrayList<>();
+
                 for (int z = 0; z < MyApplication.getWareData().getDevs().size(); z++) {
                     WareDev dev = MyApplication.getWareData().getDevs().get(z);
                     if (dev.getType() == 0) {
@@ -258,8 +258,8 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 if (list_channel.size() == 0) {
                     ToastUtil.showText("没有可用通道");
                 } else {
-                    initPopupWindow_channel(v, list_channel);
-                    popupWindow.showAsDropDown(v, 0, 0);
+                    initPopupWindow_channel((TextView) v, list_channel);
+                    popupWindow.showAsDropDown(v,0,0);
                 }
                 break;
             case R.id.add_dev_save:
@@ -315,12 +315,8 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                 ToastUtil.showText("请选择通道");
                                 return;
                             } else {
-                                if (WayStr_air.length > 5) {//135
-                                    ToastUtil.showText("空调最多5个通道");
-                                    return;
-                                }
-                                if (WayStr_air.length < 5) {//135
-                                    ToastUtil.showText("空调不能少于5个通道");
+                                if (WayStr_air.length != 5) {//135
+                                    ToastUtil.showText("空调是5个通道");
                                     return;
                                 }
                                 String Way = "";
@@ -354,15 +350,29 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         } else if (type_position == 4) {
                             //设备通道 保存数据处理
                             String Way_Str = add_dev_way.getText().toString();
-                            if (Way_Str.length() == 0) {
+                            String[] WayStr_air = Way_Str.split("、");
+                            if (WayStr_air.length == 0) {
                                 ToastUtil.showText("请选择通道");
                                 return;
                             } else {
-                                if (Way_Str.contains("、")) {
-                                    ToastUtil.showText("窗帘最多只有1个通道");
+                                if (WayStr_air.length != 2) {//135
+                                    ToastUtil.showText("窗帘是2个通道");
                                     return;
                                 }
-                                Save_DevWay = Integer.parseInt(Way_Str) - 1;
+                                String Way = "";
+                                for (int j = 0; j < 12; j++) {
+                                    boolean IsEnter = false;
+                                    for (int k = 0; k < WayStr_air.length; k++) {
+                                        if (j == Integer.parseInt(WayStr_air[k]) - 1) {
+                                            Way += "1";
+                                            IsEnter = true;
+                                        }
+                                    }
+                                    if (!IsEnter) {
+                                        Way += "0";
+                                    }
+                                }
+                                Save_DevWay = Integer.parseInt(new StringBuffer(Way).reverse().toString(), 2);
                             }
                         } else if (type_position == 7) {
                             //设备通道 保存数据处理
@@ -730,7 +740,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
-       MyApplication.mApplication.dismissLoadDialog();
+        MyApplication.mApplication.dismissLoadDialog();
         super.onDestroy();
     }
 }

@@ -88,6 +88,7 @@ public class SwipeAdapter extends BaseAdapter {
         } else viewHolder.mDevSelectIv.setImageResource(R.drawable.select_no);
         if (devs.get(position).getType() == 0) {//空调
             text_0 = new ArrayList<>();
+            text_0.add("未设置");
             text_0.add("开关");
             text_0.add("模式");
             text_0.add("风速");
@@ -110,8 +111,10 @@ public class SwipeAdapter extends BaseAdapter {
             text_2.add("无操作");
         } else if (devs.get(position).getType() == 3) {//灯光
             text_3 = new ArrayList<>();
+            text_3.add("未设置");
             text_3.add("打开");
             text_3.add("关闭");
+            text_3.add("开关");
             text_3.add("变暗");
             text_3.add("变亮");
             viewHolder.mDevTvCMD.setText(text_3.get(devs.get(position).getCmd()));
@@ -119,18 +122,21 @@ public class SwipeAdapter extends BaseAdapter {
             viewHolder.mDevTvName.setText(devs.get(position).getDevName());
         } else if (devs.get(position).getType() == 4) {//窗帘
             text_4 = new ArrayList<>();
+            text_4.add("未设置");
             text_4.add("打开");
             text_4.add("关闭");
             text_4.add("停止");
+            text_4.add("开关停");
             viewHolder.mDevTvCMD.setText(text_4.get(devs.get(position).getCmd()));
             viewHolder.mDevIv.setImageResource(image[4]);
             viewHolder.mDevTvName.setText(devs.get(position).getDevName());
         } else if (devs.get(position).getType() == 7) {//新风
             text_7 = new ArrayList<>();
+            text_7.add("未设置");
             text_7.add("打开");
             text_7.add("高风");
             text_7.add("中风");
-            text_7.add("");
+            text_7.add("自动");
             text_7.add("关闭");
             viewHolder.mDevTvCMD.setText(text_7.get(devs.get(position).getCmd()));
             viewHolder.mDevIv.setImageResource(image[5]);
@@ -139,6 +145,7 @@ public class SwipeAdapter extends BaseAdapter {
             text_9 = new ArrayList<>();
             text_9.add("未设置");
             text_9.add("打开");
+            text_9.add("自动");
             text_9.add("关闭");
             viewHolder.mDevTvCMD.setText(text_9.get(devs.get(position).getCmd()));
             viewHolder.mDevIv.setImageResource(image[6]);

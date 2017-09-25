@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_109ADB"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingLeft="@dimen/dp_30"
+        android:paddingTop="@dimen/dp_5"
+        android:text="选择安防类型"
+        android:textColor="@color/white1"
+        android:textSize="@dimen/sp_20" />
+
+    <ListView
+        android:id="@+id/popupWindow_equipment_lv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:background="@color/regist_gray1"
+        android:layout_weight="1"
+        android:divider="@color/color_00000000"
+        android:dividerHeight="@dimen/dp_1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_109ADB"
+        android:orientation="horizontal"
+        android:gravity="right">
+
+        <TextView
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dp_5"
+            android:text="确定"
+            android:layout_marginRight="@dimen/sp_20"
+            android:gravity="center"
+            android:textColor="@color/white1"
+            android:textSize="@dimen/sp_22"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dp_5"
+            android:text="取消"
+            android:layout_marginRight="@dimen/sp_20"
+            android:gravity="center"
+            android:textColor="@color/white1"
+            android:textSize="@dimen/sp_22"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</LinearLayout>

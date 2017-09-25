@@ -77,6 +77,7 @@ public class Swipe_CpnAdapter extends BaseAdapter {
 
         if (listData.get(position).getDevType() == 0) {
             cmd_name = new ArrayList<>();
+            cmd_name.add("未设置");
             cmd_name.add("开关");
             cmd_name.add("模式");
             cmd_name.add("风速");
@@ -84,8 +85,10 @@ public class Swipe_CpnAdapter extends BaseAdapter {
             cmd_name.add("温度-");
         } else if (listData.get(position).getDevType() == 3) {
             cmd_name = new ArrayList<>();
+            cmd_name.add("未设置");
             cmd_name.add("打开");
             cmd_name.add("关闭");
+            cmd_name.add("开关");
             cmd_name.add("变暗");
             cmd_name.add("变亮");
         } else if (listData.get(position).getDevType() == 4) {
@@ -93,8 +96,10 @@ public class Swipe_CpnAdapter extends BaseAdapter {
             cmd_name.add("打开");
             cmd_name.add("关闭");
             cmd_name.add("停止");
+            cmd_name.add("开关停");
         } else if (listData.get(position).getDevType() == 7) {
             cmd_name = new ArrayList<>();
+            cmd_name.add("未设置");
             cmd_name.add("打开");
             cmd_name.add("低风");
             cmd_name.add("中风");
@@ -103,6 +108,7 @@ public class Swipe_CpnAdapter extends BaseAdapter {
             cmd_name.add("关闭");
         } else if (listData.get(position).getDevType() == 9) {
             cmd_name = new ArrayList<>();
+            cmd_name.add("未设置");
             cmd_name.add("打开");
             cmd_name.add("自动");
             cmd_name.add("关闭");

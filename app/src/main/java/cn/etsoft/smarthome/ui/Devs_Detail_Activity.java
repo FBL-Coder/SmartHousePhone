@@ -90,24 +90,14 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
         if (dev.getType() == 0) {
             dev_type.setText("空调");
-            List<WareAirCondDev> Airs = MyApplication.getWareData().getAirConds();
-            for (int i = 0; i < Airs.size(); i++) {
-                if (dev.getCanCpuId().equals(Airs.get(i).getDev().getCanCpuId())
-                        && dev.getDevId() == Airs.get(i).getDev().getDevId() &&
-                        dev.getType() == Airs.get(i).getDev().getType()) {
-                    WareAirCondDev Air = Airs.get(i);
-                    String BoardName = "";
-                    for (int j = 0; j < MyApplication.getWareData().getBoardChnouts().size(); j++) {
-                        WareBoardChnout chnout = MyApplication.getWareData().getBoardChnouts().get(j);
-                        if (dev.getCanCpuId().equals(chnout.getDevUnitID())) {
-                            BoardName = chnout.getBoardName();
-                        }
-                    }
+            for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
+                WareAirCondDev airCondDev = MyApplication.getWareData().getAirConds().get(i);
+                if (dev.getDevId() == airCondDev.getDev().getDevId()
+                        && dev.getCanCpuId().equals(airCondDev.getDev().getCanCpuId())) {
                     //可视布局数据
-                    dev_name.setText(Air.getDev().getDevName());
-                    dev_room.setText(Air.getDev().getRoomName());
-
-                    int Way_num = MyApplication.getWareData().getAirConds().get(i).getPowChn();
+                    dev_name.setText(airCondDev.getDev().getDevName());
+                    dev_room.setText(airCondDev.getDev().getRoomName());
+                    int Way_num = airCondDev.getPowChn();
                     String Way_str = new StringBuffer(Integer.toBinaryString(Way_num)).reverse().toString();
                     String Way_ok = "";
                     for (int j = 0; j < Way_str.length(); j++) {
@@ -120,7 +110,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     dev_way.setText(Way_ok);
                 }
             }
-
         } else if (dev.getType() == 1) {
             dev_type.setText("电视");
             dev_way.setText("此设备无通道");
@@ -141,12 +130,17 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             }
         } else if (dev.getType() == 4) {
             dev_type.setText("窗帘");
-            for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
-                if (MyApplication.getWareData().getCurtains().get(i).getDev().getDevId() == dev.getDevId()) {
-                    int PowChn = MyApplication.getWareData().getCurtains().get(i).getPowChn();
-                    dev_way.setText(PowChn);
+            int Way_num = dev.getPowChn();
+            String Way_str = new StringBuffer(Integer.toBinaryString(Way_num)).reverse().toString();
+            String Way_ok = "";
+            for (int j = 0; j < Way_str.length(); j++) {
+                if (Way_str.charAt(j) == '1') {
+                    Way_ok += j + 1 + "、";
                 }
             }
+            if (!"".equals(Way_ok))
+                Way_ok = Way_ok.substring(0, Way_ok.lastIndexOf("、"));
+            dev_way.setText(Way_ok);
         } else if (dev.getType() == 7) {
             dev_type.setText("新风");
             for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
@@ -259,36 +253,31 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
                 if (dev.getType() == 0) {
                     for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
-                        if (MyApplication.getWareData().getAirConds().get(i).getDev().getDevId()
-                                == dev.getDevId()
-                                && MyApplication.getWareData().getAirConds().get(i).getDev().getCanCpuId()
-                                .equals(dev.getCanCpuId())) {
-                            //设备通道 保存数据处理
-                            String Way_Str = dev_way.getText().toString();
-                            String[] WayStr_ok_air = Way_Str.split("、");
-                            if (WayStr_ok_air.length == 0) {
-                                ToastUtil.showText("请选择通道");
+                        //设备通道 保存数据处理
+                        String Way_Str = dev_way.getText().toString();
+                        String[] WayStr_ok_air = Way_Str.split("、");
+                        if (WayStr_ok_air.length == 0) {
+                            ToastUtil.showText("请选择通道");
+                            return;
+                        } else {
+                            if (WayStr_ok_air.length != 5) {//135
+                                ToastUtil.showText("空调是5个通道");
                                 return;
-                            } else {
-                                if (WayStr_ok_air.length > 5) {//135
-                                    ToastUtil.showText("空调最多5个通道");
-                                    return;
-                                }
-                                String Way = "";
-                                for (int j = 0; j < 12; j++) {
-                                    boolean IsEnter = false;
-                                    for (int k = 0; k < WayStr_ok_air.length; k++) {
-                                        if (j == Integer.parseInt(WayStr_ok_air[k]) - 1) {
-                                            Way += "1";
-                                            IsEnter = true;
-                                        }
-                                    }
-                                    if (!IsEnter) {
-                                        Way += "0";
-                                    }
-                                }
-                                Save_DevWay = Integer.parseInt(new StringBuffer(Way).reverse().toString(), 2);
                             }
+                            String Way = "";
+                            for (int j = 0; j < 12; j++) {
+                                boolean IsEnter = false;
+                                for (int k = 0; k < WayStr_ok_air.length; k++) {
+                                    if (j == Integer.parseInt(WayStr_ok_air[k]) - 1) {
+                                        Way += "1";
+                                        IsEnter = true;
+                                    }
+                                }
+                                if (!IsEnter) {
+                                    Way += "0";
+                                }
+                            }
+                            Save_DevWay = Integer.parseInt(new StringBuffer(Way).reverse().toString(), 2);
                         }
                     }
                 } else if (dev.getType() == 3) {
@@ -306,21 +295,35 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
                     //设备通道 保存数据处理
                     String Way_Str = dev_way.getText().toString();
-                    if (Way_Str.length() == 0) {
+                    String[] WayStr_ok_air = Way_Str.split("、");
+                    if (WayStr_ok_air.length == 0) {
                         ToastUtil.showText("请选择通道");
                         return;
                     } else {
-                        if (Way_Str.contains("、")) {
-                            ToastUtil.showText("窗帘最多只有1个通道");
+                        if (WayStr_ok_air.length != 2) {//135
+                            ToastUtil.showText("窗帘是2个通道");
                             return;
                         }
-                        Save_DevWay = Integer.parseInt(Way_Str) - 1;
+                        String Way = "";
+                        for (int j = 0; j < 12; j++) {
+                            boolean IsEnter = false;
+                            for (int k = 0; k < WayStr_ok_air.length; k++) {
+                                if (j == Integer.parseInt(WayStr_ok_air[k]) - 1) {
+                                    Way += "1";
+                                    IsEnter = true;
+                                }
+                            }
+                            if (!IsEnter) {
+                                Way += "0";
+                            }
+                        }
+                        Save_DevWay = Integer.parseInt(new StringBuffer(Way).reverse().toString(), 2);
                     }
                 } else if (dev.getType() == 7) {
                     //设备通道 保存数据处理
                     String Way_Str = dev_way.getText().toString();
                     WayStr_ok = Way_Str.split("、");
-                    if (WayStr_ok.length < 4 || WayStr_ok.length > 4) {
+                    if (WayStr_ok.length != 4) {
                         ToastUtil.showText("新风是4个通道");
                         return;
                     }
@@ -368,7 +371,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 } else if (dev.getType() == 9) {
                     for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
                         WareFloorHeat floorHeat = MyApplication.getWareData().getFloorHeat().get(i);
-
                         if (dev.getType() == floorHeat.getDev().getType()
                                 && dev.getDevId() == floorHeat.getDev().getDevId()
                                 && dev.getCanCpuId().equals(floorHeat.getDev().getCanCpuId()))
@@ -433,15 +435,15 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             case R.id.dev_way:
                 List<Integer> list_voard_cancpuid = new ArrayList<>();
                 for (int z = 0; z < MyApplication.getWareData().getDevs().size(); z++) {
-                    WareDev dev_in = MyApplication.getWareData().getDevs().get(z);
-                    if (!(dev_in.getType() == dev.getType()
-                            && dev_in.getDevId() == dev.getDevId()
-                            && dev_in.getCanCpuId().equals(dev.getCanCpuId()))) {
-                        if (dev_in.getType() == 0) {
+                    WareDev dev_inner = MyApplication.getWareData().getDevs().get(z);
+                    if (!(dev_inner.getType() == dev.getType()
+                            && dev_inner.getDevId() == dev.getDevId()
+                            && dev_inner.getCanCpuId().equals(dev.getCanCpuId()))) {
+                        if (dev_inner.getType() == 0) {
                             for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                                 WareAirCondDev airCondDev = MyApplication.getWareData().getAirConds().get(i);
-                                if (dev_in.getDevId() == airCondDev.getDev().getDevId()
-                                        && dev_in.getCanCpuId().equals(airCondDev.getDev().getCanCpuId())) {
+                                if (dev_inner.getDevId() == airCondDev.getDev().getDevId()
+                                        && dev_inner.getCanCpuId().equals(airCondDev.getDev().getCanCpuId())) {
                                     int PowChn = airCondDev.getPowChn();
                                     String PowChnList = Integer.toBinaryString(PowChn);
                                     PowChnList = new StringBuffer(PowChnList).reverse().toString();
@@ -454,39 +456,39 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                                     list_voard_cancpuid.addAll(index_list);
                                 }
                             }
-                        } else if (dev_in.getType() == 3) {
+                        } else if (dev_inner.getType() == 3) {
                             for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
                                 WareLight light = MyApplication.getWareData().getLights().get(i);
-                                if (dev_in.getDevId() == light.getDev().getDevId()
-                                        && dev_in.getCanCpuId().equals(light.getDev().getCanCpuId())) {
+                                if (dev_inner.getDevId() == light.getDev().getDevId()
+                                        && dev_inner.getCanCpuId().equals(light.getDev().getCanCpuId())) {
                                     int PowChn = light.getPowChn() + 1;
                                     list_voard_cancpuid.add(PowChn);
                                 }
                             }
-                        } else if (dev_in.getType() == 4) {
+                        } else if (dev_inner.getType() == 4) {
                             for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
                                 WareCurtain curtain = MyApplication.getWareData().getCurtains().get(i);
-                                if (dev_in.getDevId() == curtain.getDev().getDevId()
-                                        && dev_in.getCanCpuId().equals(curtain.getDev().getCanCpuId())) {
+                                if (dev_inner.getDevId() == curtain.getDev().getDevId()
+                                        && dev_inner.getCanCpuId().equals(curtain.getDev().getCanCpuId())) {
                                     list_voard_cancpuid.add(curtain.getDev().getPowChn() + 1);
                                 }
                             }
-                        } else if (dev_in.getType() == 7) {
+                        } else if (dev_inner.getType() == 7) {
                             for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
                                 WareFreshAir freshAir = MyApplication.getWareData().getFreshAirs().get(i);
-                                if (dev_in.getDevId() == freshAir.getDev().getDevId()
-                                        && dev_in.getCanCpuId().equals(freshAir.getDev().getCanCpuId())) {
+                                if (dev_inner.getDevId() == freshAir.getDev().getDevId()
+                                        && dev_inner.getCanCpuId().equals(freshAir.getDev().getCanCpuId())) {
                                     list_voard_cancpuid.add(freshAir.getOnOffChn() + 1);
                                     list_voard_cancpuid.add(freshAir.getSpdHighChn() + 1);
                                     list_voard_cancpuid.add(freshAir.getSpdLowChn() + 1);
                                     list_voard_cancpuid.add(freshAir.getSpdMidChn() + 1);
                                 }
                             }
-                        } else if (dev_in.getType() == 9) {
+                        } else if (dev_inner.getType() == 9) {
                             for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
                                 WareFloorHeat floorHeat = MyApplication.getWareData().getFloorHeat().get(i);
-                                if (dev_in.getDevId() == floorHeat.getDev().getDevId()
-                                        && dev_in.getCanCpuId().equals(floorHeat.getDev().getCanCpuId())) {
+                                if (dev_inner.getDevId() == floorHeat.getDev().getDevId()
+                                        && dev_inner.getCanCpuId().equals(floorHeat.getDev().getCanCpuId())) {
                                     int PowChn = floorHeat.getPowChn() + 1;
                                     list_voard_cancpuid.add(PowChn);
                                 }
@@ -494,10 +496,12 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                         }
                     }
                 }
-                list_channel = new ArrayList<>();
+
+                List<Integer> list_channel = new ArrayList<>();
                 for (int i = 1; i < 13; i++) {
                     list_channel.add(i);
                 }
+
                 for (int i = 0; i < list_voard_cancpuid.size(); i++) {
                     for (int j = 0; j < list_channel.size(); j++) {
                         if (list_channel.get(j) == list_voard_cancpuid.get(i)) {
@@ -505,16 +509,14 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                         }
                     }
                 }
-                if (popupWindow != null && popupWindow.isShowing()) {
-                    popupWindow.dismiss();
-                    popupWindow = null;
+                boolean[] isSelect = new boolean[list_channel.size()];
+                if (list_channel.size() == 0) {
+                    ToastUtil.showText("没有可用通道");
                 } else {
-                    if (list_channel.size() == 0) {
-                        ToastUtil.showText("没有可用通道");
-                    } else {
-                        initPopupWindow_channel(v, list_channel);
-                        popupWindow.showAsDropDown(v, 0, 0);
-                    }
+//                        initPopupWindow_channel(v, list_channel);
+//                        popupWindow.showAsDropDown(v, 0, 0);
+                    initPopupWindow_channel(v, list_channel);
+                    popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
         }

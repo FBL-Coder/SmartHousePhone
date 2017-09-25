@@ -5,8 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import cn.etsoft.smarthome.Fragment.EditDevFragment;
 import cn.etsoft.smarthome.Fragment.EditModuleFragment;
@@ -18,6 +21,8 @@ import cn.etsoft.smarthome.R;
  */
 public class Equipment_control extends FragmentActivity {
     private RadioGroup radioGroup;
+    private ImageView bacd;
+    private TextView title;
     public static final String fragment1Tag = "fragment1";
     public static final String fragment2Tag = "fragment2";
 
@@ -25,6 +30,17 @@ public class Equipment_control extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_equipment_control);
+
+        bacd = (ImageView) findViewById(R.id.title_bar_iv_back);
+        title = (TextView) findViewById(R.id.title_bar_tv_title);
+
+        bacd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        title.setText("设备编辑");
         radioGroup = (RadioGroup) findViewById(R.id.rg_group);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
@@ -46,6 +62,7 @@ public class Equipment_control extends FragmentActivity {
                             ft.add(R.id.group, fragment1, fragment1Tag);
                         } else {
                             ft.show(fragment1);
+                            title.setText("设备编辑");
                         }
                         break;
                     case R.id.edit_module:
@@ -54,6 +71,7 @@ public class Equipment_control extends FragmentActivity {
                             ft.add(R.id.group, fragment2, fragment2Tag);
                         } else {
                             ft.show(fragment2);
+                            title.setText("输入板编辑");
                         }
                         break;
                     default:

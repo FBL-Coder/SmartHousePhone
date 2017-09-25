@@ -139,7 +139,7 @@ public class MyApplication extends Application {
         /**
          * 腾讯 bugly
          */
-        CrashReport.initCrashReport(MyApplication.getContext(), "f623f31b48", true);
+        CrashReport.initCrashReport(MyApplication.getContext(), "f623f31b48", false);
 
         mApplication = MyApplication.this;
 
@@ -561,12 +561,13 @@ public class MyApplication extends Application {
             int SAFETY_TYPE = 0;
             String index = Integer.toBinaryString(MyApplication.getWareData().getSafetyResult_alarm().getSecDat());
             StringBuffer index_sb = new StringBuffer(index).reverse();
-            index_sb = index_sb.reverse();
+//            index_sb = index_sb.reverse();
             for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
                 if (index_sb.length() <= i)
                     index_sb.append("0");
             }
-            SAFETY_TYPE = (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 1);
+//            SAFETY_TYPE = MyApplication.getWareData().getSafetyResult_alarm().getSecStatus();
+            SAFETY_TYPE = (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255);
             Safety_Data safetyData;
             try {
                 safetyData = Data_Cache.readFile_safety(GlobalVars.getDevid(), false);

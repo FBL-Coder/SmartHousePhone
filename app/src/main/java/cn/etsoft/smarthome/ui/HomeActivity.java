@@ -459,7 +459,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                         break;
                     case R.id.rb_home_setting:
                         isSetBtu = true;
-                        ref_home.setImageResource(R.mipmap.ic_launcher);
+                        ref_home.setImageResource(R.drawable.logout_icon);
                         transaction.replace(R.id.home, settingFragment);
                         MyApplication.mApplication.setActivities(HomeActivity.this);
                         break;
@@ -499,7 +499,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_loaction:
-                dialog_add_loaction = new CustomDialog(HomeActivity.this, R.style.customDialog, R.layout.dialog_add_loaction);
+                dialog_add_loaction = new CustomDialog(HomeActivity.this,
+                        R.style.customDialog, R.layout.dialog_add_loaction);
                 dialog_add_loaction.show();
                 city_name = (EditText) dialog_add_loaction.findViewById(R.id.city_et_name);
                 city_sure = (Button) dialog_add_loaction.findViewById(R.id.city_btn_sure);

@@ -1,5 +1,6 @@
 package cn.etsoft.smarthome.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import cn.etsoft.smarthome.Fragment.InPutFragment;
@@ -27,6 +29,7 @@ public class ControlActivity extends FragmentActivity {
     private Fragment outPutFragment, inPutFragment, keySceneFragment;
     private TextView title;
     private ImageView back;
+    private RelativeLayout tab_rl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,8 @@ public class ControlActivity extends FragmentActivity {
      */
     private void initTitleBar() {
         title = (TextView) findViewById(R.id.title_bar_tv_title);
+        tab_rl = (RelativeLayout) findViewById(R.id.tab_rl);
+        tab_rl.setBackgroundColor(Color.WHITE);
         title.setText(getIntent().getStringExtra("title"));
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         back.setOnClickListener(new View.OnClickListener() {

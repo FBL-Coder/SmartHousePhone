@@ -257,14 +257,18 @@ public class UDPServer implements Runnable {
                             @Override
                             public void run() {
                                 try {
-                                    Thread.sleep(5000);
-                                    if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
-                                        SendDataUtil.getSafetyInfo();
-                                    }
+                                    Thread.sleep(8000);
+                                    SendDataUtil.getSafetyInfo();
+                                    Thread.sleep(3000);
+                                    SendDataUtil.getSceneInfo();
+                                    Thread.sleep(3000);
+                                    SendDataUtil.getTimerInfo();
+                                    Thread.sleep(3000);
+                                    SendDataUtil.getConditionInfo();
+                                    Thread.sleep(3000);
+                                    SendDataUtil.getGroupSetInfo();
                                 } catch (InterruptedException e) {
-                                    if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
-                                        SendDataUtil.getSafetyInfo();
-                                    }
+
                                 }
 
                             }

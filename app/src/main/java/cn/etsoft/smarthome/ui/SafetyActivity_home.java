@@ -1,7 +1,10 @@
 package cn.etsoft.smarthome.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +28,8 @@ import cn.etsoft.smarthome.adapter.PopupWindowAdapter2;
 import cn.etsoft.smarthome.adapter.SafetyAdapter_home;
 import cn.etsoft.smarthome.domain.Safety_Data;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
+import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDatePicker;
@@ -33,13 +38,13 @@ import cn.etsoft.smarthome.weidget.CustomDatePicker;
  * Created by Say GoBay on 2017/8/7.
  */
 public class SafetyActivity_home extends Activity implements View.OnClickListener {
-    private TextView safety, title;
+    private TextView safety, title, safety_type_tv;
     private CustomDatePicker time_start, time_end;
     private ListView listView;
-    private ImageView back, screen;
+    private ImageView back, screen, safetr_type;
     private List<String> safetyName;
     private PopupWindow popupWindow;
-    private int safety_position = 0;
+    private int safety_position = 0, safety_type_num = 1000;
     private SafetyAdapter_home safetyAdapter;
     private Safety_Data safety_Data;
     //所有报警信息
@@ -48,7 +53,7 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
     private List<Safety_Data.Safety_Time> data_data_safety;
     //时间区间内的防区的报警信息
     private List<Safety_Data.Safety_Time> data_data;
-    private List<String> getTime;
+    private List<String> getTime, mSafetyBuCheType;
     private List<Long> Time;
     private long startTime = 0, endTime = 0;
 
@@ -73,6 +78,29 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
                 initData();
             }
         });
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 32 && subtype1 == 2) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    safety_Data = Data_Cache.readFile_safety(GlobalVars.getDevid(), true);
+                    initData_safety(safety_position, safety_Data, startTime, endTime);
+                }
+                if (datType == 32 && subtype1 == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, subtype2);
+                    ToastUtil.showText("操作成功");
+                    if (0 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+                        safety_type_tv.setText("当前布撤状态 : 24小时布防");
+                    if (1 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+                        safety_type_tv.setText("当前布撤状态 : 在家布防");
+                    if (2 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+                        safety_type_tv.setText("当前布撤状态 : 外出布防");
+                    if (255 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+                        safety_type_tv.setText("当前布撤状态 : 撤防状态");
+                }
+            }
+        });
     }
 
     /**
@@ -92,7 +120,6 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         });
     }
 
-
     /**
      * 初始化控件
      */
@@ -100,8 +127,10 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         time_start = (CustomDatePicker) findViewById(R.id.time_start);
         time_end = (CustomDatePicker) findViewById(R.id.time_end);
         safety = (TextView) findViewById(R.id.safety);
+        safety_type_tv = (TextView) findViewById(R.id.safety_type);
         screen = (ImageView) findViewById(R.id.screen);
         listView = (ListView) findViewById(R.id.listView);
+        safetr_type = (ImageView) findViewById(R.id.safetr_type);
         safetyName = new ArrayList<>();
         safetyName.add("全部");
         for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
@@ -110,10 +139,20 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         safety.setText(safetyName.get(safety_position));
         safety.setOnClickListener(this);
         screen.setOnClickListener(this);
+        safetr_type.setOnClickListener(this);
         time_start.setDividerColor(0xff63C4E8);
         time_start.setPickerMargin(5);
         time_end.setDividerColor(0xff63C4E8);
         time_end.setPickerMargin(5);
+
+        if (0 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+            safety_type_tv.setText("当前布撤状态 : 24小时布防");
+        if (1 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+            safety_type_tv.setText("当前布撤状态 : 在家布防");
+        if (2 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+            safety_type_tv.setText("当前布撤状态 : 外出布防");
+        if (255 == (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0))
+            safety_type_tv.setText("当前布撤状态 : 撤防状态");
     }
 
     /**
@@ -136,6 +175,14 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
             case R.id.safety:
                 initRadioPopupWindow(safety, safetyName);
                 popupWindow.showAsDropDown(v, 0, 0);
+                break;
+            case R.id.safetr_type:
+                mSafetyBuCheType = new ArrayList<>();
+                mSafetyBuCheType.add("24小时布防");
+                mSafetyBuCheType.add("在家布防");
+                mSafetyBuCheType.add("外出布防");
+                mSafetyBuCheType.add("撤防状态");
+                ShowSafetyDialog(mSafetyBuCheType);
                 break;
             case R.id.screen:
                 if ("".equals(time_start.getYear()) || "".equals(time_start.getMonth() + 1) || "".equals(time_start.getDayOfMonth()) || "".equals(time_end.getYear()) || "".equals(time_end.getMonth() + 1) || "".equals(time_end.getDayOfMonth())) {
@@ -171,6 +218,52 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
                 break;
         }
     }
+
+    /**
+     * 选择安防类型Dialog
+     */
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void ShowSafetyDialog(final List<String> text) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.dialog_popupwindow_safety);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        final ListView ListView_dialog = (ListView) dialog.findViewById(R.id.popupWindow_equipment_lv);
+        TextView cancle = (TextView) dialog.findViewById(R.id.cancle);
+        TextView ok = (TextView) dialog.findViewById(R.id.ok);
+        final PopupWindowAdapter2 adapter = new PopupWindowAdapter2(text, SafetyActivity_home.this);
+        ListView_dialog.setAdapter(adapter);
+        ListView_dialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 3)
+                    safety_type_num = position;
+                else safety_type_num = 255;
+                adapter.setSelect(true,position);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (safety_type_num == 1000){
+                    ToastUtil.showText("请选择布防类型");
+                    return;
+                }
+                SendDataUtil.setBuFangSafetyInfo(safety_type_num);
+                dialog.dismiss();
+                MyApplication.mApplication.showLoadDialog(SafetyActivity_home.this);
+            }
+        });
+    }
+
 
     /**
      * 检索报警信息

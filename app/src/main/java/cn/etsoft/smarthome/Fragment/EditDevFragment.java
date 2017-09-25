@@ -210,8 +210,9 @@ public class EditDevFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv_0,
-                    R.drawable.jidinghe, R.drawable.dengguang, R.drawable.chuanglian};
+            int[] image = new int[]{R.drawable.aircood_icon, R.drawable.tv_icon,
+                    R.drawable.stb_icon, R.drawable.light_icon, R.drawable.curtains_icon,
+            R.drawable.freshair_icon,R.drawable.floorheat_icon};
             ViewHolder viewHolder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(mActivity).inflate(R.layout.equipment_listview_control_item2, null);
@@ -236,11 +237,10 @@ public class EditDevFragment extends Fragment implements View.OnClickListener {
                 viewHolder.image.setImageResource(image[3]);
             else if (devs.get(position).getType() == 4)
                 viewHolder.image.setImageResource(image[4]);
-            //TODO  新设备
-//            else if (devs.get(position).getType() == 7)
-//                viewHolder.image.setImageResource(0);
-//            else if (devs.get(position).getType() == 9)
-//                viewHolder.image.setImageResource(0);
+            else if (devs.get(position).getType() == 7)
+                viewHolder.image.setImageResource(image[5]);
+            else if (devs.get(position).getType() == 9)
+                viewHolder.image.setImageResource(image[6]);
 //            else
 //                viewHolder.image.setImageResource(0);
             return convertView;

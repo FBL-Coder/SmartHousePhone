@@ -78,7 +78,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 4)
+                if (datType == 4 || datType == 3)
                     //初始化控件
                     upData();
             }
@@ -479,7 +479,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
                     break;
             }
             int value = (modelValue << 5) | cmdValue;
-            SendDataUtil.controlDev(wareAirCondDev.getDev(),value);
+            SendDataUtil.controlDev(wareAirCondDev.getDev(), value);
         }
     }
 
@@ -509,7 +509,7 @@ public class AirConditionActivity extends Activity implements AdapterView.OnItem
         } else if (wareAirCondDev.getSelSpd()
                 == UdpProPkt.E_AIR_CMD.e_air_spdHigh.getValue()) {
             wind.setText("风速 : 高风");
-        }else if (wareAirCondDev.getSelSpd()
+        } else if (wareAirCondDev.getSelSpd()
                 == UdpProPkt.E_AIR_CMD.e_air_spdAuto.getValue()) {
             wind.setText("风速 : 自动");
         }

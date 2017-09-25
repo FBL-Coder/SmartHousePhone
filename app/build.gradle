@@ -4,7 +4,7 @@ android {
     compileSdkVersion 22
     buildToolsVersion "23.0.3"
     defaultConfig {
-        applicationId "cn.etsoft.smarthomephone"
+        applicationId "cn.etsoft.smarthome"
         minSdkVersion 11
         targetSdkVersion 22
         versionCode 1
@@ -72,5 +72,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile files('libs/AMap_Location_V3.2.1_20161228.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    compile files('libs/bugly_crash_release.jar')
+    compile 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.2.0
+    compile 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+
 }

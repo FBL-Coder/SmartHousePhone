@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Required -->
-    <uses-permission android:name="cn.etsoft.smarthomephone.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="cn.etsoft.smarthome.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- Optional. Required for location feature -->
@@ -51,6 +51,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+
+
 
     <!--全局对话框的权限-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -289,7 +292,7 @@
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="cn.etsoft.smarthomephone" />
+                <category android:name="cn.etsoft.smarthome" />
             </intent-filter>
         </activity>
         <!-- Required  SDK核心功能 -->
@@ -321,7 +324,7 @@
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.DaemonService" />
 
-                <category android:name="cn.etsoft.smarthomephone" />
+                <category android:name="cn.etsoft.smarthome" />
             </intent-filter>
         </service>
 
@@ -332,7 +335,7 @@
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
                 <!-- Required  显示通知栏 -->
-                <category android:name="cn.etsoft.smarthomephone" />
+                <category android:name="cn.etsoft.smarthome" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
@@ -371,7 +374,7 @@
                 <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
                 <action android:name="cn.jpush.android.intent.CONNECTION" />
                 <!-- 接收网络变化 连接/断开 since 1.6.3 -->
-                <category android:name="cn.etsoft.smarthomephone" />
+                <category android:name="cn.etsoft.smarthome" />
             </intent-filter>
         </receiver>
         <!-- Required  . Enable it you can get statistics data with channel -->
@@ -491,6 +494,6 @@
         //高德地图定位
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="a7eb513c21b85dd6008c40a6ed0fa8aa" />
+            android:value="cfa69e94e72e80aef433032fe101ff65" />
     </application>
 </manifest>

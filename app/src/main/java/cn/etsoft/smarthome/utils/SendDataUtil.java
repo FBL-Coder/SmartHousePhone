@@ -16,13 +16,11 @@ import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 
 public class SendDataUtil {
 
-
     public static void getGroupSetInfo() {
         String GETGROUPSETINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid()
                 + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getGroupInfo.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 255" + "}";
         MyApplication.mApplication.getUdpServer().send(GETGROUPSETINFO);
     }
-
 
     public static void SeekNet() {
         MyApplication.mApplication.setSeekNet(true);

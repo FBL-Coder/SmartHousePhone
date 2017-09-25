@@ -35,7 +35,7 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     private GridView gridView;
     private LinearLayout ll;
     private int[] image = {R.drawable.curtainfullopen, R.drawable.curtainhalfopen, R.drawable.curtainalloff};
-    private String[] text = {"全开", "半开", "全关"};
+    private String[] text = {"打开", "停止", "关闭"};
     private ImageView back, title_bar_iv_or;
     private TextView title, name_cur, title_bar_tv_room;
     private List<WareCurtain> AllCurtain;

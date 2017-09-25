@@ -1,12 +1,9 @@
 package cn.etsoft.smarthome.ui;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,7 +50,6 @@ import cn.etsoft.smarthome.domain.WareTv;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDialog_comment;
 import cn.etsoft.smarthome.weidget.VerticalPageSeekBar;
 
@@ -86,7 +82,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     //页码进度条
     private VerticalPageSeekBar mPageSeekBar;
     // 一页最多多少条数据
-    protected int mMaxShowLinesPage = 5;
+    protected int mMaxShowLinesPage = 3;
     // 当前是第几页
     protected int mCurrentSelectPageIndex = 0;
     // 当前有多少页
@@ -119,10 +115,8 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
             public void upDataWareData(int datType, int subtype1, int subtype2) {
 
                 if (datType == 66) {
-                   MyApplication.mApplication.dismissLoadDialog();
-                    if (MyApplication.getWareData().getmGroupSet_Data() != null
-                            && MyApplication.getWareData().getmGroupSet_Data().getSubType1() == 2
-                            && MyApplication.getWareData().getmGroupSet_Data().getSubType2() == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    if (subtype1 == 2 && subtype2 == 1) {
                         ToastUtil.showText("保存成功");
                         SendDataUtil.getGroupSetInfo();
                     }
@@ -197,7 +191,6 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         for (int i = 0; i < MyApplication.getWareData().getmGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getRun_dev_item().size(); i++) {
             common_dev.add(MyApplication.getWareData().getmGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getRun_dev_item().get(i));
         }
-//        common_dev = MyApplication.getWareData().getGroupSet_Data().getSecs_trigger_rows().get(GroupSet_position).getRun_dev_item();
         gridViewAdapter_groupSet = new GridViewAdapter_groupSet(common_dev);
         gridView_groupSet.setAdapter(gridViewAdapter_groupSet);
 
@@ -323,18 +316,8 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     //初始化进度条管理数据显示
     protected void initResetListView(int pageIndex) {
         mRecordCount = safetyName.size();
-
         // 计算有多少页数据
         mPagesCount = mRecordCount / mMaxShowLinesPage + (mRecordCount % mMaxShowLinesPage == 0 ? 0 : 1);
-
-        // 判断 页面数目是2的时候, 简化为1页
-//        if (mPagesCount == 2) {
-//            mMaxShowLinesPage = mMaxShowLinesPage * 2;
-//            mPagesCount = 1;
-//        } else {
-//            mMaxShowLinesPage = 5;
-//        }
-
         // 设置当前选中也为0
         mCurrentSelectPageIndex = pageIndex;
         if (mCurrentSelectPageIndex >= mPagesCount)
@@ -623,7 +606,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                             MyApplication.mApplication.showLoadDialog(GroupSetActivity_details.this);
                             MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data));
                         } catch (Exception e) {
-                           MyApplication.mApplication.dismissLoadDialog();
+                            MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存触发器数据", "保存数据异常" + e);
                             ToastUtil.showText("保存数据异常,请检查数据是否合适");
                         }
@@ -938,7 +921,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                         }
                     }
                 }
-            }else if (type_dev == 7){
+            } else if (type_dev == 7) {
                 for (int j = 0; j < MyApplication.getWareData().getFreshAirs().size(); j++) {
                     WareFreshAir freshAir = MyApplication.getWareData().getFreshAirs().get(j);
                     if (env_list.get(position).getDevID() == freshAir.getDev().getDevId() &&
@@ -953,7 +936,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                         }
                     }
                 }
-            }else if (type_dev == 9){
+            } else if (type_dev == 9) {
                 for (int j = 0; j < MyApplication.getWareData().getFloorHeat().size(); j++) {
                     WareFloorHeat floorHeat = MyApplication.getWareData().getFloorHeat().get(j);
                     if (env_list.get(position).getDevID() == floorHeat.getDev().getDevId() &&

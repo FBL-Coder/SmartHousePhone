@@ -1,12 +1,9 @@
 package cn.etsoft.smarthome.ui;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -49,7 +46,6 @@ import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDialog_comment;
 
 /**
@@ -58,7 +54,8 @@ import cn.etsoft.smarthome.weidget.CustomDialog_comment;
  */
 public class SafetyActivity_details extends Activity implements View.OnClickListener {
     private ImageView back;
-    private TextView title, save, safety_match_code, safety_enabled, safety_state, safety_scene, safety_type, safety_all_close, safety_all_open, add_dev_safety, add_dev_Layout_close, tv_text_parlour;
+    private TextView title, save, safety_match_code, safety_enabled, safety_state, safety_scene,
+            safety_type, add_dev_safety, add_dev_Layout_close, tv_text_parlour;
     private ListView lv;
     private EditText safety_name;
     private GridView gridView_safety;
@@ -86,6 +83,10 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         initTitleBar();
         //初始化组件
         initView();
+        if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() > 0) {
+            initData(Safety_position);
+            initGridView(Safety_position);
+        } else SendDataUtil.getSafetyInfo();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
@@ -101,16 +102,8 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     }
                     if (MyApplication.getWareData().getResult_safety() != null && MyApplication.getWareData().getResult_safety().getSubType2() == 255 && MyApplication.getWareData().getResult_safety().getSubType1() == 4) {
                         initTitleBar();
+                        initData(Safety_position);
                         initGridView(Safety_position);
-                        initData(Safety_position);
-                    }
-                    if (MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1 && MyApplication.getWareData().getResult().getSubType2() != 255) {
-                        ToastUtil.showText("布防成功");
-                        AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, MyApplication.getWareData().getResult().getSubType2());
-                        initData(Safety_position);
-                    } else if (MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1 && MyApplication.getWareData().getResult().getSubType2() == 255) {
-                        ToastUtil.showText("撤防成功");
-                        initData(Safety_position);
                     }
                 }
             }
@@ -151,8 +144,6 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         safety_state = (TextView) findViewById(R.id.safety_state);
         safety_scene = (TextView) findViewById(R.id.safety_scene);
         safety_type = (TextView) findViewById(R.id.safety_type);
-        safety_all_close = (TextView) findViewById(R.id.safety_all_close);
-        safety_all_open = (TextView) findViewById(R.id.safety_all_open);
         add_dev_safety = (TextView) findViewById(R.id.add_dev_safety);
         safety_name = (EditText) findViewById(R.id.safety_name);
 
@@ -168,9 +159,6 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         safety_enabled.setOnClickListener(this);
         safety_state.setOnClickListener(this);
         safety_scene.setOnClickListener(this);
-        safety_type.setOnClickListener(this);
-        safety_all_close.setOnClickListener(this);
-        safety_all_open.setOnClickListener(this);
         add_dev_safety.setOnClickListener(this);
         add_dev_Layout_close.setOnClickListener(this);
         tv_text_parlour.setOnClickListener(this);
@@ -198,8 +186,11 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
      * 初始化GridView
      */
     public void initGridView(int Safety_position) {
-        if (MyApplication.getWareData().getResult_safety() == null || MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0)
+        if (MyApplication.getWareData().getResult_safety() == null
+                || MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
+            ToastUtil.showText("此防区没有关联设备");
             return;
+        }
         common_dev = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getRun_dev_item().size(); i++) {
             common_dev.add(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getRun_dev_item().get(i));
@@ -256,14 +247,14 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         home_text = MyApplication.getWareData().getRooms();
         if (MyApplication.getWareData().getResult_safety() == null || MyApplication.getWareData().getResult_safety().getSec_info_rows() == null && MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0)
             return;
+        if ((int)AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255) == 255)
+            safety_type.setText(safety_state_data.get(3));
+        else
+            safety_type.setText(safety_state_data.get((int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255)));
         safety_name.setText("");
         safety_name.setHint(MyApplication.getWareData().getResult_safety()
                 .getSec_info_rows().get(timer_position).getSecName());
-        //某一安防里的设备为空或长度为0时
-        if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getRun_dev_item() == null
-                || MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getRun_dev_item().size() == 0) {
-            ToastUtil.showText("该防区没有设备");
-        }
+
         if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(timer_position).getValid() == 1)
             safety_enabled.setText("启用");
         else safety_enabled.setText("禁用");
@@ -540,7 +531,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     safetyResult.setSec_info_rows(timerEvent_rows);
                     Gson gson = new Gson();
                     Log.e("对码数据", gson.toJson(safetyResult));
-                   MyApplication.mApplication.showLoadDialog(SafetyActivity_details.this);
+                    MyApplication.mApplication.showLoadDialog(SafetyActivity_details.this);
                     MyApplication.mApplication.getUdpServer().send(gson.toJson(safetyResult));
                 } catch (Exception e) {
                     MyApplication.mApplication.dismissLoadDialog();
@@ -555,36 +546,6 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
             case R.id.safety_scene://关联情景
                 initRadioPopupWindow(safety_scene, safety_scene_name);
                 popupWindow.showAsDropDown(view, 0, 0);
-                break;
-            case R.id.safety_type:// type
-                initRadioPopupWindow(safety_type, safety_state_data1);
-                popupWindow.showAsDropDown(view, 0, 0);
-                break;
-            case R.id.safety_all_close://全部撤防
-                String ctlStr2 = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-                        ",\"datType\":32" +
-                        ",\"subType1\":0" +
-                        ",\"subType2\":255" +
-                        "}";
-                MyApplication.mApplication.getUdpServer().send(ctlStr2);
-                getSharedPreferences("profile",
-                        Context.MODE_PRIVATE).edit().putBoolean("IsDisarming", true).commit();
-                break;
-            case R.id.safety_all_open://全部布防
-                //TODO  全局布防待完成
-                int subType2 = 0;
-                for (int i = 0; i < safety_state_data.size(); i++) {
-                    if (safety_type.getText().toString().equals(safety_state_data.get(i)))
-                        subType2 = i;
-                }
-                String ctlStr1 = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-                        ",\"datType\":32" +
-                        ",\"subType1\":0" +
-                        ",\"subType2\":" + subType2 +
-                        "}";
-                MyApplication.mApplication.getUdpServer().send(ctlStr1);
-                getSharedPreferences("profile", Context.MODE_PRIVATE)
-                        .edit().putBoolean("IsDisarming", false).commit();
                 break;
             case R.id.tv_equipment_parlour://添加设备 选择房间
                 initRadioPopupWindow(tv_text_parlour, home_text);

@@ -69,8 +69,10 @@ public class SafetyAdapter_home extends BaseAdapter {
             listName.add(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecName());
         }
 
-        viewHolder.safetyMessage.setText(listName.get(data_data.get(position).getId() - 1) + ",于" + data_data.get(position).getYear() + "/" + data_data.get(position).getMonth() + "/" + data_data.get(position).getDay() + "/," + data_data.get(position).getH() + ":" + data_data.get(position).getM() + ":" + data_data.get(position).getS() + "被触发");
-
+        try {
+            viewHolder.safetyMessage.setText(listName.get(data_data.get(position).getId()) + ",于" + data_data.get(position).getYear() + "/" + data_data.get(position).getMonth() + "/" + data_data.get(position).getDay() + "/," + data_data.get(position).getH() + ":" + data_data.get(position).getM() + ":" + data_data.get(position).getS() + "被触发");
+        }catch (Exception e){
+        }
         return convertView;
     }
 

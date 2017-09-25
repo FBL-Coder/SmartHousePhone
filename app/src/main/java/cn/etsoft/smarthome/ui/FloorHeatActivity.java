@@ -162,9 +162,12 @@ public class FloorHeatActivity extends Activity implements AdapterView.OnItemCli
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 4 ||(datType == 3 && subtype2 == 9))
+                if (datType == 4 || (datType == 3 && subtype2 == 9) ||
+                        (datType == 6 && subtype2 == 1)) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     //更新界面
                     upData();
+                }
             }
         });
     }

@@ -1,6 +1,7 @@
 package cn.etsoft.smarthome.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,10 @@ public class PopupWindowAdapter2 extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<PopBean> listViewItems;
     private Context context;
+    private int select_position;
+    private boolean ISUSE = false;
 
     public PopupWindowAdapter2(List<String> text, Context context) {
-        super();
         listViewItems = new ArrayList<>();
         mInflater = LayoutInflater.from(context);
         this.context = context;
@@ -66,6 +68,11 @@ public class PopupWindowAdapter2 extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        if (ISUSE) {
+            if (select_position == position)
+                viewHolder.text.setBackgroundColor(context.getResources().getColor(R.color.color_0095D9));
+            else viewHolder.text.setBackgroundColor(Color.TRANSPARENT);
+        }
         viewHolder.text.setText(listViewItems.get(position).getTextId());
         return convertView;
     }
@@ -73,6 +80,10 @@ public class PopupWindowAdapter2 extends BaseAdapter {
 
     public class ViewHolder {
         public TextView text;
+    }
 
+    public void setSelect(boolean isUse, int positionx) {
+        ISUSE = isUse;
+        select_position = positionx;
     }
 }

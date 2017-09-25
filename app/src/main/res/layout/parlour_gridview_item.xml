@@ -3,7 +3,7 @@
     android:id="@+id/dev_all_click"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rect_gray5"
+    android:background="@color/color_CCD1D9"
     android:orientation="vertical">
 
     <LinearLayout
@@ -25,8 +25,8 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_3"
-            android:layout_weight="1"
-            android:scaleType="centerCrop" />
+            android:paddingBottom="@dimen/dp_2"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <ImageView
