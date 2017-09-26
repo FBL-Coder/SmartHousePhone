@@ -568,6 +568,9 @@ public class MyApplication extends Application {
             }
 //            SAFETY_TYPE = MyApplication.getWareData().getSafetyResult_alarm().getSecStatus();
             SAFETY_TYPE = (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255);
+            if (SAFETY_TYPE == 255){
+                return "";
+            }
             Safety_Data safetyData;
             try {
                 safetyData = Data_Cache.readFile_safety(GlobalVars.getDevid(), false);

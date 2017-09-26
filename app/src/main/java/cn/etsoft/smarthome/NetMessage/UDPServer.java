@@ -2492,7 +2492,7 @@ public class UDPServer implements Runnable {
             String PowChnList = Integer.toBinaryString(devState);//111110000
             StringBuffer PowSB = new StringBuffer(PowChnList).reverse();
             if (PowSB.length() < 12)
-                for (int i = PowSB.length(); i < 13; i++) {
+                for (int i = PowSB.length(); i < 12; i++) {
                     PowSB.append(0);
                 }
             PowChnList = PowSB.toString();

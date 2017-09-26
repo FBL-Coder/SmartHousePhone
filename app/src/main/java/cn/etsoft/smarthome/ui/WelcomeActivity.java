@@ -8,15 +8,12 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
-import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
-import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 
 
@@ -33,8 +30,6 @@ public class WelcomeActivity extends Activity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
-
         try {
             //获取屏幕数据
             DisplayMetrics metric = new DisplayMetrics();

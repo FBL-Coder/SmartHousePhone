@@ -101,7 +101,11 @@ public class Timer_Data implements Serializable {
         private List<RunDevItemBean> run_dev_item;
 
         public String getTimerName() {
-            return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(timerName));
+            try {
+                return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(timerName));
+            }catch (Exception e){
+                return "错误数据";
+            }
         }
 
         public void setTimerName(String timerName) {

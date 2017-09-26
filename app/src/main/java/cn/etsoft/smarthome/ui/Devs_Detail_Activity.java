@@ -74,7 +74,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 3 || datType == 4 || datType == 35
-                        || (datType == 3 || subtype2 == 7)||(datType == 3 && subtype2 == 9)){
+                        || (datType == 3 || subtype2 == 7) || (datType == 3 && subtype2 == 9)) {
                     initView();
                 }
             }
@@ -140,7 +140,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
                 if (MyApplication.getWareData().getLights().get(i).getDev().getDevId() == dev.getDevId()) {
                     int PowChn = MyApplication.getWareData().getLights().get(i).getPowChn();
-                    dev_way.setText(PowChn + "");
+                    dev_way.setText((PowChn + 1) + "");
                 }
             }
         } else if (dev.getType() == 4) {
@@ -175,7 +175,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
                 if (MyApplication.getWareData().getFloorHeat().get(i).getDev().getDevId() == dev.getDevId()) {
                     int PowChn = MyApplication.getWareData().getFloorHeat().get(i).getPowChn();
-                    dev_way.setText(PowChn + "");
+                    dev_way.setText((PowChn + 1) + "");
                 }
             }
         }

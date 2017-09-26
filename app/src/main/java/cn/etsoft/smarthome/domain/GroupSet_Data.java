@@ -100,7 +100,11 @@ public class GroupSet_Data implements Serializable {
         private List<RunDevItemBean> run_dev_item;
 
         public String getTriggerName() {
-            return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(triggerName));
+            try {
+                return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(triggerName));
+            } catch (Exception e) {
+                return "错误数据";
+            }
         }
 
         public void setTriggerName(String triggerName) {

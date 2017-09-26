@@ -214,6 +214,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                 }
                 LoginHelper loginHelper = new LoginHelper(handler);
                 loginHelper.loginServer(cellphone, password);
+//                login(cellphone,password);
                 showProgress();
                 break;
             case R.id.btn_forget:

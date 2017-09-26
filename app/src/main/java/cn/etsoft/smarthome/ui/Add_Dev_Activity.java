@@ -61,7 +61,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_dev);
-
         initView();
     }
 

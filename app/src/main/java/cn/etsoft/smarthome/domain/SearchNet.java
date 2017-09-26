@@ -111,7 +111,11 @@ public class SearchNet implements Serializable {
         }
 
         public String getName() {
-            return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(name));
+            try {
+                return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(name));
+            }catch (Exception e){
+                return "错误数据";
+            }
         }
 
         public void setName(String name) {

@@ -50,6 +50,7 @@ public class Data_Cache {
             if (fos != null) {
                 try {
                     fos.close();
+                    oos.close();
                 } catch (IOException e) {
                     Log.e("WareData", e + "");
                     // fos流关闭异常
@@ -58,6 +59,7 @@ public class Data_Cache {
             }
             if (oos != null) {
                 try {
+                    fos.close();
                     oos.close();
                 } catch (IOException e) {
                     Log.e("WareData", e + "");
@@ -92,6 +94,7 @@ public class Data_Cache {
             if (fis != null) {
                 try {
                     fis.close();
+                    ois.close();
                 } catch (IOException e) {
                     Log.e("WareData-read", e + "");
                     // fis流关闭异常
@@ -100,6 +103,7 @@ public class Data_Cache {
             }
             if (ois != null) {
                 try {
+                    fis.close();
                     ois.close();
                 } catch (IOException e) {
                     Log.e("WareData-read", e + "");

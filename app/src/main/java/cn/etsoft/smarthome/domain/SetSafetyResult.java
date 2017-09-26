@@ -105,7 +105,11 @@ public class SetSafetyResult implements Serializable {
         private List<RunDevItemBean> run_dev_item;
 
         public String getSecName() {
-            return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(secName));
+            try {
+                return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(secName));
+            } catch (Exception e) {
+                return "错误数据";
+            }
 //            return secName;
         }
 

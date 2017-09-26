@@ -114,7 +114,11 @@ public class Condition_Event_Bean implements Serializable {
         }
 
         public String getEventName() {
-            return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(eventName));
+            try {
+                return CommonUtils.getGBstr(CommonUtils.hexStringToBytes(eventName));
+            }catch (Exception e){
+                return "错误数据";
+            }
         }
 
         public void setEventName(String eventName) {
