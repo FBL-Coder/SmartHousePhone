@@ -20,7 +20,7 @@ import cn.etsoft.smarthome.R;
  * 设备控制
  */
 public class Equipment_control extends FragmentActivity {
-    private RadioGroup radioGroup;
+//    private RadioGroup radioGroup;
     private ImageView bacd;
     private TextView title;
     public static final String fragment1Tag = "fragment1";
@@ -41,45 +41,51 @@ public class Equipment_control extends FragmentActivity {
             }
         });
         title.setText("设备编辑");
-        radioGroup = (RadioGroup) findViewById(R.id.rg_group);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                Fragment fragment1 = fm.findFragmentByTag(fragment1Tag);
-                Fragment fragment2 = fm.findFragmentByTag(fragment2Tag);
-                if (fragment1 != null) {
-                    ft.hide(fragment1);
-                }
-                if (fragment2 != null) {
-                    ft.hide(fragment2);
-                }
-                switch (checkedId) {
-                    case R.id.edit_dev:
-                        if (fragment1 == null) {
-                            fragment1 = new EditDevFragment(Equipment_control.this);
-                            ft.add(R.id.group, fragment1, fragment1Tag);
-                        } else {
-                            ft.show(fragment1);
-                            title.setText("设备编辑");
-                        }
-                        break;
-                    case R.id.edit_module:
-                        if (fragment2 == null) {
-                            fragment2 = new EditModuleFragment(Equipment_control.this);
-                            ft.add(R.id.group, fragment2, fragment2Tag);
-                        } else {
-                            ft.show(fragment2);
-                            title.setText("输入板编辑");
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                ft.commit();
-            }
-        });
+//        FragmentManager fm = getSupportFragmentManager();
+//        FragmentTransaction ft = fm.beginTransaction();
+//        Fragment fragment = new EditDevFragment(Equipment_control.this);
+//        ft.add(R.id.group, fragment, fragment1Tag);
+//        ft.show(fragment);
+//        ft.commit();
+//        radioGroup = (RadioGroup) findViewById(R.id.rg_group);
+//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                FragmentManager fm = getSupportFragmentManager();
+//                FragmentTransaction ft = fm.beginTransaction();
+//                Fragment fragment1 = fm.findFragmentByTag(fragment1Tag);
+//                Fragment fragment2 = fm.findFragmentByTag(fragment2Tag);
+//                if (fragment1 != null) {
+//                    ft.hide(fragment1);
+//                }
+//                if (fragment2 != null) {
+//                    ft.hide(fragment2);
+//                }
+//                switch (checkedId) {
+//                    case R.id.edit_dev:
+//                        if (fragment1 == null) {
+//                            fragment1 = new EditDevFragment(Equipment_control.this);
+//                            ft.add(R.id.group, fragment1, fragment1Tag);
+//                        } else {
+//                            ft.show(fragment1);
+//                            title.setText("设备编辑");
+//                        }
+//                        break;
+//                    case R.id.edit_module:
+//                        if (fragment2 == null) {
+//                            fragment2 = new EditModuleFragment(Equipment_control.this);
+//                            ft.add(R.id.group, fragment2, fragment2Tag);
+//                        } else {
+//                            ft.show(fragment2);
+//                            title.setText("输入板编辑");
+//                        }
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                ft.commit();
+//            }
+//        });
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             Fragment fragment = new EditDevFragment(Equipment_control.this);
@@ -88,20 +94,20 @@ public class Equipment_control extends FragmentActivity {
         }
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        for (int i = 0; i < radioGroup.getChildCount(); i++) {
-            RadioButton mTab = (RadioButton) radioGroup.getChildAt(i);
-            FragmentManager fm = getSupportFragmentManager();
-            Fragment fragment = fm.findFragmentByTag((String) mTab.getTag());
-            FragmentTransaction ft = fm.beginTransaction();
-            if (fragment != null) {
-                if (!mTab.isChecked()) {
-                    ft.hide(fragment);
-                }
-            }
-            ft.commit();
-        }
-    }
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        for (int i = 0; i < radioGroup.getChildCount(); i++) {
+//            RadioButton mTab = (RadioButton) radioGroup.getChildAt(i);
+//            FragmentManager fm = getSupportFragmentManager();
+//            Fragment fragment = fm.findFragmentByTag((String) mTab.getTag());
+//            FragmentTransaction ft = fm.beginTransaction();
+//            if (fragment != null) {
+//                if (!mTab.isChecked()) {
+//                    ft.hide(fragment);
+//                }
+//            }
+//            ft.commit();
+//        }
+//    }
 }

@@ -56,11 +56,9 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 3|| datType == 35)
+                if (datType == 3 || datType == 35 || datType == 4)
                     //更新界面
                     upData();
-                if (datType == 4 )
-                    ToastUtil.showText("执行成功");
             }
         });
         //初始化GridView

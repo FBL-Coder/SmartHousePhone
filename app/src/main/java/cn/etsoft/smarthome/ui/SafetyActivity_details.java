@@ -76,6 +76,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     private int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv_0, R.drawable.jidinghe, R.drawable.dengguang, R.drawable.chuanglian};
     private SafetyActivity_details.EquipmentAdapter equipmentAdapter;
     private int ScenePosition = 255;
+    private int Safety_Type = 255;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -355,8 +356,9 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             bean.setSecDev(common_dev.size());
                             bean.setDevCnt(common_dev.size());
                             bean.setItemCnt(1);
-                            bean.setSecId(ScenePosition);
+                            bean.setSecId(Safety_position);
                             bean.setRun_dev_item(common_dev);
+                            bean.setSecType(Safety_Type);
                             if ("".equals(safety_name.getText().toString())) {
                                 bean.setSecName(CommonUtils.bytesToHexString(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecName().getBytes("GB2312")));
                             } else {
@@ -598,6 +600,11 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     ScenePosition = position;
                     if (position == text.size() - 1)
                         ScenePosition = 255;
+                }
+                if (view_parent.getId() == R.id.safetr_type) {
+                    Safety_Type = position;
+                    if (position == text.size() - 1)
+                        Safety_Type = 255;
                 }
             }
         });

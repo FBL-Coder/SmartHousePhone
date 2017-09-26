@@ -68,12 +68,13 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dec_detail_activity);
+        id = getIntent().getIntExtra("id", 0);
         initView();
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 3 || datType == 4 || datType == 35
-                        || (datType == 7 || subtype2 == 1)||(datType == 9 && subtype2 == 1)){
+                        || (datType == 3 || subtype2 == 7)||(datType == 3 && subtype2 == 9)){
                     initView();
                 }
             }
@@ -85,9 +86,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
      */
     private void initView() {
         message_save = new ArrayList<>();
-        id = getIntent().getIntExtra("id", 0);
         dev = MyApplication.getWareData().getDevs().get(id);
-
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         dev_type = (ImageView) findViewById(R.id.dev_type);
         dev_room = (TextView) findViewById(R.id.dev_room);
@@ -101,7 +100,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         dev_room.setText(dev.getRoomName());
 
         if (dev.getType() == 0) {
-
             for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                 WareAirCondDev airCondDev = MyApplication.getWareData().getAirConds().get(i);
                 if (dev.getDevId() == airCondDev.getDev().getDevId()

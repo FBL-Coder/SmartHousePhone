@@ -12,27 +12,27 @@
         android:layout_height="@dimen/dp_0"
         android:layout_weight="8.5" />
 
-    <RadioGroup
-        android:id="@+id/rg_group"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_alignParentBottom="true"
-        android:layout_weight="1"
-        android:background="#ffffff"
-        android:checkedButton="@+id/edit_dev"
-        android:gravity="center"
-        android:orientation="horizontal">
+    <!--<RadioGroup-->
+        <!--android:id="@+id/rg_group"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/dp_0"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="#ffffff"-->
+        <!--android:checkedButton="@+id/edit_dev"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="horizontal">-->
 
-        <RadioButton
-            android:id="@+id/edit_dev"
-            style="@style/GroupRadioButtonStyle"
-            android:text="设备编辑" />
+        <!--<RadioButton-->
+            <!--android:id="@+id/edit_dev"-->
+            <!--style="@style/GroupRadioButtonStyle"-->
+            <!--android:text="设备编辑" />-->
 
-        <RadioButton
-            android:id="@+id/edit_module"
-            style="@style/GroupRadioButtonStyle"
-            android:drawableTop="@drawable/selector_group_input"
-            android:text="输入模块编辑" />
+        <!--<RadioButton-->
+            <!--android:id="@+id/edit_module"-->
+            <!--style="@style/GroupRadioButtonStyle"-->
+            <!--android:drawableTop="@drawable/selector_group_input"-->
+            <!--android:text="输入模块编辑" />-->
 
-    </RadioGroup>
+    <!--</RadioGroup>-->
 </LinearLayout>
