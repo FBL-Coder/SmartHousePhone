@@ -647,10 +647,10 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                             timer_list.get(position).getCanCpuID().endsWith(freshAir.getDev().getCanCpuId())) {
                         viewHolder.name.setText(freshAir.getDev().getDevName());
                         if (timer_list.get(position).getBOnOff() == 0) {
-                            viewHolder.type.setImageResource(R.mipmap.ic_launcher);
+                            viewHolder.type.setImageResource(R.drawable.freshair_close);
                             viewHolder.state.setText("关闭");
                         } else {
-                            viewHolder.type.setImageResource(R.mipmap.et);
+                            viewHolder.type.setImageResource(R.drawable.freshair_open);
                             viewHolder.state.setText("打开");
                         }
                     }
@@ -662,10 +662,10 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                             timer_list.get(position).getCanCpuID().endsWith(floorHeat.getDev().getCanCpuId())) {
                         viewHolder.name.setText(floorHeat.getDev().getDevName());
                         if (timer_list.get(position).getBOnOff() == 0) {
-                            viewHolder.type.setImageResource(R.mipmap.ic_launcher);
+                            viewHolder.type.setImageResource(R.drawable.floorheat_close);
                             viewHolder.state.setText("关闭");
                         } else {
-                            viewHolder.type.setImageResource(R.mipmap.et);
+                            viewHolder.type.setImageResource(R.drawable.floorheat_open);
                             viewHolder.state.setText("打开");
                         }
                     }

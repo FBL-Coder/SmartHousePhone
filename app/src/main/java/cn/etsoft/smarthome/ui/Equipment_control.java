@@ -30,10 +30,8 @@ public class Equipment_control extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_equipment_control);
-
         bacd = (ImageView) findViewById(R.id.title_bar_iv_back);
         title = (TextView) findViewById(R.id.title_bar_tv_title);
-
         bacd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,7 +91,6 @@ public class Equipment_control extends FragmentActivity {
                     .replace(R.id.group, fragment, fragment1Tag).commit();
         }
     }
-
 //    @Override
 //    protected void onRestoreInstanceState(Bundle savedInstanceState) {
 //        super.onRestoreInstanceState(savedInstanceState);

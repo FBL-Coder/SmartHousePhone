@@ -27,7 +27,7 @@ public class SafetyAdapter extends BaseAdapter {
     private Context context;
     private List<SetSafetyResult.SecInfoRowsBean> list;
 
-    public SafetyAdapter(Context context,SetSafetyResult result) {
+    public SafetyAdapter(Context context, SetSafetyResult result) {
         mInflater = LayoutInflater.from(context);
         if (list == null)
             list = new ArrayList<>();
@@ -68,13 +68,11 @@ public class SafetyAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            View convertView1 = mInflater.inflate(R.layout.sceneset_listview_item, null);
-            View convertView2 = mInflater.inflate(R.layout.equipmentdeploy_listview_item_scene, null);
+            convertView = mInflater.inflate(R.layout.sceneset_listview_item, null);
             viewHolder = new ViewHolder();
-            viewHolder.image = (ImageView) convertView1.findViewById(R.id.sceneSet_iv);
-            viewHolder.title = (TextView) convertView1.findViewById(R.id.sceneSet_tv);
-            viewHolder.hui = (ImageView) convertView1.findViewById(R.id.sceneSet_hui);
-            convertView = new SwipeItemLayout(convertView1, convertView2, null, null);
+            viewHolder.image = (ImageView) convertView.findViewById(R.id.sceneSet_iv);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.sceneSet_tv);
+            viewHolder.hui = (ImageView) convertView.findViewById(R.id.sceneSet_hui);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

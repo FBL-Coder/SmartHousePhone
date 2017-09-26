@@ -36,6 +36,7 @@ import cn.etsoft.smarthome.weidget.CustomDatePicker;
 
 /**
  * Created by Say GoBay on 2017/8/7.
+ * 首页防区报警记录
  */
 public class SafetyActivity_home extends Activity implements View.OnClickListener {
     private TextView safety, title, safety_type_tv;
@@ -240,7 +241,7 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
                 if (position != 3)
                     safety_type_num = position;
                 else safety_type_num = 255;
-                adapter.setSelect(true,position);
+                adapter.setSelect(true, position);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -253,7 +254,7 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (safety_type_num == 1000){
+                if (safety_type_num == 1000) {
                     ToastUtil.showText("请选择布防类型");
                     return;
                 }
@@ -300,7 +301,7 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
                     return;
                 }
                 for (int i = 0; i < data_data_all.size(); i++) {
-                    if (safety_position == data_data_all.get(i).getId()) {
+                    if (safety_position - 1 == data_data_all.get(i).getId()) {
                         data_data_safety.add(data_data_all.get(i));
                     }
                 }

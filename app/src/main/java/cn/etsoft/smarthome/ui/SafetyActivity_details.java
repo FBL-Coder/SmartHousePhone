@@ -353,7 +353,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             SetSafetyResult safetyResult = new SetSafetyResult();
                             List<SetSafetyResult.SecInfoRowsBean> timerEvent_rows = new ArrayList<>();
                             SetSafetyResult.SecInfoRowsBean bean = new SetSafetyResult.SecInfoRowsBean();
-                            bean.setSecDev(common_dev.size());
+                            bean.setSecDev(common_dev.size() > 0 ? 1 : 0);
                             bean.setDevCnt(common_dev.size());
                             bean.setItemCnt(1);
                             bean.setSecId(Safety_position);
@@ -390,7 +390,6 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             safetyResult.setDatType(32);
                             safetyResult.setDevUnitID(GlobalVars.getDevid());
                             safetyResult.setSubType1(5);
-                            safetyResult.setItemCnt(1);
                             safetyResult.setSubType2(Safety_position);
                             safetyResult.setSec_info_rows(timerEvent_rows);
                             Gson gson = new Gson();
@@ -480,7 +479,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     SetSafetyResult safetyResult = new SetSafetyResult();
                     List<SetSafetyResult.SecInfoRowsBean> timerEvent_rows = new ArrayList<>();
                     SetSafetyResult.SecInfoRowsBean bean = new SetSafetyResult.SecInfoRowsBean();
-                    bean.setSecDev(common_dev.size());
+                    bean.setSecDev(common_dev.size() > 0 ? 1 : 0);
                     bean.setDevCnt(common_dev.size());
                     bean.setItemCnt(1);
                     bean.setSecId(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecId());
@@ -517,7 +516,6 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     safetyResult.setDatType(32);
                     safetyResult.setDevUnitID(GlobalVars.getDevid());
                     safetyResult.setSubType1(7);
-                    safetyResult.setItemCnt(1);
                     safetyResult.setSubType2(0);
                     safetyResult.setSec_info_rows(timerEvent_rows);
                     Gson gson = new Gson();
@@ -757,10 +755,10 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             timer_list.get(position).getCanCpuID().endsWith(freshAir.getDev().getCanCpuId())) {
                         viewHolder.name.setText(freshAir.getDev().getDevName());
                         if (timer_list.get(position).getBOnOff() == 0) {
-                            viewHolder.type.setImageResource(R.mipmap.ic_launcher);
+                            viewHolder.type.setImageResource(R.drawable.freshair_close);
                             viewHolder.state.setText("关闭");
                         } else {
-                            viewHolder.type.setImageResource(R.mipmap.et);
+                            viewHolder.type.setImageResource(R.drawable.freshair_open);
                             viewHolder.state.setText("打开");
                         }
                     }
@@ -772,10 +770,10 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             timer_list.get(position).getCanCpuID().endsWith(floorHeat.getDev().getCanCpuId())) {
                         viewHolder.name.setText(floorHeat.getDev().getDevName());
                         if (timer_list.get(position).getBOnOff() == 0) {
-                            viewHolder.type.setImageResource(R.mipmap.ic_launcher);
+                            viewHolder.type.setImageResource(R.drawable.floorheat_close);
                             viewHolder.state.setText("关闭");
                         } else {
-                            viewHolder.type.setImageResource(R.mipmap.et);
+                            viewHolder.type.setImageResource(R.drawable.floorheat_open);
                             viewHolder.state.setText("打开");
                         }
                     }
