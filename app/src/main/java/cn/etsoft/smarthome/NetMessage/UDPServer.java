@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
 
 import com.google.gson.Gson;
@@ -252,6 +253,7 @@ public class UDPServer implements Runnable {
                 if (subType2 == 1) {
                     if (MyApplication.mApplication.isSeekNet() == false) {
                         //设置联网模块信息
+                        MyApplication.setNewWareData();
                         setRcuInfo(info);
                         new Thread(new Runnable() {
                             @Override
@@ -429,7 +431,6 @@ public class UDPServer implements Runnable {
                 if (subType2 == 1) {
                     isFreshData = true;
                     getSceneEvents(info);
-
                 }
                 break;
             case 23: // e_udpPro_addSceneEvents
@@ -492,10 +493,10 @@ public class UDPServer implements Runnable {
                 }
                 break;
             case 35:// e_udpPro_chns_status
-                if (MyApplication.mApplication.isSceneIsShow()) {
-                    ctrlDevReply(info);
-                    isFreshData = true;
-                }
+//                if (MyApplication.mApplication.isSceneIsShow()) {
+                ctrlDevReply(info);
+                isFreshData = true;
+//                }
                 break;
             case 58: // e_udpPro_get_key2scene
                 if (subType1 == 1) {
@@ -1094,6 +1095,7 @@ public class UDPServer implements Runnable {
                 }
                 dev.setDevId(jsonobj.getInt("devID"));
                 dev.setType(jsonobj.getInt("devType"));
+                dev.setbOnOff(jsonobj.getInt("bOnOff"));
                 airCondDev.setDev(dev);
                 airCondDev.setbOnOff(jsonobj.getInt("bOnOff"));
                 airCondDev.setPowChn(jsonobj.getInt("powChn"));
@@ -1108,41 +1110,41 @@ public class UDPServer implements Runnable {
                     if (air.getDev().getCanCpuId().equals(airCondDev.getDev().getCanCpuId())
                             && air.getDev().getDevId() == airCondDev.getDev().getDevId()) {
                         if (dattype == 4) {
-                            airCondDev.getDev().setDevName(air.getDev().getDevName());
+                            airCondDev.getDev().setDevName(dev.getDevName());
                             airCondDev.getDev().setRoomName(air.getDev().getRoomName());
                         }
                         MyApplication.getWareData().getAirConds().set(i, airCondDev);
                     }
                 }
-            } else if (devType == 3) {
-                WareLight wareLight = new WareLight();
-                JSONObject jsonobj = array.getJSONObject(0);
-                WareDev dev = new WareDev();
-                dev.setCanCpuId(jsonobj.getString("canCpuID"));
-                if (dattype == 6) {
-                    dev.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                    dev.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
-                }
-                dev.setDevId(jsonobj.getInt("devID"));
-                dev.setType(jsonobj.getInt("devType"));
-                wareLight.setDev(dev);
-                wareLight.setbOnOff(jsonobj.getInt("bOnOff"));
-                wareLight.setPowChn(jsonobj.getInt("powChn"));
-                wareLight.setbTuneEn(jsonobj.getInt("bTuneEn"));
-                wareLight.setLmVal(jsonobj.getInt("lmVal"));
-                for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
-                    WareLight light = MyApplication.getWareData().getLights().get(i);
-                    if (light.getDev().getCanCpuId().equals(wareLight.getDev().getCanCpuId())
-                            && light.getDev().getDevId() == wareLight.getDev().getDevId()) {
-                        if (dattype == 4) {
-                            wareLight.getDev().setDevName(light.getDev().getDevName());
-                            wareLight.getDev().setRoomName(light.getDev().getRoomName());
-                        }
-                        MyApplication.getWareData().getLights().set(i, wareLight);
-                        Log.i("Light", wareLight.getDev().getDevId() + "");
-                        break;
-                    }
-                }
+//            } else if (devType == 3) {
+//                WareLight wareLight = new WareLight();
+//                JSONObject jsonobj = array.getJSONObject(0);
+//                WareDev dev = new WareDev();
+//                dev.setCanCpuId(jsonobj.getString("canCpuID"));
+//                if (dattype == 6) {
+//                    dev.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+//                    dev.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
+//                }
+//                dev.setDevId(jsonobj.getInt("devID"));
+//                dev.setType(jsonobj.getInt("devType"));
+//                wareLight.setDev(dev);
+//                wareLight.setbOnOff(jsonobj.getInt("bOnOff"));
+//                wareLight.setPowChn(jsonobj.getInt("powChn"));
+//                wareLight.setbTuneEn(jsonobj.getInt("bTuneEn"));
+//                wareLight.setLmVal(jsonobj.getInt("lmVal"));
+//                for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
+//                    WareLight light = MyApplication.getWareData().getLights().get(i);
+//                    if (light.getDev().getCanCpuId().equals(wareLight.getDev().getCanCpuId())
+//                            && light.getDev().getDevId() == wareLight.getDev().getDevId()) {
+//                        if (dattype == 4) {
+//                            wareLight.getDev().setDevName(light.getDev().getDevName());
+//                            wareLight.getDev().setRoomName(light.getDev().getRoomName());
+//                        }
+//                        MyApplication.getWareData().getLights().set(i, wareLight);
+//                        Log.i("Light", wareLight.getDev().getDevId() + "");
+//                        break;
+//                    }
+//                }
             } else if (devType == 7) {
                 WareFreshAir freshAir = new WareFreshAir();
                 JSONObject jsonobj = array.getJSONObject(0);

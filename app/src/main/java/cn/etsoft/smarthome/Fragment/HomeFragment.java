@@ -86,32 +86,32 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
             //空调
             case 0:
                 intent = new Intent(getActivity(), AirConditionActivity.class);
-                intent.putExtra("title", title[1]);
+                intent.putExtra("title", title[0]);
                 break;
             //电视
             case 1:
                 intent = new Intent(getActivity(), TvActivity.class);
-                intent.putExtra("title", title[2]);
+                intent.putExtra("title", title[1]);
                 break;
             //机顶盒
             case 2:
                 intent = new Intent(getActivity(), StbActivity.class);
-                intent.putExtra("title", title[3]);
+                intent.putExtra("title", title[2]);
                 break;
             //灯光
             case 3:
                 intent = new Intent(getActivity(), LightActivity.class);
-                intent.putExtra("title", title[4]);
+                intent.putExtra("title", title[3]);
                 break;
             //窗帘
             case 4:
                 intent = new Intent(getActivity(), CurtainActivity.class);
-                intent.putExtra("title", title[5]);
+                intent.putExtra("title", title[4]);
                 break;
             //情景
             case 5:
                 intent = new Intent(getActivity(), SceneActivity.class);
-                intent.putExtra("title", title[6]);
+                intent.putExtra("title", title[5]);
                 break;
             //门禁
             case 6:

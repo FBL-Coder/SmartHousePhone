@@ -47,7 +47,7 @@ public class FloorHeatActivity extends Activity implements AdapterView.OnItemCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_light);
+        setContentView(R.layout.activity_floorheat);
         //初始化标题栏
         initTitleBar();
         //初始化控件
@@ -220,30 +220,6 @@ public class FloorHeatActivity extends Activity implements AdapterView.OnItemCli
                     if (room_list != null && room_list.size() > 0)
                         getRoomDialog();
                     break;
-//                case R.id.light_open_all:
-//                    String open_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-//                            ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrl_allDevs.getValue() +
-//                            ",\"subType1\":0" +
-//                            ",\"subType2\":0" +
-//                            ",\"canCpuID\":0\"" +
-//                            "\",\"devType\":" + UdpProPkt.E_WARE_TYPE.e_ware_light +
-//                            ",\"devID\":0" +
-//                            ",\"cmd\": 1" +
-//                            "}";
-//                    MyApplication.sendMsg(open_str);
-//                    break;
-//                case R.id.light_close_all:
-//                    String close_str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-//                            ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrl_allDevs.getValue() +
-//                            ",\"subType1\":0" +
-//                            ",\"subType2\":0" +
-//                            ",\"canCpuID\":0\"" +
-//                            "\",\"devType\":" + UdpProPkt.E_WARE_TYPE.e_ware_light +
-//                            ",\"devID\":0" +
-//                            ",\"cmd\": 0" +
-//                            "}";
-//                    MyApplication.sendMsg(close_str);
-//                    break;
             }
         }
     }

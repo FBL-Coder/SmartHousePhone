@@ -8,11 +8,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
@@ -116,13 +118,55 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
      */
     private void initGridView() {
         gridView = (GridView) findViewById(R.id.gridView_light);
-//        input_choose = (ImageView) findViewById(R.id.input_choose);
-//        input_choose.setOnClickListener(this);
     }
 
     private void initData() {
-        keyAdapter_keyscene = new KeyAdapter_keyScene(this, sceneId, keyInput_position, IsClose);
+        keyAdapter_keyscene = new KeyAdapter_keyScene(sceneId, keyInput_position, this, IsClose);
         gridView.setAdapter(keyAdapter_keyscene);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                boolean isCantain = false;
+                for (int i = 0; i < WareDataHliper.initCopyWareData().getScenekeysResult()
+                        .getKey2scene_item().size(); i++) {
+                    ChnOpItem_scene.Key2sceneItemBean itemBean = WareDataHliper.
+                            initCopyWareData().getScenekeysResult().getKey2scene_item().get(i);
+
+                    if (itemBean.getEventId() == sceneId) {
+                        if (itemBean.getKeyIndex() == position) {
+                            WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item()
+                                    .remove(i);
+                            keyAdapter_keyscene.notifyDataSetChanged(sceneId,
+                                    keyInput_position, KeySceneActivity_dev.this,
+                                    false);
+
+                            return;
+                        }
+                        itemBean.setEventId(sceneId);
+                        itemBean.setKeyUId(MyApplication.getWareData().getKeyInputs().
+                                get(keyInput_position).getCanCpuID());
+                        itemBean.setKeyIndex(position);
+                        WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item()
+                                .set(position, itemBean);
+                        isCantain = true;
+                    }
+                }
+                if (!isCantain) {
+                    ChnOpItem_scene.Key2sceneItemBean itemBean = new ChnOpItem_scene.Key2sceneItemBean();
+                    itemBean.setEventId(sceneId);
+                    itemBean.setKeyUId(MyApplication.getWareData().getKeyInputs().
+                            get(keyInput_position).getCanCpuID());
+                    itemBean.setKeyIndex(position);
+                    WareDataHliper.initCopyWareData().getScenekeysResult()
+                            .getKey2scene_item().add(itemBean);
+                }
+                keyAdapter_keyscene.notifyDataSetChanged(sceneId,
+                        keyInput_position, KeySceneActivity_dev.this,
+                        false);
+
+
+            }
+        });
     }
 
     @Override
@@ -132,16 +176,6 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
             return;
         }
         switch (view.getId()) {
-//            case R.id.input_choose:
-//                if (IsClose) {
-//                    IsClose = false;
-//                    input_choose.setImageResource(R.drawable.off);
-//                } else {
-//                    IsClose = true;
-//                    input_choose.setImageResource(R.drawable.on);
-//                }
-//                onGetIsChooseListener.getOutChoose(IsClose);
-//                break;
             case R.id.title_bar_tv_room:
                 if (MyApplication.getWareData().getChnOpItem_scene() == null) {
                     ToastUtil.showText("没有按键信息，不能保存");
@@ -167,14 +201,16 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                         div = ",";
                         chnOpItem_scene = MyApplication.getWareData().getChnOpItem_scene();
                         if (chnOpItem_scene.getKey2scene_item().size() > 12) {
-                            ToastUtil.showText( "最多只能添加12个按键");
+                            ToastUtil.showText("最多只能添加12个按键");
                             return;
                         } else {
                             for (int j = 0; j < chnOpItem_scene.getKey2scene_item().size(); j++) {
                                 data_str = "{" +
                                         //不确定正确
-                                        "\"canCpuID\":\"" + chnOpItem_scene.getKey2scene_item().get(j).getKeyUId() + "\"," +
+                                        "\"keyUId\":\"" + chnOpItem_scene.getKey2scene_item().get(j).getKeyUId() + "\"," +
                                         "\"keyIndex\":" + chnOpItem_scene.getKey2scene_item().get(j).getKeyIndex() + "," +
+                                        "\"valid\":" + 0 + "," +
+                                        "\"rev3\":" + 0 + "," +
                                         "\"eventId\":" + chnOpItem_scene.getKey2scene_item().get(j).getEventId()
                                         + "}" + div;
                                 more_data += data_str;

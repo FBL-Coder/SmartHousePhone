@@ -97,6 +97,9 @@ public class SafetyActivity extends Activity implements AdapterView.OnItemClickL
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        if (MyApplication.getWareData().getSceneEvents().size() == 0){
+            SendDataUtil.getSceneInfo();
+        }
         Intent intent = new Intent(this, SafetyActivity_details.class);
         Safety_position = position;
         Bundle bundle = new Bundle();

@@ -40,6 +40,7 @@ import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareFloorHeat;
 import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.domain.WareLight;
+import cn.etsoft.smarthome.domain.WareSceneEvent;
 import cn.etsoft.smarthome.domain.WareSetBox;
 import cn.etsoft.smarthome.domain.WareTv;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
@@ -74,6 +75,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
     private GridViewAdapter_Safety mGridViewAdapter_Safety;
     private int[] image = new int[]{R.drawable.kongtiao, R.drawable.tv_0, R.drawable.jidinghe, R.drawable.dengguang, R.drawable.chuanglian};
     private SafetyActivity_details.EquipmentAdapter equipmentAdapter;
+    private int ScenePosition = 255;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,11 +175,13 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         safety_state_data1.add("在家布防");
         safety_state_data1.add("外出布防");
         safety_scene_name = new ArrayList<>();
-        safety_scene_name.add("无");
+        safety_scene_name.add("全开模式");
+        safety_scene_name.add("全关模式");
         if (MyApplication.getWareData().getSceneEvents() != null)
             for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
                 safety_scene_name.add(MyApplication.getWareData().getSceneEvents().get(i).getSceneName());
             }
+        safety_scene_name.add("无");
     }
 
     int position_delete;
@@ -247,7 +251,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
         home_text = MyApplication.getWareData().getRooms();
         if (MyApplication.getWareData().getResult_safety() == null || MyApplication.getWareData().getResult_safety().getSec_info_rows() == null && MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0)
             return;
-        if ((int)AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255) == 255)
+        if ((int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255) == 255)
             safety_type.setText(safety_state_data.get(3));
         else
             safety_type.setText(safety_state_data.get((int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255)));
@@ -269,19 +273,16 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
             }
         }
         if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSceneId() == 255) {
-            safety_scene.setText(safety_scene_name.get(0));
+            safety_scene.setText("选择情景");
+            ScenePosition = 255;
         } else {
             //情景
-            if (MyApplication.getWareData().getSceneEvents() != null) {
-                for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
-                    if (MyApplication.getWareData().getSceneEvents().get(i).getEventId()
-                            == MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSceneId()) {
-                        safety_scene.setText(MyApplication.getWareData()
-                                .getSceneEvents().get(i).getSceneName());
-                    }
-                }
-            } else {
-                safety_scene.setText("选择情景");
+            try {
+                safety_scene.setText(safety_scene_name.get(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSceneId()));
+                ScenePosition = MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSceneId();
+            } catch (Exception e) {
+                safety_scene.setText(safety_scene_name.get(safety_scene_name.size() - 1));
+                ScenePosition = 255;
             }
         }
         safety_name.addTextChangedListener(new TextWatcher() {
@@ -354,7 +355,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             bean.setSecDev(common_dev.size());
                             bean.setDevCnt(common_dev.size());
                             bean.setItemCnt(1);
-                            bean.setSecId(Safety_position);
+                            bean.setSecId(ScenePosition);
                             bean.setRun_dev_item(common_dev);
                             if ("".equals(safety_name.getText().toString())) {
                                 bean.setSecName(CommonUtils.bytesToHexString(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSecName().getBytes("GB2312")));
@@ -382,16 +383,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                                         bean.setSecType(i);
                                 }
                             }
-
-                            if ("无".equals(safety_scene.getText().toString())) {
-                                bean.setSceneId(255);
-                            } else {
-                                //关联情景
-                                for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
-                                    if (safety_scene.getText().toString().equals(MyApplication.getWareData().getSceneEvents().get(i).getSceneName()))
-                                        bean.setSceneId(i);
-                                }
-                            }
+                            bean.setSceneId(ScenePosition);
                             timerEvent_rows.add(bean);
                             safetyResult.setDatType(32);
                             safetyResult.setDevUnitID(GlobalVars.getDevid());
@@ -518,10 +510,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     }
 
                     //关联情景
-                    for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
-                        if (safety_scene.getText().toString().equals(MyApplication.getWareData().getSceneEvents().get(i).getSceneName()))
-                            bean.setSceneId(i);
-                    }
+                    bean.setSceneId(ScenePosition);
                     timerEvent_rows.add(bean);
                     safetyResult.setDatType(32);
                     safetyResult.setDevUnitID(GlobalVars.getDevid());
@@ -604,6 +593,11 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                         equipmentAdapter = new SafetyActivity_details.EquipmentAdapter(dev, SafetyActivity_details.this);
                         gridView_safety.setAdapter(equipmentAdapter);
                     }
+                }
+                if (view_parent.getId() == R.id.safety_scene) {
+                    ScenePosition = position;
+                    if (position == text.size() - 1)
+                        ScenePosition = 255;
                 }
             }
         });

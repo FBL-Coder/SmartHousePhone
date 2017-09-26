@@ -14,6 +14,7 @@ import android.widget.ScrollView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.KeySceneAdapter;
@@ -47,18 +48,9 @@ public class KeySceneFragment extends Fragment implements AdapterView.OnItemClic
         lv = (ListView) view.findViewById(R.id.group_lv);
         sv = (ScrollView) view.findViewById(R.id.group_sv);
         sv.smoothScrollTo(0, 0);
-        event = new ArrayList<>();
-        event.clear();
-        if (MyApplication.getWareData().getSceneEvents().size() > 0) {
-            for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
-                event.add(MyApplication.getWareData().getSceneEvents().get(i));
-            }
-            keySceneAdapter = new KeySceneAdapter(event, getActivity());
-            lv.setAdapter(keySceneAdapter);
-        } else if (MyApplication.getWareData().getSceneEvents() == null || MyApplication.getWareData().getSceneEvents().size() == 0) {
-            ToastUtil.showText( "没有收到情景信息");
-            return;
-        }
+        event = WareDataHliper.initCopyWareData().getSceneControlData();
+        keySceneAdapter = new KeySceneAdapter(event,getActivity());
+        lv.setAdapter(keySceneAdapter);
         lv.setOnItemClickListener(this);
     }
 

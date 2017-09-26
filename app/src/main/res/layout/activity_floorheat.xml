@@ -24,6 +24,6 @@
         android:clipToPadding="true"
         android:horizontalSpacing="@dimen/dp_10"
         android:verticalSpacing="@dimen/dp_10"
-        android:numColumns="3"
+        android:numColumns="1"
         android:scrollbars="none" />
 </LinearLayout>

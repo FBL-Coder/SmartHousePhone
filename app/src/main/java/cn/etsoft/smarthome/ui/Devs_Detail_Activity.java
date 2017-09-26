@@ -32,6 +32,7 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.PopupWindowAdapter;
+import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.WareAirCondDev;
 import cn.etsoft.smarthome.domain.WareBoardChnout;
 import cn.etsoft.smarthome.domain.WareCurtain;
@@ -41,6 +42,7 @@ import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.domain.WareLight;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.pullmi.utils.LogUtils;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.Circle_Progress;
 
@@ -50,9 +52,9 @@ import cn.etsoft.smarthome.view.Circle_Progress;
  */
 public class Devs_Detail_Activity extends Activity implements View.OnClickListener {
 
-    private TextView dev_type, dev_room, dev_save, title, dev_way;
+    private TextView dev_room, dev_save, title, dev_way, dev_test;
     private EditText dev_name;
-    private ImageView back;
+    private ImageView back, dev_type;
     private WareDev dev;
     private int id;
     private PopupWindow popupWindow;
@@ -67,6 +69,15 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dec_detail_activity);
         initView();
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 3 || datType == 4 || datType == 35
+                        || (datType == 7 || subtype2 == 1)||(datType == 9 && subtype2 == 1)){
+                    initView();
+                }
+            }
+        });
     }
 
     /**
@@ -78,22 +89,26 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         dev = MyApplication.getWareData().getDevs().get(id);
 
         title = (TextView) findViewById(R.id.title_bar_tv_title);
-        dev_type = (TextView) findViewById(R.id.dev_type);
+        dev_type = (ImageView) findViewById(R.id.dev_type);
         dev_room = (TextView) findViewById(R.id.dev_room);
         dev_save = (TextView) findViewById(R.id.dev_save);
         dev_name = (EditText) findViewById(R.id.dev_name);
         dev_way = (TextView) findViewById(R.id.dev_way);
+        dev_test = (TextView) findViewById(R.id.dev_test);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         title.setText(dev.getDevName());
         dev_name.setText(dev.getDevName());
         dev_room.setText(dev.getRoomName());
 
         if (dev.getType() == 0) {
-            dev_type.setText("空调");
+
             for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                 WareAirCondDev airCondDev = MyApplication.getWareData().getAirConds().get(i);
                 if (dev.getDevId() == airCondDev.getDev().getDevId()
                         && dev.getCanCpuId().equals(airCondDev.getDev().getCanCpuId())) {
+                    if (airCondDev.getbOnOff() == 0) {
+                        dev_type.setImageResource(R.drawable.kongtiao);
+                    } else dev_type.setImageResource(R.drawable.kongtiao2);
                     //可视布局数据
                     dev_name.setText(airCondDev.getDev().getDevName());
                     dev_room.setText(airCondDev.getDev().getRoomName());
@@ -111,17 +126,19 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
             }
         } else if (dev.getType() == 1) {
-            dev_type.setText("电视");
+            dev_type.setImageResource(R.drawable.tv1);
             dev_way.setText("此设备无通道");
             dev_name.setText(dev.getDevName());
             dev_way.setClickable(false);
         } else if (dev.getType() == 2) {
-            dev_type.setText("机顶盒");
+            dev_type.setImageResource(R.drawable.jidinghe1);
             dev_way.setText("此设备无通道");
             dev_name.setText(dev.getDevName());
             dev_way.setClickable(false);
         } else if (dev.getType() == 3) {
-            dev_type.setText("灯光");
+            if (dev.getbOnOff() == 0) {
+                dev_type.setImageResource(R.drawable.dengguan);
+            } else dev_type.setImageResource(R.drawable.dengkai);
             for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
                 if (MyApplication.getWareData().getLights().get(i).getDev().getDevId() == dev.getDevId()) {
                     int PowChn = MyApplication.getWareData().getLights().get(i).getPowChn();
@@ -129,7 +146,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
             }
         } else if (dev.getType() == 4) {
-            dev_type.setText("窗帘");
+            dev_type.setImageResource(R.drawable.chuanglian1);
             int Way_num = dev.getPowChn();
             String Way_str = new StringBuffer(Integer.toBinaryString(Way_num)).reverse().toString();
             String Way_ok = "";
@@ -142,7 +159,9 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 Way_ok = Way_ok.substring(0, Way_ok.lastIndexOf("、"));
             dev_way.setText(Way_ok);
         } else if (dev.getType() == 7) {
-            dev_type.setText("新风");
+            if (dev.getbOnOff() == 0) {
+                dev_type.setImageResource(R.drawable.freshair_close);
+            } else dev_type.setImageResource(R.drawable.freshair_open);
             for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
                 if (MyApplication.getWareData().getFreshAirs().get(i).getDev().getDevId() == dev.getDevId()) {
                     dev_way.setText(MyApplication.getWareData().getFreshAirs().get(i).getOnOffChn() + "."
@@ -152,7 +171,9 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
             }
         } else if (dev.getType() == 9) {
-            dev_type.setText("地暖");
+            if (dev.getbOnOff() == 0) {
+                dev_type.setImageResource(R.drawable.floorheat_close);
+            } else dev_type.setImageResource(R.drawable.floorheat_open);
             for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
                 if (MyApplication.getWareData().getFloorHeat().get(i).getDev().getDevId() == dev.getDevId()) {
                     int PowChn = MyApplication.getWareData().getFloorHeat().get(i).getPowChn();
@@ -161,6 +182,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             }
         }
         dev_way.setOnClickListener(this);
+        dev_test.setOnClickListener(this);
         dev_save.setOnClickListener(this);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -519,6 +541,37 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
+            case R.id.dev_test:
+                int cmdValue = 0;
+                if (dev.getType() == 0) {
+                    if (dev.getbOnOff() == 0) {
+                        cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue();//打开空调
+                    } else {
+                        cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOff.getValue();//关闭空调
+                    }
+                    int value = (0 << 5) | cmdValue;
+                    SendDataUtil.controlDev(dev, value);
+                } else if (dev.getType() == 3) {
+                    if (dev.getbOnOff() == 0) {
+                        SendDataUtil.controlDev(dev, 0);
+                    } else {
+                        SendDataUtil.controlDev(dev, 1);
+                    }
+                } else if (dev.getType() == 4) {
+                    SendDataUtil.controlDev(dev, UdpProPkt.E_CURT_CMD.e_curt_offOn.getValue());
+                } else if (dev.getType() == 7) {
+                    if (dev.getbOnOff() == 1) {
+                        SendDataUtil.controlDev(dev, UdpProPkt.E_FRESHAIR_CMD.e_freshair_close.getValue());
+                    } else {
+                        SendDataUtil.controlDev(dev, UdpProPkt.E_FRESHAIR_CMD.e_freshair_open.getValue());
+                    }
+                } else if (dev.getType() == 9) {
+                    if (dev.getbOnOff() == 1) {
+                        SendDataUtil.controlDev(dev, UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_close.getValue());
+                    } else
+                        SendDataUtil.controlDev(dev, UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_open.getValue());
+                    break;
+                }
         }
     }
 

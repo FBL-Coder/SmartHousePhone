@@ -29,7 +29,6 @@ public class KeySceneActivity extends Activity implements AdapterView.OnItemClic
     private ScrollView sv;
     private ListView lv;
     private int sceneId = 0;
-    private int keyInput_position = 0;
     private String title;
 
     List<String> LTitle;
@@ -77,8 +76,8 @@ public class KeySceneActivity extends Activity implements AdapterView.OnItemClic
         lv = (ListView) findViewById(R.id.out_lv);
         sv = (ScrollView) findViewById(R.id.out_sv);
         sv.smoothScrollTo(0, 0);
-        if (MyApplication.getWareData().getKeyInputs().size() == 0) {
-            ToastUtil.showText("没有收到输入板数据");
+        if (MyApplication.getWareData().getSceneEvents().size() == 0) {
+            ToastUtil.showText("没有收到情景数据");
             return;
         }
         int size = MyApplication.getWareData().getKeyInputs().size();
@@ -112,8 +111,7 @@ public class KeySceneActivity extends Activity implements AdapterView.OnItemClic
                     Bundle bundle = new Bundle();
                     bundle.putString("title", LTitle.get(position));
                     bundle.putInt("sceneId", sceneId);
-                    bundle.putInt("keyInput_position", keyInput_position);
-                    keyInput_position = position;
+                    bundle.putInt("keyInput_position", position);
                     intent.putExtras(bundle);
                     startActivity(intent);
                     break;
