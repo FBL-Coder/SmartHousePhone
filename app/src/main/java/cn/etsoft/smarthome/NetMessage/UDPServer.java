@@ -1,8 +1,10 @@
 package cn.etsoft.smarthome.NetMessage;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
@@ -132,7 +134,12 @@ public class UDPServer implements Runnable {
 
         int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
         if (NETWORK == 0) {
-            ToastUtil.showText("请检查网络连接");
+//            Looper.loop();
+//            ToastUtil.showText("请检查网络连接");
+//            Looper.prepare();
+            Message message = mhandler.obtainMessage();
+            message.what = MyApplication.mApplication.NONET;
+            mhandler.sendMessage(message);
         } else if (NETWORK != 0 && NETWORK < 10) {
             Log.i("数据流量发送WebSocket", "WEB" + msg);
             MyApplication.mApplication.getWsClient().sendMsg(msg);
@@ -1078,6 +1085,9 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             curtain.getDev().setDevName(curtain1.getDev().getDevName());
                             curtain.getDev().setRoomName(curtain1.getDev().getRoomName());
+                        }else if (dattype == 6){
+                            curtain.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+                            curtain.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getCurtains().set(i, curtain);
                     }
@@ -1112,6 +1122,9 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             airCondDev.getDev().setDevName(dev.getDevName());
                             airCondDev.getDev().setRoomName(air.getDev().getRoomName());
+                        }else if (dattype == 6){
+                            airCondDev.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+                            airCondDev.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getAirConds().set(i, airCondDev);
                     }
@@ -1139,6 +1152,9 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             wareLight.getDev().setDevName(light.getDev().getDevName());
                             wareLight.getDev().setRoomName(light.getDev().getRoomName());
+                        }else if (dattype == 6){
+                            wareLight.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+                            wareLight.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getLights().set(i, wareLight);
                         Log.i("Light", wareLight.getDev().getDevId() + "");
@@ -1173,6 +1189,9 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             freshAir.getDev().setDevName(freshAir1.getDev().getDevName());
                             freshAir.getDev().setRoomName(freshAir1.getDev().getRoomName());
+                        }else if (dattype == 6){
+                            freshAir.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+                            freshAir.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getFreshAirs().set(i, freshAir);
                         Log.i("FreshAir", freshAir.getDev().getDevId() + "");
@@ -1203,6 +1222,9 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             floorHeat.getDev().setDevName(floorHeat1.getDev().getDevName());
                             floorHeat.getDev().setRoomName(floorHeat1.getDev().getRoomName());
+                        }else if (dattype == 6){
+                            floorHeat.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+                            floorHeat.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getFloorHeat().set(i, floorHeat);
                         Log.i("FloorHeat", floorHeat.getDev().getDevId() + "");

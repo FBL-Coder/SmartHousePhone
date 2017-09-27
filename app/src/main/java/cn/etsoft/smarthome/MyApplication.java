@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -92,6 +93,8 @@ public class MyApplication extends Application {
     public int HEARTBEAT_RUN = 8080;
     //loading Dialog
     public int DIALOG_DISMISS = 2222;
+    //没有网络
+    public int NONET = 5555;
     //全局数据
     private static WareData mWareData;
 
@@ -528,6 +531,10 @@ public class MyApplication extends Application {
             //心跳广播运行
             if (msg.what == application.HEARTBEAT_RUN) {
                 GlobalVars.setIsLAN(true);
+            }
+            //网络监听吐司
+            if (msg.what == application.NONET) {
+                ToastUtil.showText("没有可用网络，请检查",5000);
             }
             //udp发送数据后的回调
             if (msg.what == application.UDP_NOBACK) {

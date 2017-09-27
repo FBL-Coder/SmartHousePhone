@@ -15,6 +15,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.GridViewAdapter;
 import cn.etsoft.smarthome.ui.ConditionEventActivity;
 import cn.etsoft.smarthome.ui.ControlActivity;
+import cn.etsoft.smarthome.ui.EditDevActivity;
 import cn.etsoft.smarthome.ui.Equipment_control;
 import cn.etsoft.smarthome.ui.GroupSetActivity;
 import cn.etsoft.smarthome.ui.ModuleDetailActivity;
@@ -78,7 +79,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 startActivity(intent);
                 break;
             case 3:
-                intent = new Intent(getActivity(), Equipment_control.class);
+                intent = new Intent(getActivity(), EditDevActivity.class);
                 intent.putExtra("title", text[3]);
                 startActivity(intent);
                 break;

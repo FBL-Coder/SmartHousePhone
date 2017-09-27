@@ -59,6 +59,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
             switch (msg.what) {
                 case MyHttpUtil.SUCCESS0:
                     MyApplication.mApplication.setVisitor(false);
+                    Log.i(TAG, "handleMessage: 云对讲登陆成功");
                     login(cellphone, password);
                     break;
                 case MyHttpUtil.SUCCESSELSE:
@@ -102,12 +103,11 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                 if (result.getCode() == HTTPRequest_BackCode.LOGIN_OK) {
                     // 登陆成功
                     ToastUtil.s(LoginActivity.this, "登陆成功");
-                    Log.i(TAG, "onSuccess: " + resultDesc.getResult());
+                    Log.i(TAG, "智能家居onSuccess: " + resultDesc.getResult());
                     setRcuInfoList(result);
                 } else if (result.getCode() == HTTPRequest_BackCode.LOGIN_ERROR) {
                     // 登陆失败
                     ToastUtil.s(LoginActivity.this, "登陆失败，请稍后再试");
-
                 } else if (result.getCode() == HTTPRequest_BackCode.LOGIN_USER_NOTFIND) {
                     //用户不存在
                     ToastUtil.s(LoginActivity.this, "登陆失败，用户不存在");

@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import cn.etsoft.smarthome.Fragment.EditDevFragment;
 import cn.etsoft.smarthome.Fragment.EditModuleFragment;
+import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
+import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by fbl on 16-11-17.
@@ -39,6 +41,7 @@ public class Equipment_control extends FragmentActivity {
             }
         });
         title.setText("设备编辑");
+
 //        FragmentManager fm = getSupportFragmentManager();
 //        FragmentTransaction ft = fm.beginTransaction();
 //        Fragment fragment = new EditDevFragment(Equipment_control.this);
@@ -84,12 +87,24 @@ public class Equipment_control extends FragmentActivity {
 //                ft.commit();
 //            }
 //        });
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            Fragment fragment = new EditDevFragment(Equipment_control.this);
             fragmentManager.beginTransaction()
-                    .replace(R.id.group, fragment, fragment1Tag).commit();
+                    .replace(R.id.group, new EditDevFragment(Equipment_control.this), fragment1Tag).commit();
         }
+        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 5 || datType == 6 || datType == 7) {
+                    if (subtype2 == 1) {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.group, new EditDevFragment(Equipment_control.this), fragment1Tag).commit();
+                    }
+                }
+            }
+        });
+
+
     }
 //    @Override
 //    protected void onRestoreInstanceState(Bundle savedInstanceState) {

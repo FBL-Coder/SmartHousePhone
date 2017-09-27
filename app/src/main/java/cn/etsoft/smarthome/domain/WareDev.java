@@ -6,8 +6,8 @@ import java.io.Serializable;
 public class WareDev implements Serializable {
 
     private String canCpuId = "";
-    private String devName;
-    private String roomName;
+    private String devName = "";
+    private String roomName = "";
     private int devType;
     private int devId;
     private int devCtrlType; // 取值范围E_DEV_TYPE
@@ -85,7 +85,7 @@ public class WareDev implements Serializable {
     }
 
     public void setPowChn(int powChn) {
-        this.powChn = powChn ;
+        this.powChn = powChn;
     }
 
     public int getCmd() {

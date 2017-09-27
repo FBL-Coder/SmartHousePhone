@@ -27,6 +27,7 @@
         android:textColor="@color/color_fff"
         android:text="@string/text"
         android:textSize="@dimen/sp_18"
+        android:visibility="gone"
         />
     <Button
         android:id="@+id/parlour_four_deploy"

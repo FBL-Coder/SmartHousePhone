@@ -110,6 +110,29 @@ public class EditDevFragment extends Fragment implements View.OnClickListener {
         return view_parent;
     }
 
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+//            @Override
+//            public void upDataWareData(int datType, int subtype1, int subtype2) {
+//                if (datType == 5 || datType == 6 || datType == 7) {
+//                    if (mDialog != null)
+//                        mDialog.dismiss();
+//                    if (subtype2 == 1) {
+//                        ToastUtil.showText("操作成功");
+//                        if (adapter != null)
+//                            adapter.notifyDataSetChanged();
+//                        else {
+//                            adapter = new Dev_Adapter();
+//                            equi_control.setAdapter(adapter);
+//                        }
+//                    }
+//                }
+//            }
+//        });
+//    }
+
     @Override
     public void onStart() {
         if (adapter != null)
@@ -179,17 +202,13 @@ public class EditDevFragment extends Fragment implements View.OnClickListener {
 
         Dev_Adapter() {
             devs = new ArrayList<>();
-            for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
-                devs.add(MyApplication.getWareData().getDevs().get(i));
-            }
+            devs.addAll(MyApplication.getWareData().getDevs());
         }
 
         @Override
         public void notifyDataSetChanged() {
             devs = new ArrayList<>();
-            for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
-                devs.add(MyApplication.getWareData().getDevs().get(i));
-            }
+            devs.addAll(MyApplication.getWareData().getDevs());
             super.notifyDataSetChanged();
         }
 

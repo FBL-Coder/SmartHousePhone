@@ -56,7 +56,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
     private EditText dev_name;
     private ImageView back, dev_type;
     private WareDev dev;
-    private int id;
+    private int id, type;
+    private String cpu;
     private PopupWindow popupWindow;
     private List<String> message_save;
     private PopupWindowAdapter_channel popupWindowAdapter_channel;
@@ -69,12 +70,18 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dec_detail_activity);
         id = getIntent().getIntExtra("id", 0);
+        type = getIntent().getIntExtra("type", 0);
+        cpu = getIntent().getStringExtra("cpu");
         initView();
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 3 || datType == 4 || datType == 35
                         || (datType == 3 || subtype2 == 7) || (datType == 3 && subtype2 == 9)) {
+                    initView();
+                }
+                if (datType == 6) {
+                    ToastUtil.showText("操作成功");
                     initView();
                 }
             }
@@ -86,7 +93,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
      */
     private void initView() {
         message_save = new ArrayList<>();
-        dev = MyApplication.getWareData().getDevs().get(id);
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         dev_type = (ImageView) findViewById(R.id.dev_type);
         dev_room = (TextView) findViewById(R.id.dev_room);
@@ -95,6 +101,20 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         dev_way = (TextView) findViewById(R.id.dev_way);
         dev_test = (TextView) findViewById(R.id.dev_test);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
+
+        for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+            WareDev wareDev = MyApplication.getWareData().getDevs().get(i);
+            if (wareDev.getCanCpuId().equals(cpu)
+                    && wareDev.getType() == type
+                    && wareDev.getDevId() == id) {
+                dev = wareDev;
+            }
+        }
+        if (dev == null) {
+            ToastUtil.showText("数据错误");
+            finish();
+            return;
+        }
         title.setText(dev.getDevName());
         dev_name.setText(dev.getDevName());
         dev_room.setText(dev.getRoomName());
@@ -121,6 +141,21 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     if (!"".equals(Way_ok))
                         Way_ok = Way_ok.substring(0, Way_ok.lastIndexOf("、"));
                     dev_way.setText(Way_ok);
+
+                    final WareAirCondDev finalair = airCondDev;
+                    dev_test.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            int cmdValue = 0;
+                            if (finalair.getbOnOff() == 0) {
+                                cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue();//打开空调
+                            } else {
+                                cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOff.getValue();//关闭空调
+                            }
+                            int value = (0 << 5) | cmdValue;
+                            SendDataUtil.controlDev(dev, value);
+                        }
+                    });
                 }
             }
         } else if (dev.getType() == 1) {
@@ -134,53 +169,120 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             dev_name.setText(dev.getDevName());
             dev_way.setClickable(false);
         } else if (dev.getType() == 3) {
-            if (dev.getbOnOff() == 0) {
-                dev_type.setImageResource(R.drawable.dengguan);
-            } else dev_type.setImageResource(R.drawable.dengkai);
             for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
-                if (MyApplication.getWareData().getLights().get(i).getDev().getDevId() == dev.getDevId()) {
-                    int PowChn = MyApplication.getWareData().getLights().get(i).getPowChn();
+                WareLight light = MyApplication.getWareData().getLights().get(i);
+                if (light.getDev().getDevId() == dev.getDevId()
+                        && dev.getCanCpuId().equals(light.getDev().getCanCpuId())) {
+
+                    int PowChn = light.getPowChn();
                     dev_way.setText((PowChn + 1) + "");
+                    dev_name.setText(light.getDev().getDevName());
+                    dev_room.setText(light.getDev().getRoomName());
+                    if (light.getbOnOff() == 0) {
+                        dev_type.setImageResource(R.drawable.dengguan);
+                    } else dev_type.setImageResource(R.drawable.dengkai);
+
+                    final WareLight finallight = light;
+                    dev_test.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (finallight.getbOnOff() == 0) {
+                                SendDataUtil.controlDev(dev, 0);
+                            } else {
+                                SendDataUtil.controlDev(dev, 1);
+                            }
+                        }
+                    });
                 }
             }
         } else if (dev.getType() == 4) {
             dev_type.setImageResource(R.drawable.chuanglian1);
-            int Way_num = dev.getPowChn();
-            String Way_str = new StringBuffer(Integer.toBinaryString(Way_num)).reverse().toString();
-            String Way_ok = "";
-            for (int j = 0; j < Way_str.length(); j++) {
-                if (Way_str.charAt(j) == '1') {
-                    Way_ok += j + 1 + "、";
+            for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
+                WareCurtain curtain = MyApplication.getWareData().getCurtains().get(i);
+                if (curtain.getDev().getDevId()
+                        == dev.getDevId() && dev.getCanCpuId()
+                        .equals(curtain.getDev().getCanCpuId())) {
+
+                    dev_name.setText(curtain.getDev().getDevName());
+                    dev_room.setText(curtain.getDev().getRoomName());
+                    int Way_num = curtain.getDev().getPowChn();
+                    String Way_str = new StringBuffer(Integer.toBinaryString(Way_num)).reverse().toString();
+                    String Way_ok = "";
+                    for (int j = 0; j < Way_str.length(); j++) {
+                        if (Way_str.charAt(j) == '1') {
+                            Way_ok += j + 1 + "、";
+                        }
+                    }
+                    if (!"".equals(Way_ok))
+                        Way_ok = Way_ok.substring(0, Way_ok.lastIndexOf("、"));
+                    dev_way.setText(Way_ok);
+                    dev_test.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SendDataUtil.controlDev(dev, UdpProPkt.E_CURT_CMD.e_curt_offOn.getValue());
+                        }
+                    });
                 }
             }
-            if (!"".equals(Way_ok))
-                Way_ok = Way_ok.substring(0, Way_ok.lastIndexOf("、"));
-            dev_way.setText(Way_ok);
         } else if (dev.getType() == 7) {
-            if (dev.getbOnOff() == 0) {
-                dev_type.setImageResource(R.drawable.freshair_close);
-            } else dev_type.setImageResource(R.drawable.freshair_open);
             for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
-                if (MyApplication.getWareData().getFreshAirs().get(i).getDev().getDevId() == dev.getDevId()) {
-                    dev_way.setText(MyApplication.getWareData().getFreshAirs().get(i).getOnOffChn() + "."
-                            + MyApplication.getWareData().getFreshAirs().get(i).getSpdHighChn() + "."
-                            + MyApplication.getWareData().getFreshAirs().get(i).getSpdLowChn() + "."
-                            + MyApplication.getWareData().getFreshAirs().get(i).getSpdMidChn());
+                WareFreshAir freshAir = MyApplication.getWareData().getFreshAirs().get(i);
+                if (freshAir.getDev().getDevId()
+                        == dev.getDevId() && dev.getCanCpuId()
+                        .equals(freshAir.getDev().getCanCpuId())) {
+
+                    int PowChn = freshAir.getPowChn();
+                    dev_way.setText((freshAir.getOnOffChn() + 1) + "、"
+                            + (freshAir.getSpdLowChn() + 1) + "、" + (freshAir.getSpdMidChn() + 1)
+                            + "、" + (freshAir.getSpdHighChn() + 1));
+                    dev_name.setText(freshAir.getDev().getDevName());
+                    dev_room.setText(freshAir.getDev().getRoomName());
+                    if (freshAir.getbOnOff() == 0) {
+                        dev_type.setImageResource(R.drawable.freshair_close);
+                    } else dev_type.setImageResource(R.drawable.freshair_open);
+
+                    final WareFreshAir finalfreshAir = freshAir;
+                    dev_test.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (finalfreshAir.getbOnOff() == 1) {
+                                SendDataUtil.controlDev(dev, UdpProPkt.E_FRESHAIR_CMD.e_freshair_close.getValue());
+                            } else {
+                                SendDataUtil.controlDev(dev, UdpProPkt.E_FRESHAIR_CMD.e_freshair_open.getValue());
+                            }
+                        }
+                    });
                 }
             }
         } else if (dev.getType() == 9) {
-            if (dev.getbOnOff() == 0) {
-                dev_type.setImageResource(R.drawable.floorheat_close);
-            } else dev_type.setImageResource(R.drawable.floorheat_open);
             for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
-                if (MyApplication.getWareData().getFloorHeat().get(i).getDev().getDevId() == dev.getDevId()) {
-                    int PowChn = MyApplication.getWareData().getFloorHeat().get(i).getPowChn();
+                WareFloorHeat floorHeat = MyApplication.getWareData().getFloorHeat().get(i);
+                if (floorHeat.getDev().getDevId()
+                        == dev.getDevId() && dev.getCanCpuId()
+                        .equals(floorHeat.getDev().getCanCpuId())) {
+                    int PowChn = floorHeat.getPowChn();
                     dev_way.setText((PowChn + 1) + "");
+                    dev_name.setText(floorHeat.getDev().getDevName());
+                    dev_room.setText(floorHeat.getDev().getRoomName());
+                    if (floorHeat.getbOnOff() == 0) {
+                        dev_type.setImageResource(R.drawable.floorheat_close);
+                    } else dev_type.setImageResource(R.drawable.floorheat_open);
+
+
+                    final WareFloorHeat finalfloorHeat = floorHeat;
+                    dev_test.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (finalfloorHeat.getDev().getbOnOff() == 1) {
+                                SendDataUtil.controlDev(dev, UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_close.getValue());
+                            } else
+                                SendDataUtil.controlDev(dev, UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_open.getValue());
+                        }
+                    });
                 }
             }
         }
         dev_way.setOnClickListener(this);
-        dev_test.setOnClickListener(this);
         dev_save.setOnClickListener(this);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -424,8 +526,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                             "\"cmd\":" + 1 + "}";
                 }
                 MyApplication.mApplication.getUdpServer().send(chn_str);
-                finish();
                 break;
+
             case R.id.dev_room:
                 final List<String> home_text = new ArrayList<>();
                 List<WareDev> mWareDev_room = new ArrayList<>();
@@ -539,37 +641,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
-            case R.id.dev_test:
-                int cmdValue = 0;
-                if (dev.getType() == 0) {
-                    if (dev.getbOnOff() == 0) {
-                        cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue();//打开空调
-                    } else {
-                        cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOff.getValue();//关闭空调
-                    }
-                    int value = (0 << 5) | cmdValue;
-                    SendDataUtil.controlDev(dev, value);
-                } else if (dev.getType() == 3) {
-                    if (dev.getbOnOff() == 0) {
-                        SendDataUtil.controlDev(dev, 0);
-                    } else {
-                        SendDataUtil.controlDev(dev, 1);
-                    }
-                } else if (dev.getType() == 4) {
-                    SendDataUtil.controlDev(dev, UdpProPkt.E_CURT_CMD.e_curt_offOn.getValue());
-                } else if (dev.getType() == 7) {
-                    if (dev.getbOnOff() == 1) {
-                        SendDataUtil.controlDev(dev, UdpProPkt.E_FRESHAIR_CMD.e_freshair_close.getValue());
-                    } else {
-                        SendDataUtil.controlDev(dev, UdpProPkt.E_FRESHAIR_CMD.e_freshair_open.getValue());
-                    }
-                } else if (dev.getType() == 9) {
-                    if (dev.getbOnOff() == 1) {
-                        SendDataUtil.controlDev(dev, UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_close.getValue());
-                    } else
-                        SendDataUtil.controlDev(dev, UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_open.getValue());
-                    break;
-                }
         }
     }
 

@@ -30,6 +30,11 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.google.gson.Gson;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
+import com.lidroid.xutils.util.LogUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -37,6 +42,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +75,9 @@ import cn.etsoft.smarthome.view.DepthPageTransformer;
 import cn.etsoft.smarthome.view.ViewPagerCompat;
 import cn.etsoft.smarthome.weidget.CustomDialog;
 import cn.semtec.community2.activity.SettingActivity;
+import cn.semtec.community2.model.MyHttpUtil;
+import cn.semtec.community2.tool.Constants;
+import cn.semtec.community2.util.CatchUtil;
 
 /**
  * 主页界面
@@ -510,7 +520,11 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.home_tv_ref:
                 if (isSetBtu) {
-                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
+                    if (MyApplication.mApplication.isVisitor()) {
+                        finish();
+                    }
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("提示");
                     builder.setMessage("您是否要退出登录？");
                     builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -523,30 +537,23 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
+                            MyApplication.mApplication.showLoadDialog(HomeActivity.this);
                             Map<String, String> params = new HashMap<>();
                             params.put("uid", GlobalVars.getUserid());
                             OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.LOGOUT, params, new HttpCallback() {
                                 @Override
                                 public void onSuccess(ResultDesc resultDesc) {
                                     super.onSuccess(resultDesc);
-                                    Log.i("LOGOUT", "onSuccess: " + resultDesc.getResult());
+                                    Log.i("LOGOUT", "智能家居成功: " + resultDesc.getResult());
                                     Gson gson = new Gson();
                                     Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
                                     if (result.getCode() == 0) {
+//                                        logout_yun();
                                         ToastUtil.showText("退出成功");
-                                        Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
-                                        GlobalVars.setDevid("");
-                                        GlobalVars.setDevpass("");
-                                        GlobalVars.setUserid("");
-                                        AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
-                                        AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
-                                        AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
-                                        AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
-                                        AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
-                                        MyApplication.mApplication.getmHomeActivity().finish();
-                                        startActivity(new Intent(HomeActivity.this, cn.semtec.community2.activity.LoginActivity.class));
-                                        finish();
+                                        logout_event();
                                     } else {
+                                        MyApplication.mApplication.dismissLoadDialog();
+                                        Log.i("LOGOUT", "智能家具失败: " + resultDesc.getResult());
                                         if ("".equals(result.getMsg()))
                                             ToastUtil.showText("退出失败");
                                         else
@@ -557,14 +564,14 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                                 @Override
                                 public void onFailure(int code, String message) {
                                     super.onFailure(code, message);
-                                    Log.i("LOGOUT", "onFailure: " + code + message);
+                                    MyApplication.mApplication.dismissLoadDialog();
                                     ToastUtil.showText("退出失败");
+                                    Log.i("LOGOUT", "智能家具失败: ");
                                 }
                             });
                         }
                     });
                     builder.create().show();
-
                 } else {
                     GlobalVars.setDstip("127.0.0.1");
                     SendDataUtil.getNetWorkInfo();
@@ -597,6 +604,54 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
+    private void logout_yun() {
+        String url = Constants.CONTENT_LOGOUT;
+        MyHttpUtil httpUtil = new MyHttpUtil(HttpRequest.HttpMethod.POST, url,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        MyApplication.mApplication.dismissLoadDialog();
+                        String mResult = responseInfo.result.toString();
+                        try {
+                            JSONObject jo = new JSONObject(mResult);
+                            if (jo.getInt("returnCode") == 0) {
+                                Log.i("LOGOUT", "云对讲服务器登出成功 ");
+                                logout_event();
+                            } else {
+                                Log.i("LOGOUT", "云对讲服务器登出失败 ");
+                                ToastUtil.showText("登出失败");
+                            }
+                        } catch (JSONException e) {
+                            Log.i("LOGOUT", "云对讲服务器登出失败 ");
+                            ToastUtil.showText("数据处理失败");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException error, String msg) {
+                        MyApplication.mApplication.dismissLoadDialog();
+                        LogUtils.i("网络异常" + error + "------------" + msg);
+                    }
+                });
+        httpUtil.send();
+    }
+
+    private void logout_event() {
+        ToastUtil.showText("登出成功");
+        Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
+        GlobalVars.setDevid("");
+        GlobalVars.setDevpass("");
+        GlobalVars.setUserid("");
+        AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
+        AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
+        AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
+        AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
+        AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
+        MyApplication.mApplication.dismissLoadDialog();
+        startActivity(new Intent(HomeActivity.this, cn.semtec.community2.activity.LoginActivity.class));
+        finish();
+    }
+
     OnGetViewPageNum onGetViewPageNum;
 
     public void setOnGetViewPageNum(OnGetViewPageNum onGetViewPageNum) {
@@ -610,7 +665,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (MyApplication.mApplication.isVisitor()){
+        if (MyApplication.mApplication.isVisitor()) {
             Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
             GlobalVars.setDevid("");
             GlobalVars.setDevpass("");
