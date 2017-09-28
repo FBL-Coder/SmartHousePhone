@@ -91,6 +91,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
     /**
      * 初始化组件以及数据
      */
+    int count = 0;
+
     private void initView() {
         message_save = new ArrayList<>();
         title = (TextView) findViewById(R.id.title_bar_tv_title);
@@ -219,7 +221,12 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     dev_test.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            SendDataUtil.controlDev(dev, UdpProPkt.E_CURT_CMD.e_curt_offOn.getValue());
+                            if (count % 2 == 0) {
+                                SendDataUtil.controlDev(dev, UdpProPkt.E_CURT_CMD.e_curt_offOn.getValue());
+                            } else {
+                                SendDataUtil.controlDev(dev, UdpProPkt.E_CURT_CMD.e_curt_offOff.getValue());
+                            }
+                            count++;
                         }
                     });
                 }
@@ -230,7 +237,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 if (freshAir.getDev().getDevId()
                         == dev.getDevId() && dev.getCanCpuId()
                         .equals(freshAir.getDev().getCanCpuId())) {
-
                     int PowChn = freshAir.getPowChn();
                     dev_way.setText((freshAir.getOnOffChn() + 1) + "、"
                             + (freshAir.getSpdLowChn() + 1) + "、" + (freshAir.getSpdMidChn() + 1)

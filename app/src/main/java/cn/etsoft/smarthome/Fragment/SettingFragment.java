@@ -31,9 +31,9 @@ import cn.etsoft.smarthome.utils.SendDataUtil;
  */
 public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener {
     private GridView gridView;
-    private String[] text = {"联网模块", "模块详情", "控制设置",
+    private String[] text = {"联网模块", "控制设置",
             "设备信息", "情景设置", "安防设置", "定时设置", "环境事件", "组合设置"};
-    private int[] image = {R.drawable.net_set, R.drawable.module_set,
+    private int[] image = {R.drawable.net_set,
             R.drawable.control_set, R.drawable.equip_set,
             R.drawable.scene_set, R.drawable.safety_set, R.drawable.time_set,
             R.drawable.env_set, R.drawable.group_set};
@@ -68,46 +68,46 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 intent.putExtra("title", text[0]);
                 startActivity(intent);
                 break;
+//            case 1:
+//                intent = new Intent(getActivity(), ModuleDetailActivity.class);
+//                intent.putExtra("title", text[1]);
+//                startActivity(intent);
+//                break;
             case 1:
-                intent = new Intent(getActivity(), ModuleDetailActivity.class);
+                intent = new Intent(getActivity(), ControlActivity.class);
                 intent.putExtra("title", text[1]);
                 startActivity(intent);
                 break;
             case 2:
-                intent = new Intent(getActivity(), ControlActivity.class);
+                intent = new Intent(getActivity(), EditDevActivity.class);
                 intent.putExtra("title", text[2]);
                 startActivity(intent);
                 break;
             case 3:
-                intent = new Intent(getActivity(), EditDevActivity.class);
+                if (MyApplication.getWareData().getSceneEvents().size() == 0)
+                    SendDataUtil.getSceneInfo();
+                intent = new Intent(getActivity(), SceneSetActivity.class);
                 intent.putExtra("title", text[3]);
                 startActivity(intent);
                 break;
             case 4:
-                if (MyApplication.getWareData().getSceneEvents().size() == 0)
-                    SendDataUtil.getSceneInfo();
-                intent = new Intent(getActivity(), SceneSetActivity.class);
+                intent = new Intent(getActivity(), SafetyActivity.class);
                 intent.putExtra("title", text[4]);
                 startActivity(intent);
                 break;
             case 5:
-                intent = new Intent(getActivity(), SafetyActivity.class);
+                intent = new Intent(getActivity(), TimerActivity.class);
                 intent.putExtra("title", text[5]);
                 startActivity(intent);
                 break;
             case 6:
-                intent = new Intent(getActivity(), TimerActivity.class);
+                intent = new Intent(getActivity(), ConditionEventActivity.class);
                 intent.putExtra("title", text[6]);
                 startActivity(intent);
                 break;
             case 7:
-                intent = new Intent(getActivity(), ConditionEventActivity.class);
-                intent.putExtra("title", text[7]);
-                startActivity(intent);
-                break;
-            case 8:
                 intent = new Intent(getActivity(), GroupSetActivity.class);
-                intent.putExtra("title", text[8]);
+                intent.putExtra("title", text[7]);
                 startActivity(intent);
                 break;
         }

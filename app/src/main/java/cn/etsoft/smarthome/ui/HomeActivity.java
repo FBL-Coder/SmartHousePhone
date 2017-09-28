@@ -52,6 +52,7 @@ import java.util.Map;
 
 import cn.etsoft.smarthome.Fragment.HomeFragment;
 import cn.etsoft.smarthome.Fragment.SettingFragment;
+import cn.etsoft.smarthome.Helper.LogoutHelper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
@@ -131,6 +132,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             }
         });
         MyApplication.mApplication.setmHomeActivity(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        upData();
     }
 
     /**
@@ -537,38 +544,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
-                            MyApplication.mApplication.showLoadDialog(HomeActivity.this);
-                            Map<String, String> params = new HashMap<>();
-                            params.put("uid", GlobalVars.getUserid());
-                            OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.LOGOUT, params, new HttpCallback() {
-                                @Override
-                                public void onSuccess(ResultDesc resultDesc) {
-                                    super.onSuccess(resultDesc);
-                                    Log.i("LOGOUT", "智能家居成功: " + resultDesc.getResult());
-                                    Gson gson = new Gson();
-                                    Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
-                                    if (result.getCode() == 0) {
-//                                        logout_yun();
-                                        ToastUtil.showText("退出成功");
-                                        logout_event();
-                                    } else {
-                                        MyApplication.mApplication.dismissLoadDialog();
-                                        Log.i("LOGOUT", "智能家具失败: " + resultDesc.getResult());
-                                        if ("".equals(result.getMsg()))
-                                            ToastUtil.showText("退出失败");
-                                        else
-                                            ToastUtil.showText(result.getMsg());
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(int code, String message) {
-                                    super.onFailure(code, message);
-                                    MyApplication.mApplication.dismissLoadDialog();
-                                    ToastUtil.showText("退出失败");
-                                    Log.i("LOGOUT", "智能家具失败: ");
-                                }
-                            });
+                            LogoutHelper.logout(HomeActivity.this);
                         }
                     });
                     builder.create().show();
@@ -602,54 +578,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 dialog_add_loaction.dismiss();
                 break;
         }
-    }
-
-    private void logout_yun() {
-        String url = Constants.CONTENT_LOGOUT;
-        MyHttpUtil httpUtil = new MyHttpUtil(HttpRequest.HttpMethod.POST, url,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        MyApplication.mApplication.dismissLoadDialog();
-                        String mResult = responseInfo.result.toString();
-                        try {
-                            JSONObject jo = new JSONObject(mResult);
-                            if (jo.getInt("returnCode") == 0) {
-                                Log.i("LOGOUT", "云对讲服务器登出成功 ");
-                                logout_event();
-                            } else {
-                                Log.i("LOGOUT", "云对讲服务器登出失败 ");
-                                ToastUtil.showText("登出失败");
-                            }
-                        } catch (JSONException e) {
-                            Log.i("LOGOUT", "云对讲服务器登出失败 ");
-                            ToastUtil.showText("数据处理失败");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException error, String msg) {
-                        MyApplication.mApplication.dismissLoadDialog();
-                        LogUtils.i("网络异常" + error + "------------" + msg);
-                    }
-                });
-        httpUtil.send();
-    }
-
-    private void logout_event() {
-        ToastUtil.showText("登出成功");
-        Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
-        GlobalVars.setDevid("");
-        GlobalVars.setDevpass("");
-        GlobalVars.setUserid("");
-        AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
-        AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
-        AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
-        AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
-        AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
-        MyApplication.mApplication.dismissLoadDialog();
-        startActivity(new Intent(HomeActivity.this, cn.semtec.community2.activity.LoginActivity.class));
-        finish();
     }
 
     OnGetViewPageNum onGetViewPageNum;

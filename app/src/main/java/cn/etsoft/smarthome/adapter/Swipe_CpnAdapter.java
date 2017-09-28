@@ -93,6 +93,7 @@ public class Swipe_CpnAdapter extends BaseAdapter {
             cmd_name.add("变亮");
         } else if (listData.get(position).getDevType() == 4) {
             cmd_name = new ArrayList<>();
+            cmd_name.add("未设置");
             cmd_name.add("打开");
             cmd_name.add("关闭");
             cmd_name.add("停止");

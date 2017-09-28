@@ -20,19 +20,30 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.etsoft.smarthome.Helper.Net_AddorDel_Helper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.NetWork_Adapter;
+import cn.etsoft.smarthome.domain.Http_Result;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.domain.SearchNet;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
+import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.weidget.SwipeListView;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Author：FBL  Time： 2017/7/10.
@@ -41,12 +52,12 @@ import cn.etsoft.smarthome.weidget.SwipeListView;
 
 public class NewWorkSetActivity extends Activity {
     private TextView mDialogCancle, mDialogOk,mTitle;
-    private ImageView mSousuo, mBack;
+    private ImageView mSousuo, mBack,network_ref;
     private EditText mDialogName, mDialogID, mDialogPass;
     private NewModuleHandler mNewModuleHandler = new NewModuleHandler(this);
     private Gson gson = new Gson();
     private int mDeleteNet_Position = -1;
-    private LinearLayout mNetworkAdd;
+    private TextView mNetworkAdd;
     private SwipeListView mNetListView;
     private NetWork_Adapter adapter;
 
@@ -61,15 +72,15 @@ public class NewWorkSetActivity extends Activity {
     private void initView() {
         mBack = (ImageView) findViewById(R.id.title_bar_iv_back);
         mSousuo = (ImageView) findViewById(R.id.title_bar_iv_or);
+        network_ref = (ImageView) findViewById(R.id.network_ref);
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
         mTitle.setVisibility(View.VISIBLE);
         mSousuo.setImageResource(R.drawable.net_search);
         mSousuo.setVisibility(View.VISIBLE);
-        mNetworkAdd = (LinearLayout) findViewById(R.id.network_add);
+        mNetworkAdd = (TextView) findViewById(R.id.network_add);
         mNetListView = (SwipeListView) findViewById(R.id.equi_list);
         mTitle.setText("模块设置");
     }
-
 
     private void initListview() {
         if (adapter == null)
@@ -78,13 +89,15 @@ public class NewWorkSetActivity extends Activity {
         mNetListView.setAdapter(adapter);
 
     }
-
     public void initData() {
         initListview();
-
         mNetworkAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (MyApplication.mApplication.isVisitor()){
+                    ToastUtil.showText("游客登录不能进行此操作");
+                    return;
+                }
                 Dialog dialog = new Dialog(NewWorkSetActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
                 dialog.setContentView(R.layout.dialog_network);
                 dialog.setTitle("添加联网模块");
@@ -168,6 +181,85 @@ public class NewWorkSetActivity extends Activity {
                         SeekActivity.class), 0);
             }
         });
+
+
+        network_ref.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewWorkSetActivity.this);
+                builder.setTitle("提示");
+                builder.setMessage("您确定要刷新联网模块列表？");
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        refNetLists();
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
+    }
+
+
+    private void refNetLists() {
+        MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this);
+        Map<String, String> param = new HashMap<>();
+        param.put("userName", GlobalVars.getUserid());
+        param.put("passwd", (String) AppSharePreferenceMgr.
+                get(GlobalVars.USERPASSWORD_SHAREPREFERENCE, ""));
+        OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.LOGIN, param, new HttpCallback() {
+            @Override
+            public void onSuccess(ResultDesc resultDesc) {
+                Log.i("LOGIN", resultDesc.getResult());
+                MyApplication.mApplication.dismissLoadDialog();
+                super.onSuccess(resultDesc);
+                Log.i(TAG, "onSuccess: " + resultDesc.getResult());
+                gson = new Gson();
+                Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
+
+                if (result.getCode() == HTTPRequest_BackCode.LOGIN_OK) {
+                    // 刷新成功
+                    setRcuInfoList(result);
+                    ToastUtil.showText("刷新成功");
+                    initListview();
+                } else {
+                    // 刷新失败
+                    ToastUtil.showText("刷新失败，请稍后再试");
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                super.onFailure(code, message);
+                Log.i(TAG, "刷新失败: " + code + "****" + message);
+                //登陆失败
+                MyApplication.mApplication.dismissLoadDialog();
+                ToastUtil.showText("刷新失败，网络不可用或服务器异常");
+            }
+        });
+    }
+
+
+    public void setRcuInfoList(Http_Result result) {
+        if (result == null)
+            return;
+
+        List<RcuInfo> rcuInfos = new ArrayList<>();
+        for (int i = 0; i < result.getData().size(); i++) {
+            RcuInfo rcuInfo = new RcuInfo();
+            rcuInfo.setCanCpuName(result.getData().get(i).getCanCpuName());
+            rcuInfo.setDevUnitID(result.getData().get(i).getDevUnitID());
+            rcuInfo.setDevUnitPass(result.getData().get(i).getDevPass());
+            rcuInfos.add(rcuInfo);
+        }
+        AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, gson.toJson(rcuInfos));
     }
 
     @Override

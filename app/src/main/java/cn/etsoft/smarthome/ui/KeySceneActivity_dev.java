@@ -1,11 +1,8 @@
 package cn.etsoft.smarthome.ui;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +19,6 @@ import cn.etsoft.smarthome.adapter.KeyAdapter_keyScene;
 import cn.etsoft.smarthome.domain.ChnOpItem_scene;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDialog_comment;
 
 /**
@@ -57,9 +53,8 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                 if (datType == 58 && MyApplication.getWareData().getChnOpItem_scene().getSubType1() == 1) {
                     MyApplication.mApplication.dismissLoadDialog();
                     IsHaveData = true;
-//                    WareDataHliper.initCopyWareData().startCopyScene_KeysData();
-                    listData_all = MyApplication.getWareData().getChnOpItem_scene();
-                    MyApplication.getWareData().setChnOpItem_scene(listData_all);
+                    WareDataHliper.initCopyWareData().startCopyScene_KeysData();
+                    listData_all = WareDataHliper.initCopyWareData().getScenekeysResult();
                     onGetKeySceneDataListener.getKeySceneData();
                 }
 
@@ -127,44 +122,35 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 boolean isCantain = false;
-                for (int i = 0; i < WareDataHliper.initCopyWareData().getScenekeysResult()
-                        .getKey2scene_item().size(); i++) {
-                    ChnOpItem_scene.Key2sceneItemBean itemBean = WareDataHliper.
-                            initCopyWareData().getScenekeysResult().getKey2scene_item().get(i);
+                for (int i = 0; i < WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item().size(); i++) {
+                    ChnOpItem_scene.Key2sceneItemBean itemBean = WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item().get(i);
 
                     if (itemBean.getEventId() == sceneId) {
                         if (itemBean.getKeyIndex() == position) {
                             WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item()
                                     .remove(i);
-                            keyAdapter_keyscene.notifyDataSetChanged(sceneId,
-                                    keyInput_position, KeySceneActivity_dev.this,
-                                    false);
+                            keyAdapter_keyscene.notifyDataSetChanged(sceneId, keyInput_position,
+                                    KeySceneActivity_dev.this, false);
 
                             return;
                         }
                         itemBean.setEventId(sceneId);
-                        itemBean.setKeyUId(MyApplication.getWareData().getKeyInputs().
-                                get(keyInput_position).getCanCpuID());
+                        itemBean.setKeyUId(MyApplication.getWareData().getKeyInputs().get(keyInput_position).getCanCpuID());
                         itemBean.setKeyIndex(position);
                         WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item()
-                                .set(position, itemBean);
+                                .set(i, itemBean);
                         isCantain = true;
                     }
                 }
                 if (!isCantain) {
                     ChnOpItem_scene.Key2sceneItemBean itemBean = new ChnOpItem_scene.Key2sceneItemBean();
                     itemBean.setEventId(sceneId);
-                    itemBean.setKeyUId(MyApplication.getWareData().getKeyInputs().
-                            get(keyInput_position).getCanCpuID());
+                    itemBean.setKeyUId(MyApplication.getWareData().getKeyInputs().get(keyInput_position).getCanCpuID());
                     itemBean.setKeyIndex(position);
-                    WareDataHliper.initCopyWareData().getScenekeysResult()
-                            .getKey2scene_item().add(itemBean);
+                    WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item().add(itemBean);
                 }
-                keyAdapter_keyscene.notifyDataSetChanged(sceneId,
-                        keyInput_position, KeySceneActivity_dev.this,
-                        false);
-
-
+                keyAdapter_keyscene.notifyDataSetChanged(sceneId, keyInput_position,
+                        KeySceneActivity_dev.this, false);
             }
         });
     }
@@ -177,10 +163,6 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
         }
         switch (view.getId()) {
             case R.id.title_bar_tv_room:
-                if (MyApplication.getWareData().getChnOpItem_scene() == null) {
-                    ToastUtil.showText("没有按键信息，不能保存");
-                    return;
-                }
                 CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(this);
                 builder.setTitle("提示 :");
                 builder.setMessage("您要保存这些设置吗？");
@@ -199,22 +181,17 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                         String div;
                         String more_data = "";
                         div = ",";
-                        chnOpItem_scene = MyApplication.getWareData().getChnOpItem_scene();
-                        if (chnOpItem_scene.getKey2scene_item().size() > 12) {
-                            ToastUtil.showText("最多只能添加12个按键");
-                            return;
-                        } else {
-                            for (int j = 0; j < chnOpItem_scene.getKey2scene_item().size(); j++) {
-                                data_str = "{" +
-                                        //不确定正确
-                                        "\"keyUId\":\"" + chnOpItem_scene.getKey2scene_item().get(j).getKeyUId() + "\"," +
-                                        "\"keyIndex\":" + chnOpItem_scene.getKey2scene_item().get(j).getKeyIndex() + "," +
-                                        "\"valid\":" + 0 + "," +
-                                        "\"rev3\":" + 0 + "," +
-                                        "\"eventId\":" + chnOpItem_scene.getKey2scene_item().get(j).getEventId()
-                                        + "}" + div;
-                                more_data += data_str;
-                            }
+                        chnOpItem_scene = WareDataHliper.initCopyWareData().getScenekeysResult();
+                        for (int j = 0; j < chnOpItem_scene.getKey2scene_item().size(); j++) {
+                            data_str = "{" +
+                                    //不确定正确
+                                    "\"keyUId\":\"" + chnOpItem_scene.getKey2scene_item().get(j).getKeyUId() + "\"," +
+                                    "\"keyIndex\":" + chnOpItem_scene.getKey2scene_item().get(j).getKeyIndex() + "," +
+                                    "\"valid\":" + 0 + "," +
+                                    "\"rev3\":" + 0 + "," +
+                                    "\"eventId\":" + chnOpItem_scene.getKey2scene_item().get(j).getEventId()
+                                    + "}" + div;
+                            more_data += data_str;
                         }
                         try {
                             more_data = more_data.substring(0, more_data.lastIndexOf(","));

@@ -2,8 +2,12 @@ package cn.etsoft.smarthome.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +22,7 @@ import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
+import cn.etsoft.smarthome.view.Circle_Progress;
 
 /**
  * Author：FBL  Time： 2017/7/24.
@@ -53,13 +58,14 @@ public class SeekActivity extends Activity {
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (MyApplication.mApplication.isSeekNet() && datType == 0) {
                     MyApplication.mApplication.setSeekNet(false);
-                    MyApplication.mApplication.dismissLoadDialog();
+                    if (mDialog != null)
+                        mDialog.dismiss();
                     initList();
                 }
             }
         });
         SendDataUtil.SeekNet();
-        MyApplication.mApplication.showLoadDialog(this);
+        initDialog(this, "正在搜索");
         mSeekNetBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +102,7 @@ public class SeekActivity extends Activity {
                             info.setSubMask(MyApplication.getWareData().getSeekNets().get(position).getRcu_rows().get(0).getSubMask());
 
                             for (int i = 0; i < MyApplication.getWareData().getRcuInfos().size(); i++) {
-                                if (MyApplication.getWareData().getRcuInfos().get(i).getDevUnitID().equals(info.getDevUnitID())){
+                                if (MyApplication.getWareData().getRcuInfos().get(i).getDevUnitID().equals(info.getDevUnitID())) {
                                     ToastUtil.showText("这个联网模块已存在");
                                     return;
                                 }
@@ -133,5 +139,40 @@ public class SeekActivity extends Activity {
     public void onBackPressed() {
         setResult(1, getIntent().putExtra("yes", -1));
         super.onBackPressed();
+    }
+
+    private Dialog mDialog;
+
+    //自定义加载进度条
+    private void initDialog(Context context, String str) {
+        try {
+            Circle_Progress.setText(str);
+            mDialog = Circle_Progress.createLoadingDialog(context);
+            mDialog.setCancelable(true);//允许返回
+            mDialog.show();//显示
+            final Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    ToastUtil.showText("没有搜索到联网模块");
+                    mDialog.dismiss();
+                }
+            };
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        if (mDialog.isShowing()) {
+                            handler.sendMessage(handler.obtainMessage());
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e + "");
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+
+        }
     }
 }

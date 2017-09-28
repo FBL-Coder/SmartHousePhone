@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <include layout="@layout/title_bar" />
 
     <LinearLayout
@@ -10,9 +11,10 @@
         android:layout_height="@dimen/dp_0"
         android:layout_weight="2"
         android:orientation="vertical">
+
         <LinearLayout
-            android:id="@+id/network_add"
-            android:layout_width="@dimen/dp_140"
+
+            android:layout_width="@dimen/dp_220"
             android:layout_height="@dimen/dp_30"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/dp_140"
@@ -22,39 +24,53 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/network_logout"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white1"
+                android:gravity="center"
+                android:text="退出登录"
+                android:textColor="@color/black1" />
+
+            <TextView
+                android:id="@+id/network_add"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="添加模块"
-                android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_16" />
+                android:textColor="@color/color_fff" />
 
             <ImageView
+                android:id="@+id/network_ref"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="0.8"
-                android:background="#aeec7c"
-                android:src="@drawable/jiahao" />
+                android:background="@color/white1"
+                android:padding="@dimen/dp_3"
+                android:src="@drawable/refrush" />
         </LinearLayout>
+
         <cn.etsoft.smarthome.weidget.SwipeListView
             android:id="@+id/equi_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_5"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
             android:divider="@color/color_00000000"
             android:dividerHeight="@dimen/dp_2" />
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
-        android:layout_weight="0.5"
         android:layout_marginBottom="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_10"
+        android:layout_weight="0.5"
         android:gravity="right"
         android:text="注 : 点击联网模块进行切换 , 后面有绿色“√”的为正在使用 ;如若没有联网模块 ，请点击添加模块进行添加."
         android:textColor="@color/color_37BC9B"

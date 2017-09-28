@@ -240,13 +240,12 @@ public class UDPServer implements Runnable {
         try {
             JSONObject jsonObject = new JSONObject(info);
             devUnitID = jsonObject.getString("devUnitID");
-            if (!MyApplication.mApplication.isVisitor())
-                if (!devUnitID.equals(GlobalVars.getDevid()))
-                    if (!MyApplication.mApplication.isSeekNet()) {
-                        Log.i(TAG, "extractData: devUnitID判断不一致，退出方法 ");
-                        Log.i(TAG, "extractData: GlobalVars" + GlobalVars.getDevid() + "-----devUnitID " + devUnitID);
-                        return;
-                    }
+            if (!devUnitID.equals(GlobalVars.getDevid()))
+                if (!MyApplication.mApplication.isSeekNet()) {
+                    Log.i(TAG, "extractData: devUnitID判断不一致，退出方法 ");
+                    Log.i(TAG, "extractData: GlobalVars" + GlobalVars.getDevid() + "-----devUnitID " + devUnitID);
+                    return;
+                }
             datType = jsonObject.getInt("datType");
             subType1 = jsonObject.getInt("subType1");
             subType2 = jsonObject.getInt("subType2");
@@ -1085,7 +1084,7 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             curtain.getDev().setDevName(curtain1.getDev().getDevName());
                             curtain.getDev().setRoomName(curtain1.getDev().getRoomName());
-                        }else if (dattype == 6){
+                        } else if (dattype == 6) {
                             curtain.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
                             curtain.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
@@ -1122,7 +1121,7 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             airCondDev.getDev().setDevName(dev.getDevName());
                             airCondDev.getDev().setRoomName(air.getDev().getRoomName());
-                        }else if (dattype == 6){
+                        } else if (dattype == 6) {
                             airCondDev.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
                             airCondDev.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
@@ -1152,7 +1151,7 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             wareLight.getDev().setDevName(light.getDev().getDevName());
                             wareLight.getDev().setRoomName(light.getDev().getRoomName());
-                        }else if (dattype == 6){
+                        } else if (dattype == 6) {
                             wareLight.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
                             wareLight.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
@@ -1189,7 +1188,7 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             freshAir.getDev().setDevName(freshAir1.getDev().getDevName());
                             freshAir.getDev().setRoomName(freshAir1.getDev().getRoomName());
-                        }else if (dattype == 6){
+                        } else if (dattype == 6) {
                             freshAir.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
                             freshAir.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
@@ -1222,7 +1221,7 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             floorHeat.getDev().setDevName(floorHeat1.getDev().getDevName());
                             floorHeat.getDev().setRoomName(floorHeat1.getDev().getRoomName());
-                        }else if (dattype == 6){
+                        } else if (dattype == 6) {
                             floorHeat.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
                             floorHeat.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }

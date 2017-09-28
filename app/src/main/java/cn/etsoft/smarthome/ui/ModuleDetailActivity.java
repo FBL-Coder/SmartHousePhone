@@ -17,12 +17,14 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.pullmi.utils.LogUtils;
+import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2017/8/3.
+ * 联网模块详情
  */
-public class ModuleDetailActivity extends Activity implements View.OnClickListener{
+public class ModuleDetailActivity extends Activity implements View.OnClickListener {
     private TextView devUnitID, roomNum, macAddr, tvsave;
     private int id;
     private EditText name, devUnitPass, IpAddr, SubMask, GateWay, centerServ;
@@ -33,6 +35,7 @@ public class ModuleDetailActivity extends Activity implements View.OnClickListen
     int bDhcp = -1;
     private ImageView back;
     private TextView title;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,10 +45,11 @@ public class ModuleDetailActivity extends Activity implements View.OnClickListen
         //初始化控件
         initView();
     }
+
     /**
      * 初始化标题栏
      */
-    private void initTitleBar(){
+    private void initTitleBar() {
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         title.setText(getIntent().getStringExtra("title"));
@@ -66,11 +70,20 @@ public class ModuleDetailActivity extends Activity implements View.OnClickListen
 //            ToastUtil.showToast(mActivity,"没有数据！");
 //            return;
 //        }
-        if(MyApplication.getWareData().getRcuInfos() == null ){
+        if (MyApplication.getWareData().getRcuInfos() == null) {
             ToastUtil.showText("没有数据！");
             return;
         }
-        rcuinfo =  MyApplication.mApplication.getRcuInfoList().get(0);
+        for (int i = 0; i < MyApplication.mApplication.getRcuInfoList().size(); i++) {
+            if (AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, "")
+                    .equals(MyApplication.mApplication.getRcuInfoList().get(i))) {
+                rcuinfo = MyApplication.mApplication.getRcuInfoList().get(i);
+            }
+        }
+        if (rcuinfo == null) {
+            ToastUtil.showText("数据异常");
+            return;
+        }
         //TODO  暂时这样写，后面要改
         bDhcp = rcuinfo.getbDhcp();
 
@@ -93,20 +106,22 @@ public class ModuleDetailActivity extends Activity implements View.OnClickListen
         tvsave.setOnClickListener(this);
         try {
             devUnitID.setText(rcuinfo.getDevUnitID());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
-            devUnitPass.setText(rcuinfo.getDevUnitPass().substring(0,8));
-        }catch (Exception e){}
+            devUnitPass.setText(rcuinfo.getDevUnitPass().substring(0, 8));
+        } catch (Exception e) {
+        }
 
         try {
-            if (rcuinfo.getName().equals("")&& !rcuinfo.getCanCpuName().equals("")){
+            if (rcuinfo.getName().equals("") && !rcuinfo.getCanCpuName().equals("")) {
 //                if (Pattern.compile("[\u4e00-\u9fa5]+").matcher(rcuinfo.getCanCpuName()).matches()) {
 //                    name.setText(rcuinfo.getCanCpuName());
 //                } else {
 //                    name.setText(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(rcuinfo.getCanCpuName())));
 //                }
                 name.setText(rcuinfo.getCanCpuName());
-            }else {
+            } else {
 //                if (Pattern.compile("[\u4e00-\u9fa5]+").matcher(rcuinfo.getName()).matches()) {
 //                    name.setText(rcuinfo.getName());
 //                } else {
@@ -114,32 +129,40 @@ public class ModuleDetailActivity extends Activity implements View.OnClickListen
 //                }
                 name.setText(rcuinfo.getName());
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             IpAddr.setText(rcuinfo.getIpAddr());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             SubMask.setText(rcuinfo.getSubMask());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             GateWay.setText(rcuinfo.getGateWay());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             centerServ.setText(rcuinfo.getCenterServ());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             roomNum.setText(rcuinfo.getRoomNum());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             macAddr.setText(rcuinfo.getMacAddr());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             if (rcuinfo.getbDhcp() == 0) {
                 no.setChecked(true);
             } else {
                 yes.setChecked(true);
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {

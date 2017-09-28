@@ -1,15 +1,10 @@
 package cn.etsoft.smarthome.ui;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +26,6 @@ import cn.etsoft.smarthome.domain.WareFloorHeat;
 import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.domain.WareLight;
 import cn.etsoft.smarthome.utils.SendDataUtil;
-import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDialog_comment;
 
 /**
@@ -44,6 +37,8 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
     private TextView add_equi;
     private Dev_Adapter adapter;
     private List<WareDev> devs;
+    private ImageView bacd;
+    private TextView title;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +56,15 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
     }
 
     private void event() {
+        devs = new ArrayList<>();
+        devs.addAll(MyApplication.getWareData().getDevs());
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 5 || datType == 6 || datType == 7)
+                    event();
+            }
+        });
         adapter = new Dev_Adapter();
         equi_control.setAdapter(adapter);
         add_equi.setOnClickListener(this);
@@ -69,9 +73,9 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(EditDevActivity.this, Devs_Detail_Activity.class);
-                intent.putExtra("cpu",devs.get(position).getCanCpuId());
-                intent.putExtra("id",devs.get(position).getDevId());
-                intent.putExtra("type",devs.get(position).getType());
+                intent.putExtra("cpu", devs.get(position).getCanCpuId());
+                intent.putExtra("id", devs.get(position).getDevId());
+                intent.putExtra("type", devs.get(position).getType());
                 startActivity(intent);
             }
         });
@@ -102,9 +106,19 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
             }
         });
     }
+
     private void initView() {
-        equi_control = (ListView)findViewById(R.id.equi_cont_list);
+        equi_control = (ListView) findViewById(R.id.equi_cont_list);
         add_equi = (TextView) findViewById(R.id.add_equi);
+        bacd = (ImageView) findViewById(R.id.title_bar_iv_back);
+        title = (TextView) findViewById(R.id.title_bar_tv_title);
+        title.setText("设备编辑");
+        bacd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -115,17 +129,12 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
                 break;
         }
     }
+
     class Dev_Adapter extends BaseAdapter {
 
-        Dev_Adapter() {
-            devs = new ArrayList<>();
-            devs.addAll(MyApplication.getWareData().getDevs());
-        }
 
         @Override
         public void notifyDataSetChanged() {
-            devs = new ArrayList<>();
-            devs.addAll(MyApplication.getWareData().getDevs());
             super.notifyDataSetChanged();
         }
 
@@ -170,8 +179,7 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
                         viewHolder.title.setText(Air.getDev().getDevName());
                     }
                 }
-            }
-            else if (devs.get(position).getType() == 1)
+            } else if (devs.get(position).getType() == 1)
                 viewHolder.image.setImageResource(image[1]);
             else if (devs.get(position).getType() == 2)
                 viewHolder.image.setImageResource(image[2]);
@@ -186,8 +194,7 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
                         viewHolder.title.setText(light.getDev().getDevName());
                     }
                 }
-            }
-            else if (devs.get(position).getType() == 4) {
+            } else if (devs.get(position).getType() == 4) {
                 viewHolder.image.setImageResource(image[4]);
                 List<WareCurtain> curtains = MyApplication.getWareData().getCurtains();
                 for (int i = 0; i < curtains.size(); i++) {
@@ -198,8 +205,7 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
                         viewHolder.title.setText(curtain.getDev().getDevName());
                     }
                 }
-            }
-            else if (devs.get(position).getType() == 7) {
+            } else if (devs.get(position).getType() == 7) {
                 viewHolder.image.setImageResource(image[5]);
                 List<WareFreshAir> freshAirs = MyApplication.getWareData().getFreshAirs();
                 for (int i = 0; i < freshAirs.size(); i++) {
@@ -210,8 +216,7 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
                         viewHolder.title.setText(freshAir.getDev().getDevName());
                     }
                 }
-            }
-            else if (devs.get(position).getType() == 9) {
+            } else if (devs.get(position).getType() == 9) {
                 viewHolder.image.setImageResource(image[6]);
                 List<WareFloorHeat> floorHeats = MyApplication.getWareData().getFloorHeat();
                 for (int i = 0; i < floorHeats.size(); i++) {

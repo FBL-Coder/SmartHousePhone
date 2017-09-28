@@ -5,6 +5,8 @@
     android:layout_marginBottom="@dimen/dp_2"
     android:orientation="vertical">
 
+    <include layout="@layout/title_bar" />
+
     <ListView
         android:id="@+id/equi_cont_list"
         android:layout_width="match_parent"

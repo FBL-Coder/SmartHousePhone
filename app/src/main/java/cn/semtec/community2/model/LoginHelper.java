@@ -28,7 +28,7 @@ import cn.semtec.community2.util.CatchUtil;
 import cn.semtec.community2.util.SharedPreferenceUtil;
 
 public class LoginHelper {
-    private SharedPreferenceUtil prefernceUtil = MyApplication.getSharedPreferenceUtil();
+    private SharedPreferenceUtil prefernceUtil;
     public Handler LoginHandler;
 
     public LoginHelper(Handler handler) {
@@ -60,6 +60,8 @@ public class LoginHelper {
                         // 0为成功 <0为系统异常 其他待定
                         if (jo.getInt("returnCode") == 0) {
                             // 保存账号密码
+                            if (prefernceUtil == null)
+                                prefernceUtil = new  SharedPreferenceUtil(MyApplication.getContext());
                             prefernceUtil.putString("cellphone", cellphone);
                             prefernceUtil.putString("password", password);
                             LogUtils.i("登录成功");

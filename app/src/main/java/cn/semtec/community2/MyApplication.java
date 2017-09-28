@@ -38,7 +38,7 @@ public class MyApplication extends cn.etsoft.smarthome.MyApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance  = MyApplication.this;
+        instance  = (MyApplication) MyApplication.mApplication;
         houseList = new ArrayList<>();
         // isDebug 控制catch输出
         isDebug = true;

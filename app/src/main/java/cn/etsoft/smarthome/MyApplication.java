@@ -342,31 +342,35 @@ public class MyApplication extends Application {
 
     //自定义加载进度条
     private void initDialog(Context context, String str) {
-        Circle_Progress.setText(str);
-        mDialog = Circle_Progress.createLoadingDialog(context);
-        mDialog.setCancelable(true);//允许返回
-        mDialog.show();//显示
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                ToastUtil.showText("发送超时");
-                mDialog.dismiss();
-            }
-        };
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(5000);
-                    if (mDialog.isShowing()) {
-                        handler.sendMessage(handler.obtainMessage());
-                    }
-                } catch (Exception e) {
-                    System.out.println(e + "");
+        try {
+            Circle_Progress.setText(str);
+            mDialog = Circle_Progress.createLoadingDialog(context);
+            mDialog.setCancelable(true);//允许返回
+            mDialog.show();//显示
+            final Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    ToastUtil.showText("发送超时");
+                    mDialog.dismiss();
                 }
-            }
-        }).start();
+            };
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        if (mDialog.isShowing()) {
+                            handler.sendMessage(handler.obtainMessage());
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e + "");
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+
+        }
     }
 
     /**
@@ -534,25 +538,25 @@ public class MyApplication extends Application {
             }
             //网络监听吐司
             if (msg.what == application.NONET) {
-                ToastUtil.showText("没有可用网络，请检查",5000);
+                ToastUtil.showText("没有可用网络，请检查", 5000);
             }
-            //udp发送数据后的回调
-            if (msg.what == application.UDP_NOBACK) {
-
-                final String data = (String) msg.obj;
-                final Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (!UdpIsHaveBackData && WSIsOpen) {
-                            if (onUdpgetDataNoBackListener != null) {
-                                onUdpgetDataNoBackListener.WSSendDatd(data);
-                            }
-                            timer.cancel();
-                        }
-                    }
-                }, 3000, 3000);
-            }
+//            //udp发送数据后的回调
+//            if (msg.what == application.UDP_NOBACK) {
+//
+//                final String data = (String) msg.obj;
+//                final Timer timer = new Timer();
+//                timer.schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        if (!UdpIsHaveBackData && WSIsOpen) {
+//                            if (onUdpgetDataNoBackListener != null) {
+//                                onUdpgetDataNoBackListener.WSSendDatd(data);
+//                            }
+//                            timer.cancel();
+//                        }
+//                    }
+//                }, 3000, 3000);
+//            }
         }
 
         /**
@@ -575,7 +579,7 @@ public class MyApplication extends Application {
             }
 //            SAFETY_TYPE = MyApplication.getWareData().getSafetyResult_alarm().getSecStatus();
             SAFETY_TYPE = (int) AppSharePreferenceMgr.get(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 255);
-            if (SAFETY_TYPE == 255){
+            if (SAFETY_TYPE == 255) {
                 return "";
             }
             Safety_Data safetyData;
@@ -608,7 +612,6 @@ public class MyApplication extends Application {
                             time.setM(cal.get(Calendar.MINUTE));
                             time.setS(cal.get(Calendar.SECOND));
                             time.setSafetyBean(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i));
-
                             safetyData.getSafetyTime().add(time);
                             Data_Cache.writeFile_safety(GlobalVars.getDevid(), safetyData);
                         }
