@@ -115,6 +115,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyApplication.mApplication.showLoadDialog(this,false);
         setContentView(R.layout.activity_home);
         SendDataUtil.getNetWorkInfo();
         //初始化控件
@@ -126,9 +127,11 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 3)
+                if (datType == 3) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     //更新数据
                     upData();
+                }
             }
         });
         MyApplication.mApplication.setmHomeActivity(this);
