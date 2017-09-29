@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.etsoft.smarthome.Helper.LogoutHelper;
 import cn.etsoft.smarthome.Helper.Net_AddorDel_Helper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
@@ -57,7 +58,7 @@ public class NewWorkSetActivity extends Activity {
     private NewModuleHandler mNewModuleHandler = new NewModuleHandler(this);
     private Gson gson = new Gson();
     private int mDeleteNet_Position = -1;
-    private TextView mNetworkAdd;
+    private TextView mNetworkAdd,network_logout;
     private SwipeListView mNetListView;
     private NetWork_Adapter adapter;
 
@@ -74,6 +75,7 @@ public class NewWorkSetActivity extends Activity {
         mSousuo = (ImageView) findViewById(R.id.title_bar_iv_or);
         network_ref = (ImageView) findViewById(R.id.network_ref);
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
+        network_logout = (TextView) findViewById(R.id.network_logout);
         mTitle.setVisibility(View.VISIBLE);
         mSousuo.setImageResource(R.drawable.net_search);
         mSousuo.setVisibility(View.VISIBLE);
@@ -203,6 +205,13 @@ public class NewWorkSetActivity extends Activity {
                     }
                 });
                 builder.create().show();
+            }
+        });
+
+        network_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LogoutHelper.logout(NewWorkSetActivity.this);
             }
         });
     }

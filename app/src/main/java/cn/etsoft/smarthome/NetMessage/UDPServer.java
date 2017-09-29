@@ -134,14 +134,11 @@ public class UDPServer implements Runnable {
 
         int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
         if (NETWORK == 0) {
-//            Looper.loop();
-//            ToastUtil.showText("请检查网络连接");
-//            Looper.prepare();
             Message message = mhandler.obtainMessage();
             message.what = MyApplication.mApplication.NONET;
             mhandler.sendMessage(message);
         } else if (NETWORK != 0 && NETWORK < 10) {
-            Log.i("数据流量发送WebSocket", "WEB" + msg);
+            Log.i("发送WebSocket", "数据流量--WEB" + msg);
             MyApplication.mApplication.getWsClient().sendMsg(msg);
         } else {
 //            MyApplication.setOnUdpgetDataNoBackListener(new MyApplication.OnUdpgetDataNoBackListener() {
@@ -172,10 +169,16 @@ public class UDPServer implements Runnable {
                     return;
                 }
                 String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-                Log.i("发送WebSocket", "WEB" + jsonToServer);
+                Log.i("发送WebSocket", "和板子不在同一网络--WEB" + jsonToServer);
                 MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
             } else {
-                UdpSendMsg(msg);
+                if (GlobalVars.isIsLAN())
+                    UdpSendMsg(msg);
+                else {
+                    String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
+                    Log.i("发送WebSocket", "局域网没有收到200心跳包--WEB" + jsonToServer);
+                    MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
+                }
             }
         }
     }
@@ -207,7 +210,6 @@ public class UDPServer implements Runnable {
     }
 
     public static void show(String str) {
-
         try {
             str = str.trim();
             int index = 0;
@@ -230,6 +232,7 @@ public class UDPServer implements Runnable {
 
     //警报时间间隔
     long time = 0;
+    boolean isGetSceneData = false;// 是否获取情景、安防数据
 
     public void extractData(String info) {
         show(info);
@@ -252,7 +255,6 @@ public class UDPServer implements Runnable {
         } catch (JSONException e) {
             System.out.println(this.getClass().getName() + "--extractData--" + e.toString());
         }
-//        if (datType != 35)
 
         switch (datType) {
             case 0:// e_udpPro_getRcuinfo
@@ -261,27 +263,21 @@ public class UDPServer implements Runnable {
                         //设置联网模块信息
                         MyApplication.setNewWareData();
                         setRcuInfo(info);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(8000);
-                                    SendDataUtil.getSafetyInfo();
-                                    Thread.sleep(3000);
-                                    SendDataUtil.getSceneInfo();
-                                    Thread.sleep(3000);
-                                    SendDataUtil.getTimerInfo();
-                                    Thread.sleep(3000);
-                                    SendDataUtil.getConditionInfo();
-                                    Thread.sleep(3000);
-                                    SendDataUtil.getGroupSetInfo();
-                                } catch (InterruptedException e) {
-
+                        if (!isGetSceneData) {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        isGetSceneData = true;
+                                        Thread.sleep(8000);
+                                        SendDataUtil.getSafetyInfo();
+                                        Thread.sleep(3000);
+                                        SendDataUtil.getSceneInfo();
+                                    } catch (InterruptedException e) {
+                                    }
                                 }
-
-                            }
-                        }).start();
-
+                            }).start();
+                        }
                     } else if (MyApplication.mApplication.isSeekNet() == true) {
                         setRcuInfo_search(info);
                     }
@@ -291,7 +287,6 @@ public class UDPServer implements Runnable {
             case 2:// e_udpPro_getRcuinfo
                 if (subType1 == 0 && subType2 == 0) {
                     MyApplication.mApplication.setIsheartting(true);
-                    GlobalVars.setIsLAN(true);
                 }
                 break;
             case 3: // getDevsInfo

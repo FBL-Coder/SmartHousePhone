@@ -46,7 +46,6 @@ public class LogoutHelper {
                 Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
                 if (result.getCode() == 0) {
 //                                        logout_yun();
-                    ToastUtil.showText("退出成功");
                     logout_event(activity);
                 } else {
                     MyApplication.mApplication.dismissLoadDialog();

@@ -104,10 +104,6 @@ public class MyApplication extends Application {
     public List<Weather_Bean> mWeathers_list;//天气图标集合
     public CityDB mCityDB;
 
-    //添加或者编辑设备名以及房间名
-    public static String AddOrEditDevName;
-    public static String AddOrEditRoomName;
-
     private SoundPool sp;//声明一个SoundPool
     private int music;//定义一个整型用load（）；来设置suondID
 
@@ -197,8 +193,8 @@ public class MyApplication extends Application {
             GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
         else {
             String rcuInfo_Use_ip = "";
-            if (rcuInfo_Use.getIpAddr() == null || "".equals(rcuInfo_Use.getIpAddr())) {
-                GlobalVars.setIPisEqual(GlobalVars.IPDIFFERENT);
+            if (rcuInfo_Use == null || rcuInfo_Use.getIpAddr() == null || "".equals(rcuInfo_Use.getIpAddr())) {
+                GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
                 return;
             } else rcuInfo_Use_ip = rcuInfo_Use.getIpAddr();
             rcuInfo_Use_ip = rcuInfo_Use_ip.substring(0, rcuInfo_Use_ip.lastIndexOf("."));
@@ -341,11 +337,11 @@ public class MyApplication extends Application {
     private Dialog mDialog;
 
     //自定义加载进度条
-    private void initDialog(Context context, String str) {
+    private void initDialog(Context context, String str, boolean isCancelable) {
         try {
             Circle_Progress.setText(str);
             mDialog = Circle_Progress.createLoadingDialog(context);
-            mDialog.setCancelable(true);//允许返回
+            mDialog.setCancelable(isCancelable);//允许返回
             mDialog.show();//显示
             final Handler handler = new Handler() {
                 @Override
@@ -376,8 +372,15 @@ public class MyApplication extends Application {
     /**
      * 加载框显示
      */
+    public void showLoadDialog(Activity activity, boolean isCancelable) {
+        initDialog(activity, "加载数据中...", isCancelable);
+    }
+    /**
+     * 加载框显示
+     */
     public void showLoadDialog(Activity activity) {
-        initDialog(activity, "加载数据中...");
+
+        initDialog(activity, "加载数据中...", true);
     }
 
     /**
@@ -389,23 +392,6 @@ public class MyApplication extends Application {
             mDialog = null;
         }
     }
-
-    public static String getAddOrEditDevName() {
-        return AddOrEditDevName;
-    }
-
-    public static void setAddOrEditDevName(String addOrEditDevName) {
-        AddOrEditDevName = addOrEditDevName;
-    }
-
-    public static String getAddOrEditRoomName() {
-        return AddOrEditRoomName;
-    }
-
-    public static void setAddOrEditRoomName(String addOrEditRoomName) {
-        AddOrEditRoomName = addOrEditRoomName;
-    }
-
 
     public boolean isSceneIsShow() {
         return SceneIsShow;
