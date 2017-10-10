@@ -171,40 +171,44 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
 
 
     private void upData() {
-        if (MyApplication.getWareData().getLights().size() == 0) {
-            ToastUtil.showText("没有灯具，请添加");
-            return;
-        }
-        //房间
-        if (MyApplication.getWareData().getRooms().size() == 0)
-            return;
-        //所有灯
-        AllLight = new ArrayList<>();
-        for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
-            AllLight.add(MyApplication.getWareData().getLights().get(i));
-        }
-        wareLight = new ArrayList<>();
-        //房间集合
-        room_list = MyApplication.getWareData().getRooms();
-        //房间名称；
-        if (position_room != -1)
-            title_bar_tv_room.setText(room_list.get(position_room));
-        else
-            title_bar_tv_room.setText(room_list.get(getIntent().getIntExtra("viewPage_num", 0)));
-        //根据房间id获取设备；
-        for (int i = 0; i < AllLight.size(); i++) {
-            if (AllLight.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
-                wareLight.add(AllLight.get(i));
+        try {
+            if (MyApplication.getWareData().getLights().size() == 0) {
+                ToastUtil.showText("没有灯具，请添加");
+                return;
             }
-        }
-        //房间里的灯
-        if (wareLight.size() == 0) {
-            lightAdapter = new LightAdapter(new ArrayList<WareLight>(), this);
-            gridView.setAdapter(lightAdapter);
-            ToastUtil.showText(title_bar_tv_room.getText() + "没有找到灯具，请添加");
-        } else {
-            lightAdapter = new LightAdapter(wareLight, this);
-            gridView.setAdapter(lightAdapter);
+            //房间
+            if (MyApplication.getWareData().getRooms().size() == 0)
+                return;
+            //所有灯
+            AllLight = new ArrayList<>();
+            for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
+                AllLight.add(MyApplication.getWareData().getLights().get(i));
+            }
+            wareLight = new ArrayList<>();
+            //房间集合
+            room_list = MyApplication.getWareData().getRooms();
+            //房间名称；
+            if (position_room != -1)
+                title_bar_tv_room.setText(room_list.get(position_room));
+            else
+                title_bar_tv_room.setText(room_list.get(getIntent().getIntExtra("viewPage_num", 0)));
+            //根据房间id获取设备；
+            for (int i = 0; i < AllLight.size(); i++) {
+                if (AllLight.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
+                    wareLight.add(AllLight.get(i));
+                }
+            }
+            //房间里的灯
+            if (wareLight.size() == 0) {
+                lightAdapter = new LightAdapter(new ArrayList<WareLight>(), this);
+                gridView.setAdapter(lightAdapter);
+                ToastUtil.showText(title_bar_tv_room.getText() + "没有找到灯具，请添加");
+            } else {
+                lightAdapter = new LightAdapter(wareLight, this);
+                gridView.setAdapter(lightAdapter);
+            }
+        } catch (Exception e) {
+            return;
         }
     }
 

@@ -279,6 +279,7 @@ public class UDPServer implements Runnable {
             case 2:// e_udpPro_getRcuinfo
                 if (subType1 == 0 && subType2 == 0) {
                     MyApplication.mApplication.setIsheartting(true);
+                    GlobalVars.setIsLAN(true);
                 }
                 break;
             case 3: // getDevsInfo
@@ -1085,10 +1086,8 @@ public class UDPServer implements Runnable {
                 JSONObject jsonobj = array.getJSONObject(0);
                 WareDev dev = new WareDev();
                 dev.setCanCpuId(jsonobj.getString("canCpuID"));
-                if (dattype == 6) {
-                    dev.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                    dev.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
-                }
+                dev.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+                dev.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                 dev.setDevId(jsonobj.getInt("devID"));
                 dev.setType(jsonobj.getInt("devType"));
                 dev.setbOnOff(jsonobj.getInt("bOnOff"));
@@ -1106,8 +1105,8 @@ public class UDPServer implements Runnable {
                     if (air.getDev().getCanCpuId().equals(airCondDev.getDev().getCanCpuId())
                             && air.getDev().getDevId() == airCondDev.getDev().getDevId()) {
                         if (dattype == 4) {
-                            airCondDev.getDev().setDevName(dev.getDevName());
-                            airCondDev.getDev().setRoomName(air.getDev().getRoomName());
+                        airCondDev.getDev().setDevName(air.getDev().getDevName());
+                        airCondDev.getDev().setRoomName(air.getDev().getRoomName());
                         } else if (dattype == 6) {
                             airCondDev.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
                             airCondDev.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));

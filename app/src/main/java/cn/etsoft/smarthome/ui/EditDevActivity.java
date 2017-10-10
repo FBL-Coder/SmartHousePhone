@@ -61,8 +61,10 @@ public class EditDevActivity extends Activity implements View.OnClickListener {
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 5 || datType == 6 || datType == 7)
+                if (datType == 5 || datType == 6 || datType == 7) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     event();
+                }
             }
         });
         adapter = new Dev_Adapter();

@@ -79,7 +79,6 @@ public class SendDataUtil {
 
     static long time = 0;
 
-    //----------------------------------------------------
     public static void getNetWorkInfo() {
         if (System.currentTimeMillis() - time < 5000) {
             time = System.currentTimeMillis();
@@ -89,20 +88,7 @@ public class SendDataUtil {
                 "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue() +
                 "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
         MyApplication.mApplication.getUdpServer().send(GETNETWORKINFO);
-        if (isGetNetWorkInfoListener != null)
-            isGetNetWorkInfoListener.isGetNetWorkInfo();
     }
-
-    public static IsGetNetWorkInfoListener isGetNetWorkInfoListener;
-
-    public static void setIsGetNetWorkInfoListener(IsGetNetWorkInfoListener isGetNetWorkInfoListener) {
-        SendDataUtil.isGetNetWorkInfoListener = isGetNetWorkInfoListener;
-    }
-
-    public interface IsGetNetWorkInfoListener {
-        void isGetNetWorkInfo();
-    }
-    //--------------------------------------------------------
 
 
     public static void controlDev(WareDev dev, int cmd) {

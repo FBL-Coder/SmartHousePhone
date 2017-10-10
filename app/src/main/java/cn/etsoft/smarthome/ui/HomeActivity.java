@@ -112,7 +112,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     MyApplication.mApplication.dismissLoadDialog();
                     //更新数据
                     upData();
-                    mViewPager.setIsCanSlide(true);
                 }
             }
         });
@@ -130,12 +129,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
      */
     private void initView() {
         mViewPager = (ViewPagerCompat) findViewById(R.id.home_fragemnt_vp);
-        SendDataUtil.setIsGetNetWorkInfoListener(new SendDataUtil.IsGetNetWorkInfoListener() {
-            @Override
-            public void isGetNetWorkInfo() {
-                mViewPager.setIsCanSlide(false);
-            }
-        });
         ll_home_dots = (LinearLayout) findViewById(R.id.ll_home_dots);
         ll_loaction = (LinearLayout) findViewById(R.id.ll_loaction);
         ref_home = (ImageView) findViewById(R.id.home_tv_ref);
