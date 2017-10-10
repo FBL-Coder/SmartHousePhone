@@ -29,11 +29,8 @@ import cn.semtec.community2.tool.Constants;
 /**
  * Author：FBL  Time： 2017/9/28.
  */
-
 public class LogoutHelper {
-
     public static void logout(final Activity activity) {
-
         MyApplication.mApplication.showLoadDialog(activity);
         Map<String, String> params = new HashMap<>();
         params.put("uid", GlobalVars.getUserid());
@@ -106,9 +103,7 @@ public class LogoutHelper {
         GlobalVars.setDevpass("");
         GlobalVars.setUserid("");
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
-        AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
         AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
-        AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
         MyApplication.mApplication.dismissLoadDialog();
         activity.startActivity(new Intent(activity, cn.semtec.community2.activity.LoginActivity.class));

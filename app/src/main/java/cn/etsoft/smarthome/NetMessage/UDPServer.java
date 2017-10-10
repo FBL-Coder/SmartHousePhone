@@ -33,6 +33,7 @@ import cn.etsoft.smarthome.domain.SetEquipmentResult;
 import cn.etsoft.smarthome.domain.SetSafetyResult;
 import cn.etsoft.smarthome.domain.SetSafetyResult_alarm;
 import cn.etsoft.smarthome.domain.Timer_Data;
+import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.UserBean;
 import cn.etsoft.smarthome.domain.WareAirCondDev;
 import cn.etsoft.smarthome.domain.WareBoardChnout;
@@ -141,47 +142,38 @@ public class UDPServer implements Runnable {
             Log.i("发送WebSocket", "数据流量--WEB" + msg);
             MyApplication.mApplication.getWsClient().sendMsg(msg);
         } else {
-//            MyApplication.setOnUdpgetDataNoBackListener(new MyApplication.OnUdpgetDataNoBackListener() {
-//                @Override
-//                public void WSSendDatd(String msg) {
-//                    String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-//                    if ("".equals(GlobalVars.getDevid())) {
-//                        return;
-//                    }
-//                    Log.i("Udp发送无返回，改WebSocket发送", "WEB" + jsonToServer);
-//                    MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
-//
-//                    UdpSendMsg(msg);
-//                }
-//            });
-//            if (!GlobalVars.isIsLAN()) {
-//                if ("".equals(GlobalVars.getDevid())) {
-//                    return;
-//                }
-//                String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-//                Log.i("发送WebSocket", "WEB" + jsonToServer);
-//                MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
-//            } else {
-//                UdpSendMsg(msg);
-//            }
+            if ("".equals(GlobalVars.getDevid())) {
+                return;
+            }
             if (GlobalVars.isIPisEqual() == GlobalVars.IPDIFFERENT) {
-                if ("".equals(GlobalVars.getDevid())) {
-                    return;
-                }
                 String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-                Log.i("发送WebSocket", "和板子不在同一网络--WEB" + jsonToServer);
+                Log.i("发送WebSocket", "板子和客户端不在同一网络----WEB" + jsonToServer);
                 MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
             } else {
                 if (GlobalVars.isIsLAN())
                     UdpSendMsg(msg);
                 else {
                     String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-                    Log.i("发送WebSocket", "局域网没有收到200心跳包--WEB" + jsonToServer);
+                    Log.i("发送WebSocket", "局域网没有200的心跳包----WEB" + jsonToServer);
                     MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
                 }
             }
         }
     }
+
+    //搜索联网模块
+    public void sendSeekNet() {
+        MyApplication.mApplication.setSeekNet(true);
+        String SeekNet = "{" +
+                "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
+                "\"devPass\":\"" + GlobalVars.getDevpass() + "\"," +
+                "\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfoNoPwd.getValue() + "," +
+                "\"uuid\":\"" + "\"," +
+                "\"subType1\":0," +
+                "\"subType2\":0}";
+        UdpSendMsg(SeekNet);
+    }
+
 
     private void UdpSendMsg(final String msg) {
         new Thread(new Runnable() {

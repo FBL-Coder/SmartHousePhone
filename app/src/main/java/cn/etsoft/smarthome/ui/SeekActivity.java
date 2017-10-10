@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
+import cn.etsoft.smarthome.NetMessage.UDPServer;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.SeekListAdapter;
 import cn.etsoft.smarthome.domain.RcuInfo;
@@ -64,7 +65,7 @@ public class SeekActivity extends Activity {
                 }
             }
         });
-        SendDataUtil.SeekNet();
+        MyApplication.mApplication.getUdpServer().sendSeekNet();
         initDialog(this, "正在搜索");
         mSeekNetBack.setOnClickListener(new View.OnClickListener() {
             @Override

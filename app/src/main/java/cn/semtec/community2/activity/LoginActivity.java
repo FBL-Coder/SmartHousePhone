@@ -67,11 +67,9 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                     cancelProgress();
                     break;
                 case MyHttpUtil.CATCH:
-                    ToastUtil.s(LoginActivity.this, getString(R.string.data_abnormal));
                     cancelProgress();
                     break;
                 case MyHttpUtil.FAILURE:
-                    ToastUtil.s(LoginActivity.this, getString(R.string.net_abnormal));
                     cancelProgress();
                     break;
                 default:
@@ -144,10 +142,10 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
         AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, cellphone);
         AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, password);
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, gson.toJson(rcuInfos));
-        if (rcuInfos.size() != 1)
+        if (rcuInfos.size() == 0)
             startActivity(new Intent(this, NewWorkSetActivity.class));
         else {
-            GlobalVars.setDevid(result.getData().get(0).getDevUnitID());
+            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, result.getData().get(0).getDevUnitID());
             GlobalVars.setDevpass(result.getData().get(0).getDevPass());
             startActivity(new Intent(this, HomeActivity.class));
         }
@@ -174,6 +172,8 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
         btn_tourist = (TextView) findViewById(R.id.btn_tourist);
         et_account = (EditText) findViewById(R.id.et_account);
         et_password = (EditText) findViewById(R.id.et_password);
+        et_account.setText((String) AppSharePreferenceMgr.get(GlobalVars.USERID_SHAREPREFERENCE, ""));
+        et_password.setText((String) AppSharePreferenceMgr.get(GlobalVars.USERPASSWORD_SHAREPREFERENCE, ""));
     }
 
 

@@ -2,7 +2,6 @@ package cn.etsoft.smarthome.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,11 +29,6 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.google.gson.Gson;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.callback.RequestCallBack;
-import com.lidroid.xutils.http.client.HttpRequest;
-import com.lidroid.xutils.util.LogUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -42,13 +36,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import cn.etsoft.smarthome.Fragment.HomeFragment;
 import cn.etsoft.smarthome.Fragment.SettingFragment;
@@ -57,7 +47,6 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.City;
-import cn.etsoft.smarthome.domain.Http_Result;
 import cn.etsoft.smarthome.domain.WareBoardChnout;
 import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.domain.WareDev;
@@ -65,20 +54,12 @@ import cn.etsoft.smarthome.domain.Weather_All_Bean;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.CityDB;
-import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
-import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
-import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
-import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.etsoft.smarthome.utils.NetUtil;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.DepthPageTransformer;
 import cn.etsoft.smarthome.view.ViewPagerCompat;
 import cn.etsoft.smarthome.weidget.CustomDialog;
-import cn.semtec.community2.activity.SettingActivity;
-import cn.semtec.community2.model.MyHttpUtil;
-import cn.semtec.community2.tool.Constants;
-import cn.semtec.community2.util.CatchUtil;
 
 /**
  * 主页界面
@@ -115,7 +96,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyApplication.mApplication.showLoadDialog(this,false);
+        MyApplication.mApplication.showLoadDialog(this, false);
         setContentView(R.layout.activity_home);
         SendDataUtil.getNetWorkInfo();
         //初始化控件
@@ -131,6 +112,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     MyApplication.mApplication.dismissLoadDialog();
                     //更新数据
                     upData();
+                    mViewPager.setIsCanSlide(true);
                 }
             }
         });
@@ -148,6 +130,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
      */
     private void initView() {
         mViewPager = (ViewPagerCompat) findViewById(R.id.home_fragemnt_vp);
+        SendDataUtil.setIsGetNetWorkInfoListener(new SendDataUtil.IsGetNetWorkInfoListener() {
+            @Override
+            public void isGetNetWorkInfo() {
+                mViewPager.setIsCanSlide(false);
+            }
+        });
         ll_home_dots = (LinearLayout) findViewById(R.id.ll_home_dots);
         ll_loaction = (LinearLayout) findViewById(R.id.ll_loaction);
         ref_home = (ImageView) findViewById(R.id.home_tv_ref);
@@ -376,11 +364,15 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
         //页面状态改变的时候调用
         public void onPageSelected(int position) {
-            onGetViewPageNum.getViewPageNum(position);
-            textView_banner.setText(text_room.get(position));
-            dots_iv.get(oldPosition).setBackgroundResource(R.drawable.point_unfocused);
-            dots_iv.get(position).setBackgroundResource(R.drawable.point_focused);
-            oldPosition = position;
+            try {
+                onGetViewPageNum.getViewPageNum(position);
+                textView_banner.setText(text_room.get(position));
+                dots_iv.get(oldPosition).setBackgroundResource(R.drawable.point_unfocused);
+                dots_iv.get(position).setBackgroundResource(R.drawable.point_focused);
+                oldPosition = position;
+            } catch (Exception e) {
+                return;
+            }
         }
 
         public void onPageScrollStateChanged(int arg0) {
@@ -390,7 +382,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         public void onPageScrolled(int arg0, float arg1, int arg2) {
 
         }
-
     }
 
     private void initViewPager() {
@@ -602,9 +593,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             GlobalVars.setDevpass("");
             GlobalVars.setUserid("");
             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
-            AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, "");
             AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
-            AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
             AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
         }
     }

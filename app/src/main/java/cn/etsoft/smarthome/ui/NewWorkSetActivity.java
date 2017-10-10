@@ -52,13 +52,13 @@ import static android.content.ContentValues.TAG;
  */
 
 public class NewWorkSetActivity extends Activity {
-    private TextView mDialogCancle, mDialogOk,mTitle;
-    private ImageView mSousuo, mBack,network_ref;
+    private TextView mDialogCancle, mDialogOk, mTitle;
+    private ImageView mBack, network_ref;
     private EditText mDialogName, mDialogID, mDialogPass;
     private NewModuleHandler mNewModuleHandler = new NewModuleHandler(this);
     private Gson gson = new Gson();
     private int mDeleteNet_Position = -1;
-    private TextView mNetworkAdd,network_logout;
+    private TextView mNetworkAdd, network_sousuo;
     private SwipeListView mNetListView;
     private NetWork_Adapter adapter;
 
@@ -72,16 +72,17 @@ public class NewWorkSetActivity extends Activity {
 
     private void initView() {
         mBack = (ImageView) findViewById(R.id.title_bar_iv_back);
-        mSousuo = (ImageView) findViewById(R.id.title_bar_iv_or);
         network_ref = (ImageView) findViewById(R.id.network_ref);
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
-        network_logout = (TextView) findViewById(R.id.network_logout);
+        network_sousuo = (TextView) findViewById(R.id.network_sousuo);
         mTitle.setVisibility(View.VISIBLE);
-        mSousuo.setImageResource(R.drawable.net_search);
-        mSousuo.setVisibility(View.VISIBLE);
         mNetworkAdd = (TextView) findViewById(R.id.network_add);
         mNetListView = (SwipeListView) findViewById(R.id.equi_list);
         mTitle.setText("模块设置");
+        if (MyApplication.mApplication.isVisitor()) {
+            network_ref.setVisibility(View.GONE);
+            mNetworkAdd.setVisibility(View.GONE);
+        }
     }
 
     private void initListview() {
@@ -91,12 +92,13 @@ public class NewWorkSetActivity extends Activity {
         mNetListView.setAdapter(adapter);
 
     }
+
     public void initData() {
         initListview();
         mNetworkAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MyApplication.mApplication.isVisitor()){
+                if (MyApplication.mApplication.isVisitor()) {
                     ToastUtil.showText("游客登录不能进行此操作");
                     return;
                 }
@@ -135,6 +137,7 @@ public class NewWorkSetActivity extends Activity {
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
                             MyApplication.setNewWareData();
+                            MyApplication.queryIP();
                             SendDataUtil.getNetWorkInfo();
                             adapter.notifyDataSetChanged();
                             dialog.dismiss();
@@ -175,16 +178,6 @@ public class NewWorkSetActivity extends Activity {
             }
         });
 
-
-        mSousuo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(NewWorkSetActivity.this,
-                        SeekActivity.class), 0);
-            }
-        });
-
-
         network_ref.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -208,10 +201,11 @@ public class NewWorkSetActivity extends Activity {
             }
         });
 
-        network_logout.setOnClickListener(new View.OnClickListener() {
+        network_sousuo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LogoutHelper.logout(NewWorkSetActivity.this);
+                startActivityForResult(new Intent(NewWorkSetActivity.this,
+                        SeekActivity.class), 0);
             }
         });
     }
