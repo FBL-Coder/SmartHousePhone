@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -121,9 +122,18 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 3) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    //更新数据
+                    upData();
+                }
+            }
+        });
         upData();
     }
-
     /**
      * 初始化控件
      */
@@ -190,7 +200,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 Log.e("Exception", "" + e);
             }
         } else {
+            Looper.prepare();
             ToastUtil.showText("获取天气信息失败");
+            Looper.loop();
         }
     }
 
@@ -274,7 +286,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             ToastUtil.showText("没有网络...");
         }
 
-
         weather_handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -357,17 +368,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
         //页面状态改变的时候调用
         public void onPageSelected(int position) {
-            try {
-                onGetViewPageNum.getViewPageNum(position);
-                textView_banner.setText(text_room.get(position));
-                dots_iv.get(oldPosition).setBackgroundResource(R.drawable.point_unfocused);
-                dots_iv.get(position).setBackgroundResource(R.drawable.point_focused);
-                oldPosition = position;
-            } catch (Exception e) {
-                return;
-            }
+            onGetViewPageNum.getViewPageNum(position);
+            textView_banner.setText(text_room.get(position));
+            dots_iv.get(oldPosition).setBackgroundResource(R.drawable.point_unfocused);
+            dots_iv.get(position).setBackgroundResource(R.drawable.point_focused);
+            oldPosition = position;
         }
-
         public void onPageScrollStateChanged(int arg0) {
 
         }
@@ -422,8 +428,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             mImageViews.add(imageView);
         }
     }
-
-
     private void upData() {
         text_room = new ArrayList<>();
         mWareDev_room = new ArrayList<>();
@@ -442,7 +446,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             return;
         initViewPager();
     }
-
     /**
      * 初始化数据
      */

@@ -173,7 +173,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
     private void upData() {
         try {
             if (MyApplication.getWareData().getLights().size() == 0) {
-                ToastUtil.showText("没有灯具，请添加");
+                cn.semtec.community2.util.ToastUtil.s(this,"没有灯具，请添加");
                 return;
             }
             //房间

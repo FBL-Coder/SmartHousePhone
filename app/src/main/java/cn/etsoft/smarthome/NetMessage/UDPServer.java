@@ -132,15 +132,16 @@ public class UDPServer implements Runnable {
 
 
     public void send(final String msg) {
-
+        MyApplication.queryIP();
         int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
         if (NETWORK == 0) {
             Message message = mhandler.obtainMessage();
             message.what = MyApplication.mApplication.NONET;
             mhandler.sendMessage(message);
         } else if (NETWORK != 0 && NETWORK < 10) {
-            Log.i("发送WebSocket", "数据流量--WEB" + msg);
-            MyApplication.mApplication.getWsClient().sendMsg(msg);
+            String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
+            MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
+            Log.i("发送WebSocket", "数据流量--WEB" + jsonToServer);
         } else {
             if ("".equals(GlobalVars.getDevid())) {
                 return;

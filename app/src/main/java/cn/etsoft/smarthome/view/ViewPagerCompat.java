@@ -1934,7 +1934,6 @@ public class ViewPagerCompat extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        try {
             if (mFakeDragging) {
                 // A fake drag is in progress already, ignore this real one
                 // but still eat the touch events.
@@ -2058,9 +2057,6 @@ public class ViewPagerCompat extends ViewGroup {
                 ViewCompat.postInvalidateOnAnimation(this);
             }
             return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private void requestParentDisallowInterceptTouchEvent(boolean disallowIntercept) {
@@ -2071,7 +2067,6 @@ public class ViewPagerCompat extends ViewGroup {
     }
 
     private boolean performDrag(float x) {
-        try {
             boolean needsInvalidate = false;
 
             final float deltaX = mLastMotionX - x;
@@ -2116,9 +2111,6 @@ public class ViewPagerCompat extends ViewGroup {
             pageScrolled((int) scrollX);
 
             return needsInvalidate;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**

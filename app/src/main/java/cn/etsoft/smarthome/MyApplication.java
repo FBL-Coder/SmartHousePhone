@@ -167,7 +167,6 @@ public class MyApplication extends Application {
 
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
-        queryIP();
     }
 
     public static void queryIP() {
@@ -184,7 +183,7 @@ public class MyApplication extends Application {
         if (NETWORK == 0) {
             ToastUtil.showText("请检查网络连接");
         } else if (NETWORK != 0 && NETWORK < 10) {//数据流量
-            IPAddress = GetIPAddress.getLocalIpAddress();
+            return;
         } else {
             IPAddress = GetIPAddress.getWifiIP(MyApplication.mApplication);
         }
@@ -196,7 +195,7 @@ public class MyApplication extends Application {
             String rcuInfo_Use_ip = rcuInfo_Use.getIpAddr();
             Log.i("IPAddress", "  IP Use--- " + rcuInfo_Use_ip + "IP Now***" + IPAddress);
             if ("".equals(rcuInfo_Use_ip) || rcuInfo_Use_ip == null) {
-                GlobalVars.setIPisEqual(GlobalVars.IPDIFFERENT);
+                GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
                 GlobalVars.setIsLAN(true);
                 return;
             }
@@ -359,7 +358,7 @@ public class MyApplication extends Application {
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(8000);
                         if (mDialog.isShowing()) {
                             handler.sendMessage(handler.obtainMessage());
                         }
@@ -479,7 +478,7 @@ public class MyApplication extends Application {
 //                if (System.currentTimeMillis() - time_WebSocket < 2000)
 //                    return;
 //                time_WebSocket = System.currentTimeMillis();
-//                Log.e("WSException", "链接关闭" + msg.obj);
+                Log.e("WSException", "链接关闭" + msg.obj);
                 application.wsClient = new WebSocket_Client();
                 try {
                     application.wsClient.initSocketClient(application.handler);
@@ -489,11 +488,11 @@ public class MyApplication extends Application {
                 }
             }
             if (msg.what == application.WS_DATA_OK) {//WebSocket 数据
-//                Log.i(TAG, "handleMessage: " + msg.obj);
+                Log.i("WS", "handleMessage: " + msg.obj);
                 MyApplication.mApplication.getUdpServer().webSocketData((String) msg.obj);
             }
             if (msg.what == application.WS_Error) {
-//                Log.e("WSException", "数据异常" + msg.obj);
+                Log.e("WSException", "数据异常" + msg.obj);
 //                ToastUtil.showText("数据发送失败，与服务器连接已断开，请稍后再试！");
             }
             //UDP数据报
