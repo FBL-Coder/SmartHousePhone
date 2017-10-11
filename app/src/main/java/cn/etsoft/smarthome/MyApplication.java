@@ -167,6 +167,8 @@ public class MyApplication extends Application {
 
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
+        MyApplication.mApplication.getUdpServer().udpSendNetWorkInfo();
+
     }
 
     public static void queryIP() {
@@ -196,7 +198,7 @@ public class MyApplication extends Application {
             Log.i("IPAddress", "  IP Use--- " + rcuInfo_Use_ip + "IP Now***" + IPAddress);
             if ("".equals(rcuInfo_Use_ip) || rcuInfo_Use_ip == null) {
                 GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
-                GlobalVars.setIsLAN(true);
+//                GlobalVars.setIsLAN(true);
                 return;
             }
             rcuInfo_Use_ip = rcuInfo_Use_ip.substring(0, rcuInfo_Use_ip.lastIndexOf("."));
@@ -519,10 +521,12 @@ public class MyApplication extends Application {
                 Log.e("UDPException", "UDP数据接收失败");
             //心跳广播停止
             if (msg.what == application.HEARTBEAT_STOP) {
+                Log.i("HEARTBEAT", "HEARTBEAT_STOP");
                 GlobalVars.setIsLAN(false);
             }
             //心跳广播运行
             if (msg.what == application.HEARTBEAT_RUN) {
+                Log.i("HEARTBEA", "HEARTBEAT_RUN");
                 GlobalVars.setIsLAN(true);
             }
             //网络监听吐司

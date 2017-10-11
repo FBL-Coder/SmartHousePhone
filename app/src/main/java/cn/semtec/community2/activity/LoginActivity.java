@@ -149,6 +149,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
             GlobalVars.setDevpass(result.getData().get(0).getDevPass());
             startActivity(new Intent(this, HomeActivity.class));
         }
+        AppSharePreferenceMgr.put(GlobalVars.LOGOUT_SHAREPREFERENCE, false);
         finish();
     }
 

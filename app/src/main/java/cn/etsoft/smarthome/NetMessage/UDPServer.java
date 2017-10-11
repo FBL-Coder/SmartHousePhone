@@ -116,6 +116,7 @@ public class UDPServer implements Runnable {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                Log.i(TAG, "heartBeat: " + MyApplication.mApplication.isIsheartting());
                 if (MyApplication.mApplication.isIsheartting()) {
                     MyApplication.mApplication.setIsheartting(false);
                     Message message = mhandler.obtainMessage();
@@ -127,7 +128,7 @@ public class UDPServer implements Runnable {
                     mhandler.sendMessage(message);
                 }
             }
-        }, 20000, 100000);
+        }, 10000, 10000);
     }
 
 
@@ -175,6 +176,18 @@ public class UDPServer implements Runnable {
         UdpSendMsg(SeekNet);
     }
 
+
+    long time_net = 0;
+    public void udpSendNetWorkInfo() {
+        if (System.currentTimeMillis() - time_net < 5000) {
+            time_net = System.currentTimeMillis();
+            return;
+        }
+        String GETNETWORKINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() +
+                "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue() +
+                "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
+        UdpSendMsg(GETNETWORKINFO);
+    }
 
     private void UdpSendMsg(final String msg) {
         new Thread(new Runnable() {
@@ -1106,8 +1119,8 @@ public class UDPServer implements Runnable {
                     if (air.getDev().getCanCpuId().equals(airCondDev.getDev().getCanCpuId())
                             && air.getDev().getDevId() == airCondDev.getDev().getDevId()) {
                         if (dattype == 4) {
-                        airCondDev.getDev().setDevName(air.getDev().getDevName());
-                        airCondDev.getDev().setRoomName(air.getDev().getRoomName());
+                            airCondDev.getDev().setDevName(air.getDev().getDevName());
+                            airCondDev.getDev().setRoomName(air.getDev().getRoomName());
                         } else if (dattype == 6) {
                             airCondDev.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
                             airCondDev.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));

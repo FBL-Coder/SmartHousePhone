@@ -28,6 +28,10 @@ public class GlobalVars {
      * 布防类型
      */
     public static final String SAFETY_TYPE_SHAREPREFERENCE = "SAFETY_TYPE";
+    /**
+     *退出标记
+     */
+    public static final String LOGOUT_SHAREPREFERENCE = "LOGOUT_FLAG";
 
 
     public static String LOCAL_IP = "127.0.0.1";

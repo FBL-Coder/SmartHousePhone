@@ -137,6 +137,7 @@ public class NewWorkSetActivity extends Activity {
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
                             MyApplication.setNewWareData();
+                            MyApplication.mApplication.getUdpServer().udpSendNetWorkInfo();
                             SendDataUtil.getNetWorkInfo();
                             adapter.notifyDataSetChanged();
                             dialog.dismiss();
