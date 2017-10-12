@@ -634,7 +634,7 @@ public class UDPServer implements Runnable {
                     if (jsonObject.getString("devUnitID").equals(json_list.get(i).getDevUnitID())) {
 //                        本地001数据包  过来后，根据id判断数据为同一个，所以会将服务器发送的数据覆盖，从而将canCpuname重置！
 //                        处理则根据值来赋值；
-//                        json_list.get(i).setCanCpuName(info1.getCanCpuName());
+                        json_list.get(i).setName(info1.getName());
                         json_list.get(i).setbDhcp(info1.getbDhcp());
                         json_list.get(i).setCenterServ(info1.getCenterServ());
                         json_list.get(i).setDevUnitID(info1.getDevUnitID());

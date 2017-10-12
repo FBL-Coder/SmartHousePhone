@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -22,10 +23,10 @@ import com.google.gson.Gson;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import cn.etsoft.smarthome.Helper.LogoutHelper;
 import cn.etsoft.smarthome.Helper.Net_AddorDel_Helper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
@@ -34,6 +35,7 @@ import cn.etsoft.smarthome.adapter.NetWork_Adapter;
 import cn.etsoft.smarthome.domain.Http_Result;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.domain.SearchNet;
+import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
@@ -42,7 +44,6 @@ import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.weidget.SwipeListView;
 
 import static android.content.ContentValues.TAG;
 
@@ -59,8 +60,9 @@ public class NewWorkSetActivity extends Activity {
     private Gson gson = new Gson();
     private int mDeleteNet_Position = -1;
     private TextView mNetworkAdd, network_sousuo;
-    private SwipeListView mNetListView;
-    private NetWork_Adapter adapter;
+    private ListView mNetListView,sousuo_list;
+    private NetWork_Adapter adapter,mSeekAdapter;
+    private LinearLayout add_ref_LL;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,25 +74,92 @@ public class NewWorkSetActivity extends Activity {
 
     private void initView() {
         mBack = (ImageView) findViewById(R.id.title_bar_iv_back);
+        add_ref_LL = (LinearLayout) findViewById(R.id.add_ref_LL);
         network_ref = (ImageView) findViewById(R.id.network_ref);
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
         network_sousuo = (TextView) findViewById(R.id.network_sousuo);
         mTitle.setVisibility(View.VISIBLE);
         mNetworkAdd = (TextView) findViewById(R.id.network_add);
-        mNetListView = (SwipeListView) findViewById(R.id.equi_list);
+        mNetListView = (ListView) findViewById(R.id.equi_list);
+        sousuo_list = (ListView) findViewById(R.id.sousuo_list);
         mTitle.setText("模块设置");
         if (MyApplication.mApplication.isVisitor()) {
-            network_ref.setVisibility(View.GONE);
-            mNetworkAdd.setVisibility(View.GONE);
+            add_ref_LL.setVisibility(View.GONE);
         }
+
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (MyApplication.mApplication.isSeekNet() && datType == 0) {
+                    MyApplication.mApplication.setSeekNet(false);
+                        MyApplication.mApplication.dismissLoadDialog();
+                    initsousuoList();
+                }
+            }
+        });
+    }
+
+    private void initsousuoList() {
+        List<SearchNet> rcuInfo_SeekNet = MyApplication.getWareData().getSeekNets();
+        List<RcuInfo> SeekListData = new ArrayList<>();
+        for (int i = 0; i < rcuInfo_SeekNet.size(); i++) {
+            RcuInfo info = new RcuInfo();
+            info.setName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getName())));
+            info.setCenterServ(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getCenterServ());
+            info.setbDhcp(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getBDhcp());
+            info.setDevUnitID(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getCanCpuID());
+            info.setDevUnitPass(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getPass());
+            info.setGateWay(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getGateway());
+            info.setHwVversion(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getHwVersion());
+            info.setSubMask(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getSubMask());
+            info.setIpAddr(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getIpAddr());
+            info.setMacAddr(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getMacAddr());
+            info.setRoomNum(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getRoomNum());
+            info.setSoftVersion(rcuInfo_SeekNet.get(0).getRcu_rows().get(i).getSoftVersion());
+            SeekListData.add(info);
+        }
+        MyApplication.mApplication.setSeekRcuInfos(SeekListData);
+        mSeekAdapter = new NetWork_Adapter(this, SeekListData, NetWork_Adapter.SEEK);
+        sousuo_list.setAdapter(mSeekAdapter);
+        sousuo_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                if (GlobalVars.getDevid().equals(MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID()))
+                    ToastUtil.showText("联网模块正在使用中！");
+                else {
+                    android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(NewWorkSetActivity.this);
+                    dialog.setTitle("提示 :");
+                    dialog.setMessage("您是否要使用此联网模块？");
+                    dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
+                                    MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID());
+                            MyApplication.setNewWareData();
+                            MyApplication.mApplication.getUdpServer().udpSendNetWorkInfo();
+                            dialog.dismiss();
+                            startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                            finish();
+                        }
+                    });
+                    dialog.create().show();
+                }
+            }
+        });
+
     }
 
     private void initListview() {
         if (adapter == null)
-            adapter = new NetWork_Adapter(this);
+            adapter = new NetWork_Adapter(this,MyApplication.mApplication.getRcuInfoList(),NetWork_Adapter.LOGIN);
         else adapter.notifyDataSetChanged();
         mNetListView.setAdapter(adapter);
-
     }
 
     public void initData() {
@@ -138,7 +207,6 @@ public class NewWorkSetActivity extends Activity {
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
                             MyApplication.setNewWareData();
                             MyApplication.mApplication.getUdpServer().udpSendNetWorkInfo();
-                            SendDataUtil.getNetWorkInfo();
                             adapter.notifyDataSetChanged();
                             dialog.dismiss();
                             startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
@@ -204,8 +272,8 @@ public class NewWorkSetActivity extends Activity {
         network_sousuo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(NewWorkSetActivity.this,
-                        SeekActivity.class), 0);
+                MyApplication.mApplication.getUdpServer().sendSeekNet();
+                MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this);
             }
         });
     }
@@ -265,26 +333,6 @@ public class NewWorkSetActivity extends Activity {
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, gson.toJson(rcuInfos));
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            int position = data.getIntExtra("yes", -1);
-            if (position != -1) {
-                if (position == -5) {
-                    adapter.notifyDataSetChanged();
-                } else {
-                    SearchNet net = MyApplication.getWareData().getSeekNets().get(position);
-                    Log.i("SeekNet", "onActivityResult: " + net.getRcu_rows().get(0).getName() + "--"
-                            + net.getRcu_rows().get(0).getCanCpuID() + "--" + net.getRcu_rows().get(0).getDevUnitPass());
-                    Net_AddorDel_Helper.addNew(mNewModuleHandler, NewWorkSetActivity.this,
-                            net.getRcu_rows().get(0).getName(), net.getRcu_rows().get(0).getCanCpuID(),
-                            net.getRcu_rows().get(0).getDevUnitPass());
-                }
-            }
-        }
-    }
-
     private void initAddNetModuleDialog(final Dialog dialog) {
         mDialogName = (EditText) dialog.findViewById(R.id.network_et_name);
         mDialogID = (EditText) dialog.findViewById(R.id.network_et_id);
@@ -306,21 +354,6 @@ public class NewWorkSetActivity extends Activity {
                         mDialogID.getText().toString(), mDialogPass.getText().toString());
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        backEvent();
-        super.onBackPressed();
-
-    }
-
-    private void backEvent() {
-        if (!"".equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
-            SendDataUtil.getNetWorkInfo();
-            startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-        }
-        finish();
     }
 
     public static class NewModuleHandler extends Handler {

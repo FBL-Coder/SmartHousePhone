@@ -143,7 +143,7 @@
             android:screenOrientation="portrait" />
         <!--搜索联网模块-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.SeekActivity"
+            android:name="cn.etsoft.smarthome.ui.NetInfoActivity"
             android:screenOrientation="portrait" />
         <!--远程Ip-->
         <!--情景设置-->

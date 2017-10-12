@@ -101,6 +101,9 @@ public class MyApplication extends Application {
     //上次使用的联网模快ID;
     private static RcuInfo rcuInfo_Use;
 
+    //搜索联网模块数据
+    private List<RcuInfo> SeekRcuInfos;
+
     public List<Weather_Bean> mWeathers_list;//天气图标集合
     public CityDB mCityDB;
 
@@ -173,44 +176,47 @@ public class MyApplication extends Application {
 
     public static void queryIP() {
         //设置上次使用的联网模块ID；
-        GlobalVars.setDevid((String) AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""));
-        List<RcuInfo> rcuInfos = MyApplication.mApplication.getRcuInfoList();
-        for (int i = 0; i < rcuInfos.size(); i++) {
-            if (GlobalVars.getDevid().equals(rcuInfos.get(i).getDevUnitID())) {
-                rcuInfo_Use = rcuInfos.get(i);
+        try {
+            GlobalVars.setDevid((String) AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""));
+            List<RcuInfo> rcuInfos = MyApplication.mApplication.getRcuInfoList();
+            for (int i = 0; i < rcuInfos.size(); i++) {
+                if (GlobalVars.getDevid().equals(rcuInfos.get(i).getDevUnitID())) {
+                    rcuInfo_Use = rcuInfos.get(i);
+                }
             }
-        }
-        int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
-        String IPAddress = "";
-        if (NETWORK == 0) {
-            ToastUtil.showText("请检查网络连接");
-        } else if (NETWORK != 0 && NETWORK < 10) {//数据流量
-            return;
-        } else {
-            IPAddress = GetIPAddress.getWifiIP(MyApplication.mApplication);
-        }
-        if ("".equals(IPAddress)) {
-            GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
-            Log.i("IPAddress", "IP Now***" + IPAddress);
-        }
-        else {
-            String rcuInfo_Use_ip = rcuInfo_Use.getIpAddr();
-            Log.i("IPAddress", "  IP Use--- " + rcuInfo_Use_ip + "IP Now***" + IPAddress);
-            if ("".equals(rcuInfo_Use_ip) || rcuInfo_Use_ip == null) {
-                GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
-//                GlobalVars.setIsLAN(true);
+            int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
+            String IPAddress = "";
+            if (NETWORK == 0) {
+                ToastUtil.showText("请检查网络连接");
+            } else if (NETWORK != 0 && NETWORK < 10) {//数据流量
                 return;
+            } else {
+                IPAddress = GetIPAddress.getWifiIP(MyApplication.mApplication);
             }
-            rcuInfo_Use_ip = rcuInfo_Use_ip.substring(0, rcuInfo_Use_ip.lastIndexOf("."));
+            if ("".equals(IPAddress)) {
+                GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
+                Log.i("IPAddress", "IP Now***" + IPAddress);
+            } else {
+                String rcuInfo_Use_ip = rcuInfo_Use.getIpAddr();
+                Log.i("IPAddress", "  IP Use--- " + rcuInfo_Use_ip + "IP Now***" + IPAddress);
+                if ("".equals(rcuInfo_Use_ip) || rcuInfo_Use_ip == null) {
+                    GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
+//                GlobalVars.setIsLAN(true);
+                    return;
+                }
+                rcuInfo_Use_ip = rcuInfo_Use_ip.substring(0, rcuInfo_Use_ip.lastIndexOf("."));
 
-            IPAddress = IPAddress.substring(0, IPAddress.lastIndexOf("."));
-            if (rcuInfo_Use_ip.equals(IPAddress)) {//ip前三位一样，即局域网内的；
-                GlobalVars.setIPisEqual(GlobalVars.IPEQUAL);
-                GlobalVars.setIsLAN(true);
-            } else {//网段不一样，公网；
-                GlobalVars.setIPisEqual(GlobalVars.IPDIFFERENT);
-                GlobalVars.setIsLAN(false);
+                IPAddress = IPAddress.substring(0, IPAddress.lastIndexOf("."));
+                if (rcuInfo_Use_ip.equals(IPAddress)) {//ip前三位一样，即局域网内的；
+                    GlobalVars.setIPisEqual(GlobalVars.IPEQUAL);
+                    GlobalVars.setIsLAN(true);
+                } else {//网段不一样，公网；
+                    GlobalVars.setIPisEqual(GlobalVars.IPDIFFERENT);
+                    GlobalVars.setIsLAN(false);
+                }
             }
+        }catch (Exception e){
+            GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
         }
     }
 
@@ -448,6 +454,14 @@ public class MyApplication extends Application {
         if (activities == null)
             activities = new ArrayList<>();
         activities.add(activity);
+    }
+
+    public List<RcuInfo> getSeekRcuInfos() {
+        return SeekRcuInfos;
+    }
+
+    public void setSeekRcuInfos(List<RcuInfo> seekRcuInfos) {
+        SeekRcuInfos = seekRcuInfos;
     }
 
     /**
