@@ -634,6 +634,7 @@ public class UDPServer implements Runnable {
         String str = gson.toJson(json_list);
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, str);
         MyApplication.getWareData().setRcuInfos(json_list);
+        isFreshData = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
