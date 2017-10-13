@@ -1,13 +1,8 @@
 package cn.etsoft.smarthome.NetMessage;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
-
-import cn.etsoft.smarthome.Helper.WareDataHliper;
-import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -24,6 +20,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
 import cn.etsoft.smarthome.domain.ChnOpItem_scene;
 import cn.etsoft.smarthome.domain.Condition_Event_Bean;
 import cn.etsoft.smarthome.domain.GroupSet_Data;
@@ -40,7 +38,6 @@ import cn.etsoft.smarthome.domain.WareBoardChnout;
 import cn.etsoft.smarthome.domain.WareBoardKeyInput;
 import cn.etsoft.smarthome.domain.WareChnOpItem;
 import cn.etsoft.smarthome.domain.WareCurtain;
-import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareFloorHeat;
 import cn.etsoft.smarthome.domain.WareFreshAir;
@@ -50,7 +47,6 @@ import cn.etsoft.smarthome.domain.WareSceneDevItem;
 import cn.etsoft.smarthome.domain.WareSceneEvent;
 import cn.etsoft.smarthome.domain.WareSetBox;
 import cn.etsoft.smarthome.domain.WareTv;
-import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.SendDataUtil;
@@ -70,8 +66,9 @@ public class UDPServer implements Runnable {
     private byte[] msg = new byte[1024 * 10];
     private boolean life = true;
     private Handler mhandler;
-    private WareData wareData;
     private DatagramSocket dSocket;
+    private Timer Messagetimer;
+    private int DATTYPE = 0;
 
     //是否刷新数据
     private boolean isFreshData = false;
@@ -95,13 +92,12 @@ public class UDPServer implements Runnable {
 
     @Override
     public void run() {
-        wareData = MyApplication.getWareData();
         DatagramPacket dPacket = new DatagramPacket(msg, msg.length);
         try {
             dSocket = new DatagramSocket(PORT);
             while (life) {
                 dSocket.receive(dPacket);
-                extractData(new String(dPacket.getData(), 0, dPacket.getLength()));
+                IsUdpData(new String(dPacket.getData(), 0, dPacket.getLength()));
             }
         } catch (Exception e) {
             Message message = mhandler.obtainMessage();
@@ -128,17 +124,14 @@ public class UDPServer implements Runnable {
                     mhandler.sendMessage(message);
                 }
             }
-        }, 10000, 10000);
+        }, 20000, 20000);
     }
 
-
     public void send(final String msg) {
-        MyApplication.queryIP();
+
         int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
         if (NETWORK == 0) {
-            Message message = mhandler.obtainMessage();
-            message.what = MyApplication.mApplication.NONET;
-            mhandler.sendMessage(message);
+            ToastUtil.showText("请检查网络连接");
         } else if (NETWORK != 0 && NETWORK < 10) {
             String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
             MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
@@ -147,18 +140,31 @@ public class UDPServer implements Runnable {
             if ("".equals(GlobalVars.getDevid())) {
                 return;
             }
-            if (GlobalVars.isIPisEqual() == GlobalVars.IPDIFFERENT) {
-                String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-                Log.i("发送WebSocket", "板子和客户端不在同一网络----WEB" + jsonToServer);
-                MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
+            if (MyApplication.mApplication.isVisitor()){
+                UdpSendMsg(msg);
+            }
+            if (GlobalVars.isIsLAN()) {
+                UdpSendMsg(msg);
+                Messagetimer = new Timer();
+                Messagetimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
+                        Log.i("发送WebSocket", "局域网没有200的心跳包----WEB" + jsonToServer);
+                        MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
+                        GlobalVars.setIsLAN(false);
+                    }
+                }, 8000);
+                UDPServer.setMessageBackListener(new MessageBackListener() {
+                    @Override
+                    public void messageForBack(int dattype) {
+                        Messagetimer.cancel();
+                    }
+                });
             } else {
-                if (GlobalVars.isIsLAN())
-                    UdpSendMsg(msg);
-                else {
-                    String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-                    Log.i("发送WebSocket", "局域网没有200的心跳包----WEB" + jsonToServer);
-                    MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
-                }
+                String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
+                Log.i("发送WebSocket", "局域网没有200的心跳包----WEB" + jsonToServer);
+                MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
             }
         }
     }
@@ -176,30 +182,13 @@ public class UDPServer implements Runnable {
         UdpSendMsg(SeekNet);
     }
 
-
-    long time_net = 0;
-    public void udpSendNetWorkInfo() {
-        if (System.currentTimeMillis() - time_net < 5000) {
-            time_net = System.currentTimeMillis();
-            return;
-        }
-        String GETNETWORKINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() +
-                "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue() +
-                "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
-        UdpSendMsg(GETNETWORKINFO);
-    }
-
     private void UdpSendMsg(final String msg) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    local = InetAddress.getByName("localhost"); // 本机测试
+                    local = InetAddress.getByName("localhost"); // 本机地址
                     int msg_len = msg == null ? 0 : msg.getBytes().length;
-                    Message message = mhandler.obtainMessage();
-                    message.obj = msg;
-                    message.what = MyApplication.mApplication.UDP_NOBACK;
-                    mhandler.sendMessage(message);
                     DatagramPacket dPacket = new DatagramPacket(msg.getBytes(), msg_len,
                             local, SEND_PORT);
                     Log.i("发送UDP", "UDP" + msg);
@@ -216,6 +205,7 @@ public class UDPServer implements Runnable {
     }
 
     public static void show(String str) {
+
         try {
             str = str.trim();
             int index = 0;
@@ -236,12 +226,8 @@ public class UDPServer implements Runnable {
         }
     }
 
-    //警报时间间隔
-    long time = 0;
-    boolean isGetSceneData = false;// 是否获取情景、安防数据
 
-    public void extractData(String info) {
-        show(info);
+    public void IsUdpData(String info) {
         String devUnitID = "";
         int datType = 0;
         int subType2 = 0;
@@ -249,19 +235,42 @@ public class UDPServer implements Runnable {
         try {
             JSONObject jsonObject = new JSONObject(info);
             devUnitID = jsonObject.getString("devUnitID");
+            datType = jsonObject.getInt("datType");
+            subType1 = jsonObject.getInt("subType1");
+            subType2 = jsonObject.getInt("subType2");
             if (!devUnitID.equals(GlobalVars.getDevid()))
                 if (!MyApplication.mApplication.isSeekNet()) {
-                    Log.i(TAG, "extractData: devUnitID判断不一致，退出方法 ");
-                    Log.i(TAG, "extractData: GlobalVars" + GlobalVars.getDevid() + "-----devUnitID " + devUnitID);
+                    Log.i(TAG, "devUnitID不一致:" + "本地ID" + GlobalVars.getDevid() + "--数据ID" + devUnitID + ";包类型：" + datType + "-" + subType1 + "-" + subType2);
                     return;
                 }
+
+        } catch (JSONException e) {
+            System.out.println(this.getClass().getName() + "--extractData--" + e.toString());
+        }
+        Message message = mhandler.obtainMessage();
+        message.what = MyApplication.mApplication.UDP_HANR_DATA;
+        mhandler.sendMessage(message);
+        extractData(info);
+    }
+
+    //警报时间间隔
+    long time = 0;
+
+    public void extractData(String info) {
+        show(info);
+        int datType = 0;
+        int subType2 = 0;
+        int subType1 = 0;
+        try {
+            JSONObject jsonObject = new JSONObject(info);
             datType = jsonObject.getInt("datType");
             subType1 = jsonObject.getInt("subType1");
             subType2 = jsonObject.getInt("subType2");
         } catch (JSONException e) {
             System.out.println(this.getClass().getName() + "--extractData--" + e.toString());
         }
-
+        if (datType != 35 && datType != 2)
+            messageBackListener.messageForBack(datType);
         switch (datType) {
             case 0:// e_udpPro_getRcuinfo
                 if (subType2 == 1) {
@@ -269,26 +278,10 @@ public class UDPServer implements Runnable {
                         //设置联网模块信息
                         MyApplication.setNewWareData();
                         setRcuInfo(info);
-                        if (!isGetSceneData) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        isGetSceneData = true;
-                                        Thread.sleep(8000);
-                                        SendDataUtil.getSafetyInfo();
-                                        Thread.sleep(3000);
-                                        SendDataUtil.getSceneInfo();
-                                    } catch (InterruptedException e) {
-                                    }
-                                }
-                            }).start();
-                        }
                     } else if (MyApplication.mApplication.isSeekNet() == true) {
                         setRcuInfo_search(info);
                     }
                 }
-
                 break;
             case 2:// e_udpPro_getRcuinfo
                 if (subType1 == 0 && subType2 == 0) {
@@ -439,6 +432,7 @@ public class UDPServer implements Runnable {
                 if (subType2 == 1) {
                     isFreshData = true;
                     getSceneEvents(info);
+
                 }
                 break;
             case 23: // e_udpPro_addSceneEvents
@@ -451,7 +445,7 @@ public class UDPServer implements Runnable {
             case 24: // e_udpPro_editSceneEvents
                 if (subType2 == 1) {
                     isFreshData = true;
-//                    getSceneEvents(info);
+                    getSceneEvents(info);
                 }
                 break;
             case 25: // e_udpPro_delSceneEvents
@@ -555,6 +549,17 @@ public class UDPServer implements Runnable {
         }
     }
 
+    private static MessageBackListener messageBackListener;
+
+    public static void setMessageBackListener(MessageBackListener messageBackListener) {
+        UDPServer.messageBackListener = messageBackListener;
+    }
+
+    interface MessageBackListener {
+        void messageForBack(int dattype);
+    }
+
+
     int netword_count = 0;
     long TimeExit;
     int sleep = 1;
@@ -634,7 +639,7 @@ public class UDPServer implements Runnable {
                     if (jsonObject.getString("devUnitID").equals(json_list.get(i).getDevUnitID())) {
 //                        本地001数据包  过来后，根据id判断数据为同一个，所以会将服务器发送的数据覆盖，从而将canCpuname重置！
 //                        处理则根据值来赋值；
-                        json_list.get(i).setName(info1.getName());
+//                        json_list.get(i).setCanCpuName(info1.getCanCpuName());
                         json_list.get(i).setbDhcp(info1.getbDhcp());
                         json_list.get(i).setCenterServ(info1.getCenterServ());
                         json_list.get(i).setDevUnitID(info1.getDevUnitID());
@@ -663,6 +668,29 @@ public class UDPServer implements Runnable {
         if (netword_count == sleep)
             isFreshData = true;
         sleep++;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                    SendDataUtil.getSceneInfo();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(3000);
+                                SendDataUtil.getSafetyInfo();
+                            } catch (InterruptedException e) {
+                                SendDataUtil.getSafetyInfo();
+                            }
+                        }
+                    }).start();
+                } catch (InterruptedException e) {
+                    SendDataUtil.getSceneInfo();
+                }
+            }
+        }).start();
     }
 
     /**
@@ -677,7 +705,8 @@ public class UDPServer implements Runnable {
         SearchNet result = gson.fromJson(info, SearchNet.class);
         boolean IsExit = true;
         for (int i = 0; i < rcuInfo_searches.size(); i++) {
-            if ((result.getDevUnitID().equals(rcuInfo_searches.get(i).getDevUnitID())) || (result.getRcu_rows().get(0).getCanCpuID().equals(rcuInfo_searches.get(i).getRcu_rows().get(0).getCanCpuID()))) {
+            if ((result.getDevUnitID().equals(rcuInfo_searches.get(i).getDevUnitID()))
+                    || (result.getRcu_rows().get(0).getCanCpuID().equals(rcuInfo_searches.get(i).getRcu_rows().get(0).getCanCpuID()))) {
                 IsExit = false;
             }
         }
@@ -774,7 +803,7 @@ public class UDPServer implements Runnable {
                 }
             }
             if (subType2 == 1) {
-                devnum_tv = jsonObject.getInt("tv");
+                devnum_tv = jsonObject.getInt("tvDev");
                 if (devnum_tv > 0) {
 
                     JSONArray jsonArray = jsonObject.getJSONArray("dev_rows");
@@ -807,7 +836,7 @@ public class UDPServer implements Runnable {
                 }
             }
             if (subType2 == 2) {
-                devnum_box = jsonObject.getInt("tvUP");
+                devnum_box = jsonObject.getInt("tvDev");
                 if (devnum_box > 0) {
                     JSONArray jsonArray = jsonObject.getJSONArray("dev_rows");
                     for (int i = 0; i < devnum_box; i++) {
@@ -1086,9 +1115,6 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             curtain.getDev().setDevName(curtain1.getDev().getDevName());
                             curtain.getDev().setRoomName(curtain1.getDev().getRoomName());
-                        } else if (dattype == 6) {
-                            curtain.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                            curtain.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getCurtains().set(i, curtain);
                     }
@@ -1100,11 +1126,12 @@ public class UDPServer implements Runnable {
                 JSONObject jsonobj = array.getJSONObject(0);
                 WareDev dev = new WareDev();
                 dev.setCanCpuId(jsonobj.getString("canCpuID"));
-                dev.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                dev.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
+                if (dattype == 6) {
+                    dev.setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
+                    dev.setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
+                }
                 dev.setDevId(jsonobj.getInt("devID"));
                 dev.setType(jsonobj.getInt("devType"));
-                dev.setbOnOff(jsonobj.getInt("bOnOff"));
                 airCondDev.setDev(dev);
                 airCondDev.setbOnOff(jsonobj.getInt("bOnOff"));
                 airCondDev.setPowChn(jsonobj.getInt("powChn"));
@@ -1121,9 +1148,6 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             airCondDev.getDev().setDevName(air.getDev().getDevName());
                             airCondDev.getDev().setRoomName(air.getDev().getRoomName());
-                        } else if (dattype == 6) {
-                            airCondDev.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                            airCondDev.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getAirConds().set(i, airCondDev);
                     }
@@ -1151,9 +1175,6 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             wareLight.getDev().setDevName(light.getDev().getDevName());
                             wareLight.getDev().setRoomName(light.getDev().getRoomName());
-                        } else if (dattype == 6) {
-                            wareLight.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                            wareLight.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getLights().set(i, wareLight);
                         Log.i("Light", wareLight.getDev().getDevId() + "");
@@ -1188,9 +1209,6 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             freshAir.getDev().setDevName(freshAir1.getDev().getDevName());
                             freshAir.getDev().setRoomName(freshAir1.getDev().getRoomName());
-                        } else if (dattype == 6) {
-                            freshAir.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                            freshAir.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getFreshAirs().set(i, freshAir);
                         Log.i("FreshAir", freshAir.getDev().getDevId() + "");
@@ -1221,9 +1239,6 @@ public class UDPServer implements Runnable {
                         if (dattype == 4) {
                             floorHeat.getDev().setDevName(floorHeat1.getDev().getDevName());
                             floorHeat.getDev().setRoomName(floorHeat1.getDev().getRoomName());
-                        } else if (dattype == 6) {
-                            floorHeat.getDev().setDevName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("devName"))));
-                            floorHeat.getDev().setRoomName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(jsonobj.getString("roomName"))));
                         }
                         MyApplication.getWareData().getFloorHeat().set(i, floorHeat);
                         Log.i("FloorHeat", floorHeat.getDev().getDevId() + "");
@@ -1748,7 +1763,6 @@ public class UDPServer implements Runnable {
      * 获取输入板设备详情
      */
     public void getKeyOpItem(String info) {
-        MyApplication.getWareData().setKeyOpItems(new ArrayList<WareKeyOpItem>());
 //        返回数据类型；
 //       {
 //        "devUnitID":	"39ffd505484d303408650743",
@@ -2509,7 +2523,7 @@ public class UDPServer implements Runnable {
             JSONObject object1 = (JSONObject) array.get(0);
             int devState = object1.getInt("devState");//496
             String CanCupID = object1.getString("devUnitID");
-
+            //1010000100
             String PowChnList = Integer.toBinaryString(devState);//111110000
             StringBuffer PowSB = new StringBuffer(PowChnList).reverse();
             if (PowSB.length() < 12)

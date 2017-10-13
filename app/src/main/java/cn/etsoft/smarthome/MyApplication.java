@@ -81,6 +81,8 @@ public class MyApplication extends Application {
     public int WS_Error = 103;
     //UDP数据回调成功WHAT
     public int UDP_DATA_OK = 1000;
+    //UDP数据有返回
+    public int UDP_HANR_DATA = 1010;
     //UDP数据发送失败
     public int UDP_NOSEND = 1003;
     //UDP接收数据失败
@@ -97,9 +99,6 @@ public class MyApplication extends Application {
     public int NONET = 5555;
     //全局数据
     private static WareData mWareData;
-
-    //上次使用的联网模快ID;
-    private static RcuInfo rcuInfo_Use;
 
     //搜索联网模块数据
     private List<RcuInfo> SeekRcuInfos;
@@ -170,56 +169,7 @@ public class MyApplication extends Application {
 
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
-        MyApplication.mApplication.getUdpServer().udpSendNetWorkInfo();
-
     }
-
-    public static void queryIP() {
-        //设置上次使用的联网模块ID；
-        try {
-            GlobalVars.setDevid((String) AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""));
-            List<RcuInfo> rcuInfos = MyApplication.mApplication.getRcuInfoList();
-            for (int i = 0; i < rcuInfos.size(); i++) {
-                if (GlobalVars.getDevid().equals(rcuInfos.get(i).getDevUnitID())) {
-                    rcuInfo_Use = rcuInfos.get(i);
-                }
-            }
-            int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
-            String IPAddress = "";
-            if (NETWORK == 0) {
-                ToastUtil.showText("请检查网络连接");
-            } else if (NETWORK != 0 && NETWORK < 10) {//数据流量
-                return;
-            } else {
-                IPAddress = GetIPAddress.getWifiIP(MyApplication.mApplication);
-            }
-            if ("".equals(IPAddress)) {
-                GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
-                Log.i("IPAddress", "IP Now***" + IPAddress);
-            } else {
-                String rcuInfo_Use_ip = rcuInfo_Use.getIpAddr();
-                Log.i("IPAddress", "  IP Use--- " + rcuInfo_Use_ip + "IP Now***" + IPAddress);
-                if ("".equals(rcuInfo_Use_ip) || rcuInfo_Use_ip == null) {
-                    GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
-//                GlobalVars.setIsLAN(true);
-                    return;
-                }
-                rcuInfo_Use_ip = rcuInfo_Use_ip.substring(0, rcuInfo_Use_ip.lastIndexOf("."));
-
-                IPAddress = IPAddress.substring(0, IPAddress.lastIndexOf("."));
-                if (rcuInfo_Use_ip.equals(IPAddress)) {//ip前三位一样，即局域网内的；
-                    GlobalVars.setIPisEqual(GlobalVars.IPEQUAL);
-                    GlobalVars.setIsLAN(true);
-                } else {//网段不一样，公网；
-                    GlobalVars.setIPisEqual(GlobalVars.IPDIFFERENT);
-                    GlobalVars.setIsLAN(false);
-                }
-            }
-        }catch (Exception e){
-            GlobalVars.setIPisEqual(GlobalVars.NOCOMPARE);
-        }
-    }
-
 
     public SoundPool getSp() {
         if (sp == null) {
@@ -366,7 +316,7 @@ public class MyApplication extends Application {
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(8000);
+                        Thread.sleep(10000);
                         if (mDialog.isShowing()) {
                             handler.sendMessage(handler.obtainMessage());
                         }

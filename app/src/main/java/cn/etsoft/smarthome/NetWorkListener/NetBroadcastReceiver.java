@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 
 import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
 
 /**
  * Created by cheng on 2016/11/28.
@@ -22,7 +23,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
             // 接口回调传过去状态的类型
             try {
                 netEvevt.onNetChange(netWorkState);
-                MyApplication.queryIP();
+                GlobalVars.setIsLAN(true);
             }catch (Exception e){
             }
         }

@@ -142,7 +142,7 @@ public class NewWorkSetActivity extends Activity {
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID());
                             MyApplication.setNewWareData();
-                            MyApplication.mApplication.getUdpServer().udpSendNetWorkInfo();
+                            SendDataUtil.getNetWorkInfo();
                             dialog.dismiss();
                             startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
                             finish();
@@ -206,7 +206,7 @@ public class NewWorkSetActivity extends Activity {
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
                             MyApplication.setNewWareData();
-                            MyApplication.mApplication.getUdpServer().udpSendNetWorkInfo();
+                            SendDataUtil.getNetWorkInfo();
                             adapter.notifyDataSetChanged();
                             dialog.dismiss();
                             startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
