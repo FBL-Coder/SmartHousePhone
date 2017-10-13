@@ -105,7 +105,7 @@ public class LogoutHelper {
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
         AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
-        AppSharePreferenceMgr.put(GlobalVars.LOGOUT_SHAREPREFERENCE, true);
+        AppSharePreferenceMgr.put(GlobalVars.LOGIN_SHAREPREFERENCE, false);
         MyApplication.mApplication.dismissLoadDialog();
         activity.startActivity(new Intent(activity, cn.semtec.community2.activity.LoginActivity.class));
         activity.finish();

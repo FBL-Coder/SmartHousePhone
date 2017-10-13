@@ -106,27 +106,6 @@ public class UDPServer implements Runnable {
         }
     }
 
-
-    public void heartBeat() {
-        final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Log.i(TAG, "heartBeat: " + MyApplication.mApplication.isIsheartting());
-                if (MyApplication.mApplication.isIsheartting()) {
-                    MyApplication.mApplication.setIsheartting(false);
-                    Message message = mhandler.obtainMessage();
-                    message.what = MyApplication.mApplication.HEARTBEAT_RUN;
-                    mhandler.sendMessage(message);
-                } else {
-                    Message message = mhandler.obtainMessage();
-                    message.what = MyApplication.mApplication.HEARTBEAT_STOP;
-                    mhandler.sendMessage(message);
-                }
-            }
-        }, 20000, 20000);
-    }
-
     public void send(final String msg) {
 
         int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
@@ -140,30 +119,33 @@ public class UDPServer implements Runnable {
             if ("".equals(GlobalVars.getDevid())) {
                 return;
             }
-            if (MyApplication.mApplication.isVisitor()){
+            if (MyApplication.mApplication.isVisitor()) {
                 UdpSendMsg(msg);
             }
             if (GlobalVars.isIsLAN()) {
                 UdpSendMsg(msg);
                 Messagetimer = new Timer();
+                Log.i("TIMER -- NEW",Messagetimer.toString());
                 Messagetimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
+                        Log.i("TIMER -- RUN",Messagetimer.toString());
                         String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-                        Log.i("发送WebSocket", "局域网没有200的心跳包----WEB" + jsonToServer);
+                        Log.i("发送WebSocket", "局域网超时转发WEB  ：" + jsonToServer);
                         MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
                         GlobalVars.setIsLAN(false);
                     }
-                }, 8000);
+                }, 5000);
                 UDPServer.setMessageBackListener(new MessageBackListener() {
                     @Override
                     public void messageForBack(int dattype) {
                         Messagetimer.cancel();
+                        Log.i("TIMER --CANCEL",Messagetimer.toString());
                     }
                 });
             } else {
                 String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
-                Log.i("发送WebSocket", "局域网没有200的心跳包----WEB" + jsonToServer);
+                Log.i("发送WebSocket", "判断本地ISLAN=false  ：" + jsonToServer);
                 MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
             }
         }
@@ -195,7 +177,7 @@ public class UDPServer implements Runnable {
                     dSocket.send(dPacket);
 
                 } catch (Exception e) {
-                    Log.e("Exception", "UDP发送消息失败" + e + "");
+                    Log.e("Exception", "UDP发送消息失败：" + e + "   发送失败的msg："+msg);
                     Message message = mhandler.obtainMessage();
                     message.what = MyApplication.mApplication.UDP_NOSEND;
                     mhandler.sendMessage(message);
@@ -270,7 +252,8 @@ public class UDPServer implements Runnable {
             System.out.println(this.getClass().getName() + "--extractData--" + e.toString());
         }
         if (datType != 35 && datType != 2)
-            messageBackListener.messageForBack(datType);
+            if (messageBackListener != null)
+                messageBackListener.messageForBack(datType);
         switch (datType) {
             case 0:// e_udpPro_getRcuinfo
                 if (subType2 == 1) {
@@ -560,26 +543,12 @@ public class UDPServer implements Runnable {
     }
 
 
-    int netword_count = 0;
-    long TimeExit;
-    int sleep = 1;
 
     /**
      * 返回001的包处理联网模块信息
      */
 
     public void setRcuInfo(String info) {
-        if (System.currentTimeMillis() - TimeExit > 200) {
-            Log.i("SLEEP", System.currentTimeMillis() - TimeExit + "");
-            TimeExit = System.currentTimeMillis();
-        } else {
-            try {
-                Log.i("SLEEP", "................");
-                Thread.sleep(sleep * 100);
-            } catch (Exception e) {
-            }
-            TimeExit = System.currentTimeMillis();
-        }
 //        获取联网模块的返回数据类型；
 //        {
 //            "devUnitID":	"39ffd805484d303408580143",
@@ -665,21 +634,17 @@ public class UDPServer implements Runnable {
         String str = gson.toJson(json_list);
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, str);
         MyApplication.getWareData().setRcuInfos(json_list);
-        if (netword_count == sleep)
-            isFreshData = true;
-        sleep++;
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                     SendDataUtil.getSceneInfo();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                Thread.sleep(3000);
+                                Thread.sleep(10000);
                                 SendDataUtil.getSafetyInfo();
                             } catch (InterruptedException e) {
                                 SendDataUtil.getSafetyInfo();

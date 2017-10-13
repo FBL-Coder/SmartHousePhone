@@ -28,7 +28,7 @@ public class NetInfoActivity extends Activity {
 
     private TextView mSeekNetBack;
     private TextView net_ID, net_Pass;
-    private TextView name, IP, Ip_mask, GetWay, Server;
+    private TextView name, IP, Ip_mask, GetWay, Server,IsOnLine;
     private ImageView NetWork_EditName;
     private int FLAG = 0;
     private int position = 0;
@@ -52,6 +52,7 @@ public class NetInfoActivity extends Activity {
         Ip_mask = (TextView) findViewById(R.id.NetWork_Ip_Mask);
         GetWay = (TextView) findViewById(R.id.NetWork_GetWay);
         Server = (TextView) findViewById(R.id.NetWork_Server);
+        IsOnLine = (TextView) findViewById(R.id.NetWork_IsOnLine);
         NetWork_EditName = (ImageView) findViewById(R.id.NetWork_EditName);
 
     }
@@ -69,9 +70,12 @@ public class NetInfoActivity extends Activity {
         if (FLAG == NetWork_Adapter.LOGIN) {
             info = MyApplication.mApplication.getRcuInfoList().get(position);
             name.setText(info.getCanCpuName());
+            if (info.isOnline())IsOnLine.setText("在线");
+            else IsOnLine.setText("不在线");
         } else {
             info = MyApplication.mApplication.getSeekRcuInfos().get(position);
             name.setText(info.getName());
+            IsOnLine.setText("不在线");
         }
         net_ID.setText(info.getDevUnitID());
         net_Pass.setText(info.getDevUnitPass());

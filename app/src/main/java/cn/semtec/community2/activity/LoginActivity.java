@@ -137,6 +137,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
             rcuInfo.setCanCpuName(result.getData().get(i).getCanCpuName());
             rcuInfo.setDevUnitID(result.getData().get(i).getDevUnitID());
             rcuInfo.setDevUnitPass(result.getData().get(i).getDevPass());
+            rcuInfo.setOnline(result.getData().get(i).isOnline());
             rcuInfos.add(rcuInfo);
         }
         AppSharePreferenceMgr.put(GlobalVars.USERID_SHAREPREFERENCE, cellphone);
@@ -149,7 +150,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
             GlobalVars.setDevpass(result.getData().get(0).getDevPass());
             startActivity(new Intent(this, HomeActivity.class));
         }
-        AppSharePreferenceMgr.put(GlobalVars.LOGOUT_SHAREPREFERENCE, false);
+        AppSharePreferenceMgr.put(GlobalVars.LOGIN_SHAREPREFERENCE, true);
         finish();
     }
 

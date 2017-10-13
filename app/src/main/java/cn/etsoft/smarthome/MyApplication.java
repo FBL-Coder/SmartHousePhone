@@ -89,10 +89,6 @@ public class MyApplication extends Application {
     public int UDP_NORECEIVE = 1004;
     //数据发送返回超时
     public int UDP_NOBACK = 5000;
-    //心跳包监听返回码-局域网断开
-    public int HEARTBEAT_STOP = 8000;
-    //心跳包监听返回码-局域网运行
-    public int HEARTBEAT_RUN = 8080;
     //loading Dialog
     public int DIALOG_DISMISS = 2222;
     //没有网络
@@ -124,6 +120,9 @@ public class MyApplication extends Application {
 
     //游客登录标记
     private boolean IsVisitor = false;
+
+    //是否可以切换联网模块
+    private boolean CanChangeNet = false;
 
     //主页对象
     private HomeActivity mHomeActivity;
@@ -164,8 +163,6 @@ public class MyApplication extends Application {
         ExecutorService exec = Executors.newCachedThreadPool();
         udpServer = new UDPServer(handler);
         exec.execute(udpServer);
-        //启动心跳包定时监听
-        udpServer.heartBeat();
 
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
@@ -384,6 +381,26 @@ public class MyApplication extends Application {
         IsVisitor = visitor;
     }
 
+    public boolean isCanChangeNet() {
+        return CanChangeNet;
+    }
+
+    public void setCanChangeNet(boolean canChangeNet) {
+        CanChangeNet = canChangeNet;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(30000);
+                    CanChangeNet = true;
+                } catch (InterruptedException e) {
+                    CanChangeNet = false;
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     public HomeActivity getmHomeActivity() {
         return mHomeActivity;
     }
@@ -454,7 +471,7 @@ public class MyApplication extends Application {
                 }
             }
             if (msg.what == application.WS_DATA_OK) {//WebSocket 数据
-                Log.i("WS", "handleMessage: " + msg.obj);
+//                Log.i("WS", "handleMessage: " + msg.obj);
                 MyApplication.mApplication.getUdpServer().webSocketData((String) msg.obj);
             }
             if (msg.what == application.WS_Error) {
@@ -483,16 +500,6 @@ public class MyApplication extends Application {
             //UDP接收数据异常
             if (msg.what == application.UDP_NORECEIVE)
                 Log.e("UDPException", "UDP数据接收失败");
-            //心跳广播停止
-            if (msg.what == application.HEARTBEAT_STOP) {
-                Log.i("HEARTBEAT", "HEARTBEAT_STOP");
-                GlobalVars.setIsLAN(false);
-            }
-            //心跳广播运行
-            if (msg.what == application.HEARTBEAT_RUN) {
-                Log.i("HEARTBEA", "HEARTBEAT_RUN");
-                GlobalVars.setIsLAN(true);
-            }
             //网络监听吐司
             if (msg.what == application.NONET) {
                 ToastUtil.showText("没有可用网络，请检查", 5000);

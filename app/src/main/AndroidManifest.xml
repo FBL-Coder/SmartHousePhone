@@ -144,6 +144,7 @@
         <!--搜索联网模块-->
         <activity
             android:name="cn.etsoft.smarthome.ui.NetInfoActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:screenOrientation="portrait" />
         <!--远程Ip-->
         <!--情景设置-->

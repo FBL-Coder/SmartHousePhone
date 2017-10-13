@@ -124,6 +124,10 @@ public class NewWorkSetActivity extends Activity {
         sousuo_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                if (!MyApplication.mApplication.isCanChangeNet()){
+                    ToastUtil.showText("正在加载数据，请稍后再试...");
+                    return;
+                }
                 if (GlobalVars.getDevid().equals(MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID()))
                     ToastUtil.showText("联网模块正在使用中！");
                 else {
@@ -139,13 +143,35 @@ public class NewWorkSetActivity extends Activity {
                     dialog.setPositiveButton("是的", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID());
                             MyApplication.setNewWareData();
+                            GlobalVars.setIsLAN(true);
                             SendDataUtil.getNetWorkInfo();
-                            dialog.dismiss();
-                            startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                            finish();
+                            MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+                                @Override
+                                public void upDataWareData(int datType, int subtype1, int subtype2) {
+                                    if (datType == 0) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Thread.sleep(2000);
+                                                    MyApplication.mApplication.dismissLoadDialog();
+                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                                    finish();
+                                                } catch (InterruptedException e) {
+                                                    MyApplication.mApplication.dismissLoadDialog();
+                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                                    finish();
+                                                }
+                                            }
+                                        }).start();
+                                    }
+                                }
+                            });
                         }
                     });
                     dialog.create().show();
@@ -188,6 +214,10 @@ public class NewWorkSetActivity extends Activity {
         mNetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                if (!MyApplication.mApplication.isCanChangeNet()){
+                    ToastUtil.showText("正在加载数据，请稍后再试...");
+                    return;
+                }
                 if (GlobalVars.getDevid().equals(MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID()))
                     ToastUtil.showText("联网模块正在使用中！");
                 else {
@@ -203,14 +233,35 @@ public class NewWorkSetActivity extends Activity {
                     dialog.setPositiveButton("是的", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
                             MyApplication.setNewWareData();
+                            GlobalVars.setIsLAN(true);
                             SendDataUtil.getNetWorkInfo();
-                            adapter.notifyDataSetChanged();
-                            dialog.dismiss();
-                            startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                            finish();
+                            MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+                                @Override
+                                public void upDataWareData(int datType, int subtype1, int subtype2) {
+                                    if (datType == 0) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Thread.sleep(2000);
+                                                    MyApplication.mApplication.dismissLoadDialog();
+                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                                    finish();
+                                                } catch (InterruptedException e) {
+                                                    MyApplication.mApplication.dismissLoadDialog();
+                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                                    finish();
+                                                }
+                                            }
+                                        }).start();
+                                    }
+                                }
+                            });
                         }
                     });
                     dialog.create().show();
@@ -285,7 +336,7 @@ public class NewWorkSetActivity extends Activity {
         param.put("userName", GlobalVars.getUserid());
         param.put("passwd", (String) AppSharePreferenceMgr.
                 get(GlobalVars.USERPASSWORD_SHAREPREFERENCE, ""));
-        OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.LOGIN, param, new HttpCallback() {
+        OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.NETLISTS, param, new HttpCallback() {
             @Override
             public void onSuccess(ResultDesc resultDesc) {
                 Log.i("LOGIN", resultDesc.getResult());
@@ -298,11 +349,11 @@ public class NewWorkSetActivity extends Activity {
                 if (result.getCode() == HTTPRequest_BackCode.LOGIN_OK) {
                     // 刷新成功
                     setRcuInfoList(result);
-                    ToastUtil.showText("刷新成功");
+                    ToastUtil.showText("操作成功");
                     initListview();
                 } else {
                     // 刷新失败
-                    ToastUtil.showText("刷新失败，请稍后再试");
+                    ToastUtil.showText("操作失败，请稍后再试");
                 }
             }
 
@@ -328,9 +379,11 @@ public class NewWorkSetActivity extends Activity {
             rcuInfo.setCanCpuName(result.getData().get(i).getCanCpuName());
             rcuInfo.setDevUnitID(result.getData().get(i).getDevUnitID());
             rcuInfo.setDevUnitPass(result.getData().get(i).getDevPass());
+            rcuInfo.setOnline(result.getData().get(i).isOnline());
             rcuInfos.add(rcuInfo);
         }
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, gson.toJson(rcuInfos));
+        initListview();
     }
 
     private void initAddNetModuleDialog(final Dialog dialog) {
@@ -370,27 +423,13 @@ public class NewWorkSetActivity extends Activity {
             if (weakReference != null) {
                 if (msg.what == Net_AddorDel_Helper.ADDNEWMODULE_OK) {
                     // 添加成功
-                    RcuInfo info = new RcuInfo();
-                    info.setDevUnitID(weakReference.get().mDialogID.getText().toString());
-                    info.setCanCpuName(weakReference.get().mDialogName.getText().toString());
-                    info.setDevUnitPass(weakReference.get().mDialogPass.getText().toString());
-
-                    List<RcuInfo> json_rcuinfolist = MyApplication.mApplication.getRcuInfoList();
-                    json_rcuinfolist.add(info);
-                    AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, weakReference.get().gson.toJson(json_rcuinfolist));
-                    weakReference.get().initListview();
-                    ToastUtil.showText("添加成功");
+                    weakReference.get().refNetLists();
                 } else if (msg.what == Net_AddorDel_Helper.DELNEWMODULE_OK) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    List<RcuInfo> list = MyApplication.mApplication.getRcuInfoList();
-                    list.remove(weakReference.get().mDeleteNet_Position);
-                    MyApplication.mApplication.setRcuInfoList(list);
-                    weakReference.get().initListview();
-                    ToastUtil.showText("删除成功");
+                    weakReference.get().refNetLists();
                     //删除成功
                 } else if (msg.what == Net_AddorDel_Helper.EDITNEWMODULE_OK) {
                     //修改成功
-                    MyApplication.mApplication.dismissLoadDialog();
+                    weakReference.get().refNetLists();
                 }
             }
         }

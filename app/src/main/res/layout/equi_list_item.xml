@@ -40,7 +40,6 @@
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_25"
         android:padding="@dimen/dp_2"
-        android:src="@drawable/arrow_right"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/dp_30"/>
+        android:layout_marginRight="@dimen/dp_10"/>
 </RelativeLayout>

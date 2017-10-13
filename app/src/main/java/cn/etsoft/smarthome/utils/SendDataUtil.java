@@ -88,6 +88,7 @@ public class SendDataUtil {
                 "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue() +
                 "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
         MyApplication.mApplication.getUdpServer().send(GETNETWORKINFO);
+        MyApplication.mApplication.setCanChangeNet(false);
     }
 
 

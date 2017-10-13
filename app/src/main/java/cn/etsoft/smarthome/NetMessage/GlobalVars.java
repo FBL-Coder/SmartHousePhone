@@ -29,9 +29,9 @@ public class GlobalVars {
      */
     public static final String SAFETY_TYPE_SHAREPREFERENCE = "SAFETY_TYPE";
     /**
-     *退出标记
+     *登陆标记
      */
-    public static final String LOGOUT_SHAREPREFERENCE = "LOGOUT_FLAG";
+    public static final String LOGIN_SHAREPREFERENCE = "LOGIN_FLAG";
 
 
     public static String LOCAL_IP = "127.0.0.1";

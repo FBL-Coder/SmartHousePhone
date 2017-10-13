@@ -69,10 +69,16 @@ public class NetWork_Adapter extends BaseAdapter {
         } else viewHoler = (ViewHolder) convertView.getTag();
 
         if (FLAG == LOGIN) {
+            if (list.get(position).isOnline()) {
+                viewHoler.net_info.setImageResource(R.drawable.online);
+            } else viewHoler.net_info.setImageResource(R.drawable.noonline);
             if ("".equals(list.get(position).getCanCpuName())) {
                 viewHoler.mEquiName.setText(list.get(position).getName());
             } else viewHoler.mEquiName.setText(list.get(position).getCanCpuName());
-        } else viewHoler.mEquiName.setText(list.get(position).getName());
+        } else {
+            viewHoler.mEquiName.setText(list.get(position).getName());
+            viewHoler.net_info.setImageResource(R.drawable.noonline);
+        }
 
         if (list.get(position).getDevUnitID().equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, "")))
             viewHoler.mEquiIvUse.setImageResource(R.drawable.select_ok);
