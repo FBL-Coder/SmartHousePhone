@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 
 
 /**
@@ -32,6 +33,9 @@ public class WebSocket_Client {
                 @Override
                 public void onOpen(ServerHandshake serverHandshake) {
                     //连接成功
+                    mWebSocketClient.send("{\"uid\":"
+                            + AppSharePreferenceMgr.get(GlobalVars.getUserid(),
+                            "") + "}");
                     Message message = handler.obtainMessage();
                     message.what = MyApplication.mApplication.WS_OPEN_OK;
                     handler.sendMessage(message);
@@ -68,6 +72,7 @@ public class WebSocket_Client {
             };
         }
     }
+
     //连接
     public void connect() {
         new Thread() {

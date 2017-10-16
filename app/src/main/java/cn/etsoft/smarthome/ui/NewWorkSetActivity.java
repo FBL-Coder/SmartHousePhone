@@ -35,8 +35,11 @@ import cn.etsoft.smarthome.adapter.NetWork_Adapter;
 import cn.etsoft.smarthome.domain.Http_Result;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.domain.SearchNet;
+import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
+import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
+import cn.etsoft.smarthome.utils.Dtat_Cache;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
@@ -60,8 +63,8 @@ public class NewWorkSetActivity extends Activity {
     private Gson gson = new Gson();
     private int mDeleteNet_Position = -1;
     private TextView mNetworkAdd, network_sousuo;
-    private ListView mNetListView,sousuo_list;
-    private NetWork_Adapter adapter,mSeekAdapter;
+    private ListView mNetListView, sousuo_list;
+    private NetWork_Adapter adapter, mSeekAdapter;
     private LinearLayout add_ref_LL;
 
     @Override
@@ -92,7 +95,7 @@ public class NewWorkSetActivity extends Activity {
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (MyApplication.mApplication.isSeekNet() && datType == 0) {
                     MyApplication.mApplication.setSeekNet(false);
-                        MyApplication.mApplication.dismissLoadDialog();
+                    MyApplication.mApplication.dismissLoadDialog();
                     initsousuoList();
                 }
             }
@@ -124,7 +127,7 @@ public class NewWorkSetActivity extends Activity {
         sousuo_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                if (!MyApplication.mApplication.isCanChangeNet()){
+                if (!MyApplication.mApplication.isCanChangeNet()) {
                     ToastUtil.showText("正在加载数据，请稍后再试...");
                     return;
                 }
@@ -183,7 +186,7 @@ public class NewWorkSetActivity extends Activity {
 
     private void initListview() {
         if (adapter == null)
-            adapter = new NetWork_Adapter(this,MyApplication.mApplication.getRcuInfoList(),NetWork_Adapter.LOGIN);
+            adapter = new NetWork_Adapter(this, MyApplication.mApplication.getRcuInfoList(), NetWork_Adapter.LOGIN);
         else adapter.notifyDataSetChanged();
         mNetListView.setAdapter(adapter);
     }
@@ -214,7 +217,7 @@ public class NewWorkSetActivity extends Activity {
         mNetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                if (!MyApplication.mApplication.isCanChangeNet()){
+                if (!MyApplication.mApplication.isCanChangeNet()) {
                     ToastUtil.showText("正在加载数据，请稍后再试...");
                     return;
                 }
@@ -237,6 +240,13 @@ public class NewWorkSetActivity extends Activity {
                             MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MyApplication.mApplication.mWareData =
+                                            (WareData) Data_Cache.readFile(MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
+                                }
+                            }).start();
                             MyApplication.setNewWareData();
                             GlobalVars.setIsLAN(true);
                             MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {

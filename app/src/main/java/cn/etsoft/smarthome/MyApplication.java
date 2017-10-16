@@ -94,7 +94,7 @@ public class MyApplication extends Application {
     //没有网络
     public int NONET = 5555;
     //全局数据
-    private static WareData mWareData;
+    public static WareData mWareData;
 
     //搜索联网模块数据
     private List<RcuInfo> SeekRcuInfos;

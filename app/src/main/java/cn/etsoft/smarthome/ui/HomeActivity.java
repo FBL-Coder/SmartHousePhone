@@ -92,6 +92,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
     private LinearLayout ll_home_dots;
     private boolean isSetBtu = false;
+    private int RoomPosition;
 
 
     @Override
@@ -368,6 +369,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
         //页面状态改变的时候调用
         public void onPageSelected(int position) {
+            RoomPosition = position;
             onGetViewPageNum.getViewPageNum(position);
             textView_banner.setText(text_room.get(position));
             dots_iv.get(oldPosition).setBackgroundResource(R.drawable.point_unfocused);
@@ -415,6 +417,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         mViewPager.setAdapter(new MyAdapter());
         // 设置一个监听器，当ViewPage中的页面改变时调用
         mViewPager.setOnPageChangeListener(new MyPageChangeListener());
+        mViewPager.setCurrentItem(RoomPosition);
     }
 
     private void initData() {
