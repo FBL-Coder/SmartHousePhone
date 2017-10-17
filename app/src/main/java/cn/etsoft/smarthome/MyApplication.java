@@ -122,7 +122,7 @@ public class MyApplication extends Application {
     private boolean IsVisitor = false;
 
     //是否可以切换联网模块
-    private boolean CanChangeNet = false;
+    private boolean CanChangeNet = true;
 
     //主页对象
     private HomeActivity mHomeActivity;

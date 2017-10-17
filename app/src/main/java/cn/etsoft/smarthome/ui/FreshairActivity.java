@@ -39,6 +39,7 @@ public class FreshairActivity extends Activity implements View.OnClickListener {
     private boolean IsCanClick = false;
     private FreshAirAdapter freshAirAdapter;
     private int position_room = -1;
+    private int position_room_banner = 0;
     private List<WareFreshAir> AllFreshair;
     private List<String> room_list;
 
@@ -126,7 +127,7 @@ public class FreshairActivity extends Activity implements View.OnClickListener {
         textView.setText("请选择房间");
         dia_listView = (ListView) dialog.findViewById(R.id.air_select);
         dia_listView.setAdapter(new Room_Select_Adapter(FreshairActivity.this,
-                MyApplication.getWareData().getRooms()));
+                room_list));
 
         dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -153,40 +154,55 @@ public class FreshairActivity extends Activity implements View.OnClickListener {
     }
 
     private void upData() {
-        if (MyApplication.getWareData().getFreshAirs().size() == 0) {
-            ToastUtil.showText("没有新风，请添加");
-            return;
-        }
-        //房间
-        if (MyApplication.getWareData().getRooms().size() == 0)
-            return;
-        //所有灯
-        AllFreshair = new ArrayList<>();
-        for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
-            AllFreshair.add(MyApplication.getWareData().getFreshAirs().get(i));
-        }
-        wareFreshAirs = new ArrayList<>();
-        //房间集合
-        room_list = MyApplication.getWareData().getRooms();
-        //房间名称；
-        if (position_room != -1)
-            title_bar_tv_room.setText(room_list.get(position_room));
-        else
-            title_bar_tv_room.setText(room_list.get(getIntent().getIntExtra("viewPage_num", 0)));
-        //根据房间id获取设备；
-        for (int i = 0; i < AllFreshair.size(); i++) {
-            if (AllFreshair.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
-                wareFreshAirs.add(AllFreshair.get(i));
+        position_room_banner = getIntent().getIntExtra("viewPage_num", 0);
+        try {
+            //房间
+            if (MyApplication.getWareData().getRooms().size() == 0)
+                return;
+            //所有灯
+            AllFreshair = new ArrayList<>();
+            for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
+                AllFreshair.add(MyApplication.getWareData().getFreshAirs().get(i));
             }
-        }
-        //房间里的灯
-        if (AllFreshair.size() == 0) {
-            freshAirAdapter = new FreshAirAdapter(new ArrayList<WareFreshAir>(), this);
-            gridView.setAdapter(freshAirAdapter);
-            ToastUtil.showText(title_bar_tv_room.getText() + "没有找到新风，请添加");
-        } else {
-            freshAirAdapter = new FreshAirAdapter(wareFreshAirs, this);
-            gridView.setAdapter(freshAirAdapter);
+            wareFreshAirs = new ArrayList<>();
+            //房间集合
+            room_list = new ArrayList<>();
+            room_list.add("全部");
+            room_list.addAll(MyApplication.getWareData().getRooms());
+            //房间名称；
+            if (position_room != -1) {
+                title_bar_tv_room.setText(room_list.get(position_room));
+                if (position_room == 0) {
+                    wareFreshAirs.addAll(AllFreshair);
+                } else {
+                    //根据房间id获取设备；
+                    for (int i = 0; i < AllFreshair.size(); i++) {
+                        if (AllFreshair.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
+                            wareFreshAirs.add(AllFreshair.get(i));
+                        }
+                    }
+                }
+            } else {
+                title_bar_tv_room.setText(room_list.get(position_room_banner + 1));
+                //根据房间id获取设备；
+                for (int i = 0; i < AllFreshair.size(); i++) {
+                    if (AllFreshair.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
+                        wareFreshAirs.add(AllFreshair.get(i));
+                    }
+                }
+            }
+
+            //房间里的灯
+            if (wareFreshAirs.size() == 0) {
+                freshAirAdapter = new FreshAirAdapter(new ArrayList<WareFreshAir>(), this);
+                gridView.setAdapter(freshAirAdapter);
+                ToastUtil.showText(title_bar_tv_room.getText() + "没有找到灯具，请添加");
+            } else {
+                freshAirAdapter = new FreshAirAdapter(wareFreshAirs, this);
+                gridView.setAdapter(freshAirAdapter);
+            }
+        } catch (Exception e) {
+            return;
         }
     }
 

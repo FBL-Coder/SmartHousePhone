@@ -122,6 +122,36 @@ public class NewWorkSetActivity extends Activity {
             SeekListData.add(info);
         }
         MyApplication.mApplication.setSeekRcuInfos(SeekListData);
+        if (SeekListData.size() == 1 ){
+            MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
+            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
+                    MyApplication.mApplication.getSeekRcuInfos().get(0).getDevUnitID());
+            MyApplication.setNewWareData();
+            GlobalVars.setIsLAN(true);
+            MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+                @Override
+                public void upDataWareData(int datType, int subtype1, int subtype2) {
+                    if (datType == 0) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(2000);
+                                    MyApplication.mApplication.dismissLoadDialog();
+                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                    finish();
+                                } catch (InterruptedException e) {
+                                    MyApplication.mApplication.dismissLoadDialog();
+                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                    finish();
+                                }
+                            }
+                        }).start();
+                    }
+                }
+            });
+            SendDataUtil.getNetWorkInfo();
+        }
         mSeekAdapter = new NetWork_Adapter(this, SeekListData, NetWork_Adapter.SEEK);
         sousuo_list.setAdapter(mSeekAdapter);
         sousuo_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

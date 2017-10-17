@@ -40,6 +40,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
     private boolean IsCanClick = false;
     private LightAdapter lightAdapter;
     private int position_room = -1;
+    private int position_room_banner = 0;
     private List<WareLight> AllLight;
     private List<String> room_list;
 
@@ -170,6 +171,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
     }
 
     private void upData() {
+        position_room_banner = getIntent().getIntExtra("viewPage_num", 0);
         try {
             //房间
             if (MyApplication.getWareData().getRooms().size() == 0)
@@ -181,18 +183,32 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
             }
             wareLight = new ArrayList<>();
             //房间集合
-            room_list = MyApplication.getWareData().getRooms();
+            room_list = new ArrayList<>();
+            room_list.add("全部");
+            room_list.addAll(MyApplication.getWareData().getRooms());
             //房间名称；
-            if (position_room != -1)
+            if (position_room != -1) {
                 title_bar_tv_room.setText(room_list.get(position_room));
-            else
-                title_bar_tv_room.setText(room_list.get(getIntent().getIntExtra("viewPage_num", 0)));
-            //根据房间id获取设备；
-            for (int i = 0; i < AllLight.size(); i++) {
-                if (AllLight.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
-                    wareLight.add(AllLight.get(i));
+                if (position_room == 0) {
+                    wareLight.addAll(AllLight);
+                } else {
+                    //根据房间id获取设备；
+                    for (int i = 0; i < AllLight.size(); i++) {
+                        if (AllLight.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
+                            wareLight.add(AllLight.get(i));
+                        }
+                    }
+                }
+            } else {
+                title_bar_tv_room.setText(room_list.get(position_room_banner + 1));
+                //根据房间id获取设备；
+                for (int i = 0; i < AllLight.size(); i++) {
+                    if (AllLight.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
+                        wareLight.add(AllLight.get(i));
+                    }
                 }
             }
+
             //房间里的灯
             if (wareLight.size() == 0) {
                 lightAdapter = new LightAdapter(new ArrayList<WareLight>(), this);

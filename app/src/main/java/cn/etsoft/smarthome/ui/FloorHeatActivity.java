@@ -41,6 +41,7 @@ public class FloorHeatActivity extends Activity implements AdapterView.OnItemCli
     private boolean IsCanClick = false;
     private FloorHeatAdapter floorHeatAdapter;
     private int position_room = -1;
+    private int position_room_banner = 0;
     private List<WareFloorHeat> AllFloorHeat;
     private List<String> room_list;
 
@@ -118,8 +119,6 @@ public class FloorHeatActivity extends Activity implements AdapterView.OnItemCli
                 SendDataUtil.controlDev(wareFloorHeats.get(position).getDev(), UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_open.getValue());
         }
     }
-
-
     /**
      * 选择房间的dialog
      */
@@ -145,7 +144,7 @@ public class FloorHeatActivity extends Activity implements AdapterView.OnItemCli
         TextView textView = (TextView) dialog.findViewById(R.id.select_room);
         textView.setText("请选择房间");
         dia_listView = (ListView) dialog.findViewById(R.id.air_select);
-        dia_listView.setAdapter(new Room_Select_Adapter(FloorHeatActivity.this, MyApplication.getWareData().getRooms()));
+        dia_listView.setAdapter(new Room_Select_Adapter(FloorHeatActivity.this, room_list));
 
         dia_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -173,40 +172,55 @@ public class FloorHeatActivity extends Activity implements AdapterView.OnItemCli
     }
 
     private void upData() {
-        if (MyApplication.getWareData().getFloorHeat().size() == 0) {
-            ToastUtil.showText("没有地暖，请添加");
-            return;
-        }
-        //房间
-        if (MyApplication.getWareData().getRooms().size() == 0)
-            return;
-        //所有灯
-        AllFloorHeat = new ArrayList<>();
-        for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
-            AllFloorHeat.add(MyApplication.getWareData().getFloorHeat().get(i));
-        }
-        wareFloorHeats = new ArrayList<>();
-        //房间集合
-        room_list = MyApplication.getWareData().getRooms();
-        //房间名称；
-        if (position_room != -1)
-            title_bar_tv_room.setText(room_list.get(position_room));
-        else
-            title_bar_tv_room.setText(room_list.get(getIntent().getIntExtra("viewPage_num", 0)));
-        //根据房间id获取设备；
-        for (int i = 0; i < AllFloorHeat.size(); i++) {
-            if (AllFloorHeat.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
-                wareFloorHeats.add(AllFloorHeat.get(i));
+        position_room_banner = getIntent().getIntExtra("viewPage_num", 0);
+        try {
+            //房间
+            if (MyApplication.getWareData().getRooms().size() == 0)
+                return;
+            //所有灯
+            AllFloorHeat = new ArrayList<>();
+            for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
+                AllFloorHeat.add(MyApplication.getWareData().getFloorHeat().get(i));
             }
-        }
-        //房间里的灯
-        if (AllFloorHeat.size() == 0) {
-            floorHeatAdapter = new FloorHeatAdapter(new ArrayList<WareFloorHeat>(), this);
-            gridView.setAdapter(floorHeatAdapter);
-            ToastUtil.showText(title_bar_tv_room.getText() + "没有找到新风，请添加");
-        } else {
-            floorHeatAdapter = new FloorHeatAdapter(wareFloorHeats, this);
-            gridView.setAdapter(floorHeatAdapter);
+            wareFloorHeats = new ArrayList<>();
+            //房间集合
+            room_list = new ArrayList<>();
+            room_list.add("全部");
+            room_list.addAll(MyApplication.getWareData().getRooms());
+            //房间名称；
+            if (position_room != -1) {
+                title_bar_tv_room.setText(room_list.get(position_room));
+                if (position_room == 0) {
+                    wareFloorHeats.addAll(AllFloorHeat);
+                } else {
+                    //根据房间id获取设备；
+                    for (int i = 0; i < AllFloorHeat.size(); i++) {
+                        if (AllFloorHeat.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
+                            wareFloorHeats.add(AllFloorHeat.get(i));
+                        }
+                    }
+                }
+            } else {
+                title_bar_tv_room.setText(room_list.get(position_room_banner + 1));
+                //根据房间id获取设备；
+                for (int i = 0; i < AllFloorHeat.size(); i++) {
+                    if (AllFloorHeat.get(i).getDev().getRoomName().equals(title_bar_tv_room.getText())) {
+                        wareFloorHeats.add(AllFloorHeat.get(i));
+                    }
+                }
+            }
+
+            //房间里的灯
+            if (wareFloorHeats.size() == 0) {
+                floorHeatAdapter = new FloorHeatAdapter(new ArrayList<WareFloorHeat>(), this);
+                gridView.setAdapter(floorHeatAdapter);
+                ToastUtil.showText(title_bar_tv_room.getText() + "没有找到灯具，请添加");
+            } else {
+                floorHeatAdapter = new FloorHeatAdapter(wareFloorHeats, this);
+                gridView.setAdapter(floorHeatAdapter);
+            }
+        } catch (Exception e) {
+            return;
         }
     }
 

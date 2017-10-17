@@ -72,6 +72,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+
+
             <TextView
                 android:id="@+id/textView_banner"
                 android:layout_width="wrap_content"
@@ -80,7 +82,17 @@
                 android:layout_marginTop="@dimen/dp_30"
                 android:textColor="@color/color_fff"
                 android:textSize="@dimen/sp_50" />
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="当前房间"
+                android:textSize="@dimen/sp_12"
+                android:layout_marginTop="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:textStyle="italic"
+                android:textColor="@color/white1"
+                android:layout_toLeftOf="@id/textView_banner"
+                android:layout_alignTop="@id/textView_banner"/>
             <LinearLayout
                 android:id="@+id/ll_home_dots"
                 android:layout_width="match_parent"

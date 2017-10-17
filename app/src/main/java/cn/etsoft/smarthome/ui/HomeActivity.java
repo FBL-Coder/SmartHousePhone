@@ -106,7 +106,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         initFragment();
         //初始化数据
         upData();
-
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
@@ -544,6 +543,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 } else {
                     GlobalVars.setDstip("127.0.0.1");
                     SendDataUtil.getNetWorkInfo();
+                    MyApplication.mApplication.showLoadDialog(HomeActivity.this,false);
                 }
                 break;
             case R.id.city_btn_sure:
