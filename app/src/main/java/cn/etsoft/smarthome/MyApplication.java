@@ -6,14 +6,11 @@ import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Window;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,7 +18,6 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -33,18 +29,14 @@ import java.util.concurrent.Executors;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.NetMessage.UDPServer;
 import cn.etsoft.smarthome.NetMessage.WebSocket_Client;
-import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.domain.Safety_Data;
 import cn.etsoft.smarthome.domain.WareData;
-import cn.etsoft.smarthome.domain.Weather_Bean;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
 import cn.etsoft.smarthome.ui.HomeActivity;
 import cn.etsoft.smarthome.ui.SafetyActivity_home;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.CityDB;
-import cn.etsoft.smarthome.utils.GetIPAddress;
-import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.utils.WratherUtil;
 import cn.etsoft.smarthome.view.Circle_Progress;
@@ -87,10 +79,6 @@ public class MyApplication extends Application {
     public int UDP_NOSEND = 1003;
     //UDP接收数据失败
     public int UDP_NORECEIVE = 1004;
-    //数据发送返回超时
-    public int UDP_NOBACK = 5000;
-    //loading Dialog
-    public int DIALOG_DISMISS = 2222;
     //没有网络
     public int NONET = 5555;
     //全局数据
@@ -99,7 +87,6 @@ public class MyApplication extends Application {
     //搜索联网模块数据
     private List<RcuInfo> SeekRcuInfos;
 
-    public List<Weather_Bean> mWeathers_list;//天气图标集合
     public CityDB mCityDB;
 
     private SoundPool sp;//声明一个SoundPool
@@ -291,7 +278,6 @@ public class MyApplication extends Application {
         return mWareData;
     }
 
-
     private Dialog mDialog;
 
     //自定义加载进度条
@@ -333,11 +319,11 @@ public class MyApplication extends Application {
     public void showLoadDialog(Activity activity, boolean isCancelable) {
         initDialog(activity, "加载数据中...", isCancelable);
     }
+
     /**
      * 加载框显示
      */
     public void showLoadDialog(Activity activity) {
-
         initDialog(activity, "加载数据中...", true);
     }
 
@@ -395,7 +381,6 @@ public class MyApplication extends Application {
                     CanChangeNet = true;
                 } catch (InterruptedException e) {
                     CanChangeNet = false;
-                    e.printStackTrace();
                 }
             }
         }).start();
@@ -438,10 +423,9 @@ public class MyApplication extends Application {
     static class APPHandler extends Handler {
         private WeakReference<MyApplication> weakReference;
         private MyApplication application;
-        private boolean UdpIsHaveBackData = false;
+        private boolean WSIsAgainConnectRun;
         private boolean WSIsOpen = false;
         private int NotificationID = 10;
-        private long time_WebSocket = 0;
 
         APPHandler(MyApplication application) {
             this.weakReference = new WeakReference<>(application);
@@ -458,29 +442,18 @@ public class MyApplication extends Application {
                 Log.e("WebSiocket", "链接成功");
             }
             if (msg.what == application.WS_CLOSE) {
-//                if (System.currentTimeMillis() - time_WebSocket < 2000)
-//                    return;
-//                time_WebSocket = System.currentTimeMillis();
                 Log.e("WSException", "链接关闭" + msg.obj);
-//                application.wsClient = new WebSocket_Client();
-//                try {
-//                    application.wsClient.initSocketClient(application.handler);
-//                    application.wsClient.connect();
-//                } catch (URISyntaxException e) {
-//                    Log.e("WSException", "WebSocket链接重启失败" + e);
-//                }
+                WS_againConnect();
             }
             if (msg.what == application.WS_DATA_OK) {//WebSocket 数据
-//                Log.i("WS", "handleMessage: " + msg.obj);
                 MyApplication.mApplication.getUdpServer().webSocketData((String) msg.obj);
             }
             if (msg.what == application.WS_Error) {
                 Log.e("WSException", "数据异常" + msg.obj);
-//                ToastUtil.showText("数据发送失败，与服务器连接已断开，请稍后再试！");
+                WS_againConnect();
             }
             //UDP数据报
             if (msg.what == application.UDP_DATA_OK) {
-                UdpIsHaveBackData = true;
                 if ((int) msg.obj == 32 && msg.arg1 == 2) {
                     String contont = Safety_Baojing();
                     if ("".equals(contont)) {
@@ -504,23 +477,47 @@ public class MyApplication extends Application {
             if (msg.what == application.NONET) {
                 ToastUtil.showText("没有可用网络，请检查", 5000);
             }
-//            //udp发送数据后的回调
-//            if (msg.what == application.UDP_NOBACK) {
-//
-//                final String data = (String) msg.obj;
-//                final Timer timer = new Timer();
-//                timer.schedule(new TimerTask() {
-//                    @Override
-//                    public void run() {
-//                        if (!UdpIsHaveBackData && WSIsOpen) {
-//                            if (onUdpgetDataNoBackListener != null) {
-//                                onUdpgetDataNoBackListener.WSSendDatd(data);
-//                            }
-//                            timer.cancel();
-//                        }
-//                    }
-//                }, 3000, 3000);
-//            }
+        }
+
+        /**
+         * WebSocket 重连
+         */
+        private void WS_againConnect() {
+            if (WSIsAgainConnectRun) {
+                return;
+            }
+            final Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Log.e("WSException", "WS尝试连接中...");
+                    application.wsClient = new WebSocket_Client();
+                    try {
+                        application.wsClient.initSocketClient(application.handler);
+                        application.wsClient.connect();
+                    } catch (URISyntaxException e) {
+                        Log.e("WSException", "WebSocket链接重启失败" + e);
+                    }
+                }
+            };
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    WSIsAgainConnectRun = true;
+                    for (; ; ) {
+                        if (WSIsOpen) {
+                            WSIsAgainConnectRun = false;
+                            return;
+                        }
+                        try {
+                            Thread.sleep(5000);
+                            handler.sendMessage(handler.obtainMessage());
+                        } catch (InterruptedException e) {
+                            Log.e("WSException", "WebSocket链接重启失败" + e);
+                        }
+                    }
+                }
+            }).start();
         }
 
         /**
@@ -605,19 +602,6 @@ public class MyApplication extends Application {
 
     public interface OnGetWareDataListener {
         void upDataWareData(int datType, int subtype1, int subtype2);
-    }
-
-    /**
-     * Udp发送数据后5秒五返回
-     */
-    private static OnUdpgetDataNoBackListener onUdpgetDataNoBackListener;
-
-    public static void setOnUdpgetDataNoBackListener(OnUdpgetDataNoBackListener onUdpgetDataNoBackListener) {
-        MyApplication.onUdpgetDataNoBackListener = onUdpgetDataNoBackListener;
-    }
-
-    public interface OnUdpgetDataNoBackListener {
-        void WSSendDatd(String msg);
     }
 
     @Override
