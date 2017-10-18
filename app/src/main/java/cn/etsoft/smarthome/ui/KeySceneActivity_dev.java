@@ -207,7 +207,7 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                                 "\"itemCnt\":" + chnOpItem_scene.getKey2scene_item().size() + "," +
                                 "\"key2scene_item\":[" + more_data + "]}";
                         Log.e("情景模式测试:", data_hoad);
-                        MyApplication.mApplication.getUdpServer().send(data_hoad);
+                        MyApplication.mApplication.getUdpServer().send(data_hoad,59);
                         MyApplication.mApplication.showLoadDialog(KeySceneActivity_dev.this);
                     }
                 });

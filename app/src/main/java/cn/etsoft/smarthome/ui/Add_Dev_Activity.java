@@ -435,8 +435,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +
                                     "\"powChn\":" + Save_DevWay + "}";
-
-                        MyApplication.mApplication.getUdpServer().send(chn_str);
+                        MyApplication.mApplication.getUdpServer().send(chn_str,5);
                         MyApplication.mApplication.showLoadDialog(Add_Dev_Activity.this);
                         finish();
                     }

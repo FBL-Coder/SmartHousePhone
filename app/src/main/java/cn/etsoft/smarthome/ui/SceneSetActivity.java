@@ -40,7 +40,7 @@ import cn.etsoft.smarthome.weidget.SwipeListView;
  * 情景设置页面
  */
 public class SceneSetActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
-    private ImageView iv_cancel, back;
+    private ImageView iv_cancel, back,ref_IV;
     private EditText name;
     private Button sure, cancel;
     private TextView title;
@@ -65,21 +65,22 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         initTitleBar();
         //初始化ListView
         initListView();
-
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                MyApplication.mApplication.dismissLoadDialog();
                 if (datType == 22) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     WareDataHliper.initCopyWareData().startCopySceneData();
                     initListView();
                 }
                 if (datType == 23) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     //初始化情景的listView
                     initListView();
                     ToastUtil.showText("添加成功");
                 }
                 if (datType == 25) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     initListView();
                     ToastUtil.showText("删除成功");
                 }
@@ -94,8 +95,12 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     private void initTitleBar() {
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
+        ref_IV = (ImageView) findViewById(R.id.title_bar_iv_or);
+        ref_IV.setVisibility(View.VISIBLE);
+        ref_IV.setImageResource(R.drawable.refrush_1);
         title.setText(getIntent().getStringExtra("title"));
         back.setOnClickListener(this);
+        ref_IV.setOnClickListener(this);
         event = new ArrayList<>();
     }
 
@@ -141,8 +146,8 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
             } else {
-                if (MyApplication.getWareData().getSceneEvents().size() == 8) {
-                    ToastUtil.showText("最多添加8个情景模式");
+                if (MyApplication.getWareData().getSceneEvents().size() == 6) {
+                    ToastUtil.showText("自定义情景最多6个！");
                     return;
                 }
                 getDialog();
@@ -157,6 +162,10 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         switch (v.getId()) {
             case R.id.scene_iv_cancel:
                 dialog.dismiss();
+                break;
+            case R.id.title_bar_iv_or:
+                SendDataUtil.getSceneInfo();
+                MyApplication.mApplication.showLoadDialog(this);
                 break;
             case R.id.scene_btn_sure:
                 dialog.dismiss();
@@ -177,7 +186,12 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                             ID.add(Scene_id.get(i));
                         }
                     }
-                    add_scene((byte) (int) ID.get(0), data);
+                    try {
+                        add_scene(ID.get(0), data);
+                    } catch (Exception e) {
+                        ToastUtil.showText("数据异常，请重试");
+                        return;
+                    }
                     initListView();
                 } else {
                     dialog.dismiss();
@@ -226,7 +240,12 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                         public void onClick(DialogInterface dialog, int i) {
                             dialog.dismiss();
                             //删除情景模式
-                            SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(position));
+                            try {
+                                SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(position));
+                            }catch (Exception e){
+                                ToastUtil.showText("数据请求异常，请刷新情景数据");
+                                return;
+                            }
                             MyApplication.mApplication.showLoadDialog(SceneSetActivity.this);
                         }
                     });

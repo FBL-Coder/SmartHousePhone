@@ -106,8 +106,7 @@ public class UDPServer implements Runnable {
         }
     }
 
-    public void send(final String msg) {
-
+    public void send(final String msg, int datType) {
         int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
         if (NETWORK == 0) {
             ToastUtil.showText("请检查网络连接");
@@ -124,12 +123,15 @@ public class UDPServer implements Runnable {
             }
             if (GlobalVars.isIsLAN()) {
                 UdpSendMsg(msg);
+                if (datType == 26) {
+                    return;
+                }
                 Messagetimer = new Timer();
-                Log.i("TIMER -- NEW",Messagetimer.toString());
+                Log.i("TIMER -- NEW", Messagetimer.toString());
                 Messagetimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Log.i("TIMER -- RUN",Messagetimer.toString());
+                        Log.i("TIMER -- RUN", Messagetimer.toString());
                         String jsonToServer = "{\"uid\":\"" + GlobalVars.getUserid() + "\",\"type\":\"forward\",\"data\":" + msg + "}";
                         Log.i("发送WebSocket", "局域网超时转发WEB  ：" + jsonToServer);
                         MyApplication.mApplication.getWsClient().sendMsg(jsonToServer);
@@ -140,7 +142,7 @@ public class UDPServer implements Runnable {
                     @Override
                     public void messageForBack(int dattype) {
                         Messagetimer.cancel();
-                        Log.i("TIMER --CANCEL",Messagetimer.toString());
+                        Log.i("TIMER --CANCEL", Messagetimer.toString());
                     }
                 });
             } else {
@@ -177,7 +179,7 @@ public class UDPServer implements Runnable {
                     dSocket.send(dPacket);
 
                 } catch (Exception e) {
-                    Log.e("Exception", "UDP发送消息失败：" + e + "   发送失败的msg："+msg);
+                    Log.e("Exception", "UDP发送消息失败：" + e + "   发送失败的msg：" + msg);
                     Message message = mhandler.obtainMessage();
                     message.what = MyApplication.mApplication.UDP_NOSEND;
                     mhandler.sendMessage(message);
@@ -565,7 +567,6 @@ public class UDPServer implements Runnable {
     }
 
 
-
     /**
      * 返回001的包处理联网模块信息
      */
@@ -657,28 +658,29 @@ public class UDPServer implements Runnable {
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, str);
         MyApplication.getWareData().setRcuInfos(json_list);
         isFreshData = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                    SendDataUtil.getSceneInfo();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(10000);
-                                SendDataUtil.getSafetyInfo();
-                            } catch (InterruptedException e) {
-                                SendDataUtil.getSafetyInfo();
+        if (!MyApplication.mApplication.isVisitor())
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(10000);
+                        SendDataUtil.getSceneInfo();
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(10000);
+                                    SendDataUtil.getSafetyInfo();
+                                } catch (InterruptedException e) {
+                                    SendDataUtil.getSafetyInfo();
+                                }
                             }
-                        }
-                    }).start();
-                } catch (InterruptedException e) {
-                    SendDataUtil.getSceneInfo();
+                        }).start();
+                    } catch (InterruptedException e) {
+                        SendDataUtil.getSceneInfo();
+                    }
                 }
-            }
-        }).start();
+            }).start();
     }
 
     /**

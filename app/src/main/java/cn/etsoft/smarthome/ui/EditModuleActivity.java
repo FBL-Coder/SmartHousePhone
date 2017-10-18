@@ -367,7 +367,7 @@ public class EditModuleActivity extends Activity implements View.OnClickListener
                                 "\"keyinput\":" + wareBoardKeyInput.getKeyCnt() + "," + //TODO 修改过的
                                 "\"keyinput_rows\":[" + more_data + "]}";
                         Log.e("情景模式测试:", data_hoad);
-                        MyApplication.mApplication.getUdpServer().send(data_hoad);
+                        MyApplication.mApplication.getUdpServer().send(data_hoad,9);
                         MyApplication.mApplication.showLoadDialog(EditModuleActivity.this);
                     }
                 });

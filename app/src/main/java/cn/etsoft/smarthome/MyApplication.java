@@ -391,7 +391,7 @@ public class MyApplication extends Application {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(30000);
+                    Thread.sleep(15000);
                     CanChangeNet = true;
                 } catch (InterruptedException e) {
                     CanChangeNet = false;
@@ -462,13 +462,13 @@ public class MyApplication extends Application {
 //                    return;
 //                time_WebSocket = System.currentTimeMillis();
                 Log.e("WSException", "链接关闭" + msg.obj);
-                application.wsClient = new WebSocket_Client();
-                try {
-                    application.wsClient.initSocketClient(application.handler);
-                    application.wsClient.connect();
-                } catch (URISyntaxException e) {
-                    Log.e("WSException", "WebSocket链接重启失败" + e);
-                }
+//                application.wsClient = new WebSocket_Client();
+//                try {
+//                    application.wsClient.initSocketClient(application.handler);
+//                    application.wsClient.connect();
+//                } catch (URISyntaxException e) {
+//                    Log.e("WSException", "WebSocket链接重启失败" + e);
+//                }
             }
             if (msg.what == application.WS_DATA_OK) {//WebSocket 数据
 //                Log.i("WS", "handleMessage: " + msg.obj);

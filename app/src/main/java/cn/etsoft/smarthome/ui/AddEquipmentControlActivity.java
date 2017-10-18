@@ -192,7 +192,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                         save_quipment.setKey_opitem_rows(list_kor);
                         Gson gson = new Gson();
                         System.out.println(gson.toJson(save_quipment));
-                        MyApplication.mApplication.getUdpServer().send(gson.toJson(save_quipment).toString());
+                        MyApplication.mApplication.getUdpServer().send(gson.toJson(save_quipment).toString(),12);
                         MyApplication.mApplication.showLoadDialog(AddEquipmentControlActivity.this);
                     }
                 });

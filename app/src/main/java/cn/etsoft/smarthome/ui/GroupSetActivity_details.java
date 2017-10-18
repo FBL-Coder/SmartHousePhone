@@ -604,7 +604,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                             Gson gson = new Gson();
                             Log.i("保存触发器数据", gson.toJson(time_data));
                             MyApplication.mApplication.showLoadDialog(GroupSetActivity_details.this);
-                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data));
+                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data),66);
                         } catch (Exception e) {
                             MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存触发器数据", "保存数据异常" + e);

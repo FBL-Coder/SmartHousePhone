@@ -47,7 +47,7 @@ public class InPutFragment extends Fragment implements AdapterView.OnItemClickLi
             lv.setAdapter(new BoardInOutAdapter(getActivity(), null, MyApplication.getWareData().getKeyInputs(), UdpProPkt.E_BOARD_TYPE.e_board_keyInput.getValue()));
             lv.setOnItemClickListener(this);
         } else if (MyApplication.getWareData().getKeyInputs() == null || MyApplication.getWareData().getKeyInputs().size() == 0) {
-            ToastUtil.showText("没有收到输入板信息");
+            ToastUtil.showText("没有输入板信息,请在主页刷新数据");
             return;
         }
     }

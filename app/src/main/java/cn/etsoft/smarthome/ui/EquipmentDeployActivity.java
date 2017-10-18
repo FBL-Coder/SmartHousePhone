@@ -328,7 +328,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
                         Gson gson = new Gson();
                         System.out.println(gson.toJson(data));
-                        MyApplication.mApplication.getUdpServer().send(gson.toJson(data));
+                        MyApplication.mApplication.getUdpServer().send(gson.toJson(data),15);
                         MyApplication.mApplication.showLoadDialog(EquipmentDeployActivity.this);
                     }
                 });

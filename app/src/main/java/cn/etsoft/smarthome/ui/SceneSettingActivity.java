@@ -263,7 +263,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                         "\"devCnt\":" + num + "," +
                         "\"itemAry\":[" + more_data + "]}";
                 Log.e("情景模式测试:", data_hoad);
-                MyApplication.mApplication.getUdpServer().send(data_hoad);
+                MyApplication.mApplication.getUdpServer().send(data_hoad,24);
             }
         });
         builder.create().show();

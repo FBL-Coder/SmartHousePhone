@@ -531,7 +531,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                             "\"powChn\":" + Save_DevWay + "," +
                             "\"cmd\":" + 1 + "}";
                 }
-                MyApplication.mApplication.getUdpServer().send(chn_str);
+                MyApplication.mApplication.getUdpServer().send(chn_str,6);
                 break;
 
             case R.id.dev_room:

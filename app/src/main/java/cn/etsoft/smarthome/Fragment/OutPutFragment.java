@@ -46,7 +46,7 @@ public class OutPutFragment extends Fragment implements AdapterView.OnItemClickL
             lv.setAdapter(new BoardInOutAdapter(getActivity(), MyApplication.getWareData().getBoardChnouts(), null, UdpProPkt.E_BOARD_TYPE.e_board_chnOut.getValue()));
             lv.setOnItemClickListener(this);
         } else if (MyApplication.getWareData().getBoardChnouts() == null || MyApplication.getWareData().getBoardChnouts().size() == 0) {
-            ToastUtil.showText("没有收到输出板信息");
+            ToastUtil.showText("没有输出板信息,请在主页刷新数据");
             return;
         }
     }

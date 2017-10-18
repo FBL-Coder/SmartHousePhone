@@ -134,6 +134,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         });
         upData();
     }
+
     /**
      * 初始化控件
      */
@@ -375,6 +376,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             dots_iv.get(position).setBackgroundResource(R.drawable.point_focused);
             oldPosition = position;
         }
+
         public void onPageScrollStateChanged(int arg0) {
 
         }
@@ -410,7 +412,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         Typeface typeface = Typeface.createFromAsset(HomeActivity.this.getAssets(), "fonnts/hua.ttf");
         //使用字体成楷体
         textView_banner.setTypeface(typeface);
-        textView_banner.setText(text_room.get(0));
+        if (text_room.size() == 0) {
+            textView_banner.setText("没有数据");
+        } else
+            textView_banner.setText(text_room.get(0));
         mViewPager.setPageTransformer(true, new DepthPageTransformer());
         // 设置填充ViewPager页面的适配器
         mViewPager.setAdapter(new MyAdapter());
@@ -420,6 +425,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void initData() {
+        if (text_room.size() == 0) {
+            mImgIds_img.add(mImgIds[0]);
+        }
         for (int i = 0; i < text_room.size(); i++) {
             mImgIds_img.add(mImgIds[0]);
         }
@@ -430,6 +438,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             mImageViews.add(imageView);
         }
     }
+
     private void upData() {
         text_room = new ArrayList<>();
         mWareDev_room = new ArrayList<>();
@@ -444,10 +453,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             }
         }
         text_room = MyApplication.getWareData().getRooms();
-        if (text_room.size() < 1)
-            return;
+//        if (text_room.size() < 1) {
+//            return;
+//        }
         initViewPager();
     }
+
     /**
      * 初始化数据
      */
@@ -482,22 +493,26 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        try {
-            if (keyCode != KeyEvent.KEYCODE_BACK)
-                return false;
-            if (System.currentTimeMillis() - TimeExit < 1500) {
-                MyApplication.getWareData().setBoardChnouts(new ArrayList<WareBoardChnout>());
-                Data_Cache.writeFile(GlobalVars.getDevid(), MyApplication.getWareData());
-                for (int i = 0; i < MyApplication.mApplication.getActivities().size(); i++) {
-                    MyApplication.mApplication.getActivities().get(i).finish();
+        if (MyApplication.mApplication.isVisitor()) {
+            finish();
+        } else {
+            try {
+                if (keyCode != KeyEvent.KEYCODE_BACK)
+                    return false;
+                if (System.currentTimeMillis() - TimeExit < 1500) {
+                    MyApplication.getWareData().setBoardChnouts(new ArrayList<WareBoardChnout>());
+                    Data_Cache.writeFile(GlobalVars.getDevid(), MyApplication.getWareData());
+                    for (int i = 0; i < MyApplication.mApplication.getActivities().size(); i++) {
+                        MyApplication.mApplication.getActivities().get(i).finish();
+                    }
+                    System.exit(0);
+                } else {
+                    Toast.makeText(HomeActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+                    TimeExit = System.currentTimeMillis();
                 }
-                System.exit(0);
-            } else {
-                Toast.makeText(HomeActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
-                TimeExit = System.currentTimeMillis();
+            } catch (Exception e) {
+                return false;
             }
-        } catch (Exception e) {
-            return false;
         }
         return false;
     }
@@ -543,7 +558,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 } else {
                     GlobalVars.setDstip("127.0.0.1");
                     SendDataUtil.getNetWorkInfo();
-                    MyApplication.mApplication.showLoadDialog(HomeActivity.this,false);
+                    MyApplication.mApplication.showLoadDialog(HomeActivity.this, false);
                 }
                 break;
             case R.id.city_btn_sure:

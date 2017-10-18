@@ -395,7 +395,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                             Gson gson = new Gson();
                             Log.e("保存安防数据", gson.toJson(safetyResult));
                             MyApplication.mApplication.showLoadDialog(SafetyActivity_details.this);
-                            MyApplication.mApplication.getUdpServer().send(gson.toJson(safetyResult));
+                            MyApplication.mApplication.getUdpServer().send(gson.toJson(safetyResult),32);
                         } catch (Exception e) {
                             MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存安防数据", "保存数据异常" + e);
@@ -521,7 +521,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
                     Gson gson = new Gson();
                     Log.e("对码数据", gson.toJson(safetyResult));
                     MyApplication.mApplication.showLoadDialog(SafetyActivity_details.this);
-                    MyApplication.mApplication.getUdpServer().send(gson.toJson(safetyResult));
+                    MyApplication.mApplication.getUdpServer().send(gson.toJson(safetyResult),32);
                 } catch (Exception e) {
                     MyApplication.mApplication.dismissLoadDialog();
                     Log.e("对码数据", "对码数据异常" + e);
