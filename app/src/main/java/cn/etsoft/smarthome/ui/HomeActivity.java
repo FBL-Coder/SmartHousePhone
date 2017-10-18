@@ -1,8 +1,11 @@
 package cn.etsoft.smarthome.ui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -46,6 +49,8 @@ import cn.etsoft.smarthome.Fragment.SettingFragment;
 import cn.etsoft.smarthome.Helper.LogoutHelper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
+import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
+import cn.etsoft.smarthome.NetWorkListener.NetBroadcastReceiver;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.City;
 import cn.etsoft.smarthome.domain.RcuInfo;
@@ -118,8 +123,38 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             }
         });
         MyApplication.mApplication.setmHomeActivity(this);
+        NetBroadcastReceiver.setEvevt(new NetBroadcastReceiver.NetEvevtChangListener() {
+            @Override
+            public void onNetChange(int netMobile) {
+                getIp();
+            }
+        });
     }
 
+    public void getIp(){
+        int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
+        if (NETWORK >= 10) {
+            //获取wifi服务
+            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            //判断wifi是否开启
+            if (!wifiManager.isWifiEnabled()) {
+                wifiManager.setWifiEnabled(true);
+            }
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            int ipAddress = wifiInfo.getIpAddress();
+            String ip = intToIp(ipAddress);
+            if (!ip.equals(GlobalVars.WIFI_IP)){
+                GlobalVars.WIFI_IP = ip;
+            }
+        }
+    }
+    private String intToIp(int i) {
+
+        return (i & 0xFF) + "." +
+                ((i >> 8) & 0xFF) + "." +
+                ((i >> 16) & 0xFF) + "." +
+                (i >> 24 & 0xFF);
+    }
 
     /**
      * 初始化控件

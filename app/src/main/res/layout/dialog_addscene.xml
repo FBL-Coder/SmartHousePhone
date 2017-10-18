@@ -34,7 +34,7 @@
             android:id="@+id/title_name"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center"
             android:lines="1"
             android:text="情景名称 :"
@@ -46,7 +46,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_weight="7"
-            android:hint="清输入模块名称"
+            android:hint="请输入模块名称"
 
             android:textSize="@dimen/sp_16" />
     </LinearLayout>

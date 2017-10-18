@@ -35,6 +35,7 @@ public class GlobalVars {
 
 
     public static String LOCAL_IP = "127.0.0.1";
+    public static String WIFI_IP = "0.0.0.0";
     private static Context context;
     private static int sn;
     private static String userid, devid, devpass;
