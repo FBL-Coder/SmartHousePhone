@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
             android:orientation="horizontal">
 
             <!--&lt;!&ndash;退出&ndash;&gt;-->
@@ -34,6 +34,28 @@
                 <!--android:layout_marginRight="@dimen/dp_20"-->
                 <!--android:src="@drawable/logout_icon" />-->
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_30"
+                android:text="当前模块："
+                android:layout_marginRight="@dimen/dp_10"
+                android:gravity="center"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/color_4FC1E9"
+                />
+            <TextView
+                android:id="@+id/net_now"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_30"
+                android:text="上海展厅"
+                android:layout_marginRight="@dimen/dp_30"
+                android:gravity="center"
+                android:textSize="@dimen/sp_14"
+                android:padding="@dimen/dp_3"
+                android:textStyle="bold"
+                android:textColor="@color/color_10AEFF"
+                />
+
             <ImageView
                 android:id="@+id/home_tv_ref"
                 android:layout_width="@dimen/dp_35"
@@ -41,7 +63,6 @@
                 android:padding="@dimen/dp_5"
                 android:scaleType="centerCrop"
                 android:src="@drawable/selector_ref" />
-
         </LinearLayout>
 
 
@@ -79,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_50"
                 android:textColor="@color/color_fff"
                 android:textSize="@dimen/sp_50" />
             <TextView
@@ -87,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:text="当前房间"
                 android:textSize="@dimen/sp_12"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_20"
                 android:paddingRight="@dimen/dp_10"
                 android:textStyle="italic"
                 android:textColor="@color/white1"

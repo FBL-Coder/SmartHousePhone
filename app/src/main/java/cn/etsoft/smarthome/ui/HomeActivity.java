@@ -48,6 +48,7 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.City;
+import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.domain.WareBoardChnout;
 import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.domain.WareDev;
@@ -84,7 +85,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private List<WareDev> mWareDev_room;
     //ViewPager
     //图片标题
-    private TextView textView_banner, loaction_text, temp_text, hum_text, pm_25, breath_text, weather_text;
+    private TextView textView_banner, loaction_text, temp_text,
+            hum_text, pm_25, breath_text, weather_text,net_now;
     private ImageView ref_home;
     private ViewPagerCompat mViewPager;
     private List<Integer> mImgIds_img = new ArrayList<>();
@@ -100,7 +102,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         MyApplication.mApplication.showLoadDialog(this, false);
         setContentView(R.layout.activity_home);
-        SendDataUtil.getNetWorkInfo();
         //初始化控件
         initView();
         initFragment();
@@ -119,21 +120,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         MyApplication.mApplication.setmHomeActivity(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-            @Override
-            public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 3) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    //更新数据
-                    upData();
-                }
-            }
-        });
-        upData();
-    }
 
     /**
      * 初始化控件
@@ -149,8 +135,11 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         breath_text = (TextView) findViewById(R.id.breath_text);
         weather_text = (TextView) findViewById(R.id.weather_text);
         loaction_text = (TextView) findViewById(R.id.loaction_text);
+        net_now = (TextView) findViewById(R.id.net_now);
         ll_loaction.setOnClickListener(this);
         ref_home.setOnClickListener(this);
+        net_now.setOnClickListener(this);
+
         fragmentManager = getSupportFragmentManager();
         homeRadioGroup = (RadioGroup) findViewById(R.id.rg_home);
         ((RadioButton) homeRadioGroup.findViewById(R.id.rb_home_home)).setChecked(true);
@@ -440,6 +429,15 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void upData() {
+        if (!"".equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
+            List<RcuInfo> list = MyApplication.mApplication.getRcuInfoList();
+            for (int i = 0; i < list.size(); i++) {
+                if (AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, "")
+                        .equals(list.get(i).getDevUnitID())) {
+                    net_now.setText(list.get(i).getCanCpuName());
+                }
+            }
+        }
         text_room = new ArrayList<>();
         mWareDev_room = new ArrayList<>();
         for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
@@ -452,11 +450,29 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 }
             }
         }
+
         text_room = MyApplication.getWareData().getRooms();
 //        if (text_room.size() < 1) {
 //            return;
 //        }
         initViewPager();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 3) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    //更新数据
+                    upData();
+                }
+            }
+        });
+        upData();
+
     }
 
     /**
@@ -584,6 +600,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.city_btn_cancel:
                 dialog_add_loaction.dismiss();
+                break;
+            case R.id.net_now:
                 break;
         }
     }

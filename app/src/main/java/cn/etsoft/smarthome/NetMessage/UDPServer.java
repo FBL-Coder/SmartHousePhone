@@ -120,6 +120,7 @@ public class UDPServer implements Runnable {
             }
             if (MyApplication.mApplication.isVisitor()) {
                 UdpSendMsg(msg);
+                return;
             }
             if (GlobalVars.isIsLAN()) {
                 UdpSendMsg(msg);
@@ -223,7 +224,7 @@ public class UDPServer implements Runnable {
             subType1 = jsonObject.getInt("subType1");
             subType2 = jsonObject.getInt("subType2");
             if (!devUnitID.equals(GlobalVars.getDevid()))
-                if (!MyApplication.mApplication.isSeekNet()) {
+                if (datType != 0) {
                     Log.i(TAG, "UDP接收收据--过滤:" + "本地ID" + GlobalVars.getDevid() + "--数据ID" + devUnitID + ";包类型：" + datType + "-" + subType1 + "-" + subType2);
                     return;
                 }

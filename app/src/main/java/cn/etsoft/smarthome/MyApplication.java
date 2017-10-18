@@ -409,6 +409,8 @@ public class MyApplication extends Application {
     }
 
     public List<RcuInfo> getSeekRcuInfos() {
+        if (SeekRcuInfos == null)
+            SeekRcuInfos = new ArrayList<>();
         return SeekRcuInfos;
     }
 

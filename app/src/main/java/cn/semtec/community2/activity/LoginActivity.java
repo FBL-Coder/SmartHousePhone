@@ -149,6 +149,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, result.getData().get(0).getDevUnitID());
             GlobalVars.setDevpass(result.getData().get(0).getDevPass());
             startActivity(new Intent(this, HomeActivity.class));
+            SendDataUtil.getNetWorkInfo();
         }
         AppSharePreferenceMgr.put(GlobalVars.LOGIN_SHAREPREFERENCE, true);
         finish();

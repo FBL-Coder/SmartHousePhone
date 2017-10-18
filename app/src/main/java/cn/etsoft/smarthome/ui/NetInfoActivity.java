@@ -40,7 +40,6 @@ public class NetInfoActivity extends Activity {
         setContentView(R.layout.activity_netindo);
         initView();
         initData();
-
     }
 
     public void initView() {

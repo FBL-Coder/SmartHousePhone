@@ -14,6 +14,7 @@ import java.util.List;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 
 
@@ -88,6 +89,7 @@ public class WelcomeActivity extends Activity{
                     weakReference.get().finish();
                 }
                 if (IsLogin && !"".equals(json_RcuinfoID)) {
+                    SendDataUtil.getNetWorkInfo();
                     weakReference.get().startActivity(new Intent(weakReference.get(), HomeActivity.class));
                     weakReference.get().finish();
                 }
