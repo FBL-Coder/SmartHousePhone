@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:textColor="@color/black1"
+            android:text="类型："/>
+
+        <TextView
+            android:id="@+id/dev_or_scene"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
+            android:gravity="center"
+            android:background="@color/main_blue1"
+            android:textColor="@color/white1"
+            android:text="设备"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:text="房间："/>
+
+        <TextView
+            android:id="@+id/room"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_8"
+            android:gravity="center"
+            android:background="@color/main_blue1"
+            android:textColor="@color/white1"
+            android:text="客厅"/>
+
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/user_adddev_gv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:layout_margin="@dimen/dp_10"
+        android:horizontalSpacing="@dimen/dp_10"
+        android:verticalSpacing="@dimen/dp_10"
+        android:numColumns="3"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/user_adddev_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:background="@drawable/selector_login"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_5"
+        android:text="保存添加"
+        android:textColor="@color/white1"
+        android:textSize="@dimen/dp_20" />
+
+</LinearLayout>

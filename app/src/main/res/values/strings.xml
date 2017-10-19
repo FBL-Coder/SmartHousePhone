@@ -237,6 +237,7 @@
     <string name="input">输入</string>
     <string name="keyScene">按键情景</string>
     <string name="home_page">首页</string>
+    <string name="home_user">用户</string>
     <string name="setting">设置</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>

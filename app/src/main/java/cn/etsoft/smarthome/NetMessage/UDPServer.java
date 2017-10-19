@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -157,6 +158,12 @@ public class UDPServer implements Runnable {
     //搜索联网模块
     public void sendSeekNet() {
         MyApplication.mApplication.setSeekNet(true);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                MyApplication.mApplication.setSeekNet(false);
+            }
+        },5000);
         String SeekNet = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                 "\"devPass\":\"" + GlobalVars.getDevpass() + "\"," +
@@ -224,11 +231,10 @@ public class UDPServer implements Runnable {
             subType1 = jsonObject.getInt("subType1");
             subType2 = jsonObject.getInt("subType2");
             if (!devUnitID.equals(GlobalVars.getDevid()))
-                if (datType != 0) {
+                if (!MyApplication.mApplication.isSeekNet()) {
                     Log.i(TAG, "UDP接收收据--过滤:" + "本地ID" + GlobalVars.getDevid() + "--数据ID" + devUnitID + ";包类型：" + datType + "-" + subType1 + "-" + subType2);
                     return;
                 }
-
         } catch (JSONException e) {
             System.out.println(this.getClass().getName() + "--extractData--" + e.toString());
         }
@@ -282,11 +288,11 @@ public class UDPServer implements Runnable {
         switch (datType) {
             case 0:// e_udpPro_getRcuinfo
                 if (subType2 == 1) {
-                    if (MyApplication.mApplication.isSeekNet() == false) {
+                    if (!MyApplication.mApplication.isSeekNet()) {
                         //设置联网模块信息
                         MyApplication.setNewWareData();
                         setRcuInfo(info);
-                    } else if (MyApplication.mApplication.isSeekNet() == true) {
+                    } else if (MyApplication.mApplication.isSeekNet()) {
                         setRcuInfo_search(info);
                     }
                 }
@@ -531,10 +537,10 @@ public class UDPServer implements Runnable {
                 }
                 break;
             case 86: // e_udpPro_getShortcutKey
-                if (subType2 == 0) {
-                    isFreshData = true;
-                    getUserEvents(info);
-                }
+//                if (subType2 == 0) {
+//                    isFreshData = true;
+//                    getUserEvents(info);
+//                }
             case 100: // e_udpPro_getShortcutKey
                 if (subType2 == 1) {
                     if (System.currentTimeMillis() - time > 10000) {

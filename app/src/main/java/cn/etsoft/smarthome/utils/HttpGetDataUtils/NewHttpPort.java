@@ -17,4 +17,6 @@ public class NewHttpPort {
     public static String DELETENETMODULE = "netmodel/del";
     public static String LOGOUT = "account/logout";
     public static String NETLISTS = "netmodel/lists";
+    public static String USER_ADD = "scene/add";
+    public static String USER_GET = "scene/lists";
 }

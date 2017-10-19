@@ -14,6 +14,7 @@ public class WareSceneEvent implements Serializable {
     private int eventId;
     private int rev2;
     private int rev3;
+    private boolean isSelect;
 
 
     private List<WareSceneDevItem> itemAry;
@@ -66,5 +67,13 @@ public class WareSceneEvent implements Serializable {
 
     public void setItemAry(List<WareSceneDevItem> itemAry) {
         this.itemAry = itemAry;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
     }
 }

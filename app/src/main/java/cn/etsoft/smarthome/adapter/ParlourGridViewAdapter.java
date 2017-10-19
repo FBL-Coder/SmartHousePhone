@@ -92,7 +92,6 @@ public class ParlourGridViewAdapter extends BaseAdapter {
         }
         viewHolder.name.setText(dev_list.get(position).getDevName());
 
-
         if (dev_list.size() < 1)
             return convertView;
         if (dev_list.get(position).getType() == 0) {

@@ -468,12 +468,14 @@ public class MyApplication extends Application {
             }
             if (msg.what == application.WS_CLOSE) {
                 Log.e("WSException", "链接关闭" + msg.obj);
+                WSIsOpen = false;
                 WS_againConnect();
             }
             if (msg.what == application.WS_DATA_OK) {//WebSocket 数据
                 MyApplication.mApplication.getUdpServer().webSocketData((String) msg.obj);
             }
             if (msg.what == application.WS_Error) {
+                WSIsOpen = false;
                 Log.e("WSException", "数据异常" + msg.obj);
                 WS_againConnect();
             }

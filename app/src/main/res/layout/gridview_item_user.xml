@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/rect_gray6"
+    android:padding="@dimen/dp_10"
     android:orientation="vertical">
-<!--android:background="@drawable/rect_blue14"-->
     <TextView
         android:id="@+id/equip_name"
         android:layout_width="match_parent"

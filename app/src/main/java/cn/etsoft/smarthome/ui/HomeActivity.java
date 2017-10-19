@@ -3,6 +3,7 @@ package cn.etsoft.smarthome.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -46,6 +47,7 @@ import java.util.List;
 
 import cn.etsoft.smarthome.Fragment.HomeFragment;
 import cn.etsoft.smarthome.Fragment.SettingFragment;
+import cn.etsoft.smarthome.Fragment.UserInterface;
 import cn.etsoft.smarthome.Helper.LogoutHelper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
@@ -76,7 +78,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private RadioGroup homeRadioGroup;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
-    private Fragment homeFragment, settingFragment;
+    private Fragment homeFragment, settingFragment, Userinterface;
     public static final String PM2D5_BASE_URL = "http://jisutianqi.market.alicloudapi.com/weather/query?citycode=";
     private static final String 天气key = "APPCODE 500a3b58be714c519f83e8aa9a23810e";
     private CityDB mCityDB;
@@ -91,7 +93,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     //ViewPager
     //图片标题
     private TextView textView_banner, loaction_text, temp_text,
-            hum_text, pm_25, breath_text, weather_text,net_now;
+            hum_text, pm_25, breath_text, weather_text, net_now;
     private ImageView ref_home;
     private ViewPagerCompat mViewPager;
     private List<Integer> mImgIds_img = new ArrayList<>();
@@ -120,6 +122,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     //更新数据
                     upData();
                 }
+
             }
         });
         MyApplication.mApplication.setmHomeActivity(this);
@@ -131,7 +134,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         });
     }
 
-    public void getIp(){
+    public void getIp() {
         int NETWORK = AppNetworkMgr.getNetworkState(MyApplication.mApplication);
         if (NETWORK >= 10) {
             //获取wifi服务
@@ -143,11 +146,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             int ipAddress = wifiInfo.getIpAddress();
             String ip = intToIp(ipAddress);
-            if (!ip.equals(GlobalVars.WIFI_IP)){
+            if (!ip.equals(GlobalVars.WIFI_IP)) {
                 GlobalVars.WIFI_IP = ip;
             }
         }
     }
+
     private String intToIp(int i) {
 
         return (i & 0xFF) + "." +
@@ -514,8 +518,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
      * 初始化数据
      */
     private void initFragment() {
-        homeFragment = new HomeFragment();
-        settingFragment = new SettingFragment();
+        homeFragment = new HomeFragment(this);
+        settingFragment = new SettingFragment(this);
+        Userinterface = new UserInterface(this);
 
         transaction.replace(R.id.home, homeFragment).commit();
         homeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -523,6 +528,11 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 transaction = fragmentManager.beginTransaction();
                 switch (checkedId) {
+                    case R.id.rb_home_user:
+                        isSetBtu = false;
+                        transaction.replace(R.id.home, Userinterface);
+                        ref_home.setImageResource(R.drawable.selector_ref);
+                        break;
                     case R.id.rb_home_home:
                         isSetBtu = false;
                         transaction.replace(R.id.home, homeFragment);
@@ -637,6 +647,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 dialog_add_loaction.dismiss();
                 break;
             case R.id.net_now:
+                startActivity(new Intent(HomeActivity.this,NewWorkSetActivity.class));
                 break;
         }
     }

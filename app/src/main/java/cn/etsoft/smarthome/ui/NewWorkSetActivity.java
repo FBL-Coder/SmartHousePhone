@@ -111,7 +111,6 @@ public class NewWorkSetActivity extends Activity {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (MyApplication.mApplication.isSeekNet() && datType == 0) {
-                    MyApplication.mApplication.setSeekNet(false);
                     MyApplication.mApplication.dismissLoadDialog();
                     initsousuoList();
                 }
@@ -210,6 +209,7 @@ public class NewWorkSetActivity extends Activity {
         sousuo_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                MyApplication.mApplication.setSeekNet(false);
                 if (!MyApplication.mApplication.isCanChangeNet()) {
                     ToastUtil.showText("正在加载数据，请稍后再试...");
                     return;
@@ -314,6 +314,7 @@ public class NewWorkSetActivity extends Activity {
         mNetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                MyApplication.mApplication.setSeekNet(false);
                 if (!MyApplication.mApplication.isCanChangeNet()) {
                     ToastUtil.showText("正在加载数据，请稍后再试...");
                     return;

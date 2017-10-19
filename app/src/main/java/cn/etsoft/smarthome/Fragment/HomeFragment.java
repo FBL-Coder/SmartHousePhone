@@ -1,5 +1,6 @@
 package cn.etsoft.smarthome.Fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,8 +23,6 @@ import cn.etsoft.smarthome.ui.SafetyActivity_home;
 import cn.etsoft.smarthome.ui.SceneActivity;
 import cn.etsoft.smarthome.ui.StbActivity;
 import cn.etsoft.smarthome.ui.TvActivity;
-import cn.etsoft.smarthome.ui.UserActivity;
-import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.semtec.community2.MyApplication;
 
 /**
@@ -33,6 +32,7 @@ import cn.semtec.community2.MyApplication;
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GridView gridView;
+    private Activity mActivity;
     private int[] image = {R.drawable.air_home, R.drawable.tv_home,
             R.drawable.stb_home, R.drawable.light_home,
             R.drawable.curtain_home, R.drawable.scene_home, R.drawable.control_home,
@@ -40,6 +40,10 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private String[] title = {"空调", "电视", "机顶盒", "灯光",
             "窗帘", "情景", "门禁", "安防", "新风", "地暖"};
     private int HomeAct_viewPage_position;
+    
+    public HomeFragment(Activity activity){
+        mActivity = activity;
+    }
 
     @Nullable
     @Override
@@ -64,7 +68,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
      */
     private void initGridView(View view) {
         gridView = (GridView) view.findViewById(R.id.home_gv);
-        gridView.setAdapter(new GridViewAdapter(image, title, getActivity()));
+        gridView.setAdapter(new GridViewAdapter(image, title, mActivity));
         gridView.setSelector(R.drawable.selector_gridview_item);
         gridView.setOnItemClickListener(this);
     }
@@ -73,62 +77,52 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = null;
         switch (position) {
-//            //用户界面
-//            case 0:
-//                if (MyApplication.mApplication.isSeekNet()) {
-//                    ToastUtil.showText("跳过登录不能体验此功能");
-//                    return;
-//                }
-//                intent = new Intent(getActivity(), UserActivity.class);
-//                intent.putExtra("title", title[0]);
-//                intent.putExtra("tag", "home");
-//                break;
             //空调
             case 0:
-                intent = new Intent(getActivity(), AirConditionActivity.class);
+                intent = new Intent(mActivity, AirConditionActivity.class);
                 intent.putExtra("title", title[0]);
                 break;
             //电视
             case 1:
-                intent = new Intent(getActivity(), TvActivity.class);
+                intent = new Intent(mActivity, TvActivity.class);
                 intent.putExtra("title", title[1]);
                 break;
             //机顶盒
             case 2:
-                intent = new Intent(getActivity(), StbActivity.class);
+                intent = new Intent(mActivity, StbActivity.class);
                 intent.putExtra("title", title[2]);
                 break;
             //灯光
             case 3:
-                intent = new Intent(getActivity(), LightActivity.class);
+                intent = new Intent(mActivity, LightActivity.class);
                 intent.putExtra("title", title[3]);
                 break;
             //窗帘
             case 4:
-                intent = new Intent(getActivity(), CurtainActivity.class);
+                intent = new Intent(mActivity, CurtainActivity.class);
                 intent.putExtra("title", title[4]);
                 break;
             //情景
             case 5:
-                intent = new Intent(getActivity(), SceneActivity.class);
+                intent = new Intent(mActivity, SceneActivity.class);
                 intent.putExtra("title", title[5]);
                 break;
             //门禁
             case 6:
-                startActivity(new Intent(getActivity(), cn.semtec.community2.WelcomeActivity.class));
+                startActivity(new Intent(mActivity, cn.semtec.community2.WelcomeActivity.class));
                 break;
             //报警记录
             case 7:
-                startActivity(new Intent(getActivity(), SafetyActivity_home.class));
+                startActivity(new Intent(mActivity, SafetyActivity_home.class));
                 break;
             //新风
             case 8:
-                intent = new Intent(getActivity(), FreshairActivity.class);
+                intent = new Intent(mActivity, FreshairActivity.class);
                 break;
 
             //地暖
             case 9:
-                intent = new Intent(getActivity(), FloorHeatActivity.class);
+                intent = new Intent(mActivity, FloorHeatActivity.class);
                 break;
 
         }

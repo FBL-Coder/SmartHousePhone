@@ -270,6 +270,12 @@
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/rb_home_user"
+            style="@style/BottomRadioButtonStyle"
+            android:drawableTop="@drawable/selector_home"
+            android:text="@string/home_user" />
+
+        <RadioButton
             android:id="@+id/rb_home_home"
             style="@style/BottomRadioButtonStyle"
             android:drawableTop="@drawable/selector_home"

@@ -97,10 +97,6 @@
             android:name="cn.etsoft.smarthome.ui.HomeActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <!--用户界面-->
-        <activity
-            android:name="cn.etsoft.smarthome.ui.UserActivity"
-            android:screenOrientation="portrait" />
         <!--空调-->
         <activity
             android:name="cn.etsoft.smarthome.ui.AirConditionActivity"
@@ -237,10 +233,12 @@
         <activity
             android:name="cn.etsoft.smarthome.ui.GroupSetActivity_details"
             android:screenOrientation="portrait" />
-        <!--登录界面-->
+        <!--用户添加设备界面-->
+        <activity
+            android:name="cn.etsoft.smarthome.ui.UserAddDevsActivty"
+            android:screenOrientation="portrait" />
 
         <!--服务-->
-
         <activity
             android:name="cn.semtec.community2.activity.BaseActivity"
             android:exported="true"

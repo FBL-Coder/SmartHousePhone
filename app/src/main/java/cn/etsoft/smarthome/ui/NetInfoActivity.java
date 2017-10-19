@@ -87,7 +87,7 @@ public class NetInfoActivity extends Activity {
 
         if (FLAG == NetWork_Adapter.LOGIN) {
             info = MyApplication.mApplication.getRcuInfoList().get(position);
-            name.setText(info.getName());
+            name.setText(info.getCanCpuName());
             if (info.isOnline()) IsOnLine.setText("在线");
             else IsOnLine.setText("不在线");
         } else {
@@ -144,7 +144,7 @@ public class NetInfoActivity extends Activity {
             public void onClick(View view) {
                 if (!info.getDevUnitID().
                         equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE,""))){
-                    ToastUtil.showText("这个联网模快没被使用，不可修改信息");
+                    ToastUtil.showText("这个联网模快没有使用中，不可修改信息");
                     return;
                 }
                 if (!GlobalVars.isIsLAN()){
@@ -174,12 +174,12 @@ public class NetInfoActivity extends Activity {
                     SendDataUtil.changeNetInfo(name_str_gb, info.getDevUnitPass(),IP_str, Ip_mask_str
                             , GetWay_str, Server_str, info.getMacAddr(), IpState);
 
-                    MyHandler handler = new MyHandler();
-
-                    Net_AddorDel_Helper.editNew(handler, MyApplication.mApplication.getRcuInfoList(),
-                            position, NetInfoActivity.this, name,
-                            MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID(),
-                            MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitPass());
+//                    MyHandler handler = new MyHandler();
+//
+//                    Net_AddorDel_Helper.editNew(handler, MyApplication.mApplication.getRcuInfoList(),
+//                            position, NetInfoActivity.this, name,
+//                            MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID(),
+//                            MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitPass());
                 }
 
             }
