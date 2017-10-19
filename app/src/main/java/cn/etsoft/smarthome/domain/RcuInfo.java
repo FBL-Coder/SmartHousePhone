@@ -2,6 +2,8 @@ package cn.etsoft.smarthome.domain;
 
 import java.io.Serializable;
 
+import cn.etsoft.smarthome.pullmi.common.CommonUtils;
+
 public class RcuInfo implements Serializable {
 
 //            "uid":	"39ffd505484d303408650743",
@@ -61,6 +63,7 @@ public class RcuInfo implements Serializable {
     }
 
     public String getName() {
+//        CommonUtils.getGBstr(CommonUtils.hexStringToBytes(name));
         return name;
     }
 

@@ -1,5 +1,7 @@
 package cn.etsoft.smarthome.utils;
 
+import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
 
 import cn.etsoft.smarthome.MyApplication;
@@ -19,62 +21,62 @@ public class SendDataUtil {
     public static void getGroupSetInfo() {
         String GETGROUPSETINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid()
                 + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getGroupInfo.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 255" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETGROUPSETINFO,66);
+        MyApplication.mApplication.getUdpServer().send(GETGROUPSETINFO, 66);
     }
 
     public static void getSafetyInfo() {
         String GETSECURITYINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_security_info.getValue() + "," + "\"subType1\": 3," + "\"subType2\": 255" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETSECURITYINFO,32);
+        MyApplication.mApplication.getUdpServer().send(GETSECURITYINFO, 32);
     }
 
     public static void setCheFangSafetyInfo() {
         String GETSECURITYINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_security_info.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 255" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETSECURITYINFO,32);
+        MyApplication.mApplication.getUdpServer().send(GETSECURITYINFO, 32);
     }
 
     public static void setBuFangSafetyInfo(int type) {
         String GETSECURITYINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_security_info.getValue() + "," + "\"subType1\": 0," + "\"subType2\":" + type + "}";
-        MyApplication.mApplication.getUdpServer().send(GETSECURITYINFO,32);
+        MyApplication.mApplication.getUdpServer().send(GETSECURITYINFO, 32);
     }
 
 
     public static void getConditionInfo() {
         String GETCONDITIONINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getEnvEvents.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETCONDITIONINFO,27);
+        MyApplication.mApplication.getUdpServer().send(GETCONDITIONINFO, 27);
     }
 
 
     public static void getTimerInfo() {
         String GETTIMERINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getTimerEvents.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETTIMERINFO,17);
+        MyApplication.mApplication.getUdpServer().send(GETTIMERINFO, 17);
     }
 
 
     public static void getScene_KeysData() {
         String GETSCENEKEYSDATA = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_get_key2scene.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETSCENEKEYSDATA,58);
+        MyApplication.mApplication.getUdpServer().send(GETSCENEKEYSDATA, 58);
     }
 
 
     public static void getInputBoardInfo() {
         String GETINPUTBOARDINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getBoards.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 1" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETINPUTBOARDINFO,8);
+        MyApplication.mApplication.getUdpServer().send(GETINPUTBOARDINFO, 8);
     }
 
 
     public static void getOutBoardInfo() {
         String GETOUTBOARDINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getBoards.getValue() + "," + "\"subType1\": 1," + "\"subType2\": 0" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETOUTBOARDINFO,8);
+        MyApplication.mApplication.getUdpServer().send(GETOUTBOARDINFO, 8);
     }
 
     public static void getSceneInfo() {
         String GETSCENEINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getSceneEvents.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETSCENEINFO,22);
+        MyApplication.mApplication.getUdpServer().send(GETSCENEINFO, 22);
     }
 
     public static void getDevInfo() {
         String GETDEVINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getDevsInfo.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
-        MyApplication.mApplication.getUdpServer().send(GETDEVINFO,3);
+        MyApplication.mApplication.getUdpServer().send(GETDEVINFO, 3);
     }
 
     static long time = 0;
@@ -101,7 +103,27 @@ public class SendDataUtil {
                 ",\"devID\":" + dev.getDevId() +
                 ",\"cmd\":" + cmd +
                 "}";
-        MyApplication.mApplication.getUdpServer().send(ctlStr,4);
+        MyApplication.mApplication.getUdpServer().send(ctlStr, 4);
+    }
+
+    public static void changeNetInfo(String name, String pass,String ip, String Ip_mask,
+                                     String GetWay, String Server, String macAddr, int IsState) {
+        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_setRcuInfo.getValue() +
+                ",\"subType1\":0" +
+                ",\"subType2\":0" +
+                ",\"name\":\"" + name + "\"" +
+                ",\"devPass\":\"" + pass + "\"" +
+                ",\"IpAddr\":\"" + ip + "\"" +
+                ",\"SubMask\":\"" + Ip_mask + "\"" +
+                ",\"Gateway\":\"" + GetWay + "\"" +
+                ",\"centerServ\":\"" + Server + "\"" +
+                ",\"roomNum\":\"\"" +
+                ",\"macAddr\":\"" + macAddr + "\"" +
+                ",\"bDhcp\":" + IsState +
+                "}";
+        Log.i("changeNetInfo", ctlStr);
+//        MyApplication.mApplication.getUdpServer().send(ctlStr, 1);
     }
 
     public static void deleteDev(WareDev dev) {
@@ -114,7 +136,7 @@ public class SendDataUtil {
                 "\"devType\":" + dev.getType() + "," +
                 "\"devID\":" + dev.getDevId() + "," +
                 "\"cmd\":" + 1 + "}";
-        MyApplication.mApplication.getUdpServer().send(str,7);
+        MyApplication.mApplication.getUdpServer().send(str, 7);
     }
 
     public static void executelScene(int sceneid) {
@@ -123,7 +145,7 @@ public class SendDataUtil {
                 ",\"subType1\":0" +
                 ",\"subType2\":0" +
                 ",\"eventId\":" + sceneid + "}";
-        MyApplication.mApplication.getUdpServer().send(str,26);
+        MyApplication.mApplication.getUdpServer().send(str, 26);
     }
 
     public static void addscene(int sceneid, String name) {
@@ -142,7 +164,7 @@ public class SendDataUtil {
                 ",\"eventId\":" + sceneid +
                 ",\"devCnt\":" + 0 +
                 ",\"itemAry\":[]}";
-        MyApplication.mApplication.getUdpServer().send(str,23);
+        MyApplication.mApplication.getUdpServer().send(str, 23);
     }
 
     public static void deleteScene(WareSceneEvent event) {
@@ -163,7 +185,7 @@ public class SendDataUtil {
                 ",\"param1\":0" +
                 ",\"param2\":0" +
                 "}]}";
-        MyApplication.mApplication.getUdpServer().send(str,25);
+        MyApplication.mApplication.getUdpServer().send(str, 25);
     }
 
     public static void getKeyItemInfo(int inputKey_position, String CancupID) {
@@ -176,7 +198,7 @@ public class SendDataUtil {
                 "\"subType1\":0," +
                 "\"subType2\":0," +
                 "\"key_index\":" + inputKey_position + "}";
-        MyApplication.mApplication.getUdpServer().send(str,11);
+        MyApplication.mApplication.getUdpServer().send(str, 11);
     }
 
     public static void getChnItemInfo(String uid, int type, int id) {
@@ -190,7 +212,7 @@ public class SendDataUtil {
                 "\"subType2\":0," +
                 "\"devID\":" + id + "," +
                 "\"devType\":" + type + "}";
-        MyApplication.mApplication.getUdpServer().send(str,14);
+        MyApplication.mApplication.getUdpServer().send(str, 14);
     }
 
 

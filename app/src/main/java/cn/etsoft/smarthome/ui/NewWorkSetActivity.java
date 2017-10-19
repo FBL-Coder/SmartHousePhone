@@ -23,11 +23,8 @@ import com.google.gson.Gson;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import cn.etsoft.smarthome.Helper.Net_AddorDel_Helper;
 import cn.etsoft.smarthome.MyApplication;
@@ -41,7 +38,6 @@ import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
-import cn.etsoft.smarthome.utils.Dtat_Cache;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
@@ -68,6 +64,22 @@ public class NewWorkSetActivity extends Activity {
     private ListView mNetListView, sousuo_list;
     private NetWork_Adapter adapter, mSeekAdapter;
     private LinearLayout add_ref_LL;
+    /**
+     * 情景名称 :
+     */
+    private TextView mTitleName;
+    /**
+     * 请输入模块名称
+     */
+    private EditText mDialogAddSceneName;
+    /**
+     * 取消
+     */
+    private TextView mDialogAddSceneCancle;
+    /**
+     * 添加
+     */
+    private TextView mDialogAddSceneOk;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +89,9 @@ public class NewWorkSetActivity extends Activity {
         initData();
     }
 
+    /**
+     * 初始化页面组件
+     */
     private void initView() {
         mBack = (ImageView) findViewById(R.id.title_bar_iv_back);
         add_ref_LL = (LinearLayout) findViewById(R.id.add_ref_LL);
@@ -103,8 +118,16 @@ public class NewWorkSetActivity extends Activity {
             }
         });
         initSeekList();
+        mTitle = (TextView) findViewById(R.id.title);
+        mTitleName = (TextView) findViewById(R.id.title_name);
+        mDialogAddSceneName = (EditText) findViewById(R.id.dialog_addScene_name);
+        mDialogAddSceneCancle = (TextView) findViewById(R.id.dialog_addScene_cancle);
+        mDialogAddSceneOk = (TextView) findViewById(R.id.dialog_addScene_ok);
     }
 
+    /**
+     * 如果之前搜索过，进来之后直接显示之前的搜索结果
+     */
     private void initSeekList() {
         List<RcuInfo> SeekData = MyApplication.mApplication.getSeekRcuInfos();
         if (SeekData.size() == 0)
@@ -112,6 +135,9 @@ public class NewWorkSetActivity extends Activity {
         SeekNetClick(SeekData);
     }
 
+    /**
+     * 初始化搜索联网模快列表
+     */
     private void initsousuoList() {
         List<SearchNet> rcuInfo_SeekNet = MyApplication.getWareData().getSeekNets();
         List<RcuInfo> SeekListData = new ArrayList<>();
@@ -132,43 +158,53 @@ public class NewWorkSetActivity extends Activity {
             SeekListData.add(info);
         }
         MyApplication.mApplication.setSeekRcuInfos(SeekListData);
-        if (SeekListData.size() == 1) {
-            mSeekAdapter = new NetWork_Adapter(this, SeekListData, NetWork_Adapter.SEEK);
-            sousuo_list.setAdapter(mSeekAdapter);
-            MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
-            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
-                    MyApplication.mApplication.getSeekRcuInfos().get(0).getDevUnitID());
-            MyApplication.setNewWareData();
-            GlobalVars.setIsLAN(true);
-            MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-                @Override
-                public void upDataWareData(int datType, int subtype1, int subtype2) {
-                    if (datType == 0 || datType == 3) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(2000);
-                                    MyApplication.mApplication.dismissLoadDialog();
-                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                                    finish();
-                                } catch (InterruptedException e) {
-                                    MyApplication.mApplication.dismissLoadDialog();
-                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                                    finish();
-                                }
-                            }
-                        }).start();
-                    }
-                }
-            });
-            SendDataUtil.getNetWorkInfo();
-        } else {
-            SeekNetClick(SeekListData);
-        }
+        SeekNetClick(SeekListData);
     }
 
-    private void SeekNetClick(List<RcuInfo> seekListData) {
+    /**
+     * 搜索的联网模块在使用前需要输入密码确认
+     *
+     * @param SeekListData
+     */
+    private void showPassDialog(final List<RcuInfo> SeekListData, final int position) {
+        final Dialog dialog = new Dialog(NewWorkSetActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+        dialog.setContentView(R.layout.dialog_addscene);
+        dialog.show();
+        mDialogAddSceneName = (EditText) dialog.findViewById(R.id.dialog_addScene_name);
+        mDialogAddSceneCancle = (TextView) dialog.findViewById(R.id.dialog_addScene_cancle);
+        mDialogAddSceneOk = (TextView) dialog.findViewById(R.id.dialog_addScene_ok);
+        mTitleName = (TextView) dialog.findViewById(R.id.title_name);
+        mTitle = (TextView) dialog.findViewById(R.id.title);
+        mTitle.setText("模块密码");
+        mDialogAddSceneName.setHint("请输入当前模块密码");
+        mTitleName.setText("模块密码 :");
+        mDialogAddSceneOk.setText("确定");
+        mDialogAddSceneCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        mDialogAddSceneOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                String pass = mDialogAddSceneName.getText().toString();
+                if (!pass.equals(SeekListData.get(position).getDevUnitPass())) {
+                    ToastUtil.showText("密码不合适，请重新输入");
+                } else {
+                    ClickUseNet(position);
+                }
+            }
+        });
+    }
+
+    /**
+     * 搜索列表item点击事件
+     *
+     * @param seekListData 搜索数据
+     */
+    private void SeekNetClick(final List<RcuInfo> seekListData) {
         mSeekAdapter = new NetWork_Adapter(this, seekListData, NetWork_Adapter.SEEK);
         sousuo_list.setAdapter(mSeekAdapter);
         sousuo_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -194,34 +230,7 @@ public class NewWorkSetActivity extends Activity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
-                            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
-                                    MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID());
-                            MyApplication.setNewWareData();
-                            GlobalVars.setIsLAN(true);
-                            MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-                                @Override
-                                public void upDataWareData(int datType, int subtype1, int subtype2) {
-                                    if (datType == 0) {
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    Thread.sleep(2000);
-                                                    MyApplication.mApplication.dismissLoadDialog();
-                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                                                    finish();
-                                                } catch (InterruptedException e) {
-                                                    MyApplication.mApplication.dismissLoadDialog();
-                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                                                    finish();
-                                                }
-                                            }
-                                        }).start();
-                                    }
-                                }
-                            });
-                            SendDataUtil.getNetWorkInfo();
+                            showPassDialog(seekListData, position);
                         }
                     });
                     dialog.create().show();
@@ -230,6 +239,45 @@ public class NewWorkSetActivity extends Activity {
         });
     }
 
+    /**
+     * 准备使用此联网模块==跳转页面前的准备
+     *
+     * @param position
+     */
+    private void ClickUseNet(int position) {
+        MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
+        AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
+                MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID());
+        MyApplication.setNewWareData();
+        GlobalVars.setIsLAN(true);
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 0) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(2000);
+                                MyApplication.mApplication.dismissLoadDialog();
+                                startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                finish();
+                            } catch (InterruptedException e) {
+                                MyApplication.mApplication.dismissLoadDialog();
+                                startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                finish();
+                            }
+                        }
+                    }).start();
+                }
+            }
+        });
+        SendDataUtil.getNetWorkInfo();
+    }
+
+    /**
+     * 初始化账号下的联网模快列表
+     */
     private void initListview() {
         if (adapter == null)
             adapter = new NetWork_Adapter(this, MyApplication.mApplication.getRcuInfoList(), NetWork_Adapter.LOGIN);
@@ -237,6 +285,9 @@ public class NewWorkSetActivity extends Activity {
         mNetListView.setAdapter(adapter);
     }
 
+    /**
+     * 初始化页面数据
+     */
     public void initData() {
         initListview();
         mNetworkAdd.setOnClickListener(new View.OnClickListener() {
@@ -388,6 +439,9 @@ public class NewWorkSetActivity extends Activity {
     }
 
 
+    /**
+     * 刷新账号下的联网模快列表
+     */
     private void refNetLists() {
         MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this);
         Map<String, String> param = new HashMap<>();
@@ -427,6 +481,11 @@ public class NewWorkSetActivity extends Activity {
     }
 
 
+    /**
+     * 刷新成功后改变列表数据
+     *
+     * @param result
+     */
     public void setRcuInfoList(Http_Result result) {
         if (result == null)
             return;
@@ -444,6 +503,11 @@ public class NewWorkSetActivity extends Activity {
         initListview();
     }
 
+    /**
+     * 添加联网模快Dialog
+     *
+     * @param dialog
+     */
     private void initAddNetModuleDialog(final Dialog dialog) {
         mDialogName = (EditText) dialog.findViewById(R.id.network_et_name);
         mDialogID = (EditText) dialog.findViewById(R.id.network_et_id);

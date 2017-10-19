@@ -113,7 +113,9 @@ public class Net_AddorDel_Helper {
      *
      * @param name
      */
-    public static void editNew(final Handler handler, final List<RcuInfo> list, final int position, Activity activity, EditText name, String devUnitID, String devPass) {
+    public static void editNew(final Handler handler, final List<RcuInfo> list,
+                               final int position, Activity activity, EditText name,
+                               String devUnitID, String devPass) {
         final String name_input = name.getText().toString();
 
         if (name_input.isEmpty() || name_input.length() > 7) {
