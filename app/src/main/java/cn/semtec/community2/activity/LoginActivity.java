@@ -99,6 +99,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                 Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
 
                 if (result.getCode() == HTTPRequest_BackCode.LOGIN_OK) {
+                    AppSharePreferenceMgr.put(GlobalVars.CONFIG_PASS_SHAREPREFERENCE,"888888");
                     // 登陆成功
                     ToastUtil.s(LoginActivity.this, "登陆成功");
                     Log.i(TAG, "智能家居onSuccess: " + resultDesc.getResult());

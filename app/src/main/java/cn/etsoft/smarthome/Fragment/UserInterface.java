@@ -168,9 +168,10 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //给点击按钮添加点击音效
-        MyApplication.mApplication.getSp().play(MyApplication.mApplication.getMusic(), 1, 1, 0, 0, 1);
+
         if (position < bean.getUser_bean().size()) {
+            //给点击按钮添加点击音效
+            MyApplication.mApplication.getSp().play(MyApplication.mApplication.getMusic(), 1, 1, 0, 0, 1);
             UserBean.UserBeanBean beanBean = bean.getUser_bean().get(position);
             if (beanBean.isIsDev() == 1) {
                 int type_dev = beanBean.getDevType();

@@ -18,26 +18,31 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             >
-
             <TextView
+                android:id="@+id/Dialog_title"
                 android:layout_width="@dimen/dp_0"
                 android:layout_weight="3.5"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_20"
                 android:text="@string/add_scene"
+                android:paddingTop="@dimen/dp_5"
+                android:paddingBottom="5dp"
                 android:background="@color/color_0095D9"
                 android:textColor="@color/color_fff"
                 android:textSize="@dimen/sp_20" />
-            <ImageView
-                android:id="@+id/scene_iv_cancel"
+            <TextView
+                android:id="@+id/Dialog_help"
                 android:layout_width="@dimen/dp_0"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
+                android:text="帮助"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/white1"
                 android:background="@drawable/selector_cha"
-                android:src="@drawable/xiaocha"
-                android:scaleType="centerCrop"
                 android:padding="@dimen/dp_10"
                 android:gravity="center"
+                android:visibility="gone"
                 />
         </LinearLayout>
 
@@ -50,6 +55,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/Dialog_title_name"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -57,7 +63,7 @@
                 android:paddingLeft="@dimen/dp_10"
                 android:text="@string/scene_name"
                 android:textColor="@color/color_88222223"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_16" />
 
             <EditText
                 android:id="@+id/scene_et_name"
@@ -68,6 +74,7 @@
                 android:paddingTop="@dimen/dp_10"
                 android:paddingLeft="@dimen/dp_5"
                 android:layout_weight="2"
+                android:textSize="@dimen/sp_16"
                 android:background="@drawable/rect_gray2" />
         </LinearLayout>
 
@@ -88,8 +95,9 @@
                 android:background="@drawable/selector_network_blue_sure"
                 android:text="@string/confirm"
                 android:padding="@dimen/dp_10"
+                android:textStyle="bold"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_18" />
 
             <Button
                 android:id="@+id/scene_btn_cancel"
@@ -101,8 +109,9 @@
                 android:background="@drawable/selector_network_blue_cancel"
                 android:text="@string/cancel"
                 android:padding="@dimen/dp_10"
+                android:textStyle="bold"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_18" />
         </LinearLayout>
     </LinearLayout>
 

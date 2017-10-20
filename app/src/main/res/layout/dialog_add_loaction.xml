@@ -41,7 +41,7 @@
                 android:paddingLeft="@dimen/dp_10"
                 android:text="@string/location_name"
                 android:textColor="@color/color_88222223"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_14" />
 
             <EditText
                 android:id="@+id/city_et_name"
@@ -53,7 +53,7 @@
                 android:paddingLeft="@dimen/dp_5"
                 android:paddingRight="@dimen/dp_10"
                 android:hint="（“北京市”就输入“北京”）"
-                android:textSize="@dimen/sp_16"
+                android:textSize="@dimen/sp_14"
                 android:paddingTop="@dimen/dp_10" />
         </LinearLayout>
 

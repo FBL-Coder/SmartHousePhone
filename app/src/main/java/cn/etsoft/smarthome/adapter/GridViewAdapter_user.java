@@ -205,6 +205,8 @@ public class GridViewAdapter_user extends BaseAdapter {
                 viewHolder.state.setText("点击执行");
             }
         } else {
+            viewHolder.name.setText("");
+            viewHolder.state.setText("");
             viewHolder.type.setImageResource(R.drawable.btn_big_add);
         }
         return convertView;

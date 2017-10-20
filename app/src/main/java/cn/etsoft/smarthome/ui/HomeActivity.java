@@ -539,6 +539,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                         ref_home.setImageResource(R.drawable.selector_ref);
                         break;
                     case R.id.rb_home_setting:
+                        if (MyApplication.mApplication.isVisitor()){
+                            ToastUtil.showText("客官，这里您不可以操作哦~");
+                            return;
+                        }
                         isSetBtu = true;
                         ref_home.setImageResource(R.drawable.logout_icon);
                         transaction.replace(R.id.home, settingFragment);
@@ -647,7 +651,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 dialog_add_loaction.dismiss();
                 break;
             case R.id.net_now:
-                startActivity(new Intent(HomeActivity.this,NewWorkSetActivity.class));
+                startActivity(new Intent(HomeActivity.this, NewWorkSetActivity.class));
                 break;
         }
     }

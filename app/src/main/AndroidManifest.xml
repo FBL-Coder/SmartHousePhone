@@ -238,6 +238,13 @@
             android:name="cn.etsoft.smarthome.ui.UserAddDevsActivty"
             android:screenOrientation="portrait" />
 
+        <!-- 配置密码帮助页面-->
+        <activity
+            android:name=".ui.ConfigPassActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden" />
+
         <!--服务-->
         <activity
             android:name="cn.semtec.community2.activity.BaseActivity"

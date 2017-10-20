@@ -125,11 +125,9 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     public void getDialog() {
         dialog = new CustomDialog(this, R.style.customDialog, R.layout.dialog_sceneset);
         dialog.show();
-        iv_cancel = (ImageView) dialog.findViewById(R.id.scene_iv_cancel);
         name = (EditText) dialog.findViewById(R.id.scene_et_name);
         sure = (Button) dialog.findViewById(R.id.scene_btn_sure);
         cancel = (Button) dialog.findViewById(R.id.scene_btn_cancel);
-        iv_cancel.setOnClickListener(this);
         sure.setOnClickListener(this);
         cancel.setOnClickListener(this);
     }
@@ -160,9 +158,6 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.scene_iv_cancel:
-                dialog.dismiss();
-                break;
             case R.id.title_bar_iv_or:
                 SendDataUtil.getSceneInfo();
                 MyApplication.mApplication.showLoadDialog(this);

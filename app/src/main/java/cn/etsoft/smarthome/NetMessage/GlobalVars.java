@@ -33,6 +33,11 @@ public class GlobalVars {
      */
     public static final String LOGIN_SHAREPREFERENCE = "LOGIN_FLAG";
 
+    /**
+     * 用户配置密码
+     */
+    public static final String CONFIG_PASS_SHAREPREFERENCE = "CONFIG_PASS";
+
 
     public static String LOCAL_IP = "127.0.0.1";
     public static String WIFI_IP = "0.0.0.0";
