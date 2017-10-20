@@ -12,6 +12,7 @@ import android.widget.TextView;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.SafetyAdapter;
+import cn.etsoft.smarthome.ui.Setting.SafetyActivity_details;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 

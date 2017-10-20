@@ -17,6 +17,7 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.IClick;
 import cn.etsoft.smarthome.adapter.TextDeployAdapter;
+import cn.etsoft.smarthome.ui.Setting.KeySceneActivity_dev;
 import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**

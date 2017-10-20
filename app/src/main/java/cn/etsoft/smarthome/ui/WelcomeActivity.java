@@ -13,6 +13,7 @@ import java.util.List;
 
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.domain.RcuInfo;
+import cn.etsoft.smarthome.ui.Setting.NewWorkSetActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;

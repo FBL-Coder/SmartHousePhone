@@ -1,4 +1,4 @@
-package cn.etsoft.smarthome.ui;
+package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
 import android.app.AlertDialog;

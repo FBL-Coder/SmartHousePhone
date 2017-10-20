@@ -61,6 +61,7 @@ import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.Weather_All_Bean;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
+import cn.etsoft.smarthome.ui.Setting.NewWorkSetActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.CityDB;
 import cn.etsoft.smarthome.utils.NetUtil;
@@ -539,10 +540,11 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                         ref_home.setImageResource(R.drawable.selector_ref);
                         break;
                     case R.id.rb_home_setting:
-                        if (MyApplication.mApplication.isVisitor()){
+                        if (MyApplication.mApplication.isVisitor()) {
                             ToastUtil.showText("客官，这里您不可以操作哦~");
                             return;
                         }
+                        if (Condition()) return;
                         isSetBtu = true;
                         ref_home.setImageResource(R.drawable.logout_icon);
                         transaction.replace(R.id.home, settingFragment);
@@ -552,6 +554,19 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 transaction.commit();
             }
         });
+    }
+
+    /**
+     * 判断是否处于局域网
+     *
+     * @return
+     */
+    private boolean Condition() {
+        if (!GlobalVars.isIsLAN()) {
+            ToastUtil.showText("请先切换到该局域网下的联网模快");
+            return true;
+        }
+        return false;
     }
 
     private long TimeExit = 0;

@@ -16,7 +16,7 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.BoardInOutAdapter;
 import cn.etsoft.smarthome.domain.UdpProPkt;
-import cn.etsoft.smarthome.ui.EditModuleActivity;
+import cn.etsoft.smarthome.ui.Setting.EditModuleActivity;
 import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**

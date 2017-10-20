@@ -1,4 +1,4 @@
-package cn.etsoft.smarthome.ui;
+package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +38,7 @@ import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by fbl on 16-11-17.
+ * 添加设备
  */
 public class Add_Dev_Activity extends Activity implements View.OnClickListener {
 

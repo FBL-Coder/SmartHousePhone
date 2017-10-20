@@ -18,6 +18,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.IClick;
 import cn.etsoft.smarthome.adapter.TextDeployAdapter;
 import cn.etsoft.smarthome.domain.WareDev;
+import cn.etsoft.smarthome.ui.Setting.EquipmentDeployActivity;
 
 /**
  * Created by Say GoBay on 2016/8/26.

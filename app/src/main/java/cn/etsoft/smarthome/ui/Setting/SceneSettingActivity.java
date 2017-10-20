@@ -1,11 +1,8 @@
-package cn.etsoft.smarthome.ui;
+package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -28,17 +25,11 @@ import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.ParlourGridViewAdapter;
 import cn.etsoft.smarthome.adapter.Room_Select_Adapter;
-import cn.etsoft.smarthome.domain.WareAirCondDev;
-import cn.etsoft.smarthome.domain.WareCurtain;
 import cn.etsoft.smarthome.domain.WareDev;
-import cn.etsoft.smarthome.domain.WareLight;
 import cn.etsoft.smarthome.domain.WareSceneDevItem;
-import cn.etsoft.smarthome.domain.WareSetBox;
-import cn.etsoft.smarthome.domain.WareTv;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDialog;
 import cn.etsoft.smarthome.weidget.CustomDialog_comment;
 

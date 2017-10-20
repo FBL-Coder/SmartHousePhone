@@ -28,7 +28,7 @@ import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
 import cn.etsoft.smarthome.ui.HomeActivity;
-import cn.etsoft.smarthome.ui.NewWorkSetActivity;
+import cn.etsoft.smarthome.ui.Setting.NewWorkSetActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
@@ -202,7 +202,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                 AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
                 AppSharePreferenceMgr.put(GlobalVars.USERPASSWORD_SHAREPREFERENCE, "");
                 AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
-                Intent intent = new Intent(this, cn.etsoft.smarthome.ui.NewWorkSetActivity.class);
+                Intent intent = new Intent(this, NewWorkSetActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btn_login:

@@ -1,4 +1,4 @@
-package cn.etsoft.smarthome.ui;
+package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,6 +37,7 @@ import cn.etsoft.smarthome.domain.SearchNet;
 import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
+import cn.etsoft.smarthome.ui.HomeActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HTTPRequest_BackCode;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;

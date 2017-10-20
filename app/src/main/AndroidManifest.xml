@@ -135,7 +135,7 @@
             android:screenOrientation="portrait" />
         <!--联网模块-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.NewWorkSetActivity"
+            android:name="cn.etsoft.smarthome.ui.Setting.NewWorkSetActivity"
             android:screenOrientation="portrait" />
         <!--搜索联网模块-->
         <activity
@@ -149,7 +149,7 @@
             android:screenOrientation="portrait" />
         <!--情景设置-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.SceneSettingActivity"
+            android:name="cn.etsoft.smarthome.ui.Setting.SceneSettingActivity"
             android:screenOrientation="portrait" />
         <!--组合设置-->
         <activity
@@ -169,7 +169,7 @@
             android:screenOrientation="portrait" />
         <!--组合设置-一楼客厅四键-配置-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.EquipmentDeployActivity"
+            android:name="cn.etsoft.smarthome.ui.Setting.EquipmentDeployActivity"
             android:screenOrientation="portrait" />
 
         <!--组合设置-按键情景-输入板-->
@@ -178,7 +178,7 @@
             android:screenOrientation="portrait" />
         <!--组合设置-按键情景-设备-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.KeySceneActivity_dev"
+            android:name="cn.etsoft.smarthome.ui.Setting.KeySceneActivity_dev"
             android:screenOrientation="portrait" />
         <!--设备信息-->
         <activity
@@ -186,20 +186,20 @@
             android:screenOrientation="portrait" />
         <!--设备信息-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.EditDevActivity"
+            android:name="cn.etsoft.smarthome.ui.Setting.EditDevActivity"
             android:screenOrientation="portrait" />
         <!--输入模块编辑详情-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.EditModuleActivity"
+            android:name="cn.etsoft.smarthome.ui.Setting.EditModuleActivity"
             android:screenOrientation="portrait" />
         <!--设备详情-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.Devs_Detail_Activity"
+            android:name="cn.etsoft.smarthome.ui.Setting.Devs_Detail_Activity"
             android:screenOrientation="portrait" />
 
         <!--添加设备-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.Add_Dev_Activity"
+            android:name="cn.etsoft.smarthome.ui.Setting.Add_Dev_Activity"
             android:screenOrientation="portrait" />
         <!--安防设置-->
         <activity
@@ -207,7 +207,7 @@
             android:screenOrientation="portrait" />
         <!--安防设置-详情-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.SafetyActivity_details"
+            android:name="cn.etsoft.smarthome.ui.Setting.SafetyActivity_details"
             android:screenOrientation="portrait" />
         <!--定时设置-->
         <activity
@@ -215,7 +215,7 @@
             android:screenOrientation="portrait" />
         <!--定时设置-详情-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.TimerActivity_details"
+            android:name="cn.etsoft.smarthome.ui.Setting.TimerActivity_details"
             android:screenOrientation="portrait" />
         <!--环境事件-->
         <activity
@@ -223,7 +223,7 @@
             android:screenOrientation="portrait" />
         <!--环境事件-详情-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.ConditionEventActivity_details"
+            android:name="cn.etsoft.smarthome.ui.Setting.ConditionEventActivity_details"
             android:screenOrientation="portrait" />
         <!--组合设置-->
         <activity
@@ -231,16 +231,16 @@
             android:screenOrientation="portrait" />
         <!--组合设置-详情-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.GroupSetActivity_details"
+            android:name="cn.etsoft.smarthome.ui.Setting.GroupSetActivity_details"
             android:screenOrientation="portrait" />
         <!--用户添加设备界面-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.UserAddDevsActivty"
+            android:name="cn.etsoft.smarthome.ui.Setting.UserAddDevsActivty"
             android:screenOrientation="portrait" />
 
         <!-- 配置密码帮助页面-->
         <activity
-            android:name=".ui.ConfigPassActivity"
+            android:name=".ui.Setting.ConfigPassActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="adjustPan|adjustUnspecified|stateHidden" />

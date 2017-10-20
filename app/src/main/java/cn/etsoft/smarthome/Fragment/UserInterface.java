@@ -34,7 +34,7 @@ import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.domain.WareLight;
 import cn.etsoft.smarthome.domain.WareSetBox;
 import cn.etsoft.smarthome.domain.WareTv;
-import cn.etsoft.smarthome.ui.UserAddDevsActivty;
+import cn.etsoft.smarthome.ui.Setting.UserAddDevsActivty;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
