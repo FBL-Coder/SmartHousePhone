@@ -153,7 +153,7 @@
             android:screenOrientation="portrait" />
         <!--组合设置-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.ControlActivity"
+            android:name="cn.etsoft.smarthome.ui.DevManageActivity"
             android:screenOrientation="portrait" />
         <!--组合设置-一楼客厅四键-->
         <activity

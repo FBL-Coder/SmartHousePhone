@@ -314,8 +314,11 @@ public class MyApplication extends Application {
                 @Override
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
-                    ToastUtil.showText("发送超时");
-                    mDialog.dismiss();
+                    try {
+                        ToastUtil.showText("发送超时");
+                        mDialog.dismiss();
+                    } catch (Exception e) {
+                    }
                 }
             };
             new Thread(new Runnable() {

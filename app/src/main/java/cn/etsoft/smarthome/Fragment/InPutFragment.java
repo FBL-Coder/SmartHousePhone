@@ -1,64 +1,72 @@
 package cn.etsoft.smarthome.Fragment;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.ScrollView;
+import android.widget.ExpandableListView;
+
+import java.util.List;
 
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
-import cn.etsoft.smarthome.adapter.BoardInOutAdapter;
-import cn.etsoft.smarthome.domain.UdpProPkt;
-import cn.etsoft.smarthome.ui.ParlourFourActivity;
+import cn.etsoft.smarthome.adapter.GroupList_InputAdapter;
+import cn.etsoft.smarthome.domain.WareBoardKeyInput;
 import cn.etsoft.smarthome.utils.ToastUtil;
-
 
 /**
  * Created by Say GoBay on 2016/8/25.
- * 组合设置--输入
+ * 组合设置--输出页面
  */
-public class InPutFragment extends Fragment implements AdapterView.OnItemClickListener {
-    private ScrollView sv;
-    private ListView lv;
+public class InPutFragment extends Fragment {
+    private ExpandableListView mGroupListView;
+    private List<WareBoardKeyInput> GroupInputListDatas;
+    private GroupList_InputAdapter inputAdapter;
+    private Activity mActivity;
+
+    public InPutFragment(Activity activity){
+        mActivity = activity;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
+        initData(view);
+        return view;
+    }
+
+    private void initData(View view) {
+        if (MyApplication.getWareData().getKeyInputs() == null
+                || MyApplication.getWareData().getKeyInputs().size() == 0) {
+            ToastUtil.showText("没有输出板信息,请在主页刷新数据");
+            return;
+        }
+        GroupInputListDatas = MyApplication.getWareData().getKeyInputs();
         //初始化ListView
         initListView(view);
-        return view;
     }
 
     /**
      * 初始化ListView
      */
     private void initListView(View view) {
-        lv = (ListView) view.findViewById(R.id.group_lv);
-        sv = (ScrollView) view.findViewById(R.id.group_sv);
-        sv.smoothScrollTo(0, 0);
-        if (MyApplication.getWareData().getKeyInputs().size() > 0) {
-            lv.setAdapter(new BoardInOutAdapter(getActivity(), null, MyApplication.getWareData().getKeyInputs(), UdpProPkt.E_BOARD_TYPE.e_board_keyInput.getValue()));
-            lv.setOnItemClickListener(this);
-        } else if (MyApplication.getWareData().getKeyInputs() == null || MyApplication.getWareData().getKeyInputs().size() == 0) {
-            ToastUtil.showText("没有输入板信息,请在主页刷新数据");
-            return;
-        }
-    }
+        mGroupListView = (ExpandableListView) view.findViewById(R.id.group_lv);
+        if (inputAdapter == null){
+            inputAdapter =  new GroupList_InputAdapter(mActivity, GroupInputListDatas);
+            mGroupListView.setAdapter(inputAdapter);
+        }else inputAdapter.notifyDataSetChanged();
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity(), ParlourFourActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("title", MyApplication.getWareData().getKeyInputs().get(position).getBoardName());
-        bundle.putString("uid", MyApplication.getWareData().getKeyInputs().get(position).getCanCpuID());
-        intent.putExtras(bundle);
-        startActivity(intent);
+        mGroupListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+                Log.i("onChildClick", "onChildClick: "+i+"--"+i1);
+                return true;
+            }
+        });
     }
 }

@@ -255,7 +255,7 @@
     <string name="notice">灰色：选中，白色：未选中</string>
     <string name="save">保存</string>
     <string name="add_scene">新增情景</string>
-    <string name="scene_name">情景名称</string>
+    <string name="scene_name">情景名称:</string>
     <string name="first_parlour">一楼客厅</string>
     <string name="module_keyboard">-- 模块 -- 键</string>
     <string name="on_off">开关</string>

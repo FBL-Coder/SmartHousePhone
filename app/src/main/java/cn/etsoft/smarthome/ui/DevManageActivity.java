@@ -22,7 +22,7 @@ import cn.etsoft.smarthome.R;
  * Created by Say GoBay on 2016/9/5.
  * 输入、输出、按键情景页面
  */
-public class ControlActivity extends FragmentActivity {
+public class DevManageActivity extends FragmentActivity {
     private RadioGroup group;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
@@ -33,7 +33,7 @@ public class ControlActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group);
+        setContentView(R.layout.activity_devmanage);
         //初始化标题栏
         initTitleBar();
         //初始化控件
@@ -70,10 +70,7 @@ public class ControlActivity extends FragmentActivity {
      * 初始化数据
      */
     private void initData() {
-        outPutFragment = new OutPutFragment();
-        inPutFragment = new InPutFragment();
-        keySceneFragment = new KeySceneFragment();
-
+        inPutFragment = new InPutFragment(DevManageActivity.this);
         transaction.replace(R.id.group, inPutFragment).commit();
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -81,12 +78,15 @@ public class ControlActivity extends FragmentActivity {
                 transaction = fragmentManager.beginTransaction();
                 switch (checkedId) {
                     case R.id.group_output:
+                        outPutFragment = new OutPutFragment(DevManageActivity.this);
                         transaction.replace(R.id.group, outPutFragment);
                         break;
                     case R.id.group_input:
+                        inPutFragment = new InPutFragment(DevManageActivity.this);
                         transaction.replace(R.id.group, inPutFragment);
                         break;
                     case R.id.group_keyScene:
+                        keySceneFragment = new KeySceneFragment(DevManageActivity.this);
                         transaction.replace(R.id.group, keySceneFragment);
                         break;
                 }

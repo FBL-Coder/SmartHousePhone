@@ -162,13 +162,11 @@
         <item name="android:layout_weight">1</item>
         <item name="android:background">@color/color_10AEFF</item>
         <item name="android:textColor">@color/color_group_text</item>
-        <item name="android:paddingTop">@dimen/dp_2</item>
         <item name="android:button">@null</item>
-        <item name="android:textSize">@dimen/sp_18</item>
+        <item name="android:textSize">@dimen/sp_14</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:drawableTop">@drawable/selector_group_output</item>
         <item name="android:paddingBottom">@dimen/dp_2</item>
-        <item name="android:drawablePadding">-2dp</item>
     </style>
 
     <style name="welcome" parent="AppTheme">

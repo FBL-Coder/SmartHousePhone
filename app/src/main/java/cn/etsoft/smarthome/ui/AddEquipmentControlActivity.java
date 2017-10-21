@@ -49,12 +49,10 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
         //初始化标题栏
         initTitleBar();
         initView();
-        initData();
         initListView();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-
                 if (datType == 11 || datType == 12 || datType == 13) {
                     MyApplication.mApplication.dismissLoadDialog();
                 }
@@ -69,7 +67,9 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 }
             }
         });
+        initData();
     }
+
     /**
      * 初始化标题栏
      */
@@ -82,7 +82,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
     }
 
     public void initData() {
-        keyOpItems = new ArrayList<>();
+        MyApplication.getWareData().setKeyOpItems(new ArrayList<WareKeyOpItem>());
         SendDataUtil.getKeyItemInfo(index, uid);
         MyApplication.mApplication.showLoadDialog(this);
     }
@@ -109,15 +109,15 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
             input_out_iv_noData.setVisibility(View.VISIBLE);
             return;
         }
+        keyOpItems = MyApplication.getWareData().getKeyOpItems();
         input_out_iv_noData.setVisibility(View.GONE);
-
         mWareDev = WareDataHliper.initCopyWareData().getCopyDevs();
         for (int j = 0; j < mWareDev.size(); j++) {
             WareDev dev = mWareDev.get(j);
-            for (int i = 0; i < MyApplication.getWareData().getKeyOpItems().size(); i++) {
-                if (dev.getDevId() == MyApplication.getWareData().getKeyOpItems().get(i).getDevId()
-                        && dev.getType() == MyApplication.getWareData().getKeyOpItems().get(i).getDevType()
-                        && dev.getCanCpuId().equals(MyApplication.getWareData().getKeyOpItems().get(i).getOut_cpuCanID())) {
+            for (int i = 0; i < keyOpItems.size(); i++) {
+                if (dev.getDevId() == keyOpItems.get(i).getDevId()
+                        && dev.getType() == keyOpItems.get(i).getDevType()
+                        && dev.getCanCpuId().equals(keyOpItems.get(i).getOut_cpuCanID())) {
                     dev.setSelect(true);
                     dev.setCmd(MyApplication.getWareData().getKeyOpItems().get(i).getKeyOpCmd());
                 }
@@ -163,7 +163,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                         mWareDev_ok = new ArrayList<>();
                         for (int i = 0; i < mWareDev.size(); i++) {
                             if (mWareDev.get(i).isSelect()) {
-                                if (mWareDev.get(i).getCmd() == 0){
+                                if (mWareDev.get(i).getCmd() == 0) {
                                     ToastUtil.showText("存在未设置，请设置指令");
                                     return;
                                 }
@@ -192,7 +192,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                         save_quipment.setKey_opitem_rows(list_kor);
                         Gson gson = new Gson();
                         System.out.println(gson.toJson(save_quipment));
-                        MyApplication.mApplication.getUdpServer().send(gson.toJson(save_quipment).toString(),12);
+                        MyApplication.mApplication.getUdpServer().send(gson.toJson(save_quipment).toString(), 12);
                         MyApplication.mApplication.showLoadDialog(AddEquipmentControlActivity.this);
                     }
                 });

@@ -59,7 +59,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:paddingLeft="@dimen/dp_10"
                 android:text="@string/scene_name"
                 android:textColor="@color/color_88222223"

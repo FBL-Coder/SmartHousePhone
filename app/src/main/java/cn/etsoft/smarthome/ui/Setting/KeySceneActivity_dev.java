@@ -43,28 +43,6 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
         setContentView(R.layout.activity_key);
         //初始化标题栏
         initTitleBar();
-        //发送消息
-        SendDataUtil.getScene_KeysData();
-        //通知数据更新
-        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-            @Override
-            public void upDataWareData(int datType, int subtype1, int subtype2) {
-
-                if (datType == 58 && MyApplication.getWareData().getChnOpItem_scene().getSubType1() == 1) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    IsHaveData = true;
-                    WareDataHliper.initCopyWareData().startCopyScene_KeysData();
-                    listData_all = WareDataHliper.initCopyWareData().getScenekeysResult();
-                    onGetKeySceneDataListener.getKeySceneData();
-                }
-
-                if (datType == 59 && MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    Toast.makeText(KeySceneActivity_dev.this, "保存成功", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        MyApplication.mApplication.showLoadDialog(this);
         KeySceneActivity_dev.setOnGetKeySceneDataListener(new KeySceneActivity_dev.OnGetKeySceneDataListener() {
             @Override
             public void getKeySceneData() {
@@ -78,6 +56,29 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
                 initData();
             }
         });
+        //通知数据更新
+        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+
+                if (datType == 58 && MyApplication.getWareData().getChnOpItem_scene().getSubType1() == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    IsHaveData = true;
+                    WareDataHliper.initCopyWareData().startCopyScene_KeysData();
+                    listData_all = WareDataHliper.initCopyWareData().getScenekeysResult();
+                    onGetKeySceneDataListener.getKeySceneData();
+
+                }
+
+                if (datType == 59 && MyApplication.getWareData().getResult() != null && MyApplication.getWareData().getResult().getSubType1() == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    Toast.makeText(KeySceneActivity_dev.this, "保存成功", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        //发送消息
+        SendDataUtil.getScene_KeysData();
+        MyApplication.mApplication.showLoadDialog(this);
         initGridView();
     }
 
