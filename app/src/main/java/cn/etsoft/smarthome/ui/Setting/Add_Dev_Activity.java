@@ -201,7 +201,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                             WareAirCondDev airCondDev = MyApplication.getWareData().getAirConds().get(i);
 
-                            if (list_board.get(board_position).getDevUnitID().equals(airCondDev.getDev().getCanCpuId())) {
+                            if (list_board.get(board_position).getCanCpuID().equals(airCondDev.getDev().getCanCpuId())) {
                                 int PowChn = airCondDev.getPowChn();
                                 String PowChnList = Integer.toBinaryString(PowChn);
                                 PowChnList = new StringBuffer(PowChnList).reverse().toString();
@@ -217,7 +217,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     } else if (dev.getType() == 3) {
                         for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
 
-                            if (list_board.get(board_position).getDevUnitID().equals(
+                            if (list_board.get(board_position).getCanCpuID().equals(
                                     MyApplication.getWareData().getLights().get(i).getDev().getCanCpuId())) {
                                 int PowChn = MyApplication.getWareData().getLights().get(i).getPowChn() + 1;
                                 list_voard_cancpuid.add(PowChn);
@@ -225,7 +225,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         }
                     } else if (dev.getType() == 4) {
                         for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
-                            if (list_board.get(board_position).getDevUnitID().equals(
+                            if (list_board.get(board_position).getCanCpuID().equals(
                                     MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId())) {
                                 int PowChn = MyApplication.getWareData().getCurtains().get(i).getDev().getPowChn() + 1;
                                 list_voard_cancpuid.add(PowChn);
@@ -234,7 +234,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     } else if (dev.getType() == 7) {
                         for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
 
-                            if (list_board.get(board_position).getDevUnitID().equals(
+                            if (list_board.get(board_position).getCanCpuID().equals(
                                     MyApplication.getWareData().getFreshAirs().get(i).getDev().getCanCpuId())) {
                                 list_voard_cancpuid.add(MyApplication.getWareData().getFreshAirs().get(i).getOnOffChn() + 1);
                                 list_voard_cancpuid.add(MyApplication.getWareData().getFreshAirs().get(i).getSpdHighChn() + 1);
@@ -244,7 +244,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         }
                     } else if (dev.getType() == 9) {
                         for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
-                            if (list_board.get(board_position).getDevUnitID().equals(
+                            if (list_board.get(board_position).getCanCpuID().equals(
                                     MyApplication.getWareData().getFloorHeat().get(i).getDev().getCanCpuId())) {
                                 int PowChn = MyApplication.getWareData().getFloorHeat().get(i).getPowChn() + 1;
                                 list_voard_cancpuid.add(PowChn);
@@ -411,7 +411,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"datType\":" + 5 + "," +
                                     "\"subType1\":0," +
                                     "\"subType2\":0," +
-                                    "\"canCpuID\":\"" + list_board.get(board_position).getDevUnitID() + "\"," +
+                                    "\"canCpuID\":\"" + list_board.get(board_position).getCanCpuID() + "\"," +
                                     "\"devType\":" + type_position + "," +
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +
@@ -427,7 +427,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"datType\":" + 5 + "," +
                                     "\"subType1\":0," +
                                     "\"subType2\":0," +
-                                    "\"canCpuID\":\"" + list_board.get(board_position).getDevUnitID() + "\"," +
+                                    "\"canCpuID\":\"" + list_board.get(board_position).getCanCpuID() + "\"," +
                                     "\"devType\":" + type_position + "," +
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +
@@ -441,7 +441,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"datType\":" + 5 + "," +
                                     "\"subType1\":0," +
                                     "\"subType2\":0," +
-                                    "\"canCpuID\":\"" + list_board.get(board_position).getDevUnitID() + "\"," +
+                                    "\"canCpuID\":\"" + list_board.get(board_position).getCanCpuID() + "\"," +
                                     "\"devType\":" + type_position + "," +
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +

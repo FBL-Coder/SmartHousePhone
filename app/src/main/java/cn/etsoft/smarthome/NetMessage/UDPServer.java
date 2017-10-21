@@ -163,7 +163,7 @@ public class UDPServer implements Runnable {
             public void run() {
                 MyApplication.mApplication.setSeekNet(false);
             }
-        },5000);
+        }, 5000);
         String SeekNet = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                 "\"devPass\":\"" + GlobalVars.getDevpass() + "\"," +
@@ -371,6 +371,9 @@ public class UDPServer implements Runnable {
                     isFreshData = true;
                     getKyeInputBoard(info);
                 }
+                break;
+            case 9:
+                getEditNameBoard(info);
                 break;
             case 11: // e_udpPro_getKeyOpItems
                 if (subType1 == 1) {
@@ -1638,7 +1641,7 @@ public class UDPServer implements Runnable {
                 boolean isContains = false;
                 WareBoardChnout chnout = new WareBoardChnout();
                 JSONObject object = array.getJSONObject(i);
-                chnout.setDevUnitID(object.getString("canCpuID"));
+                chnout.setCanCpuID(object.getString("canCpuID"));
                 chnout.setBoardName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(object.getString("boardName"))));
                 chnout.setBoardType(object.getInt("boardType"));
                 chnout.setbOnline(object.getInt("bOnline"));
@@ -1653,7 +1656,7 @@ public class UDPServer implements Runnable {
 
                 if (MyApplication.getWareData().getBoardChnouts().size() > 0) {
                     for (int k = 0; k < MyApplication.getWareData().getBoardChnouts().size(); k++) {
-                        if (chnout.getBoardName().equals(MyApplication.getWareData().getBoardChnouts().get(k).getBoardName()) && chnout.getDevUnitID().equals(MyApplication.getWareData().getBoardChnouts().get(k).getDevUnitID())) {
+                        if (chnout.getCanCpuID().equals(MyApplication.getWareData().getBoardChnouts().get(k).getCanCpuID())) {
                             isContains = true;
                         }
                     }
@@ -1736,8 +1739,7 @@ public class UDPServer implements Runnable {
 
                 if (MyApplication.getWareData().getKeyInputs().size() > 0) {
                     for (int k = 0; k < MyApplication.getWareData().getKeyInputs().size(); k++) {
-                        if (MyApplication.getWareData().getKeyInputs().get(k).getBoardName().equals(input.getBoardName())
-                                && input.getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(k).getCanCpuID())) {
+                        if (input.getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(k).getCanCpuID())) {
                             isContains = true;
                         }
                     }
@@ -1752,6 +1754,110 @@ public class UDPServer implements Runnable {
         } catch (JSONException e) {
             isFreshData = false;
             System.out.println(this.getClass().getName() + "datType = 8-0" + e.toString());
+        }
+    }
+
+    /**
+     * 修改输出/入板设备详情
+     */
+    public void getEditNameBoard(String info) {
+        JSONObject jsonObject_input = null;
+        isFreshData = true;
+        boolean isInput = true;
+        boolean isBoard = true;
+        try {
+            jsonObject_input = new JSONObject(info);
+            int keyinput = jsonObject_input.getInt("keyinput");
+        } catch (Exception e) {
+            isInput = false;
+        }
+        JSONObject jsonObject_board = null;
+        try {
+            jsonObject_board = new JSONObject(info);
+            int board = jsonObject_board.getInt("board");
+        } catch (Exception e) {
+            isBoard = false;
+        }
+        if (isInput) {
+            try {
+                JSONObject jsonObject = new JSONObject(info);
+                int keyinput = jsonObject.getInt("keyinput");
+                if (keyinput == 0) {
+                    isFreshData = false;
+                    return;
+                }
+                JSONArray array = jsonObject.getJSONArray("keyinput_rows");
+                for (int i = 0; i < array.length(); i++) {
+                    boolean isContains = false;
+                    WareBoardKeyInput input = new WareBoardKeyInput();
+                    JSONObject object = array.getJSONObject(i);
+                    input.setCanCpuID(object.getString("canCpuID"));
+                    input.setBoardName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(object.getString("boardName"))));
+                    input.setBoardType(object.getInt("boardType"));
+                    input.setKeyCnt(object.getInt("keyCnt"));
+                    input.setLedBkType(object.getInt("ledBkType"));
+
+                    JSONArray array1 = object.getJSONArray("keyName_rows");
+                    String[] name = new String[array1.length()];
+                    for (int j = 0; j < array1.length(); j++) {
+                        try {
+                            name[j] = CommonUtils.getGBstr(CommonUtils.hexStringToBytes(array1.getString(j)));
+                        } catch (Exception e) {
+                            name[j] = "";
+                        }
+                    }
+                    input.setKeyName(name);
+
+                    if (MyApplication.getWareData().getKeyInputs().size() > 0) {
+                        for (int k = 0; k < MyApplication.getWareData().getKeyInputs().size(); k++) {
+                            if (input.getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(k).getCanCpuID())) {
+                                MyApplication.getWareData().getKeyInputs().set(i, input);
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                isFreshData = false;
+                System.out.println(this.getClass().getName() + "datType = 9-0" + e.toString());
+            }
+        }
+        if (isBoard) {
+            try {
+                JSONObject jsonObject = new JSONObject(info);
+                int board = jsonObject.getInt("board");
+                if (board == 0) {
+                    isFreshData = false;
+                    return;
+                }
+                JSONArray array = jsonObject.getJSONArray("chnout_rows");
+                for (int i = 0; i < array.length(); i++) {
+                    WareBoardChnout chnout = new WareBoardChnout();
+                    JSONObject object = array.getJSONObject(i);
+                    chnout.setCanCpuID(object.getString("canCpuID"));
+                    chnout.setBoardName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(object.getString("boardName"))));
+                    chnout.setBoardType(object.getInt("boardType"));
+                    chnout.setbOnline(object.getInt("bOnline"));
+                    chnout.setChnCnt(object.getInt("chnCnt"));
+
+                    JSONArray array1 = object.getJSONArray("chnName_rows");
+                    String[] name = new String[array1.length()];
+                    for (int j = 0; j < array1.length(); j++) {
+                        name[j] = array1.getString(j);
+                    }
+                    chnout.setChnName(name);
+
+                    if (MyApplication.getWareData().getBoardChnouts().size() > 0) {
+                        for (int k = 0; k < MyApplication.getWareData().getBoardChnouts().size(); k++) {
+                            if (chnout.getCanCpuID().equals(MyApplication.getWareData().getBoardChnouts().get(k).getCanCpuID())) {
+                                MyApplication.getWareData().getBoardChnouts().set(i, chnout);
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                isFreshData = false;
+                System.out.println(this.getClass().getName() + "datType = 8-1" + e.toString());
+            }
         }
     }
 

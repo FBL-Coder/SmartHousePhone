@@ -66,6 +66,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
         initGridView(view);
         isPassCorrect = true;
 //        getDialog();
+        //TODO  接下来要打开
         return view;
     }
 

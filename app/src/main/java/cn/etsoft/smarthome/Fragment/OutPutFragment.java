@@ -54,9 +54,22 @@ public class OutPutFragment extends Fragment {
 
     @Override
     public void onResume() {
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 9 && subtype1 == 1 && subtype2 == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("操作成功");
+                    initData();
+                }
+            }
+        });
+
         initData();
-        outAdapter.notifyDataSetChanged(GroupListDatas);
+        if (outAdapter != null)
+            outAdapter.notifyDataSetChanged(GroupListDatas);
         super.onResume();
+
     }
 
     private void initData() {
@@ -73,7 +86,7 @@ public class OutPutFragment extends Fragment {
             boardDevData.setBoardType(boardChnouts.get(i).getBoardType());
             boardDevData.setbOnline(boardChnouts.get(i).getbOnline());
             boardDevData.setChnCnt(boardChnouts.get(i).getChnCnt());
-            boardDevData.setDevUnitID(boardChnouts.get(i).getDevUnitID());
+            boardDevData.setDevUnitID(boardChnouts.get(i).getCanCpuID());
             boardDevData.setRev2(boardChnouts.get(i).getRev2());
             List<WareDev> devList = new ArrayList<>();
             for (int j = 0; j < devs.size(); j++) {
@@ -94,7 +107,7 @@ public class OutPutFragment extends Fragment {
     private void initListView() {
         mGroupListView = (ExpandableListView) view.findViewById(R.id.group_lv);
         if (outAdapter == null) {
-            outAdapter = new GroupList_OutAdapter(getActivity(), GroupListDatas);
+            outAdapter = new GroupList_OutAdapter(mActivity, GroupListDatas);
             mGroupListView.setAdapter(outAdapter);
         } else outAdapter.notifyDataSetChanged(GroupListDatas);
 

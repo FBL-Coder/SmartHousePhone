@@ -544,7 +544,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                             ToastUtil.showText("客官，这里您不可以操作哦~");
                             return;
                         }
-                        if (Condition()) return;
+//                        if (Condition()) return;
+                        //TODO  接下来要打开
                         isSetBtu = true;
                         ref_home.setImageResource(R.drawable.logout_icon);
                         transaction.replace(R.id.home, settingFragment);
@@ -636,7 +637,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     });
                     builder.create().show();
                 } else {
-                    GlobalVars.setDstip("127.0.0.1");
+                    GlobalVars.setIsLAN(true);
                     SendDataUtil.getNetWorkInfo();
                     MyApplication.mApplication.showLoadDialog(HomeActivity.this, false);
                 }

@@ -79,13 +79,8 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(GETDEVINFO, 3);
     }
 
-    static long time = 0;
 
     public static void getNetWorkInfo() {
-        if (System.currentTimeMillis() - time < 5000) {
-            time = System.currentTimeMillis();
-            return;
-        }
         String GETNETWORKINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() +
                 "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue() +
                 "," + "\"subType1\": 0," + "\"subType2\": 0," + "\"localIP\":\"" + GlobalVars.WIFI_IP + "\"}";

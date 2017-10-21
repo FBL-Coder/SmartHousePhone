@@ -7,29 +7,29 @@ public class WareBoardChnout implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 3053533526442278099L;
-	private String devUnitID; //12
+	private String canCpuID; //12
 	private String boardName; //8
 	private int boardType;
 	private int chnCnt;
 	private int bOnline;
 	private int rev2;
-	private String chnName[];
+	private String chnName_rows[];
 
 	public String[] getChnName() {
-		return chnName;
+		return chnName_rows;
 	}
 
 	public void setChnName(String[] chnName) {
-		this.chnName = chnName;
+		this.chnName_rows = chnName;
 	}
 
 
-	public String getDevUnitID() {
-		return devUnitID;
+	public String getCanCpuID() {
+		return canCpuID;
 	}
 
-	public void setDevUnitID(String devUnitID) {
-		this.devUnitID = devUnitID;
+	public void setCanCpuID(String canCpuID) {
+		this.canCpuID = canCpuID;
 	}
 
 	public String getBoardName() {

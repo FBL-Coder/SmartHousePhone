@@ -1,9 +1,10 @@
 package cn.etsoft.smarthome.adapter;
 
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +12,23 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.GroupList_BoardDevData;
+import cn.etsoft.smarthome.domain.UdpProPkt;
+import cn.etsoft.smarthome.domain.WareBoardChnout;
 import cn.etsoft.smarthome.domain.WareDev;
-import cn.etsoft.smarthome.ui.ParlourFourOutActivity;
+import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.ui.Setting.Add_Dev_Activity;
-import cn.etsoft.smarthome.ui.Setting.ConfigPassActivity;
 import cn.etsoft.smarthome.ui.Setting.EquipmentDeployActivity;
-import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.weidget.CustomDialog;
 
@@ -33,16 +37,16 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
  * 问卷的显示适配器；
  * 这个适配器是类似QQ好友分组的数据适配；
  */
-public class GroupList_OutAdapter extends BaseExpandableListAdapter implements View.OnClickListener {
+public class GroupList_OutAdapter extends BaseExpandableListAdapter {
 
-    private Context mContext;
+    private Activity mContext;
     private List<GroupList_BoardDevData> ListDatas;
     private CustomDialog dialog;
     private EditText mSceneEtName;
     private Button mSceneBtnSure, mSceneBtnCancel;
     private TextView mDialogTitle, mDialogTitleName, mDialoHelp;
 
-    public GroupList_OutAdapter(Context context, List<GroupList_BoardDevData> GroupListDatas) {
+    public GroupList_OutAdapter(Activity context, List<GroupList_BoardDevData> GroupListDatas) {
         mContext = context;
         ListDatas = GroupListDatas;
     }
@@ -110,11 +114,12 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getBoardName());
         viewHolder.mGrouplistTvTest.setText("呼叫");
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.edit_roomname);
+        final int group = groupPosition;
         viewHolder.mGrouplistIvEditname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //编辑输出板名称点击事件
-                initDialogView();
+                initDialogView(group);
             }
         });
         viewHolder.mGrouplistTvTest.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +200,7 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
     /**
      * 修改输出版名称Dialog
      */
-    private void initDialogView() {
+    private void initDialogView(final int groupPosition) {
         dialog = new CustomDialog(mContext, R.style.customDialog, R.layout.dialog_sceneset);
         dialog.show();
         mDialoHelp = (TextView) dialog.findViewById(R.id.Dialog_help);
@@ -207,29 +212,62 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
         mSceneEtName.setHint("请输入新名称");
         mSceneBtnSure = (Button) dialog.findViewById(R.id.scene_btn_sure);
         mSceneBtnCancel = (Button) dialog.findViewById(R.id.scene_btn_cancel);
-        mSceneBtnSure.setOnClickListener(this);
-        mSceneBtnCancel.setOnClickListener(this);
-        mDialoHelp.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.scene_btn_sure:
+        mSceneBtnSure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
                 if ("".equals(mSceneEtName.getText().toString()) || mSceneEtName.getText().toString().length() > 6) {
-                    dialog.dismiss();
                     ToastUtil.showText("输入名称最多6个字符");
                     return;
                 } else {
                     //修改按键板名称逻辑
-                }
-                break;
-            case R.id.scene_btn_cancel:
-                dialog.dismiss();
-                break;
-        }
-    }
+                    String name = mSceneEtName.getText().toString();
+                    WareBoardChnout boardChnout = new WareBoardChnout();
+                    for (int i = 0; i < MyApplication.getWareData().getBoardChnouts().size(); i++) {
+                        if (ListDatas.get(groupPosition).getDevUnitID()
+                                .equals(MyApplication.getWareData().getBoardChnouts().get(i).getCanCpuID())) {
+                            try {
+                                boardChnout.setBoardName(CommonUtils.bytesToHexString(name.getBytes("GB2312")));
+                                boardChnout.setBoardType(MyApplication.getWareData().getBoardChnouts().get(i).getBoardType());
+                                boardChnout.setbOnline(MyApplication.getWareData().getBoardChnouts().get(i).getbOnline());
+                                boardChnout.setChnCnt(MyApplication.getWareData().getBoardChnouts().get(i).getChnCnt());
+                                boardChnout.setChnName(MyApplication.getWareData().getBoardChnouts().get(i).getChnName());
+                                boardChnout.setCanCpuID(MyApplication.getWareData().getBoardChnouts().get(i).getCanCpuID());
+                            } catch (UnsupportedEncodingException e) {
+                                Log.i("转码Name", "onClick: " + e);
+                            }
+                        }
+                    }
+                    if (boardChnout == null)
+                        return;
+                    Gson gson = new Gson();
+                    String data = gson.toJson(boardChnout);
+                    String str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                            ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_editBoards.getValue() +
+                            ",\"subType1\":0" +
+                            ",\"subType2\":0" +
+                            ",\"chnout_rows\":[" + data + "]" +
+                            ",\"board\":1}";
 
+                    Log.i("修改输出板名称    ", str);
+                    MyApplication.mApplication.showLoadDialog(mContext);
+                    MyApplication.mApplication.getUdpServer().send(str, 9);
+                }
+            }
+        });
+        mSceneBtnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        mDialoHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
 
     class ViewHolder {
         View view;

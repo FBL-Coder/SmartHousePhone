@@ -37,7 +37,7 @@ public class WelcomeActivity extends Activity {
 
     private List<RcuInfo> mRcuInfos;
     private WelcomeHandler welcomeHandler = new WelcomeHandler(this);
-    private String serverVersion;
+    private String serverVersion = "0";
     private UpdateManager mUpdateManager;
 
     @Override
@@ -63,26 +63,26 @@ public class WelcomeActivity extends Activity {
 
         OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.GetApkVersions,
                 map, new HttpCallback() {
-            @Override
-            public void onSuccess(ResultDesc resultDesc) {
-                super.onSuccess(resultDesc);
-                //TODO 返回版本号后需要解析
-                Log.i(TAG, "onSuccess: " + resultDesc.getResult());
-                serverVersion = resultDesc.getResult();
-                Message message = welcomeHandler.obtainMessage();
-                message.what = 5;
-                welcomeHandler.sendMessage(message);
-            }
+                    @Override
+                    public void onSuccess(ResultDesc resultDesc) {
+                        super.onSuccess(resultDesc);
+                        //TODO 返回版本号后需要解析
+                        Log.i(TAG, "onSuccess: " + resultDesc.getResult());
+                        serverVersion = resultDesc.getResult();
+                        Message message = welcomeHandler.obtainMessage();
+                        message.what = 5;
+                        welcomeHandler.sendMessage(message);
+                    }
 
-            @Override
-            public void onFailure(int code, String message) {
-                super.onFailure(code, message);
-                Log.i(TAG, "onFailure: " + code + "-----" + message);
-                Message message1 = welcomeHandler.obtainMessage();
-                message1.what = 5;
-                welcomeHandler.sendMessage(message1);
-            }
-        });
+                    @Override
+                    public void onFailure(int code, String message) {
+                        super.onFailure(code, message);
+                        Log.i(TAG, "onFailure: " + code + "-----" + message);
+                        Message message1 = welcomeHandler.obtainMessage();
+                        message1.what = 5;
+                        welcomeHandler.sendMessage(message1);
+                    }
+                });
 
 
     }
@@ -147,9 +147,14 @@ public class WelcomeActivity extends Activity {
                                 public void run() {
                                     //这里来检测版本是否需要更新
                                     Log.i("VER", "版本号:" + weakReference.get().serverVersion);
-                                    if (weakReference.get().serverVersion.length() > 0) {
-                                        weakReference.get().mUpdateManager = new UpdateManager(weakReference.get(), weakReference.get().serverVersion);
-                                        weakReference.get().mUpdateManager.showNoticeDialog(weakReference.get().welcomeHandler);
+                                    try {
+                                        if (weakReference.get().serverVersion.length() > 0) {
+                                            weakReference.get().mUpdateManager = new UpdateManager(weakReference.get(), weakReference.get().serverVersion);
+                                            weakReference.get().mUpdateManager.showNoticeDialog(weakReference.get().welcomeHandler);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.i("软件更新", "Exception: " + e);
+                                        weakReference.get().initData();
                                     }
                                 }
                             });

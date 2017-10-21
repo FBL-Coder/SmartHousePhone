@@ -15,7 +15,7 @@ public class GroupList_BoardDevData implements Serializable {
     private int chnCnt;
     private int bOnline;
     private int rev2;
-    private String chnName[];
+    private String chnName_rows[];
     private List<WareDev> devs;
 
 
@@ -68,11 +68,11 @@ public class GroupList_BoardDevData implements Serializable {
     }
 
     public String[] getChnName() {
-        return chnName;
+        return chnName_rows;
     }
 
     public void setChnName(String[] chnName) {
-        this.chnName = chnName;
+        this.chnName_rows = chnName;
     }
 
     public List<WareDev> getDevs() {
