@@ -1,5 +1,6 @@
 package cn.etsoft.smarthome.ui.Setting;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -47,7 +48,7 @@ import cn.etsoft.smarthome.utils.ToastUtil;
  */
 public class Devs_Detail_Activity extends Activity implements View.OnClickListener {
 
-    private TextView dev_room, dev_save, title, dev_way, dev_test;
+    private TextView dev_room, dev_save, title, dev_way, dev_test, delete;
     private EditText dev_name;
     private ImageView back, dev_type;
     private WareDev dev;
@@ -77,7 +78,13 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
                 if (datType == 6) {
                     ToastUtil.showText("操作成功");
-                    initView();
+                    MyApplication.mApplication.dismissLoadDialog();
+                    finish();
+                }
+                if (datType == 7) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("操作成功");
+                    finish();
                 }
             }
         });
@@ -90,14 +97,15 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
     private void initView() {
         message_save = new ArrayList<>();
-        title = (TextView) findViewById(R.id.title_bar_tv_title);
+        title = (TextView) findViewById(R.id.dev_info_title);
         dev_type = (ImageView) findViewById(R.id.dev_type);
+        back = (ImageView) findViewById(R.id.back);
         dev_room = (TextView) findViewById(R.id.dev_room);
         dev_save = (TextView) findViewById(R.id.dev_save);
         dev_name = (EditText) findViewById(R.id.dev_name);
         dev_way = (TextView) findViewById(R.id.dev_way);
         dev_test = (TextView) findViewById(R.id.dev_test);
-        back = (ImageView) findViewById(R.id.title_bar_iv_back);
+        delete = (TextView) findViewById(R.id.dev_delete);
 
         for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
             WareDev wareDev = MyApplication.getWareData().getDevs().get(i);
@@ -176,8 +184,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     dev_name.setText(light.getDev().getDevName());
                     dev_room.setText(light.getDev().getRoomName());
                     if (light.getbOnOff() == 0) {
-                        dev_type.setImageResource(R.drawable.dengguan);
-                    } else dev_type.setImageResource(R.drawable.dengkai);
+                        dev_type.setImageResource(R.drawable.dengguang);
+                    } else dev_type.setImageResource(R.drawable.light_icon);
 
                     final WareLight finallight = light;
                     dev_test.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +201,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
             }
         } else if (dev.getType() == 4) {
-            dev_type.setImageResource(R.drawable.chuanglian1);
+            dev_type.setImageResource(R.drawable.curtains_icon);
             for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
                 WareCurtain curtain = MyApplication.getWareData().getCurtains().get(i);
                 if (curtain.getDev().getDevId()
@@ -240,7 +248,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     dev_room.setText(freshAir.getDev().getRoomName());
                     if (freshAir.getbOnOff() == 0) {
                         dev_type.setImageResource(R.drawable.freshair_close);
-                    } else dev_type.setImageResource(R.drawable.freshair_open);
+                    } else dev_type.setImageResource(R.drawable.freshair_icon);
 
                     final WareFreshAir finalfreshAir = freshAir;
                     dev_test.setOnClickListener(new View.OnClickListener() {
@@ -267,7 +275,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     dev_room.setText(floorHeat.getDev().getRoomName());
                     if (floorHeat.getbOnOff() == 0) {
                         dev_type.setImageResource(R.drawable.floorheat_close);
-                    } else dev_type.setImageResource(R.drawable.floorheat_open);
+                    } else dev_type.setImageResource(R.drawable.floorheat_icon);
 
 
                     final WareFloorHeat finalfloorHeat = floorHeat;
@@ -283,15 +291,16 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 }
             }
         }
-        dev_way.setOnClickListener(this);
-        dev_save.setOnClickListener(this);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+        dev_way.setOnClickListener(this);
+        dev_save.setOnClickListener(this);
         dev_room.setOnClickListener(this);
+        delete.setOnClickListener(this);
     }
 
     /**
@@ -526,7 +535,8 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                             "\"powChn\":" + Save_DevWay + "," +
                             "\"cmd\":" + 1 + "}";
                 }
-                MyApplication.mApplication.getUdpServer().send(chn_str,6);
+                MyApplication.mApplication.showLoadDialog(Devs_Detail_Activity.this);
+                MyApplication.mApplication.getUdpServer().send(chn_str, 6);
                 break;
 
             case R.id.dev_room:
@@ -642,6 +652,10 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
+            case R.id.dev_delete:
+                SendDataUtil.deleteDev(dev);
+                MyApplication.mApplication.showLoadDialog(this);
+                break;
         }
     }
 
@@ -661,6 +675,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
     /**
      * 初始化自定义设备的状态以及设备PopupWindow
      */
+    @SuppressLint("NewApi")
     private void initPopupWindow_channel(final View textView, List<Integer> list_channel) {
         //获取自定义布局文件pop.xml的视图
         final View customView = getLayoutInflater().from(this).inflate(R.layout.popupwindow_equipment_listview2, null);

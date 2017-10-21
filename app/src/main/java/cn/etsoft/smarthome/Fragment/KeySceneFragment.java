@@ -83,12 +83,6 @@ public class KeySceneFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
                 //设备点击进入设备配按键
-                Intent intent = new Intent(mActivity, KeySceneActivity_dev.class);
-                intent.putExtra("title", Scene_keyDatas.get(i).getSceneName());
-                intent.putExtra("sceneId", Scene_keyDatas.get(i).getEventId());
-                intent.putExtra("keyInput_position", i1);
-                startActivity(intent);
-
                 return true;
             }
         });

@@ -96,6 +96,7 @@ public class GroupList_SceneAdapter extends BaseExpandableListAdapter implements
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getSceneName());
         viewHolder.mGrouplistTvTest.setText("呼叫");
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.edit_roomname);
+        viewHolder.mGrouplistIvSet.setVisibility(View.GONE);
         viewHolder.mGrouplistIvEditname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,9 +128,17 @@ public class GroupList_SceneAdapter extends BaseExpandableListAdapter implements
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.setting1);
         viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.key);
 
+        final int father = groupPosition;
+        final int child = childPosition;
+
         viewHolder.mGrouplistIvEditname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(mContext, KeySceneActivity_dev.class);
+                intent.putExtra("title", ListDatas.get(father).getSceneName());
+                intent.putExtra("sceneId", ListDatas.get(father).getEventId());
+                intent.putExtra("keyInput_position", child);
+                mContext.startActivity(intent);
             }
         });
         return convertView;
@@ -183,6 +192,7 @@ public class GroupList_SceneAdapter extends BaseExpandableListAdapter implements
     class ViewHolder {
         View view;
         ImageView mGrouplistIvIcon;
+        ImageView mGrouplistIvSet;
         TextView mGrouplistTvTitle;
         TextView mGrouplistTvTest;
         ImageView mGrouplistIvEditname;
@@ -190,6 +200,7 @@ public class GroupList_SceneAdapter extends BaseExpandableListAdapter implements
         ViewHolder(View view) {
             this.view = view;
             this.mGrouplistIvIcon = (ImageView) view.findViewById(R.id.grouplist_iv_icon);
+            this.mGrouplistIvSet = (ImageView) view.findViewById(R.id.grouplist_iv_set);
             this.mGrouplistTvTitle = (TextView) view.findViewById(R.id.grouplist_tv_title);
             this.mGrouplistTvTest = (TextView) view.findViewById(R.id.grouplist_tv_test);
             this.mGrouplistIvEditname = (ImageView) view.findViewById(R.id.grouplist_iv_editname);

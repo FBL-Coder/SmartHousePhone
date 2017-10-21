@@ -21,6 +21,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.GroupList_BoardDevData;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.ui.ParlourFourOutActivity;
+import cn.etsoft.smarthome.ui.Setting.Add_Dev_Activity;
 import cn.etsoft.smarthome.ui.Setting.ConfigPassActivity;
 import cn.etsoft.smarthome.ui.Setting.EquipmentDeployActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
@@ -44,6 +45,11 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
     public GroupList_OutAdapter(Context context, List<GroupList_BoardDevData> GroupListDatas) {
         mContext = context;
         ListDatas = GroupListDatas;
+    }
+
+    public void notifyDataSetChanged(List<GroupList_BoardDevData> GroupListDatas) {
+        ListDatas = GroupListDatas;
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -115,6 +121,14 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
             @Override
             public void onClick(View view) {
                 //TODO 点击发送呼叫指令
+            }
+        });
+
+        viewHolder.mGrouplistIvSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //点击添加设备
+                mContext.startActivity(new Intent(mContext, Add_Dev_Activity.class));
             }
         });
         return convertView;
@@ -208,7 +222,6 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
                     return;
                 } else {
                     //修改按键板名称逻辑
-
                 }
                 break;
             case R.id.scene_btn_cancel:
@@ -221,6 +234,7 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
     class ViewHolder {
         View view;
         ImageView mGrouplistIvIcon;
+        ImageView mGrouplistIvSet;
         TextView mGrouplistTvTitle;
         TextView mGrouplistTvTest;
         ImageView mGrouplistIvEditname;
@@ -228,6 +242,7 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter implements V
         ViewHolder(View view) {
             this.view = view;
             this.mGrouplistIvIcon = (ImageView) view.findViewById(R.id.grouplist_iv_icon);
+            this.mGrouplistIvSet = (ImageView) view.findViewById(R.id.grouplist_iv_set);
             this.mGrouplistTvTitle = (TextView) view.findViewById(R.id.grouplist_tv_title);
             this.mGrouplistTvTest = (TextView) view.findViewById(R.id.grouplist_tv_test);
             this.mGrouplistIvEditname = (ImageView) view.findViewById(R.id.grouplist_iv_editname);

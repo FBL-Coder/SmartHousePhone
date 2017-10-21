@@ -38,20 +38,28 @@ public class OutPutFragment extends Fragment {
     private List<GroupList_BoardDevData> GroupListDatas;
     private GroupList_OutAdapter outAdapter;
     private Activity mActivity;
+    private View view;
 
-    public OutPutFragment(Activity activity){
+    public OutPutFragment(Activity activity) {
         mActivity = activity;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_group, container, false);
-        initData(view);
+        view = inflater.inflate(R.layout.fragment_group, container, false);
+        initData();
         return view;
     }
 
-    private void initData(View view) {
+    @Override
+    public void onResume() {
+        initData();
+        outAdapter.notifyDataSetChanged(GroupListDatas);
+        super.onResume();
+    }
+
+    private void initData() {
         if (MyApplication.getWareData().getBoardChnouts() == null || MyApplication.getWareData().getBoardChnouts().size() == 0) {
             ToastUtil.showText("没有输出板信息,请在主页刷新数据");
             return;
@@ -77,27 +85,27 @@ public class OutPutFragment extends Fragment {
             GroupListDatas.add(boardDevData);
         }
         //初始化ListView
-        initListView(view);
+        initListView();
     }
 
     /**
      * 初始化ListView
      */
-    private void initListView(View view) {
+    private void initListView() {
         mGroupListView = (ExpandableListView) view.findViewById(R.id.group_lv);
-        if (outAdapter == null){
-            outAdapter =  new GroupList_OutAdapter(getActivity(), GroupListDatas);
+        if (outAdapter == null) {
+            outAdapter = new GroupList_OutAdapter(getActivity(), GroupListDatas);
             mGroupListView.setAdapter(outAdapter);
-        }else outAdapter.notifyDataSetChanged();
+        } else outAdapter.notifyDataSetChanged(GroupListDatas);
 
         mGroupListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                Log.i("onChildClick", "onChildClick: "+i+"--"+i1);
+                Log.i("onChildClick", "onChildClick: " + i + "--" + i1);
                 Intent intent = new Intent(mActivity, Devs_Detail_Activity.class);
-                intent.putExtra("id",GroupListDatas.get(i).getDevs().get(i1).getDevId());
-                intent.putExtra("type",GroupListDatas.get(i).getDevs().get(i1).getType());
-                intent.putExtra("cpu",GroupListDatas.get(i).getDevs().get(i1).getCanCpuId());
+                intent.putExtra("id", GroupListDatas.get(i).getDevs().get(i1).getDevId());
+                intent.putExtra("type", GroupListDatas.get(i).getDevs().get(i1).getType());
+                intent.putExtra("cpu", GroupListDatas.get(i).getDevs().get(i1).getCanCpuId());
                 startActivity(intent);
                 return true;
             }

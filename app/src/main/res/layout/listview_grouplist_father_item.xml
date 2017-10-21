@@ -33,21 +33,32 @@
             android:id="@+id/grouplist_tv_test"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
+            android:layout_weight="1.2"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_marginBottom="@dimen/dp_3"
             android:layout_marginRight="@dimen/dp_10"
             android:gravity="center"
-            android:padding="@dimen/dp_5"
             android:background="@color/main_blue1"
             android:textColor="@color/white1"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_14" />
+
+        <ImageView
+            android:id="@+id/grouplist_iv_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add_two"
+            android:layout_marginRight="@dimen/dp_10"
+            android:padding="@dimen/dp_5"
+            />
 
         <ImageView
             android:id="@+id/grouplist_iv_editname"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingRight="@dimen/dp_5"
-            android:layout_margin="@dimen/dp_10"
+            android:layout_weight="0.8"
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@drawable/edit_roomname"
+            android:padding="@dimen/dp_5"
              />
     </LinearLayout>
 </RelativeLayout>

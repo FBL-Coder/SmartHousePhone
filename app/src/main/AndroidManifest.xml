@@ -51,8 +51,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.READ_LOGS"/>
-
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
 
     <!--全局对话框的权限-->
@@ -140,8 +139,8 @@
         <!--搜索联网模块-->
         <activity
             android:name="cn.etsoft.smarthome.ui.NetInfoActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!--远程Ip-->
         <!--情景设置-->
         <activity
@@ -195,12 +194,14 @@
         <!--设备详情-->
         <activity
             android:name="cn.etsoft.smarthome.ui.Setting.Devs_Detail_Activity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!--添加设备-->
         <activity
             android:name="cn.etsoft.smarthome.ui.Setting.Add_Dev_Activity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!--安防设置-->
         <activity
             android:name="cn.etsoft.smarthome.ui.SafetyActivity"

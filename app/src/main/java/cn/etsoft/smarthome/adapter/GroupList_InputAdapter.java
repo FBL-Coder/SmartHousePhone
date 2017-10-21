@@ -116,7 +116,7 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter implements
     }
 
     @Override
-    public View getChildView( int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
         if (convertView == null) {
@@ -129,6 +129,7 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter implements
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getKeyName()[childPosition]);
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.setting1);
         viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.aircood_icon);
+        viewHolder.mGrouplistIvSet.setVisibility(View.GONE);
 
         final int fatherPosition = groupPosition;
         final int childerPosition = childPosition;
@@ -195,6 +196,7 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter implements
     class ViewHolder {
         View view;
         ImageView mGrouplistIvIcon;
+        ImageView mGrouplistIvSet;
         TextView mGrouplistTvTitle;
         TextView mGrouplistTvTest;
         ImageView mGrouplistIvEditname;
@@ -202,6 +204,7 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter implements
         ViewHolder(View view) {
             this.view = view;
             this.mGrouplistIvIcon = (ImageView) view.findViewById(R.id.grouplist_iv_icon);
+            this.mGrouplistIvSet = (ImageView) view.findViewById(R.id.grouplist_iv_set);
             this.mGrouplistTvTitle = (TextView) view.findViewById(R.id.grouplist_tv_title);
             this.mGrouplistTvTest = (TextView) view.findViewById(R.id.grouplist_tv_test);
             this.mGrouplistIvEditname = (ImageView) view.findViewById(R.id.grouplist_iv_editname);

@@ -62,12 +62,23 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_dev);
+
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 5) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("操作成功");
+                    finish();
+                }
+            }
+        });
         initView();
     }
 
     private void initView() {
 
-        title = (TextView) findViewById(R.id.title_bar_tv_title);
+        title = (TextView) findViewById(R.id.dev_add_title);
         add_dev_type = (TextView) findViewById(R.id.add_dev_type);
         add_dev_room = (TextView) findViewById(R.id.add_dev_room);
         add_dev_save = (TextView) findViewById(R.id.add_dev_save);
@@ -75,7 +86,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         add_dev_name = (EditText) findViewById(R.id.add_dev_name);
         edit_dev_room = (EditText) findViewById(R.id.edit_dev_room);
         add_dev_way = (TextView) findViewById(R.id.add_dev_way);
-        back = (ImageView) findViewById(R.id.title_bar_iv_back);
+        back = (ImageView) findViewById(R.id.back);
         edit_roomname = (ImageView) findViewById(R.id.edit_roomname);
 
         edit_roomname.setOnClickListener(this);
@@ -133,7 +144,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.title_bar_iv_back:
+            case R.id.back:
                 finish();
                 break;
             case R.id.edit_roomname:
@@ -259,11 +270,10 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     ToastUtil.showText("没有可用通道");
                 } else {
                     initPopupWindow_channel((TextView) v, list_channel);
-                    popupWindow.showAsDropDown(v,0,0);
+                    popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
             case R.id.add_dev_save:
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("是否保存设置？");
                 builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
@@ -436,9 +446,8 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +
                                     "\"powChn\":" + Save_DevWay + "}";
-                        MyApplication.mApplication.getUdpServer().send(chn_str,5);
+                        MyApplication.mApplication.getUdpServer().send(chn_str, 5);
                         MyApplication.mApplication.showLoadDialog(Add_Dev_Activity.this);
-                        finish();
                     }
                 });
                 builder.setNegativeButton("不要", new DialogInterface.OnClickListener() {
