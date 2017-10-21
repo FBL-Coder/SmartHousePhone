@@ -99,6 +99,7 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter implements
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getBoardName());
         viewHolder.mGrouplistTvTest.setText("呼叫");
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.edit_roomname);
+        viewHolder.mGrouplistIvSet.setVisibility(View.GONE);
         viewHolder.mGrouplistIvEditname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +130,6 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter implements
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getKeyName()[childPosition]);
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.setting1);
         viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.aircood_icon);
-        viewHolder.mGrouplistIvSet.setVisibility(View.GONE);
 
         final int fatherPosition = groupPosition;
         final int childerPosition = childPosition;

@@ -122,29 +122,29 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 intent.putExtra("title", text[1]);
                 startActivity(intent);
                 break;
-            case 3:
+            case 2:
                 if (MyApplication.getWareData().getSceneEvents().size() == 0)
                     SendDataUtil.getSceneInfo();
                 intent = new Intent(mActivity, SceneSetActivity.class);
                 intent.putExtra("title", text[2]);
                 startActivity(intent);
                 break;
-            case 4:
+            case 3:
                 intent = new Intent(mActivity, SafetyActivity.class);
                 intent.putExtra("title", text[3]);
                 startActivity(intent);
                 break;
-            case 5:
+            case 4:
                 intent = new Intent(mActivity, TimerActivity.class);
                 intent.putExtra("title", text[4]);
                 startActivity(intent);
                 break;
-            case 6:
+            case 5:
                 intent = new Intent(mActivity, ConditionEventActivity.class);
                 intent.putExtra("title", text[5]);
                 startActivity(intent);
                 break;
-            case 7:
+            case 6:
                 intent = new Intent(mActivity, GroupSetActivity.class);
                 intent.putExtra("title", text[6]);
                 startActivity(intent);
