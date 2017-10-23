@@ -92,9 +92,9 @@
                 android:layout_weight="0.8"
                 android:background="@color/color_10AEFF"
                 android:gravity="center"
+                android:textColorHint="@color/main_border2"
                 android:padding="@dimen/dp_5"
                 android:textColor="@color/color_fff"
-                android:textColorHint="@color/white1"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 

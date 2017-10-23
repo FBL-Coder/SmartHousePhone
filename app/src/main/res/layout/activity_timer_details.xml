@@ -26,6 +26,7 @@
                 android:text="定时器名称"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_marginBottom="@dimen/dp_5"
+
                 android:gravity="center"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/color_fff"/>
@@ -39,7 +40,7 @@
                 android:layout_marginBottom="@dimen/dp_5"
                 android:layout_weight="1"
                 android:textSize="@dimen/sp_14"
-                android:textColorHint="@color/white1"
+                android:textColorHint="@color/main_border2"
                 android:background="@color/color_10AEFF"
                 android:gravity="center"
                 android:textStyle="bold"

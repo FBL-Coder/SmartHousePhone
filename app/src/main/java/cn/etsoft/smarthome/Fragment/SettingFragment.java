@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,16 +58,14 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
         mActivity = activity;
     }
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_set, container, false);
         //初始化GridView
         initGridView(view);
-        isPassCorrect = true;
-//        getDialog();
-        //TODO  接下来要打开
+        isPassCorrect = false;
+        getDialog();
         return view;
     }
 
@@ -85,6 +84,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
         mDialogTitleName.setText("配置密码：");
         mSceneEtName = (EditText) view.findViewById(R.id.scene_et_name);
         mSceneEtName.setHint("情输入配置密码");
+        mSceneEtName.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         mSceneBtnSure = (Button) view.findViewById(R.id.scene_btn_sure);
         mSceneBtnSure.setOnClickListener(this);
         mSceneBtnCancel = (Button) view.findViewById(R.id.scene_btn_cancel);
@@ -108,7 +108,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (!isPassCorrect) {
-            ToastUtil.showText("没有输入密码，不可操作");
+            getDialog();
             return;
         }
         Intent intent;

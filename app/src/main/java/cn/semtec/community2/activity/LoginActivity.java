@@ -99,7 +99,7 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                 Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
 
                 if (result.getCode() == HTTPRequest_BackCode.LOGIN_OK) {
-                    AppSharePreferenceMgr.put(GlobalVars.CONFIG_PASS_SHAREPREFERENCE,"888888");
+                    AppSharePreferenceMgr.put(GlobalVars.CONFIG_PASS_SHAREPREFERENCE, "888888");
                     // 登陆成功
                     ToastUtil.s(LoginActivity.this, "登陆成功");
                     Log.i(TAG, "智能家居onSuccess: " + resultDesc.getResult());
@@ -210,16 +210,16 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
                 password = et_password.getText().toString();
 
                 Pattern p = Pattern.compile("^1\\d{10}$");
-                Pattern w = Pattern.compile("\\w{6,12}");
-                if (!(p.matcher(cellphone).matches() && w.matcher(password).matches())) {
-                    ToastUtil.s(this, getString(R.string.login_error1));
-                    break;
-                }
-                LoginHelper loginHelper = new LoginHelper(handler);
-                loginHelper.loginServer(cellphone, password);
-//                login(cellphone,password);
-                showProgress();
+//                Pattern w = Pattern.compile("\\w{6,12}");
+                if (!(p.matcher(cellphone).matches() || password.length() < 6)) {
+                ToastUtil.s(this, getString(R.string.login_error1));
                 break;
+            }
+            LoginHelper loginHelper = new LoginHelper(handler);
+            loginHelper.loginServer(cellphone, password);
+//                login(cellphone,password);
+            showProgress();
+            break;
             case R.id.btn_forget:
                 Intent intent3 = new Intent(this, RepickPasswordActivity.class);
                 startActivity(intent3);

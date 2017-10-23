@@ -7,8 +7,6 @@ android {
         applicationId "cn.etsoft.smarthome"
         minSdkVersion 11
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
         ndk {
             moduleName "udp_sock"
             ldLibs "log"

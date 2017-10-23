@@ -23,6 +23,7 @@ import cn.etsoft.smarthome.ui.SafetyActivity_home;
 import cn.etsoft.smarthome.ui.SceneActivity;
 import cn.etsoft.smarthome.ui.StbActivity;
 import cn.etsoft.smarthome.ui.TvActivity;
+import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.semtec.community2.MyApplication;
 
 /**
@@ -109,6 +110,10 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                 break;
             //门禁
             case 6:
+                if (cn.etsoft.smarthome.MyApplication.mApplication.isVisitor()) {
+                    ToastUtil.showText("这里您不可以操作哦~");
+                    return;
+                }
                 startActivity(new Intent(mActivity, cn.semtec.community2.WelcomeActivity.class));
                 break;
             //报警记录

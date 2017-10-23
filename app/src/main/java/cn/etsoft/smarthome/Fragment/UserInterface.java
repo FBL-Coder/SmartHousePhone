@@ -89,7 +89,8 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onResume() {
-        getUserData(handler);
+        if (!MyApplication.mApplication.isVisitor())
+            getUserData(handler);
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
@@ -102,7 +103,7 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
     }
 
     private void getUserData(final Handler handler) {
-        MyApplication.mApplication.showLoadDialog(mActivity,false);
+        MyApplication.mApplication.showLoadDialog(mActivity, false);
         HashMap<String, String> map = new HashMap();
         map.put("userName", (String) AppSharePreferenceMgr.get(GlobalVars.USERID_SHAREPREFERENCE, ""));
         map.put("passwd", (String) AppSharePreferenceMgr.get(GlobalVars.USERPASSWORD_SHAREPREFERENCE, ""));

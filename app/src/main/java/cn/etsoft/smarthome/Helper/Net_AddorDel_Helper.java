@@ -53,21 +53,21 @@ public class Net_AddorDel_Helper {
             ToastUtil.showText("模块ID不能为空");
             return;
         }
-        try {
-            if (pass.isEmpty()) {
-                ToastUtil.showText("模块密码不能为空");
-                return;
-            }
-        } catch (Exception e) {
-            pass = "";
-        }
+//        try {
+//            if (pass.isEmpty()) {
+//                ToastUtil.showText("模块密码不能为空");
+//                return;
+//            }
+//        } catch (Exception e) {
+//            pass = "";
+//        }
         MyApplication.mApplication.showLoadDialog(activity);
         Map<String, String> param = new HashMap<>();
         param.put("userName", (String) AppSharePreferenceMgr.get(GlobalVars.USERID_SHAREPREFERENCE, ""));
         param.put("passwd", (String) AppSharePreferenceMgr.get(GlobalVars.USERPASSWORD_SHAREPREFERENCE, ""));
         param.put("devUnitID", id);
         param.put("canCpuName", name);
-        param.put("devPass", pass);
+        param.put("devPass", "123456");
         OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.ADDNETMODULE, param, new HttpCallback() {
             @Override
             public void onSuccess(ResultDesc resultDesc) {
@@ -84,7 +84,7 @@ public class Net_AddorDel_Helper {
                     ToastUtil.showText("联网模块添加成功");
                 } else if (result.getCode() == HTTPRequest_BackCode.RCUINFO_ERROR) {
                     //添加失败
-                    ToastUtil.showText("联网模块添加失败，模块ID已存在");
+                    ToastUtil.showText(result.getMsg());
                 } else if (result.getCode() == HTTPRequest_BackCode.RCUINFO_ERROR_Exception) {
                     //请求失败
                     ToastUtil.showText("联网模块添加失败，请求异常");

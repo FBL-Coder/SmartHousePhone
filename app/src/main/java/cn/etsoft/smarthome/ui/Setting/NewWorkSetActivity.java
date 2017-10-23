@@ -254,7 +254,7 @@ public class NewWorkSetActivity extends Activity {
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 0) {
+                if (datType == 0 || datType == 3 || datType == 8) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -280,9 +280,7 @@ public class NewWorkSetActivity extends Activity {
      * 初始化账号下的联网模快列表
      */
     private void initListview() {
-        if (adapter == null)
-            adapter = new NetWork_Adapter(this, MyApplication.mApplication.getRcuInfoList(), NetWork_Adapter.LOGIN);
-        else adapter.notifyDataSetChanged();
+        adapter = new NetWork_Adapter(this, MyApplication.mApplication.getRcuInfoList(), NetWork_Adapter.LOGIN);
         mNetListView.setAdapter(adapter);
     }
 
@@ -397,7 +395,6 @@ public class NewWorkSetActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         mDeleteNet_Position = position;
-                        MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this);
                         Net_AddorDel_Helper.deleteNew(mNewModuleHandler,
                                 NewWorkSetActivity.this,
                                 MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
@@ -453,9 +450,8 @@ public class NewWorkSetActivity extends Activity {
         OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.NETLISTS, param, new HttpCallback() {
             @Override
             public void onSuccess(ResultDesc resultDesc) {
-                Log.i("LOGIN", resultDesc.getResult());
-                MyApplication.mApplication.dismissLoadDialog();
                 super.onSuccess(resultDesc);
+                MyApplication.mApplication.dismissLoadDialog();
                 Log.i(TAG, "onSuccess: " + resultDesc.getResult());
                 gson = new Gson();
                 Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);

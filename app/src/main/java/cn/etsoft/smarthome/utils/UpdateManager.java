@@ -106,13 +106,14 @@ public class UpdateManager {
         //如果版本最新，则不需要更新
         if (serverVersion <= clientVersion) {
             Message message = handler.obtainMessage();
+            message.what = 1;
             handler.sendMessage(message);
             return;
         }
 
         CustomDialog_comment.Builder dialog = new CustomDialog_comment.Builder(mContext);
         dialog.setTitle("发现新版本 ：" + VersionName);
-        dialog.setMessage(updateDescription+ "\n  描述：" + Info);
+        dialog.setMessage(updateDescription + "\n  描述：" + Info);
         dialog.setPositiveButton("更新", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {

@@ -108,19 +108,13 @@ public class UserAddDevsActivty extends Activity implements View.OnClickListener
                     }
                 }
             }
-            if (addDevAdapter == null) {
-                addDevAdapter = new SetAddDevAdapter(this, devs);
-                mUserAdddevGv.setAdapter(addDevAdapter);
-            } else addDevAdapter.notifyDataSetChanged();
-
+            addDevAdapter = new SetAddDevAdapter(this, devs);
+            mUserAdddevGv.setAdapter(addDevAdapter);
         } else {
             mRoom.setText("----");
             mRoom.setClickable(false);
-            if (sceneAdapter == null) {
-                sceneAdapter = new SetAddSceneAdapter(this, sceneEvents);
-                mUserAdddevGv.setAdapter(sceneAdapter);
-            } else sceneAdapter.notifyDataSetChanged();
-
+            sceneAdapter = new SetAddSceneAdapter(this, sceneEvents);
+            mUserAdddevGv.setAdapter(sceneAdapter);
         }
     }
 

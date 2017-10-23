@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -71,6 +72,7 @@ public class ConfigPassActivity extends Activity implements View.OnClickListener
         if (selectnum == CHANGE) {
             mConfigHelpTvOldpass.setText("旧密码：");
             mConfigHelpEtOldpass.setHint("请输入旧密码");
+            mConfigHelpEtOldpass.setInputType(InputType.TYPE_CLASS_NUMBER);
             mChangePass.setBackgroundResource(R.color.main_blue1);
             mChangePass.setTextColor(Color.WHITE);
             mResetPass.setBackgroundColor(Color.WHITE);
@@ -78,6 +80,7 @@ public class ConfigPassActivity extends Activity implements View.OnClickListener
         } else if (selectnum == RESET) {
             mConfigHelpTvOldpass.setText("登陆密码：");
             mConfigHelpEtOldpass.setHint("请输入登陆密码");
+            mConfigHelpEtOldpass.setInputType(InputType.TYPE_NULL);
             mResetPass.setBackgroundResource(R.color.main_blue1);
             mResetPass.setTextColor(Color.WHITE);
             mChangePass.setBackgroundColor(Color.WHITE);

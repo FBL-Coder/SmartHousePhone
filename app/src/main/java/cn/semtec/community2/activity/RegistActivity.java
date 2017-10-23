@@ -113,11 +113,14 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
             ToastUtil.s(this, getString(R.string.repickpassword_verify_error));
             return false;
         }
-        Pattern w = Pattern.compile("\\w{6,12}");
-        if (!w.matcher(password).matches()) {
-            ToastUtil.s(this, getString(R.string.changePassword_pwtips));
-            return false;
+        if (password.length() < 6) {
+            ToastUtil.s(this, "请输入至少6位密码");
         }
+//        Pattern w = Pattern.compile("\\w{6,12}");
+//        if (!w.matcher(password).matches()) {
+//            ToastUtil.s(this, getString(R.string.changePassword_pwtips));
+//            return false;
+//        }
         return true;
     }
 
@@ -156,7 +159,7 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
                         JSONObject jo = new JSONObject(mResult);
                         if (jo.getInt("returnCode") == ADDOK) {
                             //添加智能家居后台用户注册
-                            register(et_phone,et_password);
+                            register(et_phone, et_password);
 
                         } else {
                             ToastUtil.s(RegistActivity.this, jo.getString("msg"));
@@ -185,12 +188,12 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
         }
     }
 
-    public void register( EditText mRegisterId, EditText mRegisterPass) {
+    public void register(EditText mRegisterId, EditText mRegisterPass) {
         final String id_input = mRegisterId.getText().toString();
         final String pass_input = mRegisterPass.getText().toString();
 
         if (!(HTTPRequest_BackCode.id_rule.matcher(id_input).matches() && HTTPRequest_BackCode.pass_rule.matcher(pass_input).matches())) {
-            ToastUtil.s(this,"账号或密码输入人不正确");
+            ToastUtil.s(this, "账号或密码输入人不正确");
             cancelProgress();
             return;
         }
@@ -206,22 +209,22 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
                 Log.i("REGISTER", resultDesc.getResult());
                 Gson gson = new Gson();
                 Http_Result result = gson.fromJson(resultDesc.getResult(), Http_Result.class);
-                if (result.getCode() == HTTPRequest_BackCode.REGISTER_OK){
+                if (result.getCode() == HTTPRequest_BackCode.REGISTER_OK) {
                     // 注册成功
                     Intent intent = getIntent();
                     Bundle bundle = new Bundle();
-                    bundle.putString("ID",id_input);
-                    bundle.putString("PASS",pass_input);
-                    intent.putExtra("bundle",bundle);
-                    setResult(0,intent);
+                    bundle.putString("ID", id_input);
+                    bundle.putString("PASS", pass_input);
+                    intent.putExtra("bundle", bundle);
+                    setResult(0, intent);
                     finish();
-                }else if (result.getCode() == HTTPRequest_BackCode.REGISTER_EXIST){
+                } else if (result.getCode() == HTTPRequest_BackCode.REGISTER_EXIST) {
                     //账号已存在
-                    ToastUtil.s(RegistActivity.this,"账号已存在，请重新输入");
+                    ToastUtil.s(RegistActivity.this, "账号已存在，请重新输入");
 
-                }else {
+                } else {
                     //注册失败
-                    ToastUtil.s(RegistActivity.this,"注册失败，请稍后再试");
+                    ToastUtil.s(RegistActivity.this, "注册失败，请稍后再试");
                 }
             }
 
@@ -230,7 +233,7 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
                 super.onFailure(code, message);
                 //注册失败
                 cancelProgress();
-                ToastUtil.s(RegistActivity.this,"注册失败，网络不可用或服务器异常");
+                ToastUtil.s(RegistActivity.this, "注册失败，网络不可用或服务器异常");
             }
         });
     }

@@ -530,6 +530,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 transaction = fragmentManager.beginTransaction();
                 switch (checkedId) {
                     case R.id.rb_home_user:
+                        if (MyApplication.mApplication.isVisitor()) {
+                            ToastUtil.showText("这里您不可以操作哦~");
+                            return;
+                        }
                         isSetBtu = false;
                         transaction.replace(R.id.home, Userinterface);
                         ref_home.setImageResource(R.drawable.selector_ref);
@@ -541,11 +545,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                         break;
                     case R.id.rb_home_setting:
                         if (MyApplication.mApplication.isVisitor()) {
-                            ToastUtil.showText("客官，这里您不可以操作哦~");
+                            ToastUtil.showText("这里您不可以操作哦~");
                             return;
                         }
-//                        if (Condition()) return;
-                        //TODO  接下来要打开
+                        if (Condition()) return;
                         isSetBtu = true;
                         ref_home.setImageResource(R.drawable.logout_icon);
                         transaction.replace(R.id.home, settingFragment);
