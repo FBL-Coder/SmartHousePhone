@@ -63,14 +63,14 @@
             android:layout_height="@dimen/dp_0"
             android:layout_weight="6">
 
-            <ListView
+            <ExpandableListView
                 android:id="@+id/equipment_out_lv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginRight="@dimen/dp_5"
                 android:divider="@color/color_00000000"
-                android:dividerHeight="@dimen/dp_10" />
+                android:dividerHeight="@dimen/dp_5" />
 
             <ImageView
                 android:id="@+id/input_out_iv_nodata"

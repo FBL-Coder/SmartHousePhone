@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,7 +20,9 @@ import java.util.List;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
+import cn.etsoft.smarthome.adapter.GroupList_OutToInputAdapter;
 import cn.etsoft.smarthome.adapter.Swipe_CpnAdapter;
+import cn.etsoft.smarthome.domain.GroupList_OutToInputData;
 import cn.etsoft.smarthome.domain.PrintCmd;
 import cn.etsoft.smarthome.domain.UpBoardKeyData;
 import cn.etsoft.smarthome.domain.WareBoardKeyInput;
@@ -35,12 +38,12 @@ import cn.etsoft.smarthome.utils.ToastUtil;
 public class EquipmentDeployActivity extends Activity implements View.OnClickListener {
     private TextView mTitle, ref_equipment, save_equipment;
     private ImageView back, input_out_iv_noData;
-    private ListView lv;
+    private ExpandableListView lv;
     private int devType;
     private int devId;
     private String uid;
     private List<WareChnOpItem> ChnOpItem;
-    private Swipe_CpnAdapter adapter = null;
+    private GroupList_OutToInputAdapter adapter = null;
     private List<String> Board_text;
     private int KEY_ACTION_DOWN = 0, KEY_ACTION_UP = 1;
     private int BOARD_UP = 15, BOARD_DEL = 16;
@@ -86,7 +89,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
      */
     private void initTitleBar() {
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
-        mTitle.setText("设备配按键 · "+getIntent().getStringExtra("title"));
+        mTitle.setText("设备配按键 · " + getIntent().getStringExtra("title"));
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +122,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
         ref_equipment = (TextView) findViewById(R.id.ref_equipment);
         save_equipment = (TextView) findViewById(R.id.save_equipment);
 
-        lv = (ListView) findViewById(R.id.equipment_out_lv);
+        lv = (ExpandableListView) findViewById(R.id.equipment_out_lv);
         ref_equipment.setOnClickListener(this);
         save_equipment.setOnClickListener(this);
 
@@ -209,18 +212,39 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                     }
                 }
             }
-
         list_Data_single = new ArrayList<>();
         for (int i = 0; i < listData_double.size(); i++) {
             for (int j = 0; j < listData_double.get(i).size(); j++) {
                 list_Data_single.add(listData_double.get(i).get(j));
             }
         }
+        List<GroupList_OutToInputData> outToInputData = new ArrayList<>();
+        for (int i = 0; i < MyApplication.getWareData().getKeyInputs().size(); i++) {
+            WareBoardKeyInput input = MyApplication.getWareData().getKeyInputs().get(i);
+            GroupList_OutToInputData data = new GroupList_OutToInputData();
+            data.setBoardName(input.getBoardName());
+            data.setBoardType(input.getBoardType());
+            data.setbResetKey(input.getbResetKey());
+            data.setCanCpuID(input.getCanCpuID());
+            data.setKeyAllCtrlType(input.getKeyAllCtrlType());
+            data.setKeyCnt(input.getKeyCnt());
+            data.setKeyIsSelect(input.getKeyIsSelect());
+            data.setKeyName_rows(input.getKeyName());
+            data.setLedBkType(input.getLedBkType());
+            List<PrintCmd> PrintCmds = new ArrayList<>();
+            for (int j = 0; j < list_Data_single.size(); j++) {
+                if (list_Data_single.get(j).getKeyboardid().equals(input.getCanCpuID())) {
+                    PrintCmds.add(list_Data_single.get(j));
+                }
+            }
+            data.setPrintCmds(PrintCmds);
+            outToInputData.add(data);
+        }
 
         if (adapter != null)
-            adapter.notifyDataSetChanged(list_Data_single);
+            adapter.notifyDataSetChanged(outToInputData);
         else {
-            adapter = new Swipe_CpnAdapter(this, list_Data_single);
+            adapter = new GroupList_OutToInputAdapter(this, outToInputData);
             lv.setAdapter(adapter);
         }
     }
@@ -327,7 +351,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
 
                         Gson gson = new Gson();
                         System.out.println(gson.toJson(data));
-                        MyApplication.mApplication.getUdpServer().send(gson.toJson(data),15);
+                        MyApplication.mApplication.getUdpServer().send(gson.toJson(data), 15);
                         MyApplication.mApplication.showLoadDialog(EquipmentDeployActivity.this);
                     }
                 });

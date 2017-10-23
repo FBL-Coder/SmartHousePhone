@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,8 +20,11 @@ import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
+import cn.etsoft.smarthome.adapter.GroupList_InputToOutAdapter;
 import cn.etsoft.smarthome.adapter.SwipeAdapter;
+import cn.etsoft.smarthome.domain.GroupList_BoardDevData;
 import cn.etsoft.smarthome.domain.Save_Quipment;
+import cn.etsoft.smarthome.domain.WareBoardChnout;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareKeyOpItem;
 import cn.etsoft.smarthome.utils.SendDataUtil;
@@ -33,12 +37,13 @@ import cn.etsoft.smarthome.utils.ToastUtil;
 public class AddEquipmentControlActivity extends Activity implements View.OnClickListener {
     private TextView mTitle, ref_equipment, save_equipment;
     private ImageView back, input_out_iv_noData;
-    private ListView lv;
+    private ExpandableListView lv;
     private int index;
     private String uid;
     private List<WareKeyOpItem> keyOpItems;
-    private SwipeAdapter adapter = null;
+    private GroupList_InputToOutAdapter adapter = null;
     private List<WareDev> mWareDev;
+    private List<GroupList_BoardDevData> BoardDevDatas;
     private List<WareDev> mWareDev_ok;
     private int DATTYPE_SET = 12;
 
@@ -75,7 +80,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
      */
     private void initTitleBar() {
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
-        mTitle.setText("按键配设备 · "+getIntent().getStringExtra("title"));
+        mTitle.setText("按键配设备 · " + getIntent().getStringExtra("title"));
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         index = getIntent().getExtras().getInt("key_index");
         uid = getIntent().getExtras().getString("uid");
@@ -95,7 +100,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
         ref_equipment = (TextView) findViewById(R.id.ref_equipment);
         save_equipment = (TextView) findViewById(R.id.save_equipment);
 
-        lv = (ListView) findViewById(R.id.equipment_out_lv);
+        lv = (ExpandableListView) findViewById(R.id.equipment_out_lv);
         ref_equipment.setOnClickListener(this);
         save_equipment.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -123,10 +128,36 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 }
             }
         }
+
+        if (MyApplication.getWareData().getBoardChnouts() == null || MyApplication.getWareData().getBoardChnouts().size() == 0) {
+            ToastUtil.showText("没有输出板信息,请在主页刷新数据");
+            return;
+        }
+        List<WareBoardChnout> boardChnouts = MyApplication.getWareData().getBoardChnouts();
+        BoardDevDatas = new ArrayList<>();
+        for (int i = 0; i < boardChnouts.size(); i++) {
+            GroupList_BoardDevData boardDevData = new GroupList_BoardDevData();
+            boardDevData.setBoardName(boardChnouts.get(i).getBoardName());
+            boardDevData.setBoardType(boardChnouts.get(i).getBoardType());
+            boardDevData.setbOnline(boardChnouts.get(i).getbOnline());
+            boardDevData.setChnCnt(boardChnouts.get(i).getChnCnt());
+            boardDevData.setDevUnitID(boardChnouts.get(i).getCanCpuID());
+            boardDevData.setRev2(boardChnouts.get(i).getRev2());
+            List<WareDev> devList = new ArrayList<>();
+            for (int j = 0; j < mWareDev.size(); j++) {
+                if (mWareDev.get(j).getCanCpuId().equals(boardDevData.getDevUnitID())) {
+                    devList.add(mWareDev.get(j));
+                }
+            }
+            boardDevData.setDevs(devList);
+            BoardDevDatas.add(boardDevData);
+        }
+
+
         if (adapter != null) {
-            adapter.notifyDataSetChanged(mWareDev);
+            adapter.notifyDataSetChanged(BoardDevDatas);
         } else {
-            adapter = new SwipeAdapter(this, mWareDev);
+            adapter = new GroupList_InputToOutAdapter(this, BoardDevDatas);
             lv.setAdapter(adapter);
         }
     }
