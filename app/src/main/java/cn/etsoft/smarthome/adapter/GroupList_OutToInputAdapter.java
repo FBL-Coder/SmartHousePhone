@@ -26,8 +26,7 @@ import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Author：FBL  Time： 2017/10/20.
- * 问卷的显示适配器；
- * 这个适配器是类似QQ好友分组的数据适配；
+ * 设备配按键  双层输配器
  */
 public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
 
@@ -35,7 +34,6 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
     private List<GroupList_OutToInputData> ListDatas;
     private PopupWindow popupWindow;
     private List<String> cmd_name = null;
-    private List<PrintCmd> listData;
 
     public GroupList_OutToInputAdapter(Activity context, List<GroupList_OutToInputData> GroupListDatas) {
         mContext = context;
@@ -112,7 +110,7 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ViewHolder_Child viewHolder_child;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.equipmentdeploy_listview_item, null);
@@ -121,13 +119,12 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder_child = (ViewHolder_Child) convertView.getTag();
         }
-
-        listData = ListDatas.get(groupPosition).getPrintCmds();
-        if (listData.get(childPosition).isSelect()) {
+        viewHolder_child.mCupName.setVisibility(View.INVISIBLE);
+        if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).isSelect()) {
             viewHolder_child.mDevSelectIv.setImageResource(R.drawable.select_ok);
         } else viewHolder_child.mDevSelectIv.setImageResource(R.drawable.select_no);
 
-        if (listData.get(childPosition).getDevType() == 0) {
+        if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).getDevType() == 0) {
             cmd_name = new ArrayList<>();
             cmd_name.add("未设置");
             cmd_name.add("开关");
@@ -135,7 +132,7 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
             cmd_name.add("风速");
             cmd_name.add("温度+");
             cmd_name.add("温度-");
-        } else if (listData.get(childPosition).getDevType() == 3) {
+        } else if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).getDevType() == 3) {
             cmd_name = new ArrayList<>();
             cmd_name.add("未设置");
             cmd_name.add("打开");
@@ -143,14 +140,14 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
             cmd_name.add("开关");
             cmd_name.add("变暗");
             cmd_name.add("变亮");
-        } else if (listData.get(childPosition).getDevType() == 4) {
+        } else if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).getDevType() == 4) {
             cmd_name = new ArrayList<>();
             cmd_name.add("未设置");
             cmd_name.add("打开");
             cmd_name.add("关闭");
             cmd_name.add("停止");
             cmd_name.add("开关停");
-        } else if (listData.get(childPosition).getDevType() == 7) {
+        } else if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).getDevType() == 7) {
             cmd_name = new ArrayList<>();
             cmd_name.add("未设置");
             cmd_name.add("打开");
@@ -159,7 +156,7 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
             cmd_name.add("高风");
             cmd_name.add("自动");
             cmd_name.add("关闭");
-        } else if (listData.get(childPosition).getDevType() == 9) {
+        } else if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).getDevType() == 9) {
             cmd_name = new ArrayList<>();
             cmd_name.add("未设置");
             cmd_name.add("打开");
@@ -169,28 +166,19 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
             cmd_name = new ArrayList<>();
             cmd_name.add("未知");
         }
-        viewHolder_child.mDevTvName.setText(listData.get(childPosition).getKeyname());
-
-        for (int i = 0; i < MyApplication.getWareData().getKeyInputs().size(); i++) {
-            if (MyApplication.getWareData().getKeyInputs().get(i).getCanCpuID()
-                    .equals(listData.get(childPosition).getKeyboardid())){
-                viewHolder_child.mCupName.setText(MyApplication.getWareData().getKeyInputs().get(i).getBoardName());
-            }
-        }
-
+        viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getPrintCmds().get(childPosition).getKeyname());
         try {
-            viewHolder_child.mDevTvCMD.setText(cmd_name.get(listData.get(childPosition).getKey_cmd()));
+            viewHolder_child.mDevTvCMD.setText(cmd_name.get(ListDatas.get(groupPosition).getPrintCmds().get(childPosition).getKey_cmd()));
         } catch (Exception e) {
         }
         viewHolder_child.mDevTvCMD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!listData.get(childPosition).isSelect()) {
+                if (!ListDatas.get(groupPosition).getPrintCmds().get(childPosition).isSelect()) {
                     ToastUtil.showText("请先选中按键");
                     return;
                 }
-
-                initPopupWindow(view, childPosition, cmd_name);
+                initPopupWindow(view, groupPosition, childPosition, cmd_name);
                 popupWindow.showAsDropDown(view, 0, 0);
             }
         });
@@ -198,10 +186,10 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
         viewHolder_child.mDevSelectIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listData.get(childPosition).isSelect()) {
-                    listData.get(childPosition).setSelect(false);
+                if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).isSelect()) {
+                    ListDatas.get(groupPosition).getPrintCmds().get(childPosition).setSelect(false);
                 } else {
-                    listData.get(childPosition).setSelect(true);
+                    ListDatas.get(groupPosition).getPrintCmds().get(childPosition).setSelect(true);
                 }
                 notifyDataSetChanged(ListDatas);
             }
@@ -218,6 +206,7 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
      * 初始化自定义设备的状态以及设备PopupWindow
      */
     private void initPopupWindow(final View view_parent,
+                                 final int group_position,
                                  final int position_parent,
                                  final List<String> text) {
         //获取自定义布局文件pop.xml的视图
@@ -237,7 +226,7 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView tv = (TextView) view_parent;
                 tv.setText(text.get(position));
-                listData.get(position_parent).setKey_cmd(position);
+                ListDatas.get(group_position).getPrintCmds().get(position_parent).setKey_cmd(position);
                 popupWindow.dismiss();
             }
         });

@@ -30,8 +30,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
 
 /**
  * Author：FBL  Time： 2017/10/20.
- * 问卷的显示适配器；
- * 这个适配器是类似QQ好友分组的数据适配；
+ * 按键配设备  双层适配器
  */
 public class GroupList_InputToOutAdapter extends BaseExpandableListAdapter {
 
@@ -117,7 +116,7 @@ public class GroupList_InputToOutAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ViewHolder_Child viewHolder_child;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.equipmentdeploy_listview_item, null);
@@ -126,12 +125,11 @@ public class GroupList_InputToOutAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder_child = (ViewHolder_Child) convertView.getTag();
         }
-        final WareDev dev = ListDatas.get(groupPosition).getDevs().get(childPosition);
 
-        if (dev.isSelect()) {
+        if (ListDatas.get(groupPosition).getDevs().get(childPosition).isSelect()) {
             viewHolder_child.mDevSelectIv.setImageResource(R.drawable.select_ok);
         } else viewHolder_child.mDevSelectIv.setImageResource(R.drawable.select_no);
-        if (dev.getType() == 0) {//空调
+        if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 0) {//空调
             text_0 = new ArrayList<>();
             text_0.add("未设置");
             text_0.add("开关");
@@ -139,22 +137,22 @@ public class GroupList_InputToOutAdapter extends BaseExpandableListAdapter {
             text_0.add("风速");
             text_0.add("温度+");
             text_0.add("温度-");
-            viewHolder_child.mDevTvCMD.setText(text_0.get(dev.getCmd()));
+            viewHolder_child.mDevTvCMD.setText(text_0.get(ListDatas.get(groupPosition).getDevs().get(childPosition).getCmd()));
             viewHolder_child.mDevIv.setImageResource(image[0]);
-            viewHolder_child.mDevTvName.setText(dev.getDevName());
-        } else if (dev.getType() == 1) {//电视
+            viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getDevName());
+        } else if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 1) {//电视
             viewHolder_child.mDevIv.setImageResource(image[1]);
-            viewHolder_child.mDevTvName.setText(dev.getDevName());
+            viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getDevName());
             viewHolder_child.mDevTvCMD.setText("无操作");
             text_1 = new ArrayList<>();
             text_1.add("无操作");
-        } else if (dev.getType() == 2) {//机顶盒
+        } else if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 2) {//机顶盒
             viewHolder_child.mDevIv.setImageResource(image[2]);
-            viewHolder_child.mDevTvName.setText(dev.getDevName());
+            viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getDevName());
             viewHolder_child.mDevTvCMD.setText("无操作");
             text_2 = new ArrayList<>();
             text_2.add("无操作");
-        } else if (dev.getType() == 3) {//灯光
+        } else if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 3) {//灯光
             text_3 = new ArrayList<>();
             text_3.add("未设置");
             text_3.add("打开");
@@ -162,20 +160,20 @@ public class GroupList_InputToOutAdapter extends BaseExpandableListAdapter {
             text_3.add("开关");
             text_3.add("变暗");
             text_3.add("变亮");
-            viewHolder_child.mDevTvCMD.setText(text_3.get(dev.getCmd()));
+            viewHolder_child.mDevTvCMD.setText(text_3.get(ListDatas.get(groupPosition).getDevs().get(childPosition).getCmd()));
             viewHolder_child.mDevIv.setImageResource(image[3]);
-            viewHolder_child.mDevTvName.setText(dev.getDevName());
-        } else if (dev.getType() == 4) {//窗帘
+            viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getDevName());
+        } else if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 4) {//窗帘
             text_4 = new ArrayList<>();
             text_4.add("未设置");
             text_4.add("打开");
             text_4.add("关闭");
             text_4.add("停止");
             text_4.add("开关停");
-            viewHolder_child.mDevTvCMD.setText(text_4.get(dev.getCmd()));
+            viewHolder_child.mDevTvCMD.setText(text_4.get(ListDatas.get(groupPosition).getDevs().get(childPosition).getCmd()));
             viewHolder_child.mDevIv.setImageResource(image[4]);
-            viewHolder_child.mDevTvName.setText(dev.getDevName());
-        } else if (dev.getType() == 7) {//新风
+            viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getDevName());
+        } else if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 7) {//新风
             text_7 = new ArrayList<>();
             text_7.add("未设置");
             text_7.add("打开");
@@ -183,26 +181,26 @@ public class GroupList_InputToOutAdapter extends BaseExpandableListAdapter {
             text_7.add("中风");
             text_7.add("自动");
             text_7.add("关闭");
-            viewHolder_child.mDevTvCMD.setText(text_7.get(dev.getCmd()));
+            viewHolder_child.mDevTvCMD.setText(text_7.get(ListDatas.get(groupPosition).getDevs().get(childPosition).getCmd()));
             viewHolder_child.mDevIv.setImageResource(image[5]);
-            viewHolder_child.mDevTvName.setText(dev.getDevName());
-        } else if (dev.getType() == 9) {//地暖
+            viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getDevName());
+        } else if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 9) {//地暖
             text_9 = new ArrayList<>();
             text_9.add("未设置");
             text_9.add("打开");
             text_9.add("自动");
             text_9.add("关闭");
-            viewHolder_child.mDevTvCMD.setText(text_9.get(dev.getCmd()));
+            viewHolder_child.mDevTvCMD.setText(text_9.get(ListDatas.get(groupPosition).getDevs().get(childPosition).getCmd()));
             viewHolder_child.mDevIv.setImageResource(image[6]);
-            viewHolder_child.mDevTvName.setText(dev.getDevName());
+            viewHolder_child.mDevTvName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getDevName());
         }
         viewHolder_child.mDevSelectIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (dev.isSelect()) {
-                    dev.setSelect(false);
+                if (ListDatas.get(groupPosition).getDevs().get(childPosition).isSelect()) {
+                    ListDatas.get(groupPosition).getDevs().get(childPosition).setSelect(false);
                 } else {
-                    dev.setSelect(true);
+                    ListDatas.get(groupPosition).getDevs().get(childPosition).setSelect(true);
                 }
                 notifyDataSetChanged(ListDatas);
             }
@@ -210,26 +208,26 @@ public class GroupList_InputToOutAdapter extends BaseExpandableListAdapter {
         viewHolder_child.mDevTvCMD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (dev.isSelect()) {
-                    if (dev.getType() == 0)
-                        initPopupWindow(view, dev, text_0);
-                    if (dev.getType() == 1)
-                        initPopupWindow(view, dev, text_1);
-                    if (dev.getType() == 2)
-                        initPopupWindow(view, dev, text_2);
-                    if (dev.getType() == 3)
-                        initPopupWindow(view, dev, text_3);
-                    if (dev.getType() == 4)
-                        initPopupWindow(view, dev, text_4);
-                    if (dev.getType() == 7)
-                        initPopupWindow(view, dev, text_7);
-                    if (dev.getType() == 9)
-                        initPopupWindow(view, dev, text_9);
+                if (ListDatas.get(groupPosition).getDevs().get(childPosition).isSelect()) {
+                    if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 0)
+                        initPopupWindow(view, ListDatas.get(groupPosition).getDevs().get(childPosition), text_0);
+                    if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 1)
+                        initPopupWindow(view, ListDatas.get(groupPosition).getDevs().get(childPosition), text_1);
+                    if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 2)
+                        initPopupWindow(view, ListDatas.get(groupPosition).getDevs().get(childPosition), text_2);
+                    if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 3)
+                        initPopupWindow(view, ListDatas.get(groupPosition).getDevs().get(childPosition), text_3);
+                    if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 4)
+                        initPopupWindow(view, ListDatas.get(groupPosition).getDevs().get(childPosition), text_4);
+                    if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 7)
+                        initPopupWindow(view, ListDatas.get(groupPosition).getDevs().get(childPosition), text_7);
+                    if (ListDatas.get(groupPosition).getDevs().get(childPosition).getType() == 9)
+                        initPopupWindow(view, ListDatas.get(groupPosition).getDevs().get(childPosition), text_9);
                     popupWindow.showAsDropDown(view, 0, 0);
                 } else ToastUtil.showText("请先选中设备");
             }
         });
-        viewHolder_child.mCupName.setText(dev.getRoomName());
+        viewHolder_child.mCupName.setText(ListDatas.get(groupPosition).getDevs().get(childPosition).getRoomName());
         return convertView;
     }
 

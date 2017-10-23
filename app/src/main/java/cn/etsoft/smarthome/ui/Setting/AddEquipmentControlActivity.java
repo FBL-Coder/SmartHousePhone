@@ -204,6 +204,10 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                         Save_Quipment save_quipment = new Save_Quipment();
                         List<Save_Quipment.key_Opitem_Rows> list_kor = new ArrayList<>();
                         //保存
+                        if (mWareDev_ok.size() == 0){
+                            ToastUtil.showText("不能少于一个配置项");
+                            return;
+                        }
                         for (int i = 0; i < mWareDev_ok.size(); i++) {
                             Save_Quipment.key_Opitem_Rows key_opitem_rows = save_quipment.new key_Opitem_Rows();
                             key_opitem_rows.setOut_cpuCanID(mWareDev_ok.get(i).getCanCpuId());

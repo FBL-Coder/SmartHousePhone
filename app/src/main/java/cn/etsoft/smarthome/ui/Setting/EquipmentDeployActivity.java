@@ -291,53 +291,58 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
                         UpBoardKeyData data = new UpBoardKeyData();//上传数据实体；
                         List<UpBoardKeyData.ChnOpitemRowsBean> bean_list = new ArrayList<>();//按键板实体集合；
 
-                        do {
-                            List<PrintCmd> listData_id = new ArrayList<>();//实例化一个新的数据集合，存放相同按键板的按键；
-                            listData_id.add(list_Data.get(0));//添加一个按键实体；
-                            list_Data.remove(0);//在所有数据中移除此实体；
-                            for (int m = list_Data.size() - 1; m >= 0; m--) {
-                                if (listData_id.get(0).getKeyboardid().equals(list_Data.get(m).getKeyboardid())) {
-                                    listData_id.add(list_Data.get(m));//将所有数据中和第一个添加的按键作比较，相同的话加入新的实体集合，
+                        if (list_Data != null && list_Data.size() > 0) {
+                            do {
+                                List<PrintCmd> listData_id = new ArrayList<>();//实例化一个新的数据集合，存放相同按键板的按键；
+                                listData_id.add(list_Data.get(0));//添加一个按键实体；
+                                list_Data.remove(0);//在所有数据中移除此实体；
+                                for (int m = list_Data.size() - 1; m >= 0; m--) {
+                                    if (listData_id.get(0).getKeyboardid().equals(list_Data.get(m).getKeyboardid())) {
+                                        listData_id.add(list_Data.get(m));//将所有数据中和第一个添加的按键作比较，相同的话加入新的实体集合，
 //                            listData.remove(m);//在所有数据集合中移除；
+                                    }
                                 }
-                            }
-                            UpBoardKeyData.ChnOpitemRowsBean bean = data.new ChnOpitemRowsBean();//按键实体
-                            byte[] Valid_down = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
-                            byte[] Valid_up = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
-                            byte[] Cmd_down = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键相应的命令
-                            byte[] Cmd_up = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
-                            for (int j = 0; j < listData_id.size(); j++) {//循环新的/相同的按键板集合；
-                                key_cpuCanID = listData_id.get(j).getKeyboardid();//为按键板id赋值；
-                                Valid_up[listData_id.get(j).getIndex()] = 1;
-                                Cmd_up[listData_id.get(j).getIndex()] = (byte) listData_id.get(j).getKey_cmd();
-                            }
+                                UpBoardKeyData.ChnOpitemRowsBean bean = data.new ChnOpitemRowsBean();//按键实体
+                                byte[] Valid_down = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键的相应位置；
+                                byte[] Valid_up = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应位置；
+                                byte[] Cmd_down = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放按下键相应的命令
+                                byte[] Cmd_up = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};//存放弹起键相应的命令；
+                                for (int j = 0; j < listData_id.size(); j++) {//循环新的/相同的按键板集合；
+                                    key_cpuCanID = listData_id.get(j).getKeyboardid();//为按键板id赋值；
+                                    Valid_up[listData_id.get(j).getIndex()] = 1;
+                                    Cmd_up[listData_id.get(j).getIndex()] = (byte) listData_id.get(j).getKey_cmd();
+                                }
 
-                            //因为数据传递时，高位、低位和现实中相反，so循环赋值；
-                            String down_v = "";
-                            for (int j = 0; j < Valid_down.length; j++) {
-                                down_v += Valid_down[Valid_down.length - 1 - j];
-                            }
-                            //将改好的2#字符串转成10#；
-                            BigInteger bi_down = new BigInteger(down_v, 2);  //转换成BigInteger类型
-                            int v_down = Integer.parseInt(bi_down.toString(10)); //参数2指定的是转化成X进制，默认10进制
+                                //因为数据传递时，高位、低位和现实中相反，so循环赋值；
+                                String down_v = "";
+                                for (int j = 0; j < Valid_down.length; j++) {
+                                    down_v += Valid_down[Valid_down.length - 1 - j];
+                                }
+                                //将改好的2#字符串转成10#；
+                                BigInteger bi_down = new BigInteger(down_v, 2);  //转换成BigInteger类型
+                                int v_down = Integer.parseInt(bi_down.toString(10)); //参数2指定的是转化成X进制，默认10进制
 
-                            String up_v = "";
-                            for (int j = 0; j < Valid_up.length; j++) {
-                                up_v += Valid_up[Valid_down.length - 1 - j];
-                            }
-                            BigInteger bi_up = new BigInteger(up_v, 2);  //转换成BigInteger类型
-                            int v_up = Integer.parseInt(bi_up.toString(10)); //参数2指定的是转化成X进制，默认10进制
+                                String up_v = "";
+                                for (int j = 0; j < Valid_up.length; j++) {
+                                    up_v += Valid_up[Valid_down.length - 1 - j];
+                                }
+                                BigInteger bi_up = new BigInteger(up_v, 2);  //转换成BigInteger类型
+                                int v_up = Integer.parseInt(bi_up.toString(10)); //参数2指定的是转化成X进制，默认10进制
 
-                            //将相应的数据加入到上传按键实体中；
-                            bean.setKey_cpuCanID(key_cpuCanID);
-                            bean.setKeyDownValid(v_down);
-                            bean.setKeyUpValid(v_up);
-                            bean.setKeyDownCmd(Cmd_down);
-                            bean.setKeyUpCmd(Cmd_up);
-                            //将每个上传按键实体加入实体集合中；
-                            bean_list.add(bean);
+                                //将相应的数据加入到上传按键实体中；
+                                bean.setKey_cpuCanID(key_cpuCanID);
+                                bean.setKeyDownValid(v_down);
+                                bean.setKeyUpValid(v_up);
+                                bean.setKeyDownCmd(Cmd_down);
+                                bean.setKeyUpCmd(Cmd_up);
+                                //将每个上传按键实体加入实体集合中；
+                                bean_list.add(bean);
 
-                        } while (list_Data.size() > 0);
+                            } while (list_Data.size() > 0);
+                        }else {
+                            ToastUtil.showText("不能少于一个配置项");
+                            return;
+                        }
                         //将以上数据加入到上传实体中；
                         data.setDevUnitID(GlobalVars.getDevid());
                         data.setChn_opitem_rows(bean_list);

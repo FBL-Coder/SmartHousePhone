@@ -96,7 +96,7 @@ public class WelcomeActivity extends Activity {
                         super.onFailure(code, message);
                         Log.i("软件更新版本号", "onFailure: " + code + "-----" + message);
                         Message message1 = welcomeHandler.obtainMessage();
-                        message1.what = 5;
+                        message1.what = 1;
                         welcomeHandler.sendMessage(message1);
                     }
                 });
