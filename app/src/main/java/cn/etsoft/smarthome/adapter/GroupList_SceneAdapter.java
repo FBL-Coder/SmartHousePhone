@@ -93,6 +93,9 @@ public class GroupList_SceneAdapter extends BaseExpandableListAdapter implements
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.equipmentcontrol);
+        viewHolder.mGrouplistIvIcon.setPadding(10, 10, 10, 10);
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getSceneName());
         viewHolder.mGrouplistTvTest.setText("呼叫");
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.edit_roomname);
@@ -124,13 +127,12 @@ public class GroupList_SceneAdapter extends BaseExpandableListAdapter implements
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.hongwai);
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getKeyInputs().get(childPosition).getBoardName());
-        viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.setting1);
-        viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.key);
+        viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.config_icon);
 
         final int father = groupPosition;
         final int child = childPosition;
-
         viewHolder.mGrouplistIvEditname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -31,7 +31,7 @@ import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2016/8/30.
- * 按键配置中的详情列表 适配器
+ * 按键配置中的详情列表 适配器   输入板按键
  */
 public class SwipeAdapter extends BaseAdapter {
     private Context mContext = null;
@@ -184,6 +184,8 @@ public class SwipeAdapter extends BaseAdapter {
                 } else ToastUtil.showText("请先选中设备");
             }
         });
+
+        viewHolder.mCupName.setText(devs.get(position).getRoomName());
         return contentView;
     }
 
@@ -237,6 +239,7 @@ public class SwipeAdapter extends BaseAdapter {
         ImageView mDevSelectIv;
         ImageView mDevIv;
         TextView mDevTvName;
+        TextView mCupName;
         TextView mDevTvCMD;
 
         ViewHolder(View view) {
@@ -244,6 +247,7 @@ public class SwipeAdapter extends BaseAdapter {
             this.mDevSelectIv = (ImageView) view.findViewById(R.id.Dev_select_iv);
             this.mDevIv = (ImageView) view.findViewById(R.id.Dev_iv);
             this.mDevTvName = (TextView) view.findViewById(R.id.Dev_tv_Name);
+            this.mCupName = (TextView) view.findViewById(R.id.CupName);
             this.mDevTvCMD = (TextView) view.findViewById(R.id.Dev_tv_CMD);
         }
     }

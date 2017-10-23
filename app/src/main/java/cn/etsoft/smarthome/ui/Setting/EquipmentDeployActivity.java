@@ -86,7 +86,7 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
      */
     private void initTitleBar() {
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
-        mTitle.setText(getIntent().getStringExtra("title"));
+        mTitle.setText("设备配按键 · "+getIntent().getStringExtra("title"));
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +132,6 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
         if (MyApplication.getWareData().getKeyInputs().size() == 0) {
             input_out_iv_noData.setVisibility(View.VISIBLE);
             MyApplication.mApplication.showLoadDialog(this);
-
             return;
         }
         listData_double = new ArrayList<>();

@@ -15,13 +15,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.PrintCmd;
 import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Created by Say GoBay on 2016/8/30.
- * 输出设置
+ * 输出设置  适配器
  */
 public class Swipe_CpnAdapter extends BaseAdapter {
     private Context mContext = null;
@@ -118,6 +119,15 @@ public class Swipe_CpnAdapter extends BaseAdapter {
             cmd_name.add("未知");
         }
         viewHolder.mDevTvName.setText(listData.get(position).getKeyname());
+
+        for (int i = 0; i < MyApplication.getWareData().getKeyInputs().size(); i++) {
+            if (MyApplication.getWareData().getKeyInputs().get(i).getCanCpuID()
+                    .equals(listData.get(position).getKeyboardid())){
+                viewHolder.mCupName.setText(MyApplication.getWareData().getKeyInputs().get(i).getBoardName());
+            }
+        }
+
+
         try {
             viewHolder.mDevTvCMD.setText(cmd_name.get(listData.get(position).getKey_cmd()));
         } catch (Exception e) {
@@ -199,6 +209,7 @@ public class Swipe_CpnAdapter extends BaseAdapter {
         View view;
         ImageView mDevSelectIv;
         ImageView mDevIv;
+        TextView mCupName;
         TextView mDevTvName;
         TextView mDevTvCMD;
 
@@ -207,6 +218,7 @@ public class Swipe_CpnAdapter extends BaseAdapter {
             this.mDevSelectIv = (ImageView) view.findViewById(R.id.Dev_select_iv);
             this.mDevIv = (ImageView) view.findViewById(R.id.Dev_iv);
             this.mDevTvName = (TextView) view.findViewById(R.id.Dev_tv_Name);
+            this.mCupName = (TextView) view.findViewById(R.id.CupName);
             this.mDevTvCMD = (TextView) view.findViewById(R.id.Dev_tv_CMD);
         }
     }

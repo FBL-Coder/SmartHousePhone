@@ -1,6 +1,5 @@
 package cn.etsoft.smarthome.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,8 +30,8 @@ import cn.etsoft.smarthome.weidget.NumberProgressBar;
 public class UpdateManager {
     private Context mContext; //上下文
 
-    private String apkUrl = NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.DownLoad_Apk;//apk下载地址
-    private static final String savePath = "/sdcard/ChuagKeYuanAPK/"; //apk保存到SD卡的路径
+    private String apkUrl = NewHttpPort.DownLoad_Apk;//apk下载地址
+    private static final String savePath = "/sdcard/ZNJJAPK/"; //apk保存到SD卡的路径
     private static final String saveFileName = savePath + "apkName.apk"; //完整路径名
 
     private NumberProgressBar mProgress; //下载进度条控件
@@ -43,19 +42,22 @@ public class UpdateManager {
     private boolean cancelFlag = false; //取消下载标志位
 
     private int serverVersion; //从服务器获取的版本号
+    private String VersionName; //从服务器获取的版本名
+    private String Info; //从服务器获取的描述
     private int clientVersion; //客户端当前的版本号
     private String updateDescription = "是否现在更新"; //更新内容描述信息
     private boolean forceUpdate = true; //是否强制更新
     private Handler mHandler;
     private CustomDialog_comment alertDialog1;
-    private Activity SplashActivity;
     private CustomDialog_upload alertDialog2;
 
     /**
      * 构造函数
      */
-    public UpdateManager(Context context, String serverVersion) {
+    public UpdateManager(Context context, String serverVersion, String VersionName, String Info) {
         this.mContext = context;
+        this.VersionName = VersionName;
+        this.Info = Info;
         this.serverVersion = Integer.parseInt(serverVersion);
 
 
@@ -107,9 +109,10 @@ public class UpdateManager {
             handler.sendMessage(message);
             return;
         }
+
         CustomDialog_comment.Builder dialog = new CustomDialog_comment.Builder(mContext);
-        dialog.setTitle("发现新版本 ：" + serverVersion + "\n   如果安装失败，请在根目录下ChuagKeYuanAPK文件夹中打开apk文件安装！！");
-        dialog.setMessage(updateDescription);
+        dialog.setTitle("发现新版本 ：" + VersionName);
+        dialog.setMessage(updateDescription+ "\n  描述：" + Info);
         dialog.setPositiveButton("更新", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
@@ -127,6 +130,7 @@ public class UpdateManager {
                 handler.sendMessage(message);
             }
         });
+
         alertDialog1 = dialog.create();
         alertDialog1.setCancelable(false);
         alertDialog1.show();
@@ -141,7 +145,6 @@ public class UpdateManager {
         alertDialog2 = new CustomDialog_upload(mContext, R.style.customDialog, R.layout.dialog_progressbar_layout);
         alertDialog2.show();
         mProgress = (NumberProgressBar) alertDialog2.findViewById(R.id.update_progress);
-        mProgress.setOnProgressBarListener(listener);
         alertDialog2.setCancelable(false);
         //下载apk
         downloadAPK();
@@ -158,6 +161,7 @@ public class UpdateManager {
                 try {
                     URL url = new URL(apkUrl);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestProperty("Accept-Encoding", "identity");
                     conn.connect();
 
                     int length = conn.getContentLength();

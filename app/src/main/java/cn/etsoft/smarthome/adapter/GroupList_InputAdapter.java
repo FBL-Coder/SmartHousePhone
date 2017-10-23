@@ -1,7 +1,6 @@
 package cn.etsoft.smarthome.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.WareBoardKeyInput;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
-import cn.etsoft.smarthome.ui.AddEquipmentControlActivity;
+import cn.etsoft.smarthome.ui.Setting.AddEquipmentControlActivity;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.weidget.CustomDialog;
 
@@ -103,6 +102,8 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.inputborad);
+        viewHolder.mGrouplistIvIcon.setPadding(10, 10, 10, 10);
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getBoardName());
         viewHolder.mGrouplistTvTest.setText("呼叫");
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.edit_roomname);
@@ -135,8 +136,8 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getKeyName()[childPosition]);
-        viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.setting1);
-        viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.aircood_icon);
+        viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.config_icon);
+        viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.key);
 
         final int fatherPosition = groupPosition;
         final int childerPosition = childPosition;

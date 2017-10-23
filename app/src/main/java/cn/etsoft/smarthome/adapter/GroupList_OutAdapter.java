@@ -3,6 +3,7 @@ package cn.etsoft.smarthome.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -111,6 +112,8 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.outboard);
+        viewHolder.mGrouplistIvIcon.setPadding(10, 10, 10, 10);
         viewHolder.mGrouplistTvTitle.setText(ListDatas.get(groupPosition).getBoardName());
         viewHolder.mGrouplistTvTest.setText("呼叫");
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.edit_roomname);
@@ -152,7 +155,9 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter {
         }
         final WareDev dev = ListDatas.get(groupPosition).getDevs().get(childPosition);
         viewHolder.mGrouplistTvTitle.setText(dev.getDevName());
-        viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.setting1);
+        viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.config_icon);
+
+
         if (dev.getType() == 0) {
             viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.aircood_icon);
         } else if (dev.getType() == 1) {
@@ -174,6 +179,11 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter {
         } else if (dev.getType() == 9) {
             viewHolder.mGrouplistIvIcon.setImageResource(R.drawable.floorheat_icon);
         }
+        viewHolder.mGrouplistTvTest.setVisibility(View.VISIBLE);
+        viewHolder.mGrouplistTvTest.setText(ListDatas
+                .get(groupPosition).getDevs().get(childPosition).getRoomName());
+        viewHolder.mGrouplistTvTest.setBackgroundColor(Color.TRANSPARENT);
+        viewHolder.mGrouplistTvTest.setTextColor(Color.BLACK);
 
         viewHolder.mGrouplistIvEditname.setOnClickListener(new View.OnClickListener() {
             @Override

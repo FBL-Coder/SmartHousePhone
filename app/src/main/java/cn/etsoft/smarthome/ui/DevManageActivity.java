@@ -48,7 +48,6 @@ public class DevManageActivity extends FragmentActivity {
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         tab_rl = (RelativeLayout) findViewById(R.id.tab_rl);
         tab_rl.setBackgroundColor(Color.WHITE);
-        title.setText(getIntent().getStringExtra("title"));
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +69,7 @@ public class DevManageActivity extends FragmentActivity {
      * 初始化数据
      */
     private void initData() {
+        title.setText("设备管理 · 输入");
         inPutFragment = new InPutFragment(DevManageActivity.this);
         transaction.replace(R.id.group, inPutFragment).commit();
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -78,14 +78,17 @@ public class DevManageActivity extends FragmentActivity {
                 transaction = fragmentManager.beginTransaction();
                 switch (checkedId) {
                     case R.id.group_output:
+                        title.setText("设备管理 · 输出");
                         outPutFragment = new OutPutFragment(DevManageActivity.this);
                         transaction.replace(R.id.group, outPutFragment);
                         break;
                     case R.id.group_input:
+                        title.setText("设备管理 · 输入");
                         inPutFragment = new InPutFragment(DevManageActivity.this);
                         transaction.replace(R.id.group, inPutFragment);
                         break;
                     case R.id.group_keyScene:
+                        title.setText("设备管理 · 情景");
                         keySceneFragment = new KeySceneFragment(DevManageActivity.this);
                         transaction.replace(R.id.group, keySceneFragment);
                         break;

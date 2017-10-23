@@ -3,7 +3,7 @@
     android:id="@+id/scene_item_ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#44ffffff"
+    android:background="#999999"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/dp_5">

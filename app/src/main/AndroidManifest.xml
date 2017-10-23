@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.etsoft.smarthome"
-    android:versionCode="1"
+    android:versionCode="100"
     android:versionName="2.0.0">
 
     <permission
@@ -75,7 +75,8 @@
         <activity
             android:name="cn.etsoft.smarthome.ui.WelcomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/welcome">
+
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -166,7 +167,7 @@
             android:screenOrientation="portrait" />
         <!--组合设置-一楼客厅四键-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.AddEquipmentControlActivity"
+            android:name="cn.etsoft.smarthome.ui.Setting.AddEquipmentControlActivity"
             android:screenOrientation="portrait" />
         <!--组合设置-一楼客厅四键-配置-->
         <activity

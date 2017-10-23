@@ -90,29 +90,42 @@ public class KeyAdapter_keyScene extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHoler viewHoler = null;
+        ViewHolder viewHoler = null;
         if (convertView == null) {
-            viewHoler = new ViewHoler();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.girdview_devs_norotate_item, null);
-            viewHoler.mName = (TextView) convertView.findViewById(R.id.text_list_item);
-            viewHoler.mIV = (ImageView) convertView.findViewById(R.id.img_list_item);
-            viewHoler.select_key = (ImageView) convertView.findViewById(R.id.select_key);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.equipmentdeploy_listview_item, null);
+            viewHoler = new ViewHolder(convertView);
             convertView.setTag(viewHoler);
-        } else viewHoler = (ViewHoler) convertView.getTag();
-        viewHoler.select_key.setImageResource(R.drawable.select_no);
-        viewHoler.mIV.setImageResource(R.drawable.key);
+        } else viewHoler = (ViewHolder) convertView.getTag();
+        viewHoler.mDevSelectIv.setImageResource(R.drawable.select_no);
+        viewHoler.mDevIv.setImageResource(R.drawable.key);
         for (int i = 0; i < listData.size(); i++) {
             if (position == listData.get(i).getKeyIndex()
                     && MyApplication.getWareData().getKeyInputs().get(keyinpur_position_id).getCanCpuID()
-                    .equals(listData.get(i).getKeyUId()))
-                viewHoler.select_key.setImageResource(R.drawable.select_ok);
+                    .equals(listData.get(i).getKeyUId())) {
+                viewHoler.mDevSelectIv.setImageResource(R.drawable.select_ok);
+            }
         }
-        viewHoler.mName.setText(KeyNames.get(position));
+        viewHoler.mCupName.setText(MyApplication.getWareData().getKeyInputs().get(keyinpur_position_id).getBoardName());
+        viewHoler.mDevTvName.setText(KeyNames.get(position));
         return convertView;
     }
 
-    class ViewHoler {
-        ImageView mIV, select_key;
-        TextView mName;
+    static class ViewHolder {
+        View view;
+        ImageView mDevSelectIv;
+        ImageView mDevIv;
+        TextView mCupName;
+        TextView mDevTvName;
+        TextView mDevTvCMD;
+
+        ViewHolder(View view) {
+            this.view = view;
+            this.mDevSelectIv = (ImageView) view.findViewById(R.id.Dev_select_iv);
+            this.mDevIv = (ImageView) view.findViewById(R.id.Dev_iv);
+            this.mCupName = (TextView) view.findViewById(R.id.CupName);
+            this.mDevTvName = (TextView) view.findViewById(R.id.Dev_tv_Name);
+            this.mDevTvCMD = (TextView) view.findViewById(R.id.Dev_tv_CMD);
+            mDevTvCMD.setVisibility(View.GONE);
+        }
     }
 }

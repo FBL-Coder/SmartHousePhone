@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_40"
-    android:background="@color/color_EEEEDE"
+    android:background="@color/color_96c9e7"
     android:orientation="horizontal"
     android:padding="@dimen/dp_5">
 
@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/Dev_select_iv"
         android:layout_width="@dimen/dp_0"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:layout_height="30dp"
         android:layout_marginLeft="@dimen/dp_5"
         android:padding="@dimen/dp_5"
@@ -20,35 +20,46 @@
     <ImageView
         android:id="@+id/Dev_iv"
         android:layout_width="@dimen/dp_0"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
         android:layout_height="30dp"
         android:layout_marginLeft="@dimen/dp_5"
-        android:padding="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_10"
+        android:padding="@dimen/dp_3"
         android:src="@drawable/dengguan" />
 
     <TextView
-        android:id="@+id/Dev_tv_Name"
+        android:id="@+id/CupName"
         android:layout_width="@dimen/dp_0"
-        android:layout_weight="1"
+        android:layout_weight="1.2"
         android:layout_height="match_parent"
         android:layout_marginRight="@dimen/dp_15"
         android:clickable="true"
-        android:gravity="center"
-        android:text="测试一下"
+        android:maxLength="6"
+        android:gravity="center_vertical"
+        android:textColor="@color/color_565656"
+        android:textSize="@dimen/sp_12" />
+    <TextView
+        android:id="@+id/Dev_tv_Name"
+        android:layout_width="@dimen/dp_0"
+        android:layout_weight="1.2"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/dp_15"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:maxLength="6"
+        android:textStyle="bold"
         android:textColor="@color/color_000"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_12" />
 
     <TextView
         android:id="@+id/Dev_tv_CMD"
         android:layout_width="@dimen/dp_0"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/dp_5"
-        android:layout_weight="1.5"
+        android:layout_weight="1"
         android:background="@drawable/save_click_selector"
         android:clickable="true"
-        android:drawableRight="@drawable/more"
         android:gravity="center"
-        android:paddingRight="@dimen/dp_5"
         android:textColor="@color/color_fff"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_12" />
 </LinearLayout>

@@ -272,7 +272,7 @@
         <RadioButton
             android:id="@+id/rb_home_user"
             style="@style/BottomRadioButtonStyle"
-            android:drawableTop="@drawable/selector_home"
+            android:drawableTop="@drawable/selector_user"
             android:text="@string/home_user" />
 
         <RadioButton

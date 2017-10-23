@@ -19,6 +19,6 @@ public class NewHttpPort {
     public static String NETLISTS = "netmodel/lists";
     public static String USER_ADD = "scene/add";
     public static String USER_GET = "scene/lists";
-    public static String GetApkVersions = "";
+    public static String GetApkVersions = "/index/version/check";
     public static String DownLoad_Apk = "";
 }

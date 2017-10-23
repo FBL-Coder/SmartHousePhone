@@ -2,12 +2,14 @@ package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +32,7 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
     private ImageView back;
     private int sceneId = 0;
     private int keyInput_position = 0;
-    private GridView gridView;
+    private ListView listView;
     private boolean IsClose = false;
     private KeyAdapter_keyScene keyAdapter_keyscene;
     private ChnOpItem_scene listData_all;
@@ -79,7 +81,7 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
         //发送消息
         SendDataUtil.getScene_KeysData();
         MyApplication.mApplication.showLoadDialog(this);
-        initGridView();
+        initListView();
     }
 
     /**
@@ -87,20 +89,15 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
      */
     private void initTitleBar() {
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
-        mTitle.setText(getIntent().getStringExtra("title"));
-        mTitle.setTextColor(0xffffffff);
+        mTitle.setText("按键配情景 · "+getIntent().getStringExtra("title"));
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
-        back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        save = (TextView) findViewById(R.id.title_bar_tv_room);
-        save.setVisibility(View.VISIBLE);
-        save.setText("保存");
-        save.setTextColor(0xffffffff);
+        save = (TextView) findViewById(R.id.save_equipment);
         save.setOnClickListener(this);
         sceneId = getIntent().getExtras().getInt("sceneId");
         keyInput_position = getIntent().getExtras().getInt("keyInput_position");
@@ -112,14 +109,14 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
      *
      * @param
      */
-    private void initGridView() {
-        gridView = (GridView) findViewById(R.id.gridView_light);
+    private void initListView() {
+        listView = (ListView) findViewById(R.id.listView_key);
     }
 
     private void initData() {
         keyAdapter_keyscene = new KeyAdapter_keyScene(sceneId, keyInput_position, this, IsClose);
-        gridView.setAdapter(keyAdapter_keyscene);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setAdapter(keyAdapter_keyscene);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 boolean isCantain = false;
@@ -163,7 +160,7 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
             return;
         }
         switch (view.getId()) {
-            case R.id.title_bar_tv_room:
+            case R.id.save_equipment:
                 CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(this);
                 builder.setTitle("提示 :");
                 builder.setMessage("您要保存这些设置吗？");

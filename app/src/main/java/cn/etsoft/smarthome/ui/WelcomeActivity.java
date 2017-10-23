@@ -9,11 +9,15 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
+import cn.etsoft.smarthome.R;
+import cn.etsoft.smarthome.domain.APK_Version;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.ui.Setting.NewWorkSetActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
@@ -38,11 +42,14 @@ public class WelcomeActivity extends Activity {
     private List<RcuInfo> mRcuInfos;
     private WelcomeHandler welcomeHandler = new WelcomeHandler(this);
     private String serverVersion = "0";
+    private String VersionName = "0.0.0";
+    private String Info = "";
     private UpdateManager mUpdateManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_welcome);
         IsUpDataApk();
         try {
             //获取屏幕数据
@@ -55,20 +62,30 @@ public class WelcomeActivity extends Activity {
             cn.semtec.community2.MyApplication.density = metric.density;
         } catch (Exception e1) {
         }
-        initData();
+//        initData();
     }
 
     private void IsUpDataApk() {
         HashMap<String, String> map = new HashMap<>();
 
-        OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.LOCATION + NewHttpPort.GetApkVersions,
+        OkHttpUtils.postAsyn(NewHttpPort.ROOT + NewHttpPort.GetApkVersions,
                 map, new HttpCallback() {
                     @Override
                     public void onSuccess(ResultDesc resultDesc) {
                         super.onSuccess(resultDesc);
                         //TODO 返回版本号后需要解析
-                        Log.i(TAG, "onSuccess: " + resultDesc.getResult());
-                        serverVersion = resultDesc.getResult();
+                        Gson gson = new Gson();
+                        APK_Version version = gson.fromJson(resultDesc.getResult(), APK_Version.class);
+                        Log.i("软件更新版本号：", "onSuccess: " + resultDesc.getResult());
+                        serverVersion = version.getData().get(0).getMobile().getVersion1() +
+                                version.getData().get(0).getMobile().getVersion2() +
+                                version.getData().get(0).getMobile().getVersion3();
+
+                        VersionName = "V "+version.getData().get(0).getMobile().getVersion1() +"."+
+                                version.getData().get(0).getMobile().getVersion2() +"."+
+                                version.getData().get(0).getMobile().getVersion3();
+                        Info = version.getData().get(0).getMobile().getDescribe();
+                        NewHttpPort.DownLoad_Apk = version.getData().get(0).getMobile().getUrl();
                         Message message = welcomeHandler.obtainMessage();
                         message.what = 5;
                         welcomeHandler.sendMessage(message);
@@ -77,7 +94,7 @@ public class WelcomeActivity extends Activity {
                     @Override
                     public void onFailure(int code, String message) {
                         super.onFailure(code, message);
-                        Log.i(TAG, "onFailure: " + code + "-----" + message);
+                        Log.i("软件更新版本号", "onFailure: " + code + "-----" + message);
                         Message message1 = welcomeHandler.obtainMessage();
                         message1.what = 5;
                         welcomeHandler.sendMessage(message1);
@@ -139,6 +156,9 @@ public class WelcomeActivity extends Activity {
                         weakReference.get().finish();
                     }
                 } else if (msg.what == 5) {
+                    if ("".equals(NewHttpPort.DownLoad_Apk)) {
+                        return;
+                    }
                     new Thread() {
                         public void run() {
                             //这儿是耗时操作，完成之后更新UI；
@@ -149,7 +169,9 @@ public class WelcomeActivity extends Activity {
                                     Log.i("VER", "版本号:" + weakReference.get().serverVersion);
                                     try {
                                         if (weakReference.get().serverVersion.length() > 0) {
-                                            weakReference.get().mUpdateManager = new UpdateManager(weakReference.get(), weakReference.get().serverVersion);
+                                            weakReference.get().mUpdateManager = new UpdateManager(weakReference.get(), weakReference.get().serverVersion,
+                                                    weakReference.get().VersionName,
+                                                    weakReference.get().Info);
                                             weakReference.get().mUpdateManager.showNoticeDialog(weakReference.get().welcomeHandler);
                                         }
                                     } catch (Exception e) {

@@ -132,7 +132,7 @@ public class CustomDialog_comment extends Dialog {
             final CustomDialog_comment dialog = new CustomDialog_comment(context, R.style.customDialog);
             View layout = inflater.inflate(R.layout.dialog_normal_layout, null);
             dialog.addContentView(layout, new LayoutParams(
-                    LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+                    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             ((TextView) layout.findViewById(R.id.title)).setText(title);
             if (positiveButtonText != null) {
                 ((Button) layout.findViewById(R.id.positiveButton))

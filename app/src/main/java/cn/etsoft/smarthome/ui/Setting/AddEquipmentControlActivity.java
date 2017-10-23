@@ -1,4 +1,4 @@
-package cn.etsoft.smarthome.ui;
+package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -75,7 +75,7 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
      */
     private void initTitleBar() {
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
-        mTitle.setText(getIntent().getStringExtra("title"));
+        mTitle.setText("按键配设备 · "+getIntent().getStringExtra("title"));
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         index = getIntent().getExtras().getInt("key_index");
         uid = getIntent().getExtras().getString("uid");

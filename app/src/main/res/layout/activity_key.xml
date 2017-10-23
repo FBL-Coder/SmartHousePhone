@@ -2,45 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_viewpager"
     android:orientation="vertical">
 
     <include layout="@layout/title_bar" />
 
 
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/choose"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/dp_0"-->
-        <!--android:layout_weight="0.8"-->
-        <!--android:background="@color/color_33ffffff"-->
-        <!--&gt;-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:text="是否打开‘只看可控制情景按键’模式"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:layout_marginLeft="@dimen/dp_20"-->
-            <!--android:textColor="@color/color_fff"-->
-            <!--android:textSize="@dimen/sp_14"/>-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/input_choose"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_margin="@dimen/dp_8"-->
-            <!--android:src="@drawable/off" />-->
-    <!--</RelativeLayout>-->
-    <GridView
-        android:id="@+id/gridView_light"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_margin="@dimen/dp_10"
-        android:layout_weight="10"
-        android:clipToPadding="true"
-        android:horizontalSpacing="@dimen/dp_10"
-        android:numColumns="3"
-        android:scrollbars="none"
-        android:verticalSpacing="@dimen/dp_10" />
+        android:layout_height="@dimen/dp_25"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_25"
+            android:background="@drawable/tiao1"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_10"
+            android:text="已有配置列表"
+            android:textColor="@color/color_88222223"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@+id/save_equipment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@drawable/save_click_selector"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:text="保存"
+            android:textColor="@color/color_fff"
+            android:textSize="@dimen/sp_16" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listView_key"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="@dimen/dp_3"
+        android:padding="@dimen/dp_5" />
 </LinearLayout>
