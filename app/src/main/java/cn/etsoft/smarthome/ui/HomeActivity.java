@@ -95,13 +95,12 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     //图片标题
     private TextView textView_banner, loaction_text, temp_text,
             hum_text, pm_25, breath_text, weather_text, net_now;
-    private ImageView ref_home;
+    private ImageView ref_home, home_isConnect, home_logout;
     private ViewPagerCompat mViewPager;
     private List<Integer> mImgIds_img = new ArrayList<>();
     private int[] mImgIds = new int[]{R.drawable.tu5};
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
     private LinearLayout ll_home_dots;
-    private boolean isSetBtu = false;
     private int RoomPosition;
 
 
@@ -131,6 +130,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void onNetChange(int netMobile) {
                 getIp();
+                GlobalVars.setIsLAN(true);
+                SendDataUtil.getNetWorkInfo();
             }
         });
     }
@@ -154,7 +155,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private String intToIp(int i) {
-
         return (i & 0xFF) + "." +
                 ((i >> 8) & 0xFF) + "." +
                 ((i >> 16) & 0xFF) + "." +
@@ -169,6 +169,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         ll_home_dots = (LinearLayout) findViewById(R.id.ll_home_dots);
         ll_loaction = (LinearLayout) findViewById(R.id.ll_loaction);
         ref_home = (ImageView) findViewById(R.id.home_tv_ref);
+        home_isConnect = (ImageView) findViewById(R.id.home_isConnect);
+        home_logout = (ImageView) findViewById(R.id.home_logout);
         temp_text = (TextView) findViewById(R.id.temp_text);
         hum_text = (TextView) findViewById(R.id.hum_text);
         pm_25 = (TextView) findViewById(R.id.pm_25);
@@ -177,6 +179,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         loaction_text = (TextView) findViewById(R.id.loaction_text);
         net_now = (TextView) findViewById(R.id.net_now);
         ll_loaction.setOnClickListener(this);
+        home_logout.setOnClickListener(this);
         ref_home.setOnClickListener(this);
         net_now.setOnClickListener(this);
 
@@ -490,7 +493,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 }
             }
         }
-
+        if (GlobalVars.isIsLAN()) {
+            home_isConnect.setImageResource(R.drawable.online);
+        } else home_isConnect.setImageResource(R.drawable.noonline);
         text_room = MyApplication.getWareData().getRooms();
 //        if (text_room.size() < 1) {
 //            return;
@@ -534,12 +539,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                             ToastUtil.showText("这里您不可以操作哦~");
                             return;
                         }
-                        isSetBtu = false;
                         transaction.replace(R.id.home, Userinterface);
                         ref_home.setImageResource(R.drawable.selector_ref);
                         break;
                     case R.id.rb_home_home:
-                        isSetBtu = false;
                         transaction.replace(R.id.home, homeFragment);
                         ref_home.setImageResource(R.drawable.selector_ref);
                         break;
@@ -549,8 +552,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                             return;
                         }
                         if (Condition()) return;
-                        isSetBtu = true;
-                        ref_home.setImageResource(R.drawable.logout_icon);
                         transaction.replace(R.id.home, settingFragment);
                         MyApplication.mApplication.setActivities(HomeActivity.this);
                         break;
@@ -567,7 +568,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
      */
     private boolean Condition() {
         if (!GlobalVars.isIsLAN()) {
-            ToastUtil.showText("请先切换到该局域网下的联网模快");
+            ToastUtil.showText("设置只能在局域网下进行");
             return true;
         }
         return false;
@@ -617,33 +618,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 city_cancel.setOnClickListener(this);
                 break;
             case R.id.home_tv_ref:
-                if (isSetBtu) {
-                    if (MyApplication.mApplication.isVisitor()) {
-                        finish();
-                    }
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("提示");
-                    builder.setMessage("您是否要退出登录？");
-                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            LogoutHelper.logout(HomeActivity.this);
-                        }
-                    });
-                    builder.create().show();
-                } else {
-                    GlobalVars.setIsLAN(true);
-                    SendDataUtil.getNetWorkInfo();
-                    MyApplication.mApplication.showLoadDialog(HomeActivity.this, false);
-                }
+                GlobalVars.setIsLAN(true);
+                SendDataUtil.getNetWorkInfo();
+                MyApplication.mApplication.showLoadDialog(HomeActivity.this, false);
                 break;
             case R.id.city_btn_sure:
                 String cityName = city_name.getText().toString();
@@ -668,6 +645,25 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.city_btn_cancel:
                 dialog_add_loaction.dismiss();
+                break;
+            case R.id.home_logout:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("提示");
+                builder.setMessage("您是否要退出登录？");
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        LogoutHelper.logout(HomeActivity.this);
+                    }
+                });
+                builder.create().show();
                 break;
             case R.id.net_now:
                 startActivity(new Intent(HomeActivity.this, NewWorkSetActivity.class));

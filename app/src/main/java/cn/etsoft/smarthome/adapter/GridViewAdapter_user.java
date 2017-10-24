@@ -16,6 +16,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.UserBean;
 import cn.etsoft.smarthome.domain.WareAirCondDev;
 import cn.etsoft.smarthome.domain.WareCurtain;
+import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareFloorHeat;
 import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.domain.WareLight;
@@ -36,7 +37,42 @@ public class GridViewAdapter_user extends BaseAdapter {
         super();
         this.bean = bean;
         this.context = context;
+        initData(bean);
+    }
+
+    private void initData(UserBean bean) {
         MyData = new UserBean();
+
+        for (int i = 0; i < bean.getUser_bean().size(); i++) {
+            if (bean.getUser_bean().get(i).isIsDev() == 1) {
+                boolean isDevExist = false;
+                for (int j = 0; j < MyApplication.getWareData().getDevs().size(); j++) {
+                    WareDev dev = MyApplication.getWareData().getDevs().get(j);
+                    if (bean.getUser_bean().get(i).getDevID() == dev.getDevId()
+                            && bean.getUser_bean().get(i).getDevType() == dev.getType()
+                            && bean.getUser_bean().get(i).getCanCpuID().equals(
+                            dev.getCanCpuId()))
+                        isDevExist = true;
+                }
+                if (!isDevExist) {
+                    bean.getUser_bean().remove(i);
+                    i--;
+                }
+            } else {
+                boolean isSceneExist = false;
+                for (int j = 0; j < MyApplication.getWareData().getSceneEvents().size(); j++) {
+                    WareSceneEvent event = MyApplication.getWareData().getSceneEvents().get(j);
+                    if (bean.getUser_bean().get(i).getEventId() == event.getEventId())
+                        isSceneExist = true;
+                }
+                if (!isSceneExist) {
+                    bean.getUser_bean().remove(i);
+                    i--;
+                }
+            }
+        }
+
+
         List<UserBean.UserBeanBean> beanBean = new ArrayList<>();
         MyData.setUser_bean(beanBean);
         MyData.getUser_bean().addAll(bean.getUser_bean());
@@ -46,11 +82,7 @@ public class GridViewAdapter_user extends BaseAdapter {
     public void notifyDataSetChanged(UserBean bean) {
         super.notifyDataSetChanged();
         this.bean = bean;
-        MyData = new UserBean();
-        List<UserBean.UserBeanBean> beanBean = new ArrayList<>();
-        MyData.setUser_bean(beanBean);
-        MyData.getUser_bean().addAll(bean.getUser_bean());
-        MyData.getUser_bean().add(new UserBean.UserBeanBean());
+        initData(bean);
 
     }
 
@@ -199,10 +231,12 @@ public class GridViewAdapter_user extends BaseAdapter {
                     if (beanBean.getEventId() == MyApplication.getWareData().getSceneEvents().get(i).getEventId())
                         event = MyApplication.getWareData().getSceneEvents().get(i);
                 }
-                if (MyApplication.getWareData().getSceneEvents().size() > 0)
-                    viewHolder.name.setText(event.getSceneName());
-                viewHolder.type.setImageResource(R.drawable.situationfullopen);
-                viewHolder.state.setText("点击执行");
+                if (event != null) {
+                    if (MyApplication.getWareData().getSceneEvents().size() > 0)
+                        viewHolder.name.setText(event.getSceneName());
+                    viewHolder.type.setImageResource(R.drawable.situationfullopen);
+                    viewHolder.state.setText("点击执行");
+                }
             }
         } else {
             viewHolder.name.setText("");
