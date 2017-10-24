@@ -2398,6 +2398,7 @@ public class UDPServer implements Runnable {
                                         item.getDevType() == item_exist.getDevType()) {
                                     //情景ID相同，并且设备属性页相同
                                     IsDevIdExist = true;
+                                    event_exist.getItemAry().get(a).setbOnOff(item.getbOnOff());
                                 } else {
                                     //情景ID相同，但设备不同
                                     IsDevIdExist = false;
@@ -2486,16 +2487,15 @@ public class UDPServer implements Runnable {
             event.setSceneName(CommonUtils.getGBstr(CommonUtils.hexStringToBytes(object.getString("sceneName"))));
             event.setEventId(object.getInt("eventId"));
             JSONArray itemAry = object.getJSONArray("itemAry");
-
-            for (int j = 0; j < itemAry.length(); j++) {
-                JSONObject object2 = itemAry.getJSONObject(j);
-                WareSceneDevItem item = new WareSceneDevItem();
-                item.setbOnOff(object2.getInt("bOnOff"));
-                item.setDevID(object2.getInt("devID"));
-                item.setDevType(object2.getInt("devType"));
-                item.setCanCpuID(object2.getString("canCpuID"));
-                event.getItemAry().add(item);
-            }
+//            for (int j = 0; j < itemAry.length(); j++) {
+//                JSONObject object2 = itemAry.getJSONObject(j);
+//                WareSceneDevItem item = new WareSceneDevItem();
+//                item.setbOnOff(object2.getInt("bOnOff"));
+//                item.setDevID(object2.getInt("devID"));
+//                item.setDevType(object2.getInt("devType"));
+//                item.setCanCpuID(object2.getString("canCpuID"));
+//                event.getItemAry().add(item);
+//            }
             MyApplication.getWareData().getSceneEvents().add(event);
         } catch (JSONException e) {
             isFreshData = false;

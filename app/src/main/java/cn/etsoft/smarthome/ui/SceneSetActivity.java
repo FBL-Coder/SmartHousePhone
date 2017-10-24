@@ -33,7 +33,7 @@ import cn.etsoft.smarthome.weidget.SwipeListView;
  * 情景设置页面
  */
 public class SceneSetActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
-    private ImageView iv_cancel, back,ref_IV;
+    private ImageView iv_cancel, back, ref_IV;
     private EditText name;
     private Button sure, cancel;
     private TextView title;
@@ -58,29 +58,36 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         initTitleBar();
         //初始化ListView
         initListView();
+
+    }
+
+    @Override
+    protected void onResume() {
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 22) {
                     MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("刷新成功");
                     WareDataHliper.initCopyWareData().startCopySceneData();
                     initListView();
                 }
                 if (datType == 23) {
                     MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("添加成功");
                     //初始化情景的listView
                     initListView();
-                    ToastUtil.showText("添加成功");
                 }
                 if (datType == 25) {
+                    ToastUtil.showText("删除成功");
                     MyApplication.mApplication.dismissLoadDialog();
                     initListView();
-                    ToastUtil.showText("删除成功");
                 }
             }
         });
-    }
 
+        super.onResume();
+    }
 
     /**
      * 初始化标题栏
@@ -230,7 +237,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                             //删除情景模式
                             try {
                                 SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(position));
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 ToastUtil.showText("数据请求异常，请刷新情景数据");
                                 return;
                             }

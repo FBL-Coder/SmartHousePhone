@@ -62,6 +62,20 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
         return view;
     }
 
+    @Override
+    public void onResume() {
+        cn.etsoft.smarthome.MyApplication.mApplication.setOnGetWareDataListener(new cn.etsoft.smarthome.MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 3 || datType == 0 || datType == 8) {
+                    cn.etsoft.smarthome.MyApplication.mApplication.dismissLoadDialog();
+                }
+
+            }
+        });
+        super.onResume();
+    }
+
     /**
      * 初始化GridView
      *

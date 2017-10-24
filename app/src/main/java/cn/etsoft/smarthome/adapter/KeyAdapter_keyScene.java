@@ -38,11 +38,15 @@ public class KeyAdapter_keyScene extends BaseAdapter {
         keyinpur_position_id = keyinpur_position;
         if (MyApplication.getWareData().getKeyInputs().size() == 0)
             return;
-        for (int i = 0; i < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt(); i++) {
-            if (MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt()
-                    < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName().length)
+        if (MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt()
+                >= MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName().length) {
+            for (int i = 0; i < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName().length; i++) {
                 KeyNames.add(MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName()[i]);
-            else KeyNames.add("按键" + i);
+            }
+        } else {
+            for (int i = 0; i < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt(); i++) {
+                KeyNames.add(MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName()[i]);
+            }
         }
         this.listData_all = WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item();
         mContext = context;
@@ -55,11 +59,15 @@ public class KeyAdapter_keyScene extends BaseAdapter {
         keyinpur_position_id = keyinpur_position;
         this.listData_all = WareDataHliper.initCopyWareData().getScenekeysResult().getKey2scene_item();
         KeyNames = new ArrayList<>();
-        for (int i = 0; i < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt(); i++) {
-            if (MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt()
-                    < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName().length)
+        if (MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt()
+                >= MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName().length) {
+            for (int i = 0; i < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName().length; i++) {
                 KeyNames.add(MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName()[i]);
-            else KeyNames.add("按键" + i);
+            }
+        } else {
+            for (int i = 0; i < MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyCnt(); i++) {
+                KeyNames.add(MyApplication.getWareData().getKeyInputs().get(keyinpur_position).getKeyName()[i]);
+            }
         }
         Secne_ID_Select();
         super.notifyDataSetChanged();

@@ -37,7 +37,6 @@ public class Scene_KeyActivity extends Activity {
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         mSceneKeys = (ListView) findViewById(R.id.scene_keys);
         mSceneKeys.setAdapter(new Scene_KeyAdapter(this));
-
         title.setText("请选择按键板");
         mSceneKeys.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -44,7 +44,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     private List<WareDev> listViewItems;
     private int eventId;
     private boolean IsCanClick = false;
-    private int position_room = -1;
+    private int position_room = 0;
     private List<String> room_list;
     private GridView gridView;
     private ParlourGridViewAdapter parlourGridViewAdapter;
@@ -59,7 +59,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 24 && subtype2 == 1) {
                     ToastUtil.showText("保存成功");
-                    SendDataUtil.getSceneInfo();
+//                    SendDataUtil.getSceneInfo();
                     MyApplication.mApplication.dismissLoadDialog();
                     finish();
                 }
@@ -70,8 +70,9 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         listViewItems = WareDataHliper.initCopyWareData().getCopyDevs();
         for (int i = 0; i < listViewItems.size(); i++) {
             listViewItems.get(i).setSelect(false);
-            listViewItems.get(i).setbOnOff(0);
+//            listViewItems.get(i).setbOnOff(0);
         }
+        title_bar_tv_room.setText("全部");
         upData();
     }
 
@@ -91,6 +92,12 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         back.setOnClickListener(this);
         eventId = getIntent().getBundleExtra("bundle").getInt("eventId", 0);
         title_bar_iv_or.setOnClickListener(this);
+
+
+        //房间集合
+        room_list = new ArrayList<>();
+        room_list.add("全部");
+        room_list.addAll(MyApplication.getWareData().getRooms());
     }
 
     /**
@@ -138,6 +145,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dialog.dismiss();
                 position_room = position;
+                title_bar_tv_room.setText(room_list.get(position));
                 upData();
             }
         });
@@ -169,19 +177,15 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 }
             }
         }
-
         mWareDev = new ArrayList<>();
-        //房间集合
-        room_list = MyApplication.getWareData().getRooms();
-        //房间名称；
-        if (position_room != -1)
-            title_bar_tv_room.setText(room_list.get(position_room));
-        else
-            title_bar_tv_room.setText(room_list.get(getIntent().getIntExtra("viewpage_num", 0)));
-        //根据房间id获取设备；
-        for (int i = 0; i < listViewItems.size(); i++) {
-            if (listViewItems.get(i).getRoomName().equals(title_bar_tv_room.getText())) {
-                mWareDev.add(listViewItems.get(i));
+        if (position_room == 0) {
+            mWareDev.addAll(listViewItems);
+        } else {
+            //根据房间id获取设备；
+            for (int i = 0; i < listViewItems.size(); i++) {
+                if (listViewItems.get(i).getRoomName().equals(title_bar_tv_room.getText())) {
+                    mWareDev.add(listViewItems.get(i));
+                }
             }
         }
         //初始化GridView
@@ -254,7 +258,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                         "\"devCnt\":" + num + "," +
                         "\"itemAry\":[" + more_data + "]}";
                 Log.e("情景模式测试:", data_hoad);
-                MyApplication.mApplication.getUdpServer().send(data_hoad,24);
+                MyApplication.mApplication.getUdpServer().send(data_hoad, 24);
             }
         });
         builder.create().show();

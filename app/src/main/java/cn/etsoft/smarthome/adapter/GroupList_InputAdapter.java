@@ -56,7 +56,9 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
         //子条目个数
-        return ListDatas.get(groupPosition).getKeyCnt();
+        return ListDatas.get(groupPosition).getKeyCnt() < ListDatas.get(groupPosition).getKeyName().length ?
+                ListDatas.get(groupPosition).getKeyCnt() : ListDatas.get(groupPosition).getKeyName().length;
+
     }
 
     @Override

@@ -82,6 +82,7 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
         SendDataUtil.getScene_KeysData();
         MyApplication.mApplication.showLoadDialog(this);
         initListView();
+        initData();
     }
 
     /**

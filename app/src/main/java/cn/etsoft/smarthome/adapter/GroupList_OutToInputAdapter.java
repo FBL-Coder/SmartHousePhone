@@ -120,6 +120,7 @@ public class GroupList_OutToInputAdapter extends BaseExpandableListAdapter {
             viewHolder_child = (ViewHolder_Child) convertView.getTag();
         }
         viewHolder_child.mCupName.setVisibility(View.INVISIBLE);
+        viewHolder_child.mDevIv.setImageResource(R.drawable.key);
         if (ListDatas.get(groupPosition).getPrintCmds().get(childPosition).isSelect()) {
             viewHolder_child.mDevSelectIv.setImageResource(R.drawable.select_ok);
         } else viewHolder_child.mDevSelectIv.setImageResource(R.drawable.select_no);
