@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.etsoft.smarthome"
-    android:versionCode="202"
-    android:versionName="2.0.2">
+    android:versionCode="203"
+    android:versionName="2.0.3">
 
     <permission
         android:name="cn.etsoft.smarthome.permission.JPUSH_MESSAGE"
@@ -176,7 +176,7 @@
 
         <!--组合设置-按键情景-输入板-->
         <activity
-            android:name="cn.etsoft.smarthome.ui.KeySceneActivity"
+            android:name="cn.etsoft.smarthome.ui.Scene_KeyActivity"
             android:screenOrientation="portrait" />
         <!--组合设置-按键情景-设备-->
         <activity

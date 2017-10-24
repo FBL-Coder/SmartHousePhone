@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -135,6 +137,9 @@ public class UpdateManager {
         alertDialog1 = dialog.create();
         alertDialog1.setCancelable(false);
         alertDialog1.show();
+        TextView view = (TextView) alertDialog1.findViewById(R.id.hint);
+        view.setVisibility(View.VISIBLE);
+
     }
 
     private NumberProgressBar.OnProgressBarListener listener;

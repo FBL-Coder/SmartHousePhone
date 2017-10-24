@@ -108,13 +108,6 @@ public class KeySceneActivity extends Activity implements AdapterView.OnItemClic
                 case R.id.parlour_four_text:
                     break;
                 case R.id.parlour_four_deploy:
-                    Intent intent = new Intent(KeySceneActivity.this, KeySceneActivity_dev.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", LTitle.get(position));
-                    bundle.putInt("sceneId", sceneId);
-                    bundle.putInt("keyInput_position", position);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
                     break;
             }
         }

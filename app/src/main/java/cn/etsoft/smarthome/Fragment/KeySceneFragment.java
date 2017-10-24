@@ -24,6 +24,7 @@ import cn.etsoft.smarthome.domain.WareBoardChnout;
 import cn.etsoft.smarthome.domain.WareBoardKeyInput;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareSceneEvent;
+import cn.etsoft.smarthome.ui.Scene_KeyActivity;
 import cn.etsoft.smarthome.ui.Setting.KeySceneActivity_dev;
 import cn.etsoft.smarthome.utils.ToastUtil;
 
@@ -83,6 +84,17 @@ public class KeySceneFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
                 //设备点击进入设备配按键
+                return true;
+            }
+        });
+
+        mGroupListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
+                Intent intent = new Intent(mActivity, Scene_KeyActivity.class);
+                intent.putExtra("title", Scene_keyDatas.get(i).getSceneName());
+                intent.putExtra("SceneID", Scene_keyDatas.get(i).getEventId());
+                startActivity(intent);
                 return true;
             }
         });

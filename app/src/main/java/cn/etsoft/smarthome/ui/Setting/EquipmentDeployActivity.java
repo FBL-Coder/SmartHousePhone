@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,6 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.GroupList_OutToInputAdapter;
-import cn.etsoft.smarthome.adapter.Swipe_CpnAdapter;
 import cn.etsoft.smarthome.domain.GroupList_OutToInputData;
 import cn.etsoft.smarthome.domain.PrintCmd;
 import cn.etsoft.smarthome.domain.UpBoardKeyData;

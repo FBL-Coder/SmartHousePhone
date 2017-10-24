@@ -117,7 +117,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 3) {
+
+                if (datType == 3 || datType == 0 || datType == 8) {
                     MyApplication.mApplication.dismissLoadDialog();
                     //更新数据
                     upData();

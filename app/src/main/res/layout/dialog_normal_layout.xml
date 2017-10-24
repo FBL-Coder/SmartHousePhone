@@ -34,6 +34,7 @@
 
 
             <TextView
+                android:id="@+id/hint"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_0"
                 android:layout_weight="1"
@@ -41,7 +42,7 @@
                 android:text="如果安装失败，请在根目录下ZNJJAPK文件夹中打开apk文件安装！"
                 android:textColor="@color/main_blue1"
                 android:textSize="@dimen/sp_8"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/message"
