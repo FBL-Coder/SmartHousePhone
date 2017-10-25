@@ -100,14 +100,13 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                     if (Timer_position != 0) {
                         ToastUtil.showText("保存成功");
                     }
-                    initTitleBar();
                 }
                 if (datType == 19) {
                     SendDataUtil.getTimerInfo();
                     if (Timer_position == 0) {
                         ToastUtil.showText("保存成功");
                     }
-                    initTitleBar();
+                    initData(Timer_position);
                 }
             }
         });
@@ -120,10 +119,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         save = (TextView) findViewById(R.id.title_bar_tv_room);
-        Timer_position = getIntent().getExtras().getInt("Timer_position");
         title.setTextColor(0xffffffff);
-        title.setText("");
-        title.setHint(MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(Timer_position).getTimerName());
         title.setHintTextColor(0xffffffff);
         back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
@@ -231,46 +227,39 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
      * @param timer_position
      */
     public void initData(int timer_position) {
+        title.setText("");
+        Timer_position = getIntent().getExtras().getInt("Timer_position");
+        title.setHint(MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(Timer_position).getTimerName());
         home_text = MyApplication.getWareData().getRooms();
         if (MyApplication.getWareData().getTimer_data().getTimerEvent_rows() == null && MyApplication.getWareData().getTimer_data().getTimerEvent_rows().size() == 0)
             return;
         et_name.setText("");
         et_name.setHint(MyApplication.getWareData().getTimer_data()
                 .getTimerEvent_rows().get(timer_position).getTimerName());
-        if (MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getRun_dev_item() == null
-                || MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getRun_dev_item().size() == 0) {
-            tv_enabled.setText("禁用");
-            tv_time_start.setText("点击选择时间");
-            tv_time_week.setText("点击选择星期");
-            tv_time_end.setText("点击选择时间");
-            tv_week_repeat.setText("否");
-            tv_all_network.setText("是");
-        } else {
-            if (MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getValid() == 1)
-                tv_enabled.setText("启用");
-            else tv_enabled.setText("禁用");
+        if (MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getValid() == 1)
+            tv_enabled.setText("启用");
+        else tv_enabled.setText("禁用");
 
-            List<Integer> data_start = MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getTimSta();
-            String startTime = data_start.get(0) + " : " + data_start.get(1);
-            tv_time_start.setText(startTime);
+        List<Integer> data_start = MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getTimSta();
+        String startTime = data_start.get(0) + " : " + data_start.get(1);
+        tv_time_start.setText(startTime);
 
-            int weekSelect_10 = data_start.get(3);
-            String weekSelect_2 = reverseString(Integer.toBinaryString(weekSelect_10));
-            String weekSelect_2_data = "";
-            for (int i = 0; i < weekSelect_2.toCharArray().length; i++) {
-                if (weekSelect_2.toCharArray()[i] == '1')
-                    weekSelect_2_data += " " + (i + 1);
-            }
-            tv_time_week.setText("星期集： " + weekSelect_2_data + "");
-
-            List<Integer> data_end = MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getTimEnd();
-            String endtime = data_end.get(0) + " : " + data_end.get(1);
-            tv_time_end.setText(endtime);
-
-            if (data_end.get(3) == 1) tv_week_repeat.setText("是");
-            else tv_week_repeat.setText("否");
-            tv_all_network.setText("是");
+        int weekSelect_10 = data_start.get(3);
+        String weekSelect_2 = reverseString(Integer.toBinaryString(weekSelect_10));
+        String weekSelect_2_data = "";
+        for (int i = 0; i < weekSelect_2.toCharArray().length; i++) {
+            if (weekSelect_2.toCharArray()[i] == '1')
+                weekSelect_2_data += " " + (i + 1);
         }
+        tv_time_week.setText("星期集： " + weekSelect_2_data + "");
+
+        List<Integer> data_end = MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(timer_position).getTimEnd();
+        String endtime = data_end.get(0) + " : " + data_end.get(1);
+        tv_time_end.setText(endtime);
+
+        if (data_end.get(3) == 1) tv_week_repeat.setText("是");
+        else tv_week_repeat.setText("否");
+        tv_all_network.setText("是");
         et_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -399,7 +388,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                             Gson gson = new Gson();
                             Log.e("0000", gson.toJson(time_data));
                             MyApplication.mApplication.showLoadDialog(TimerActivity_details.this);
-                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data),19);
+                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data), 19);
                         } catch (Exception e) {
                             MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存定时器数据", "保存数据异常" + e);

@@ -77,6 +77,8 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onResume() {
+        if (MyApplication.getWareData().getSceneEvents().size() == 0)
+            SendDataUtil.getSceneInfo();
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {

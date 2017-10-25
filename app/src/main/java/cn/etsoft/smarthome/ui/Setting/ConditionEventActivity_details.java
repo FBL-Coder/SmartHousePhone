@@ -84,12 +84,13 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
         //解决弹出键盘压缩布局的问题
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_conditionevent);
+        Condition_position = getIntent().getExtras().getInt("Condition_position");
         //初始化标题栏
         initTitleBar();
         //初始化组件
         initView();
-        initGridView(Condition_position);
-        initData(Condition_position);
+        initGridView();
+        initData();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
@@ -98,14 +99,16 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
                     if (Condition_position != 0) {
                         ToastUtil.showText("保存成功");
                     }
-                    initTitleBar();
+                    initGridView();
+                    initData();
                 }
                 if (datType == 29) {
                     SendDataUtil.getConditionInfo();
                     if (Condition_position == 0) {
                         ToastUtil.showText("保存成功");
                     }
-                    initTitleBar();
+                    initGridView();
+                    initData();
                 }
             }
         });
@@ -118,10 +121,7 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         save = (TextView) findViewById(R.id.title_bar_tv_room);
-        Condition_position = getIntent().getExtras().getInt("Condition_position");
         title.setTextColor(0xffffffff);
-        title.setText("");
-        title.setHint(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getEventName());
         title.setHintTextColor(0xffffffff);
         back.setImageResource(R.drawable.return2);
         back.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +168,7 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
     /**
      * 初始化GridView
      */
-    public void initGridView(int Condition_position) {
+    public void initGridView() {
         if (MyApplication.getWareData().getCondition_event_bean() == null || MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().size() == 0)
             return;
         common_dev = new ArrayList<>();
@@ -220,9 +220,8 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
     /**
      * 初始化数据
      *
-     * @param condition_position
      */
-    public void initData(int condition_position) {
+    public void initData() {
         Event_Way = new ArrayList<>();
         Event_Way.add("大于阀值");
         Event_Way.add("小于阀值");
@@ -230,27 +229,19 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
         Event_type.add("温度触发");
         Event_type.add("湿度触发");
         Event_type.add("P2.5触发");
+        title.setText("");
+        title.setHint(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getEventName());
         home_text = MyApplication.getWareData().getRooms();
         if (MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().size() == 0)
             return;
         et_name.setText("");
-        et_name.setHint(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getEventName());
-        if (MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getRun_dev_item() == null
-                || MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getRun_dev_item().size() == 0) {
-            tv_enabled.setText("禁用");
-            input_num.setText("");
-            input_num.setHint("输入触发值");
-            input_num.setHintTextColor(Color.WHITE);
-            event_way.setText("选择触发方式");
-            event_type.setText("点击选择触发类别");
-        } else {
-            if (MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getValid() == 1)
-                tv_enabled.setText("启用");
-            else tv_enabled.setText("禁用");
-            input_num.setText("" + MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getValTh());
-            event_way.setText("" + Event_Way.get(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getThType()));
-            event_type.setText("" + Event_type.get(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(condition_position).getEnvType()));
-        }
+        et_name.setHint(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getEventName());
+        if (MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getValid() == 1)
+            tv_enabled.setText("启用");
+        else tv_enabled.setText("禁用");
+        input_num.setText("" + MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getValTh());
+        event_way.setText("" + Event_Way.get(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getThType()));
+        event_type.setText("" + Event_type.get(MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().get(Condition_position).getEnvType()));
         et_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -391,7 +382,7 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
                             Gson gson = new Gson();
                             Log.i("保存触发器数据", gson.toJson(time_data));
                             MyApplication.mApplication.showLoadDialog(ConditionEventActivity_details.this);
-                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data),29);
+                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data), 29);
                         } catch (Exception e) {
                             MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存触发器数据", "保存数据异常" + e);

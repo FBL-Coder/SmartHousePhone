@@ -144,8 +144,8 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
             } else {
-                if (MyApplication.getWareData().getSceneEvents().size() == 6) {
-                    ToastUtil.showText("自定义情景最多6个！");
+                if (MyApplication.getWareData().getSceneEvents().size() == 10) {
+                    ToastUtil.showText("自定义情景最多10个！");
                     return;
                 }
                 getDialog();
@@ -172,7 +172,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                         Scene_int.add((int) MyApplication.getWareData().getSceneEvents().get(i).getEventId());
                     }
                     List<Integer> Scene_id = new ArrayList<>();
-                    for (int i = 2; i < 8; i++) {
+                    for (int i = 2; i < 12; i++) {
                         Scene_id.add(i);
                     }
                     List<Integer> ID = new ArrayList<>();

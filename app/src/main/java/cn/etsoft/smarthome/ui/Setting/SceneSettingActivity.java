@@ -38,7 +38,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog_comment;
  * 情景设置页面二
  */
 public class SceneSettingActivity extends Activity implements View.OnClickListener {
-    private TextView title, title_bar_tv_room;
+    private TextView title, title_bar_tv_room, sceneSetSave;
     private ImageView back, title_bar_iv_or;
     private List<WareDev> mWareDev;
     private List<WareDev> listViewItems;
@@ -92,7 +92,13 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         back.setOnClickListener(this);
         eventId = getIntent().getBundleExtra("bundle").getInt("eventId", 0);
         title_bar_iv_or.setOnClickListener(this);
-
+        sceneSetSave = (TextView) findViewById(R.id.sceneSetSave);
+        sceneSetSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                save();
+            }
+        });
 
         //房间集合
         room_list = new ArrayList<>();
@@ -200,7 +206,6 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                finish();
             }
         });
         builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
@@ -264,19 +269,10 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         builder.create().show();
     }
 
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            save();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
     @Override
     public void onClick(View view) {
         if (view == back)
-            save();
+            finish();
         if (view == title_bar_iv_or)
             if (IsCanClick) {
                 if (room_list != null && room_list.size() > 0)

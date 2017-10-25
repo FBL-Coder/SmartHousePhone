@@ -109,7 +109,11 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
         initView();
         initGridView();
         initData();
-        initView_safety();
+        try {
+            initView_safety();
+        } catch (Exception e) {
+            Log.i("Exception", "onCreate: " + e);
+        }
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
@@ -307,6 +311,9 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
             }
         });
 
+        if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
+            return;
+        }
         safety = (ListView) findViewById(R.id.safety);
         SafetyAdapter_group = new SafetyAdapter_group(this);
         safety.setAdapter(SafetyAdapter_group);
@@ -604,7 +611,7 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
                             Gson gson = new Gson();
                             Log.i("保存触发器数据", gson.toJson(time_data));
                             MyApplication.mApplication.showLoadDialog(GroupSetActivity_details.this);
-                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data),66);
+                            MyApplication.mApplication.getUdpServer().send(gson.toJson(time_data), 66);
                         } catch (Exception e) {
                             MyApplication.mApplication.dismissLoadDialog();
                             Log.e("保存触发器数据", "保存数据异常" + e);

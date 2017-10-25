@@ -543,9 +543,10 @@ public class MyApplication extends Application {
                             return;
                         }
                         try {
-                            Thread.sleep(5000);
+                            Thread.sleep(3000);
                             handler.sendMessage(handler.obtainMessage());
                         } catch (InterruptedException e) {
+                            WSIsAgainConnectRun = false;
                             Log.e("WSException", "WebSocket链接重启失败" + e);
                         }
                     }

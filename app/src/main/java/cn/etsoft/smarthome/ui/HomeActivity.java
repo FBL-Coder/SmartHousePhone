@@ -593,6 +593,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
     CustomDialog dialog_add_loaction;
 
+    long clicktime = 0;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -607,6 +609,11 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 city_cancel.setOnClickListener(this);
                 break;
             case R.id.home_tv_ref:
+                if (System.currentTimeMillis() - clicktime < 2000) {
+                    clicktime = System.currentTimeMillis();
+                    return;
+                }
+                clicktime = System.currentTimeMillis();
                 GlobalVars.setIsLAN(true);
                 SendDataUtil.getNetWorkInfo();
                 MyApplication.mApplication.showLoadDialog(HomeActivity.this, false);

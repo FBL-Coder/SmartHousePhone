@@ -160,6 +160,9 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 startActivity(intent);
                 break;
             case 6:
+                if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0){
+                    SendDataUtil.getSafetyInfo();
+                }
                 intent = new Intent(mActivity, GroupSetActivity.class);
                 intent.putExtra("title", text[6]);
                 startActivity(intent);

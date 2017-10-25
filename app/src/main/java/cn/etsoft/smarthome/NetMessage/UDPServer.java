@@ -674,14 +674,16 @@ public class UDPServer implements Runnable {
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(8000);
                         SendDataUtil.getSceneInfo();
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    Thread.sleep(10000);
-                                    SendDataUtil.getSafetyInfo();
+                                    if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
+                                        Thread.sleep(5000);
+                                        SendDataUtil.getSafetyInfo();
+                                    } else return;
                                 } catch (InterruptedException e) {
                                     SendDataUtil.getSafetyInfo();
                                 }
