@@ -80,7 +80,7 @@ public class ConfigPassActivity extends Activity implements View.OnClickListener
         } else if (selectnum == RESET) {
             mConfigHelpTvOldpass.setText("登陆密码：");
             mConfigHelpEtOldpass.setHint("请输入登陆密码");
-            mConfigHelpEtOldpass.setInputType(InputType.TYPE_NULL);
+            mConfigHelpEtOldpass.setInputType(InputType.TYPE_CLASS_TEXT);
             mResetPass.setBackgroundResource(R.color.main_blue1);
             mResetPass.setTextColor(Color.WHITE);
             mChangePass.setBackgroundColor(Color.WHITE);

@@ -114,17 +114,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         initFragment();
         //初始化数据
         upData();
-        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-            @Override
-            public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 3 || datType == 0 || datType == 8) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    //更新数据
-                    upData();
-                }
-
-            }
-        });
         MyApplication.mApplication.setmHomeActivity(this);
         NetBroadcastReceiver.setEvevt(new NetBroadcastReceiver.NetEvevtChangListener() {
             @Override
@@ -134,6 +123,23 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 SendDataUtil.getNetWorkInfo();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 3) {
+                    //更新数据
+                    upData();
+                }
+                if (homeDataUpDataListener != null)
+                    homeDataUpDataListener.getupData(datType, subtype1, subtype2);
+            }
+        });
+        upData();
     }
 
     public void getIp() {
@@ -503,23 +509,6 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         initViewPager();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-            @Override
-            public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 3) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    //更新数据
-                    upData();
-                }
-            }
-        });
-        upData();
-
-    }
-
     /**
      * 初始化数据
      */
@@ -693,5 +682,16 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
             AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
         }
+    }
+
+
+    public static HomeDataUpDataListener homeDataUpDataListener;
+
+    public static void setHomeDataUpDataListener(HomeDataUpDataListener homeDataUpDataListener) {
+        HomeActivity.homeDataUpDataListener = homeDataUpDataListener;
+    }
+
+    public static interface HomeDataUpDataListener {
+        void getupData(int datType, int subtype1, int subtype2);
     }
 }

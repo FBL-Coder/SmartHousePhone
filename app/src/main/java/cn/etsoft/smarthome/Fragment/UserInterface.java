@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -34,6 +35,7 @@ import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.domain.WareLight;
 import cn.etsoft.smarthome.domain.WareSetBox;
 import cn.etsoft.smarthome.domain.WareTv;
+import cn.etsoft.smarthome.ui.HomeActivity;
 import cn.etsoft.smarthome.ui.Setting.UserAddDevsActivty;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
@@ -54,6 +56,7 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
     private GridViewAdapter_user adapter_user;
     private UserBean bean;
     private Handler handler;
+    private int count;
 
     public UserInterface(Activity activity) {
         mActivity = activity;
@@ -64,13 +67,16 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         gridView = (GridView) view.findViewById(R.id.home_gv);
-
         if (MyApplication.getWareData().getUserBeen().getUser_bean().size() > 0) {
             MyApplication.mApplication.dismissLoadDialog();
             //初始化GridView
             initGridView(true);
         }
+        return view;
+    }
 
+    @Override
+    public void onResume() {
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -84,17 +90,19 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
                 }
             }
         };
-        return view;
-    }
-
-    @Override
-    public void onResume() {
         if (!MyApplication.mApplication.isVisitor())
             getUserData(handler);
-        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+
+        HomeActivity.setHomeDataUpDataListener(new HomeActivity.HomeDataUpDataListener() {
             @Override
-            public void upDataWareData(int datType, int subtype1, int subtype2) {
+            public void getupData(int datType, int subtype1, int subtype2) {
+                if (datType == 0) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    if (!MyApplication.mApplication.isVisitor())
+                        getUserData(handler);
+                }
                 if (datType == 3 || datType == 4 || datType == 35) {
+                    MyApplication.mApplication.dismissLoadDialog();
                     initGridView(false);
                 }
             }
@@ -160,16 +168,17 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
      */
     private void initGridView(boolean isNew) {
         bean = MyApplication.getWareData().getUserBeen();
-        if (isNew) {
+        if (isNew || adapter_user == null) {
             adapter_user = new GridViewAdapter_user(MyApplication.getWareData().getUserBeen(), mActivity);
             gridView.setAdapter(adapter_user);
-        } else adapter_user.notifyDataSetChanged(MyApplication.getWareData().getUserBeen());
+        } else
+            adapter_user.notifyDataSetChanged(MyApplication.getWareData().getUserBeen());
         gridView.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        TextView state = (TextView) view.findViewById(R.id.equip_style);
         if (position < bean.getUser_bean().size()) {
             //给点击按钮添加点击音效
             MyApplication.mApplication.getSp().play(MyApplication.mApplication.getMusic(), 1, 1, 0, 0, 1);
@@ -224,9 +233,14 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
                         WareCurtain Curtain = MyApplication.getWareData().getCurtains().get(j);
                         if (beanBean.getCanCpuID().equals(Curtain.getDev().getCanCpuId())
                                 && beanBean.getDevID() == Curtain.getDev().getDevId()) {
-                            if (Curtain.getbOnOff() == 0) {
+                            if (count % 2 == 0) {
+                                state.setText("点击关闭");
+                                SendDataUtil.controlDev(Curtain.getDev(), UdpProPkt.E_CURT_CMD.e_curt_offOn.getValue());
                             } else {
+                                state.setText("点击打开");
+                                SendDataUtil.controlDev(Curtain.getDev(), UdpProPkt.E_CURT_CMD.e_curt_offOff.getValue());
                             }
+                            count++;
                         }
                     }
                 } else if (type_dev == 7) {

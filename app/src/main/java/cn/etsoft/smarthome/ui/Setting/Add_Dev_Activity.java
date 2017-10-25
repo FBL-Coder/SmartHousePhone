@@ -227,13 +227,20 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
                             if (list_board.get(board_position).getCanCpuID().equals(
                                     MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId())) {
-                                int PowChn = MyApplication.getWareData().getCurtains().get(i).getDev().getPowChn() + 1;
-                                list_voard_cancpuid.add(PowChn);
+                                int PowChn = MyApplication.getWareData().getCurtains().get(i).getPowChn();
+                                String PowChnList = Integer.toBinaryString(PowChn);
+                                PowChnList = new StringBuffer(PowChnList).reverse().toString();
+                                List<Integer> index_list = new ArrayList<>();
+                                for (int j = 0; j < PowChnList.length(); j++) {
+                                    if (PowChnList.charAt(j) == '1') {
+                                        index_list.add(j + 1);
+                                    }
+                                }
+                                list_voard_cancpuid.addAll(index_list);
                             }
                         }
-                    } else if (dev.getType() == 7) {
+                    }  else if (dev.getType() == 7) {
                         for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
-
                             if (list_board.get(board_position).getCanCpuID().equals(
                                     MyApplication.getWareData().getFreshAirs().get(i).getDev().getCanCpuId())) {
                                 list_voard_cancpuid.add(MyApplication.getWareData().getFreshAirs().get(i).getOnOffChn() + 1);

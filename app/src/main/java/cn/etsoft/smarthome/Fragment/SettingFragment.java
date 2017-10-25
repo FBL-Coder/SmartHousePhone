@@ -22,6 +22,7 @@ import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.GridViewAdapter;
 import cn.etsoft.smarthome.ui.ConditionEventActivity;
+import cn.etsoft.smarthome.ui.HomeActivity;
 import cn.etsoft.smarthome.ui.Setting.ConfigPassActivity;
 import cn.etsoft.smarthome.ui.DevManageActivity;
 import cn.etsoft.smarthome.ui.GroupSetActivity;
@@ -84,13 +85,26 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
         mDialogTitleName.setText("配置密码：");
         mSceneEtName = (EditText) view.findViewById(R.id.scene_et_name);
         mSceneEtName.setHint("情输入配置密码");
-        mSceneEtName.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        mSceneEtName.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         mSceneBtnSure = (Button) view.findViewById(R.id.scene_btn_sure);
         mSceneBtnSure.setOnClickListener(this);
         mSceneBtnCancel = (Button) view.findViewById(R.id.scene_btn_cancel);
         mSceneBtnCancel.setOnClickListener(this);
         mLayout = (LinearLayout) view.findViewById(R.id.layout);
         mDialoHelp.setOnClickListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        HomeActivity.setHomeDataUpDataListener(new HomeActivity.HomeDataUpDataListener() {
+            @Override
+            public void getupData(int datType, int subtype1, int subtype2) {
+                if (datType == 3 || datType == 0 || datType == 8) {
+                   MyApplication.mApplication.dismissLoadDialog();
+                }
+            }
+        });
+        super.onResume();
     }
 
     /**

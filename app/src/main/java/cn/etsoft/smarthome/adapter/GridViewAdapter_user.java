@@ -185,13 +185,7 @@ public class GridViewAdapter_user extends BaseAdapter {
                         if (beanBean.getCanCpuID().equals(Curtain.getDev().getCanCpuId())
                                 && beanBean.getDevID() == Curtain.getDev().getDevId()) {
                             viewHolder.name.setText(Curtain.getDev().getDevName());
-                            if (Curtain.getbOnOff() == 0) {
-                                viewHolder.type.setImageResource(R.drawable.quanguan);
-                                viewHolder.state.setText("关");
-                            } else {
-                                viewHolder.type.setImageResource(R.drawable.quankai);
-                                viewHolder.state.setText("开");
-                            }
+                            viewHolder.type.setImageResource(R.drawable.quanguan);
                         }
                     }
                 } else if (type_dev == 7) {

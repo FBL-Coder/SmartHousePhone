@@ -64,13 +64,12 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     @Override
     public void onResume() {
-        cn.etsoft.smarthome.MyApplication.mApplication.setOnGetWareDataListener(new cn.etsoft.smarthome.MyApplication.OnGetWareDataListener() {
+        HomeActivity.setHomeDataUpDataListener(new HomeActivity.HomeDataUpDataListener() {
             @Override
-            public void upDataWareData(int datType, int subtype1, int subtype2) {
+            public void getupData(int datType, int subtype1, int subtype2) {
                 if (datType == 3 || datType == 0 || datType == 8) {
-                    cn.etsoft.smarthome.MyApplication.mApplication.dismissLoadDialog();
+                    MyApplication.mApplication.dismissLoadDialog();
                 }
-
             }
         });
         super.onResume();

@@ -315,8 +315,10 @@ public class MyApplication extends Application {
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
                     try {
-                        ToastUtil.showText("发送超时");
-                        mDialog.dismiss();
+                        if (mDialog != null && mDialog.isShowing()) {
+                            ToastUtil.showText("请求超时");
+                            mDialog.dismiss();
+                        }
                     } catch (Exception e) {
                     }
                 }
@@ -330,12 +332,13 @@ public class MyApplication extends Application {
                             handler.sendMessage(handler.obtainMessage());
                         }
                     } catch (Exception e) {
+                        handler.sendMessage(handler.obtainMessage());
                         System.out.println(e + "");
                     }
                 }
             }).start();
         } catch (Exception e) {
-
+            mDialog.dismiss();
         }
     }
 

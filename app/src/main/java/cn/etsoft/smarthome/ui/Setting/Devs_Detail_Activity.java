@@ -603,7 +603,16 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                                 WareCurtain curtain = MyApplication.getWareData().getCurtains().get(i);
                                 if (dev_inner.getDevId() == curtain.getDev().getDevId()
                                         && dev_inner.getCanCpuId().equals(curtain.getDev().getCanCpuId())) {
-                                    list_voard_cancpuid.add(curtain.getDev().getPowChn() + 1);
+                                    int PowChn = curtain.getPowChn();
+                                    String PowChnList = Integer.toBinaryString(PowChn);
+                                    PowChnList = new StringBuffer(PowChnList).reverse().toString();
+                                    List<Integer> index_list = new ArrayList<>();
+                                    for (int j = 0; j < PowChnList.length(); j++) {
+                                        if (PowChnList.charAt(j) == '1') {
+                                            index_list.add(j + 1);
+                                        }
+                                    }
+                                    list_voard_cancpuid.addAll(index_list);
                                 }
                             }
                         } else if (dev_inner.getType() == 7) {
