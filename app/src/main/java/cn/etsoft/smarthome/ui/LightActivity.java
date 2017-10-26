@@ -215,8 +215,10 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
                 gridView.setAdapter(lightAdapter);
                 ToastUtil.showText(title_bar_tv_room.getText() + "没有找到灯具，请添加");
             } else {
-                lightAdapter = new LightAdapter(wareLight, this);
-                gridView.setAdapter(lightAdapter);
+                if (lightAdapter == null) {
+                    lightAdapter = new LightAdapter(wareLight, this);
+                    gridView.setAdapter(lightAdapter);
+                } else lightAdapter.notifyDataSetChanged(wareLight);
             }
         } catch (Exception e) {
             return;
