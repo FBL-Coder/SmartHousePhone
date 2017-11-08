@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -92,7 +93,7 @@ public class UpdateManager {
                         installAPK();
                         break;
                     case DOWNLOAD_FAILED:
-                        ToastUtil.showText("网络断开，请稍候再试");
+                        ToastUtil.showText("网络断开或更新异常，请稍候再试");
                         break;
                     default:
                         break;
@@ -168,7 +169,9 @@ public class UpdateManager {
                     URL url = new URL(apkUrl);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestProperty("Accept-Encoding", "identity");
+                    conn.setRequestMethod("POST");
                     conn.connect();
+                    System.setProperty("http.keepAlive", "false");
 
                     int length = conn.getContentLength();
                     InputStream is = conn.getInputStream();
@@ -183,7 +186,7 @@ public class UpdateManager {
 
 
                     int count = 0;
-                    byte buf[] = new byte[1024];
+                    byte buf[] = new byte[1024*50];
 
                     do {
                         int numread = is.read(buf);
@@ -201,8 +204,9 @@ public class UpdateManager {
                     fos.close();
                     is.close();
                 } catch (Exception e) {
-                    Log.i("UpApp", "更新应用异常:" + e);
-                    mHandler.sendEmptyMessage(DOWNLOAD_FAILED);
+//                    Log.i("UpApp", "更新应用异常:" + e);
+//                    mHandler.sendEmptyMessage(DOWNLOAD_FAILED);
+                    e.printStackTrace();
                 }
             }
         }).start();
