@@ -117,7 +117,7 @@ public class NewWorkSetActivity extends Activity {
                 }
             }
         });
-        initSeekList();
+//        initSeekList();
         mTitle = (TextView) findViewById(R.id.title);
         mTitleName = (TextView) findViewById(R.id.title_name);
         mDialogAddSceneName = (EditText) findViewById(R.id.dialog_addScene_name);
@@ -160,7 +160,6 @@ public class NewWorkSetActivity extends Activity {
         MyApplication.mApplication.setSeekRcuInfos(SeekListData);
         SeekNetClick(SeekListData);
     }
-
     /**
      * 搜索的联网模块在使用前需要输入密码确认
      *
@@ -245,10 +244,17 @@ public class NewWorkSetActivity extends Activity {
      *
      * @param position
      */
-    private void ClickUseNet(int position) {
+    private void ClickUseNet(final int position) {
         MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                 MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID());
+        if (!"".equals(AppSharePreferenceMgr.get(GlobalVars.USERID_SHAREPREFERENCE, ""))) {
+            Net_AddorDel_Helper.addNew(mNewModuleHandler, NewWorkSetActivity.this
+                    , MyApplication.mApplication.getSeekRcuInfos().get(position).getName()
+                    , MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID()
+                    , "");
+            Log.i(TAG, "upDataWareData 搜索 使用  添加到服务器");
+        }
         MyApplication.setNewWareData();
         GlobalVars.setIsLAN(true);
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
@@ -394,6 +400,18 @@ public class NewWorkSetActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        if (GlobalVars.getDevid().equals(
+                                MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID())) {
+                            if (MyApplication.mApplication.getRcuInfoList().size() > 0) {
+                                AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
+                                        MyApplication.mApplication.getRcuInfoList().get(0).getDevUnitID());
+                                MyApplication.setNewWareData();
+                                GlobalVars.setIsLAN(true);
+                                SendDataUtil.getNetWorkInfo();
+                            }else {
+                                MyApplication.setNewWareData();
+                            }
+                        }
                         mDeleteNet_Position = position;
                         Net_AddorDel_Helper.deleteNew(mNewModuleHandler,
                                 NewWorkSetActivity.this,

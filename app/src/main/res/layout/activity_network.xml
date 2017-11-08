@@ -14,13 +14,19 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="@dimen/dp_120"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/dp_100"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/save_click_selector"
             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:text="已有联网模块列表"
+                android:textSize="@dimen/sp_12"
+                android:gravity="center"
+                android:layout_weight="3"/>
 
             <TextView
                 android:id="@+id/network_add"
@@ -28,6 +34,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:background="@drawable/save_click_selector"
                 android:text="添加模块"
                 android:textColor="@color/color_fff" />
 
@@ -37,6 +44,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="0.8"
+                android:layout_marginRight="@dimen/sp_30"
                 android:background="@color/white1"
                 android:padding="@dimen/dp_3"
                 android:src="@drawable/refrush" />
@@ -63,13 +71,19 @@
 
         <LinearLayout
 
-            android:layout_width="@dimen/dp_80"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/dp_100"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/save_click_selector"
             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:text="搜索联网模块列表"
+                android:textSize="@dimen/sp_12"
+                android:gravity="center"
+                android:layout_weight="3"/>
 
             <TextView
                 android:id="@+id/network_sousuo"
@@ -77,8 +91,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="搜索模块"
                 android:background="@drawable/save_click_selector"
+                android:text="搜索模块"
+                android:layout_marginRight="@dimen/dp_90"
                 android:textColor="@color/white1" />
 
         </LinearLayout>

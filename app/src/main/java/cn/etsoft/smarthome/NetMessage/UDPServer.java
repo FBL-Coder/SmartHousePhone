@@ -171,8 +171,17 @@ public class UDPServer implements Runnable {
 
     //搜索联网模块
     public void sendSeekNet(boolean isSeekNet) {
-        if (isSeekNet)
+        if (isSeekNet) {
             MyApplication.mApplication.setSeekNet(true);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    MyApplication.mApplication.setSeekNet(false);
+                }
+            }, 5000);
+
+
+        }
         String SeekNet = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
                 "\"devPass\":\"" + GlobalVars.getDevpass() + "\"," +
@@ -255,9 +264,11 @@ public class UDPServer implements Runnable {
             UDPtimer.cancel();
             Log.i(TAG, "UDP数据，取消定时等待");
             if (!GlobalVars.isIsLAN()) {
-                Message message = mhandler.obtainMessage();
-                message.what = MyApplication.mApplication.NETCHANGE_LAN;
-                mhandler.sendMessage(message);
+                if (devUnitID.equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
+                    Message message = mhandler.obtainMessage();
+                    message.what = MyApplication.mApplication.NETCHANGE_LAN;
+                    mhandler.sendMessage(message);
+                }
             }
         }
         UDPtimer = new Timer();
@@ -282,6 +293,8 @@ public class UDPServer implements Runnable {
     }
 
     public void IsWebData(String info) {
+        if (MyApplication.mApplication.isSeekNet())
+            return;
         String devUnitID = "";
         int datType = 0;
         int subType2 = 0;
@@ -329,7 +342,7 @@ public class UDPServer implements Runnable {
                                 MyApplication.setNewWareData();
                             }
                             GlobalVars.IsclearCache++;
-                        }else {
+                        } else {
                             MyApplication.setNewWareData();
                         }
                         setRcuInfo(info);

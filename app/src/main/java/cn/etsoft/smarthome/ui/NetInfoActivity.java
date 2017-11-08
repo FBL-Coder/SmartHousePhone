@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import cn.etsoft.smarthome.Helper.Net_AddorDel_Helper;
@@ -118,7 +120,8 @@ public class NetInfoActivity extends Activity {
         } else if (info.getbDhcp() == 0) {
             stateIP_no.setChecked(true);
         }
-//        if (FLAG == NetWork_Adapter.SEEK) {
+        if (FLAG == NetWork_Adapter.SEEK) {
+            net_Pass.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
 //            save.setVisibility(View.GONE);
 //            Net_Pass_LL.setVisibility(View.GONE);
 //            name.setEnabled(false);
@@ -128,7 +131,7 @@ public class NetInfoActivity extends Activity {
 //            Server.setEnabled(false);
 //            stateIP_yes.setClickable(false);
 //            stateIP_no.setClickable(false);
-//        }
+        }
 
         stateIP.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -154,6 +157,18 @@ public class NetInfoActivity extends Activity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                List<RcuInfo> list = MyApplication.mApplication.getRcuInfoList();
+
+                if (FLAG == NetWork_Adapter.SEEK) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (info.getDevUnitID().equals(list.get(i).getDevUnitID())) {
+                            ToastUtil.showText("请在已有联网模块列表中修改模块信息", 5000);
+                            return;
+                        }
+                    }
+                }
+
                 if (!info.getDevUnitID().
                         equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
                     ToastUtil.showText("这个联网模快没有使用中，不可修改信息");
@@ -199,6 +214,7 @@ public class NetInfoActivity extends Activity {
             }
         });
     }
+
     class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {

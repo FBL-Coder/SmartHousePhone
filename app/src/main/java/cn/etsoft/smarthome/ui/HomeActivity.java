@@ -488,7 +488,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     } else {
                         net_now.setText(list.get(i).getCanCpuName());
                     }
-                    if ("".equals(net_now.getText().toString())){
+                    if ("".equals(net_now.getText().toString())) {
                         net_now.setText("点击设置模块");
                     }
                 }
