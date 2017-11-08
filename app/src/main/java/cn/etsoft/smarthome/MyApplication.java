@@ -2,9 +2,11 @@ package cn.etsoft.smarthome;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -13,6 +15,7 @@ import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -84,6 +87,12 @@ public class MyApplication extends Application {
     public int UDP_NORECEIVE = 1004;
     //没有网络
     public int NONET = 5555;
+
+    //网络变化   远程-->局域网
+    public int NETCHANGE_LAN = 5050;
+    //网络变化   局域网-->远程
+    public int NETCHANGE_LONG = 0505;
+
     //全局数据
     public static WareData mWareData;
 
@@ -153,6 +162,7 @@ public class MyApplication extends Application {
         ExecutorService exec = Executors.newCachedThreadPool();
         udpServer = new UDPServer(handler);
         exec.execute(udpServer);
+        udpServer.UdpHeard();
 
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
@@ -255,6 +265,7 @@ public class MyApplication extends Application {
             ExecutorService exec = Executors.newCachedThreadPool();
             udpServer = new UDPServer(handler);
             exec.execute(udpServer);
+            udpServer.UdpHeard();
         }
         return udpServer;
     }
@@ -457,6 +468,8 @@ public class MyApplication extends Application {
         private boolean WSIsAgainConnectRun;
         private boolean WSIsOpen = false;
         private int NotificationID = 10;
+        private AlertDialog dialog;
+        private AlertDialog.Builder builder;
 
         APPHandler(MyApplication application) {
             this.weakReference = new WeakReference<>(application);
@@ -509,6 +522,40 @@ public class MyApplication extends Application {
             //网络监听吐司
             if (msg.what == application.NONET) {
                 ToastUtil.showText("没有可用网络，请检查", 5000);
+            }
+            if (msg.what == application.NETCHANGE_LONG) {//网络变化  局域网--》远程
+                Dialog();
+            }
+            if (msg.what == application.NETCHANGE_LAN) {//网络变化  远程 --》 局域网
+                Dialog();
+            }
+        }
+
+        public void Dialog() {
+            if (builder == null)
+                builder = new AlertDialog.Builder(weakReference.get());
+            if (dialog == null) {
+                dialog = builder.setTitle("提示")
+                        .setMessage("检测到网络改变，是否自动切换数据来源？")
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+
+                            }
+                        })
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                GlobalVars.setIsLAN(true);
+                            }
+                        }).create();
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                dialog.setCanceledOnTouchOutside(false);//点击屏幕不消失
+            }
+            if (!dialog.isShowing()) {//此时提示框未显示
+                dialog.show();
             }
         }
 

@@ -212,7 +212,7 @@ public class NewWorkSetActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 MyApplication.mApplication.setSeekNet(false);
                 if (!MyApplication.mApplication.isCanChangeNet()) {
-                    ToastUtil.showText("正在加载数据，请稍后再试...");
+                    ToastUtil.showText("正在加载数据，请等待几秒...");
                     return;
                 }
                 if (GlobalVars.getDevid().equals(MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID()))
@@ -315,7 +315,7 @@ public class NewWorkSetActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 MyApplication.mApplication.setSeekNet(false);
                 if (!MyApplication.mApplication.isCanChangeNet()) {
-                    ToastUtil.showText("正在加载数据，请稍后再试...");
+                    ToastUtil.showText("正在加载数据，请等待几秒...");
                     return;
                 }
                 if (GlobalVars.getDevid().equals(MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID()))
@@ -431,7 +431,7 @@ public class NewWorkSetActivity extends Activity {
         network_sousuo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyApplication.mApplication.getUdpServer().sendSeekNet();
+                MyApplication.mApplication.getUdpServer().sendSeekNet(true);
                 MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this);
             }
         });
@@ -493,7 +493,6 @@ public class NewWorkSetActivity extends Activity {
             RcuInfo rcuInfo = new RcuInfo();
             rcuInfo.setCanCpuName(result.getData().get(i).getCanCpuName());
             rcuInfo.setDevUnitID(result.getData().get(i).getDevUnitID());
-            rcuInfo.setDevUnitPass(result.getData().get(i).getDevPass());
             rcuInfo.setOnline(result.getData().get(i).isOnline());
             rcuInfos.add(rcuInfo);
         }

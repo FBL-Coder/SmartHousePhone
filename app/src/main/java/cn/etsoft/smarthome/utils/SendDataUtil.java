@@ -3,20 +3,24 @@ package cn.etsoft.smarthome.utils;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
-import cn.etsoft.smarthome.MyApplication;
-import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.WareDev;
+import cn.etsoft.smarthome.domain.WareKeyOpItem;
 import cn.etsoft.smarthome.domain.WareSceneEvent;
+import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 
+import static android.content.ContentValues.TAG;
 
 /**
  * Author：FBL  Time： 2017/6/9.
  */
 
 public class SendDataUtil {
+
 
     public static void getGroupSetInfo() {
         String GETGROUPSETINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid()
@@ -69,6 +73,7 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(GETOUTBOARDINFO, 8);
     }
 
+
     public static void getSceneInfo() {
         String GETSCENEINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() + "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getSceneEvents.getValue() + "," + "\"subType1\": 0," + "\"subType2\": 0" + "}";
         MyApplication.mApplication.getUdpServer().send(GETSCENEINFO, 22);
@@ -79,29 +84,26 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(GETDEVINFO, 3);
     }
 
-
     public static void getNetWorkInfo() {
+        MyApplication.mApplication.getUdpServer().sendSeekNet(false);
         String GETNETWORKINFO = "{\"devUnitID\": \"" + GlobalVars.getDevid() +
                 "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getRcuInfo.getValue() +
                 "," + "\"subType1\": 0," + "\"subType2\": 0," + "\"localIP\":\"" + GlobalVars.WIFI_IP + "\"}";
-        MyApplication.mApplication.getUdpServer().send(GETNETWORKINFO, 0);
+        MyApplication.mApplication.getUdpServer().send(GETNETWORKINFO, 80);
         MyApplication.mApplication.setCanChangeNet(false);
     }
 
-    public static void controlDev(WareDev dev, int cmd) {
-        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-                ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
-                ",\"subType1\":0" +
-                ",\"subType2\":0" +
-                ",\"canCpuID\":\"" + dev.getCanCpuId() + "\"" +
-                ",\"devType\":" + dev.getType() +
-                ",\"devID\":" + dev.getDevId() +
-                ",\"cmd\":" + cmd +
-                "}";
-        MyApplication.mApplication.getUdpServer().send(ctlStr, 4);
+
+    public static void getHeart() {
+        String GETHEART = "{\"devUnitID\": \"" + GlobalVars.getDevid() +
+                "\"," + "\"datType\": " + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_getHeart.getValue() +
+                "," + "\"subType1\": 0," + "\"subType2\": 0," + "\"localIP\":\"" + GlobalVars.WIFI_IP + "\"}";
+        Log.i(TAG, "UdpHeard: 心跳包请求 \n" + GETHEART);
+        MyApplication.mApplication.getUdpServer().UdpSendMsg(GETHEART);
     }
 
-    public static void changeNetInfo(String name, String pass,String ip, String Ip_mask,
+
+    public static void changeNetInfo(String name, String pass, String ip, String Ip_mask,
                                      String GetWay, String Server, String macAddr, int IsState) {
         String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                 ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_setRcuInfo.getValue() +
@@ -118,7 +120,20 @@ public class SendDataUtil {
                 ",\"bDhcp\":" + IsState +
                 "}";
         Log.i("changeNetInfo", ctlStr);
-//        MyApplication.mApplication.getUdpServer().send(ctlStr, 1);
+        MyApplication.mApplication.getUdpServer().send(ctlStr, 1);
+    }
+
+    public static void controlDev(WareDev dev, int cmd) {
+        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
+                ",\"subType1\":0" +
+                ",\"subType2\":0" +
+                ",\"canCpuID\":\"" + dev.getCanCpuId() + "\"" +
+                ",\"devType\":" + dev.getType() +
+                ",\"devID\":" + dev.getDevId() +
+                ",\"cmd\":" + cmd +
+                "}";
+        MyApplication.mApplication.getUdpServer().send(ctlStr, 4);
     }
 
     public static void deleteDev(WareDev dev) {
@@ -158,7 +173,15 @@ public class SendDataUtil {
                 ",\"subType2\":0" +
                 ",\"eventId\":" + sceneid +
                 ",\"devCnt\":" + 0 +
-                ",\"itemAry\":[]}";
+                ",\"itemAry\":[{" +
+                "\"canCpuId\":\"\"" +
+                ",\"devType\":" + 0 +
+                ",\"devID\":" + 0 +
+                ",\"bOnOff\":" + 0 +
+                ",\"lmVal\":0" +
+                ",\"param1\":0" +
+                ",\"param2\":0" +
+                "}]}";
         MyApplication.mApplication.getUdpServer().send(str, 23);
     }
 
@@ -184,6 +207,7 @@ public class SendDataUtil {
     }
 
     public static void getKeyItemInfo(int inputKey_position, String CancupID) {
+        MyApplication.getWareData().setKeyOpItems(new ArrayList<WareKeyOpItem>());
         //uid  按键所在的输入板id
         final String str = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
@@ -196,7 +220,7 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(str, 11);
     }
 
-    public static void getChnItemInfo(String uid, int type, int id) {
+    public static void getChnItemInfo(String uid,int devid,int typedev) {
         //uid  设备所在输出板ID
         final String str = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +
@@ -205,10 +229,8 @@ public class SendDataUtil {
                 "\"canCpuId\":" + "\"" + uid + "\"," +
                 "\"subType1\":0," +
                 "\"subType2\":0," +
-                "\"devID\":" + id + "," +
-                "\"devType\":" + type + "}";
+                "\"devID\":" + devid + "," +
+                "\"devType\":" + typedev + "}";
         MyApplication.mApplication.getUdpServer().send(str, 14);
     }
-
-
 }

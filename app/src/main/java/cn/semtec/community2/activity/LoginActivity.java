@@ -137,7 +137,6 @@ public class LoginActivity extends MyBaseActivity implements OnClickListener {
             RcuInfo rcuInfo = new RcuInfo();
             rcuInfo.setCanCpuName(result.getData().get(i).getCanCpuName());
             rcuInfo.setDevUnitID(result.getData().get(i).getDevUnitID());
-            rcuInfo.setDevUnitPass(result.getData().get(i).getDevPass());
             rcuInfo.setOnline(result.getData().get(i).isOnline());
             rcuInfos.add(rcuInfo);
         }

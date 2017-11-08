@@ -73,6 +73,18 @@ public class NetInfoActivity extends Activity {
         stateIP_yes = (RadioButton) findViewById(R.id.stateIP_yes);
         stateIP_no = (RadioButton) findViewById(R.id.stateIP_no);
         Net_Pass_LL = (LinearLayout) findViewById(R.id.Net_Pass_ll);
+
+        MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+            @Override
+            public void upDataWareData(int datType, int subtype1, int subtype2) {
+                if (datType == 1 && subtype1 == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    if (subtype2 == 1)
+                        ToastUtil.showText("修改成功");
+                    else ToastUtil.showText("修改失败");
+                }
+            }
+        });
     }
 
     public void initData() {
@@ -106,17 +118,17 @@ public class NetInfoActivity extends Activity {
         } else if (info.getbDhcp() == 0) {
             stateIP_no.setChecked(true);
         }
-        if (FLAG == NetWork_Adapter.SEEK) {
-            save.setVisibility(View.GONE);
-            Net_Pass_LL.setVisibility(View.GONE);
-            name.setEnabled(false);
-            IP.setEnabled(false);
-            Ip_mask.setEnabled(false);
-            GetWay.setEnabled(false);
-            Server.setEnabled(false);
-            stateIP_yes.setClickable(false);
-            stateIP_no.setClickable(false);
-        }
+//        if (FLAG == NetWork_Adapter.SEEK) {
+//            save.setVisibility(View.GONE);
+//            Net_Pass_LL.setVisibility(View.GONE);
+//            name.setEnabled(false);
+//            IP.setEnabled(false);
+//            Ip_mask.setEnabled(false);
+//            GetWay.setEnabled(false);
+//            Server.setEnabled(false);
+//            stateIP_yes.setClickable(false);
+//            stateIP_no.setClickable(false);
+//        }
 
         stateIP.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -143,11 +155,11 @@ public class NetInfoActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (!info.getDevUnitID().
-                        equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE,""))){
+                        equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
                     ToastUtil.showText("这个联网模快没有使用中，不可修改信息");
                     return;
                 }
-                if (!GlobalVars.isIsLAN()){
+                if (!GlobalVars.isIsLAN()) {
                     ToastUtil.showText("修改联网模块信息必须是局域网操作");
                     return;
                 }
@@ -161,31 +173,32 @@ public class NetInfoActivity extends Activity {
                         !IPV4_PATTERN.matcher(GetWay_str).matches() ||
                         !IPV4_PATTERN.matcher(Server_str).matches()) {
                     ToastUtil.showText("IP格式不正确，请确认后再保存");
-                }else if ("".equals(name_str)||name_str.length()>6){
+                } else if ("".equals(name_str) || name_str.length() > 6) {
                     ToastUtil.showText("名称为空或者大于6个字符");
-                }else {
+                } else {
                     byte[] data = {0};
                     try {
                         data = name_str.getBytes("GB2312");
                     } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                        ToastUtil.showText("名称不合适！");
+                        return;
                     }
+                    MyApplication.mApplication.showLoadDialog(NetInfoActivity.this);
                     String name_str_gb = CommonUtils.bytesToHexString(data);
-                    SendDataUtil.changeNetInfo(name_str_gb, info.getDevUnitPass(),IP_str, Ip_mask_str
+                    SendDataUtil.changeNetInfo(name_str_gb, info.getDevUnitPass(), IP_str, Ip_mask_str
                             , GetWay_str, Server_str, info.getMacAddr(), IpState);
 
-//                    MyHandler handler = new MyHandler();
-//
-//                    Net_AddorDel_Helper.editNew(handler, MyApplication.mApplication.getRcuInfoList(),
-//                            position, NetInfoActivity.this, name,
-//                            MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID(),
-//                            MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitPass());
+                    MyHandler handler = new MyHandler();
+                    if (FLAG == NetWork_Adapter.LOGIN) {
+                        Net_AddorDel_Helper.editNew(handler, MyApplication.mApplication.getRcuInfoList(),
+                                position, NetInfoActivity.this, name,
+                                MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID(),
+                                MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitPass());
+                    }
                 }
-
             }
         });
     }
-
     class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
