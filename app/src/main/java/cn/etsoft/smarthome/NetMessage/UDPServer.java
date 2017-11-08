@@ -324,6 +324,14 @@ public class UDPServer implements Runnable {
                 if (subType2 == 1) {
                     if (!MyApplication.mApplication.isSeekNet()) {
                         //设置联网模块信息
+                        if (GlobalVars.isIsLAN()) {
+                            if (GlobalVars.IsclearCache == 0) {
+                                MyApplication.setNewWareData();
+                            }
+                            GlobalVars.IsclearCache++;
+                        }else {
+                            MyApplication.setNewWareData();
+                        }
                         setRcuInfo(info);
                     } else if (MyApplication.mApplication.isSeekNet()) {
                         setRcuInfo_search(info);

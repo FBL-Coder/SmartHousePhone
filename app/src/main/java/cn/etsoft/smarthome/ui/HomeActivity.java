@@ -620,6 +620,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     clicktime = System.currentTimeMillis();
                     return;
                 }
+                GlobalVars.IsclearCache = 0;
                 clicktime = System.currentTimeMillis();
                 GlobalVars.setIsLAN(true);
                 SendDataUtil.getNetWorkInfo();

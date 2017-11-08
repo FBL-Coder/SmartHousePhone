@@ -7,7 +7,7 @@ import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 
 public class GlobalVars {
 
-
+    public static long IsclearCache = 0;
     /**
      * 存储联网模块列表
      */
