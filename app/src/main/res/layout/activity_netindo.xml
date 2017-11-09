@@ -51,9 +51,6 @@
                 android:src="@drawable/close"
                 />
         </RelativeLayout>
-
-
-
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
@@ -61,6 +58,13 @@
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_10"
             android:background="@color/main_blue1" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_10"
+            android:paddingLeft="@dimen/sp_20"
+            android:textColor="@color/main_blue1"
+            android:text="修改联网模块信息需谨慎操作"/>
 
         <LinearLayout
             android:id="@+id/NetWork_Info"

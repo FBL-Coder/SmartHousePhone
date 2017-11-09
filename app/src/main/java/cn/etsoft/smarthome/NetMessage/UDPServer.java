@@ -178,9 +178,7 @@ public class UDPServer implements Runnable {
                 public void run() {
                     MyApplication.mApplication.setSeekNet(false);
                 }
-            }, 5000);
-
-
+            }, 3000);
         }
         String SeekNet = "{" +
                 "\"devUnitID\":\"" + GlobalVars.getDevid() + "\"," +

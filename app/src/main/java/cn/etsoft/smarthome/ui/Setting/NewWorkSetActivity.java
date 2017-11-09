@@ -107,7 +107,16 @@ public class NewWorkSetActivity extends Activity {
         if (MyApplication.mApplication.isVisitor()) {
             add_ref_LL.setVisibility(View.GONE);
         }
+//        initSeekList();
+        mTitle = (TextView) findViewById(R.id.title);
+        mTitleName = (TextView) findViewById(R.id.title_name);
+        mDialogAddSceneName = (EditText) findViewById(R.id.dialog_addScene_name);
+        mDialogAddSceneCancle = (TextView) findViewById(R.id.dialog_addScene_cancle);
+        mDialogAddSceneOk = (TextView) findViewById(R.id.dialog_addScene_ok);
+    }
 
+    @Override
+    protected void onResume() {
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
@@ -117,22 +126,7 @@ public class NewWorkSetActivity extends Activity {
                 }
             }
         });
-//        initSeekList();
-        mTitle = (TextView) findViewById(R.id.title);
-        mTitleName = (TextView) findViewById(R.id.title_name);
-        mDialogAddSceneName = (EditText) findViewById(R.id.dialog_addScene_name);
-        mDialogAddSceneCancle = (TextView) findViewById(R.id.dialog_addScene_cancle);
-        mDialogAddSceneOk = (TextView) findViewById(R.id.dialog_addScene_ok);
-    }
-
-    /**
-     * 如果之前搜索过，进来之后直接显示之前的搜索结果
-     */
-    private void initSeekList() {
-        List<RcuInfo> SeekData = MyApplication.mApplication.getSeekRcuInfos();
-        if (SeekData.size() == 0)
-            return;
-        SeekNetClick(SeekData);
+        super.onResume();
     }
 
     /**
@@ -449,12 +443,12 @@ public class NewWorkSetActivity extends Activity {
         network_sousuo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MyApplication.mApplication.getSeekRcuInfos().clear();
                 MyApplication.mApplication.getUdpServer().sendSeekNet(true);
                 MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this);
             }
         });
     }
-
 
     /**
      * 刷新账号下的联网模快列表

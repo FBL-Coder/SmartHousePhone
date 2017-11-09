@@ -100,6 +100,11 @@ public class GroupList_SceneAdapter extends BaseExpandableListAdapter implements
         viewHolder.mGrouplistTvTest.setText("呼叫");
         viewHolder.mGrouplistIvEditname.setImageResource(R.drawable.edit_roomname);
         viewHolder.mGrouplistIvSet.setVisibility(View.GONE);
+
+        //TODO  修改情景名称，测试情景按钮隐藏
+        viewHolder.mGrouplistIvEditname.setVisibility(View.GONE);
+        viewHolder.mGrouplistTvTest.setVisibility(View.GONE);
+
         viewHolder.mGrouplistIvEditname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

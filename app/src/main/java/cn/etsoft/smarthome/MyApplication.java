@@ -536,7 +536,7 @@ public class MyApplication extends Application {
                 builder = new AlertDialog.Builder(weakReference.get());
             if (dialog == null) {
                 dialog = builder.setTitle("提示")
-                        .setMessage("检测到网络改变，是否自动切换数据来源？")
+                        .setMessage("检测到网络改变，是否自动切换数据来源？（不消耗流量）")
                         .setNegativeButton("否", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
