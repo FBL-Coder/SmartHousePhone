@@ -85,6 +85,7 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
         setContentView(R.layout.activity_timer_details);
         //初始化标题栏
         initTitleBar();
+        Timer_position = getIntent().getIntExtra("Timer_position",0);
         //初始化组件
         initView();
         initGridView(Timer_position);
@@ -97,16 +98,14 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
                     MyApplication.mApplication.dismissLoadDialog();
                     initGridView(Timer_position);
                     initData(Timer_position);
-                    if (Timer_position != 0) {
-                        ToastUtil.showText("保存成功");
-                    }
                 }
-                if (datType == 19) {
-                    SendDataUtil.getTimerInfo();
-                    if (Timer_position == 0) {
+                if (datType == 19 ) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    if (subtype2 == 1) {
                         ToastUtil.showText("保存成功");
+                        SendDataUtil.getTimerInfo();
                     }
-                    initData(Timer_position);
+                    else ToastUtil.showText("保存失败");
                 }
             }
         });
@@ -228,11 +227,12 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
      */
     public void initData(int timer_position) {
         title.setText("");
-        Timer_position = getIntent().getExtras().getInt("Timer_position");
         title.setHint(MyApplication.getWareData().getTimer_data().getTimerEvent_rows().get(Timer_position).getTimerName());
         home_text = MyApplication.getWareData().getRooms();
-        if (MyApplication.getWareData().getTimer_data().getTimerEvent_rows() == null && MyApplication.getWareData().getTimer_data().getTimerEvent_rows().size() == 0)
+        if (MyApplication.getWareData().getTimer_data().getTimerEvent_rows() == null || MyApplication.getWareData().getTimer_data().getTimerEvent_rows().size() == 0) {
+            ToastUtil.showText("数据不合适");
             return;
+        }
         et_name.setText("");
         et_name.setHint(MyApplication.getWareData().getTimer_data()
                 .getTimerEvent_rows().get(timer_position).getTimerName());

@@ -126,7 +126,6 @@ public class FloorHeatAdapter extends BaseAdapter {
                         "\"cmd\":" + 1 + "," +
                         "\"powChn\":" + mFloorHeat.get(position).getDev().getPowChn() + "}";
                 MyApplication.mApplication.getUdpServer().send(chn_str,6);
-                MyApplication.mApplication.showLoadDialog(mActivity);
 
             }
         });
@@ -168,7 +167,6 @@ public class FloorHeatAdapter extends BaseAdapter {
                         "\"cmd\":" + 1 + "," +
                         "\"powChn\":" + mFloorHeat.get(position).getDev().getPowChn() + "}";
                 MyApplication.mApplication.getUdpServer().send(chn_str,6);
-                MyApplication.mApplication.showLoadDialog(mActivity);
             }
         });
         return convertView;

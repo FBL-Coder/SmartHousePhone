@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.CroupSetAdapter;
 import cn.etsoft.smarthome.ui.Setting.GroupSetActivity_details;
@@ -32,7 +33,7 @@ public class GroupSetActivity extends Activity implements AdapterView.OnItemClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
-        MyApplication.mApplication.showLoadDialog(this);
+
         //初始化标题栏
         initTitleBar();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
@@ -48,8 +49,10 @@ public class GroupSetActivity extends Activity implements AdapterView.OnItemClic
                 }
             }
         });
-        SendDataUtil.getGroupSetInfo();
-
+        if (!"".equals(GlobalVars.getDevid())) {
+            SendDataUtil.getGroupSetInfo();
+            MyApplication.mApplication.showLoadDialog(this);
+        }
     }
 
     /**

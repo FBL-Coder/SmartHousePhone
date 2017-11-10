@@ -66,7 +66,9 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
         //初始化GridView
         initGridView(view);
         isPassCorrect = false;
-        getDialog();
+        if (!MyApplication.mApplication.isInputPass) {
+            getDialog();
+        } else isPassCorrect = true;
         return view;
     }
 
@@ -100,7 +102,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
             @Override
             public void getupData(int datType, int subtype1, int subtype2) {
                 if (datType == 3 || datType == 0 || datType == 8) {
-                   MyApplication.mApplication.dismissLoadDialog();
+                    MyApplication.mApplication.dismissLoadDialog();
                 }
             }
         });
@@ -160,7 +162,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 startActivity(intent);
                 break;
             case 6:
-                if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0){
+                if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
                     SendDataUtil.getSafetyInfo();
                 }
                 intent = new Intent(mActivity, GroupSetActivity.class);
@@ -178,6 +180,7 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
                 if (mSceneEtName.getText().toString().equals(
                         AppSharePreferenceMgr.get(GlobalVars.CONFIG_PASS_SHAREPREFERENCE, ""))) {
                     isPassCorrect = true;
+                    MyApplication.mApplication.isInputPass = true;
                     dialog.dismiss();
                 } else {
                     ToastUtil.showText("输入密码正确，请重新输入！");

@@ -126,7 +126,6 @@ public class Net_AddorDel_Helper {
             ToastUtil.showText("模块ID和模块密码不能为空");
             return;
         }
-        MyApplication.mApplication.showLoadDialog(activity);
         Map<String, String> param = new HashMap<>();
         param.put("userName", (String) AppSharePreferenceMgr.get(GlobalVars.USERID_SHAREPREFERENCE, ""));
         param.put("passwd", (String) AppSharePreferenceMgr.get(GlobalVars.USERPASSWORD_SHAREPREFERENCE, ""));

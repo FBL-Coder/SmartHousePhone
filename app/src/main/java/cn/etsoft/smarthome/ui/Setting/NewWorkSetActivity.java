@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,6 +47,7 @@ import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
+import cn.semtec.community2.activity.LoginActivity;
 
 import static android.content.ContentValues.TAG;
 
@@ -55,7 +57,7 @@ import static android.content.ContentValues.TAG;
  */
 
 public class NewWorkSetActivity extends Activity {
-    private TextView mDialogCancle, mDialogOk, mTitle;
+    private TextView mDialogCancle, mDialogOk, mTitle, logout;
     private ImageView mBack, network_ref;
     private EditText mDialogName, mDialogID, mDialogPass;
     private NewModuleHandler mNewModuleHandler = new NewModuleHandler(this);
@@ -86,15 +88,15 @@ public class NewWorkSetActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network);
-        initView();
-        initData();
     }
+
 
     /**
      * 初始化页面组件
      */
     private void initView() {
         mBack = (ImageView) findViewById(R.id.title_bar_iv_back);
+        logout = (TextView) findViewById(R.id.title_bar_tv_room);
         add_ref_LL = (LinearLayout) findViewById(R.id.add_ref_LL);
         network_ref = (ImageView) findViewById(R.id.network_ref);
         mTitle = (TextView) findViewById(R.id.title_bar_tv_title);
@@ -104,6 +106,19 @@ public class NewWorkSetActivity extends Activity {
         mNetListView = (ListView) findViewById(R.id.equi_list);
         sousuo_list = (ListView) findViewById(R.id.sousuo_list);
         mTitle.setText("模块设置");
+        if (MyApplication.mApplication.getRcuInfoList().size() == 0) {
+            logout.setVisibility(View.VISIBLE);
+            logout.setTextColor(Color.BLACK);
+            logout.setText("退出登录");
+            logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(NewWorkSetActivity.this, LoginActivity.class));
+                    AppSharePreferenceMgr.put(GlobalVars.LOGIN_SHAREPREFERENCE, false);
+                    finish();
+                }
+            });
+        }
         if (MyApplication.mApplication.isVisitor()) {
             add_ref_LL.setVisibility(View.GONE);
         }
@@ -124,10 +139,21 @@ public class NewWorkSetActivity extends Activity {
                     MyApplication.mApplication.dismissLoadDialog();
                     initsousuoList();
                 }
+                if (datType == 1 && subtype1 == 1) {
+                    MyApplication.mApplication.dismissLoadDialog();
+                    if (subtype2 == 1) {
+                        ToastUtil.showText("修改成功");
+                        initView();
+                    } else ToastUtil.showText("修改失败");
+                }
+
             }
         });
+        initView();
+        initData();
         super.onResume();
     }
+
 
     /**
      * 初始化搜索联网模快列表
@@ -154,6 +180,7 @@ public class NewWorkSetActivity extends Activity {
         MyApplication.mApplication.setSeekRcuInfos(SeekListData);
         SeekNetClick(SeekListData);
     }
+
     /**
      * 搜索的联网模块在使用前需要输入密码确认
      *
@@ -233,6 +260,14 @@ public class NewWorkSetActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 5) {
+            refNetLists();
+        }
+    }
+
     /**
      * 准备使用此联网模块==跳转页面前的准备
      *
@@ -242,12 +277,22 @@ public class NewWorkSetActivity extends Activity {
         MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                 MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID());
-        if (!"".equals(AppSharePreferenceMgr.get(GlobalVars.USERID_SHAREPREFERENCE, ""))) {
-            Net_AddorDel_Helper.addNew(mNewModuleHandler, NewWorkSetActivity.this
-                    , MyApplication.mApplication.getSeekRcuInfos().get(position).getName()
-                    , MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID()
-                    , "");
-            Log.i(TAG, "upDataWareData 搜索 使用  添加到服务器");
+        initListview();
+        if (!MyApplication.mApplication.isVisitor()) {
+            List<RcuInfo> list = MyApplication.mApplication.getRcuInfoList();
+            boolean isExist = false;
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getDevUnitID().equals(MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID())) {
+                    isExist = true;
+                }
+            }
+            if (!isExist) {
+                Net_AddorDel_Helper.addNew(mNewModuleHandler, NewWorkSetActivity.this
+                        , MyApplication.mApplication.getSeekRcuInfos().get(position).getName()
+                        , MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID()
+                        , "");
+                Log.i(TAG, "upDataWareData 搜索 使用  添加到服务器");
+            }
         }
         MyApplication.setNewWareData();
         GlobalVars.setIsLAN(true);
@@ -337,40 +382,40 @@ public class NewWorkSetActivity extends Activity {
                             MyApplication.mApplication.showLoadDialog(NewWorkSetActivity.this, false);
                             AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE,
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
-                            WareData wareData = (WareData) Data_Cache.readFile(MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
-                            if (wareData == null) {
-                                MyApplication.setNewWareData();
-                                GlobalVars.setIsLAN(true);
-                                MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
-                                    @Override
-                                    public void upDataWareData(int datType, int subtype1, int subtype2) {
-                                        if (datType == 0) {
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    try {
-                                                        Thread.sleep(2000);
-                                                        MyApplication.mApplication.dismissLoadDialog();
-                                                        startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                                                        finish();
-                                                    } catch (InterruptedException e) {
-                                                        MyApplication.mApplication.dismissLoadDialog();
-                                                        startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                                                        finish();
-                                                    }
+//                            WareData wareData = (WareData) Data_Cache.readFile(MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
+//                            if (wareData == null) {
+                            MyApplication.setNewWareData();
+                            GlobalVars.setIsLAN(true);
+                            MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
+                                @Override
+                                public void upDataWareData(int datType, int subtype1, int subtype2) {
+                                    if (datType == 0) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Thread.sleep(2000);
+                                                    MyApplication.mApplication.dismissLoadDialog();
+                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                                    finish();
+                                                } catch (InterruptedException e) {
+                                                    MyApplication.mApplication.dismissLoadDialog();
+                                                    startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+                                                    finish();
                                                 }
-                                            }).start();
-                                        }
+                                            }
+                                        }).start();
                                     }
-                                });
-                                SendDataUtil.getNetWorkInfo();
-                            } else {
-                                SendDataUtil.getNetWorkInfo();
-                                MyApplication.mApplication.dismissLoadDialog();
-                                MyApplication.mWareData = wareData;
-                                startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
-                                finish();
-                            }
+                                }
+                            });
+                            SendDataUtil.getNetWorkInfo();
+//                            } else {
+//                                SendDataUtil.getNetWorkInfo();
+//                                MyApplication.mApplication.dismissLoadDialog();
+//                                MyApplication.mWareData = wareData;
+//                                startActivity(new Intent(NewWorkSetActivity.this, HomeActivity.class));
+//                                finish();
+//                            }
                         }
                     });
                     dialog.create().show();
@@ -402,7 +447,7 @@ public class NewWorkSetActivity extends Activity {
                                 MyApplication.setNewWareData();
                                 GlobalVars.setIsLAN(true);
                                 SendDataUtil.getNetWorkInfo();
-                            }else {
+                            } else {
                                 MyApplication.setNewWareData();
                             }
                         }
@@ -500,13 +545,46 @@ public class NewWorkSetActivity extends Activity {
         if (result == null)
             return;
 
-        List<RcuInfo> rcuInfos = new ArrayList<>();
-        for (int i = 0; i < result.getData().size(); i++) {
-            RcuInfo rcuInfo = new RcuInfo();
-            rcuInfo.setCanCpuName(result.getData().get(i).getCanCpuName());
-            rcuInfo.setDevUnitID(result.getData().get(i).getDevUnitID());
-            rcuInfo.setOnline(result.getData().get(i).isOnline());
-            rcuInfos.add(rcuInfo);
+        List<RcuInfo> rcuInfos = MyApplication.mApplication.getRcuInfoList();
+        if (rcuInfos.size() <= result.getData().size()) {
+            for (int i = 0; i < result.getData().size(); i++) {
+                boolean isExist = false;
+                for (int j = 0; j < rcuInfos.size(); j++) {
+                    if (rcuInfos.get(j).getDevUnitID().equals(result.getData().get(i).getDevUnitID())) {
+                        isExist = true;
+                        rcuInfos.get(j).setCanCpuName(result.getData().get(i).getCanCpuName());
+                        rcuInfos.get(j).setDevUnitID(result.getData().get(i).getDevUnitID());
+                        rcuInfos.get(j).setOnline(result.getData().get(i).isOnline());
+                    }
+                }
+                if (!isExist) {
+                    RcuInfo info = new RcuInfo();
+                    info.setCanCpuName(result.getData().get(i).getCanCpuName());
+                    info.setDevUnitID(result.getData().get(i).getDevUnitID());
+                    info.setOnline(result.getData().get(i).isOnline());
+                    rcuInfos.add(info);
+                }
+            }
+        } else {
+            for (int j = 0; j < rcuInfos.size(); j++) {
+                boolean isExist = false;
+                for (int i = 0; i < result.getData().size(); i++) {
+                    if (rcuInfos.get(j).getDevUnitID().equals(result.getData().get(i).getDevUnitID())) {
+                        isExist = true;
+                        rcuInfos.get(j).setCanCpuName(result.getData().get(i).getCanCpuName());
+                        rcuInfos.get(j).setDevUnitID(result.getData().get(i).getDevUnitID());
+                        rcuInfos.get(j).setOnline(result.getData().get(i).isOnline());
+                    }
+                }
+                if (!isExist) {
+                    rcuInfos.remove(j);
+                }
+            }
+        }
+        if (rcuInfos.size() == 0) {
+            ToastUtil.showText("对不起。没有可用联网模块");
+            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
+            MyApplication.setNewWareData();
         }
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, gson.toJson(rcuInfos));
         initListview();

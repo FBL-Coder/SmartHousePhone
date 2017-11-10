@@ -126,8 +126,12 @@ public class MyApplication extends Application {
     //主页对象
     private HomeActivity mHomeActivity;
 
+    //设置界面密码装填
+    public boolean isInputPass = false;
+
     //Activity 集合
     private List<Activity> activities;
+
 
     @Override
     public void onCreate() {
@@ -631,34 +635,68 @@ public class MyApplication extends Application {
                 safetyData = new Safety_Data();
             }
             try {
-                for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
-                    if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecType() == SAFETY_TYPE
-                            && MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getValid() == 1) {
-                        boolean IsContain = false;
-                        for (int j = 0; j < index_sb.length(); j++) {
-                            if (i == j && '1' == index_sb.charAt(j)) {
-                                IsContain = true;
+                if (SAFETY_TYPE == 0) {
+                    for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
+                        if ((MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecType() == 0
+                                || MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecType() == 1
+                                || MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecType() == 2)
+                                && MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getValid() == 1) {
+                            boolean IsContain = false;
+                            for (int j = 0; j < index_sb.length(); j++) {
+                                if (i == j && '1' == index_sb.charAt(j)) {
+                                    IsContain = true;
+                                }
+                            }
+                            if (IsContain) {
+                                message += MyApplication.getWareData().getResult_safety()
+                                        .getSec_info_rows().get(i).getSecName() + "、";
+                                if (safetyData == null)
+                                    safetyData = new Safety_Data();
+                                Safety_Data.Safety_Time time = safetyData.new Safety_Time();
+                                Calendar cal = Calendar.getInstance();
+                                time.setYear(cal.get(Calendar.YEAR));
+                                time.setMonth(cal.get(Calendar.MONTH) + 1);
+                                time.setDay(cal.get(Calendar.DAY_OF_MONTH));
+                                time.setH(cal.get(Calendar.HOUR_OF_DAY));
+                                time.setM(cal.get(Calendar.MINUTE));
+                                time.setS(cal.get(Calendar.SECOND));
+                                time.setSafetyBean(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i));
+                                safetyData.getSafetyTime().add(time);
+                                Data_Cache.writeFile_safety(GlobalVars.getDevid(), safetyData);
                             }
                         }
-                        if (IsContain) {
-                            message += MyApplication.getWareData().getResult_safety()
-                                    .getSec_info_rows().get(i).getSecName() + "、";
-                            if (safetyData == null)
-                                safetyData = new Safety_Data();
-                            Safety_Data.Safety_Time time = safetyData.new Safety_Time();
-                            Calendar cal = Calendar.getInstance();
-                            time.setYear(cal.get(Calendar.YEAR));
-                            time.setMonth(cal.get(Calendar.MONTH) + 1);
-                            time.setDay(cal.get(Calendar.DAY_OF_MONTH));
-                            time.setH(cal.get(Calendar.HOUR_OF_DAY));
-                            time.setM(cal.get(Calendar.MINUTE));
-                            time.setS(cal.get(Calendar.SECOND));
-                            time.setSafetyBean(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i));
-                            safetyData.getSafetyTime().add(time);
-                            Data_Cache.writeFile_safety(GlobalVars.getDevid(), safetyData);
+                    }
+                } else {
+                    for (int i = 0; i < MyApplication.getWareData().getResult_safety().getSec_info_rows().size(); i++) {
+                        if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getSecType() == SAFETY_TYPE
+                                && MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i).getValid() == 1) {
+                            boolean IsContain = false;
+                            for (int j = 0; j < index_sb.length(); j++) {
+                                if (i == j && '1' == index_sb.charAt(j)) {
+                                    IsContain = true;
+                                }
+                            }
+                            if (IsContain) {
+                                message += MyApplication.getWareData().getResult_safety()
+                                        .getSec_info_rows().get(i).getSecName() + "、";
+                                if (safetyData == null)
+                                    safetyData = new Safety_Data();
+                                Safety_Data.Safety_Time time = safetyData.new Safety_Time();
+                                Calendar cal = Calendar.getInstance();
+                                time.setYear(cal.get(Calendar.YEAR));
+                                time.setMonth(cal.get(Calendar.MONTH) + 1);
+                                time.setDay(cal.get(Calendar.DAY_OF_MONTH));
+                                time.setH(cal.get(Calendar.HOUR_OF_DAY));
+                                time.setM(cal.get(Calendar.MINUTE));
+                                time.setS(cal.get(Calendar.SECOND));
+                                time.setSafetyBean(MyApplication.getWareData().getResult_safety().getSec_info_rows().get(i));
+                                safetyData.getSafetyTime().add(time);
+                                Data_Cache.writeFile_safety(GlobalVars.getDevid(), safetyData);
+                            }
                         }
                     }
                 }
+
                 if (!"".equals(message)) {
                     message = message.substring(0, message.lastIndexOf("、"));
                     return "名称：" + message + " 触发警报";
@@ -685,6 +723,7 @@ public class MyApplication extends Application {
         void upDataWareData(int datType, int subtype1, int subtype2);
     }
 
+
     @Override
     public void onTerminate() {
         // 程序终止的时候执行
@@ -696,6 +735,7 @@ public class MyApplication extends Application {
     @Override
     public void onLowMemory() {
         // 低内存的时候执行
+        wsClient.closeConnect();
         Data_Cache.writeFile(GlobalVars.getDevid(), MyApplication.getWareData());
         super.onLowMemory();
     }
@@ -703,6 +743,7 @@ public class MyApplication extends Application {
     @Override
     public void onTrimMemory(int level) {
         // 程序在内存清理的时候执行
+        wsClient.closeConnect();
         Data_Cache.writeFile(GlobalVars.getDevid(), MyApplication.getWareData());
         super.onTrimMemory(level);
     }

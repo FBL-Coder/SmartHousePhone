@@ -19,6 +19,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.RcuInfo;
 import cn.etsoft.smarthome.ui.NetInfoActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
+import cn.etsoft.smarthome.utils.SendDataUtil;
 
 
 /**
@@ -93,11 +94,13 @@ public class NetWork_Adapter extends BaseAdapter {
                 Bundle bundle = new Bundle();
                 if (FLAG == SEEK)
                     bundle.putInt("FLAG", SEEK);
-                else
+                else {
+                    SendDataUtil.getHeart();
                     bundle.putInt("FLAG", LOGIN);
+                }
                 bundle.putInt("POSITION", position);
                 intent.putExtra("BUNDLE", bundle);
-                mContext.startActivity(intent);
+                mContext.startActivityForResult(intent,0);
             }
         });
 

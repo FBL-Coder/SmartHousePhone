@@ -17,6 +17,7 @@ import java.util.List;
 
 import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.IClick;
 import cn.etsoft.smarthome.adapter.SystemAdapter;
@@ -49,8 +50,10 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
         if (MyApplication.getWareData().getSceneEvents().size() == 0) {
-            SendDataUtil.getSceneInfo();
-            MyApplication.mApplication.showLoadDialog(this);
+            if (!"".equals(GlobalVars.getDevid())) {
+                SendDataUtil.getSceneInfo();
+                MyApplication.mApplication.showLoadDialog(this);
+            }
         } else {
             WareDataHliper.initCopyWareData().startCopySceneData();
         }
@@ -110,11 +113,9 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     private void initListView() {
         event = WareDataHliper.initCopyWareData().getCopyScenes();
         lv = (SwipeListView) findViewById(R.id.sceneSet_lv);
-        if (MyApplication.getWareData().getSceneEvents().size() > 0) {
-            systemAdapter = new SystemAdapter(this, event, mListener);
-            lv.setAdapter(systemAdapter);
-            lv.setOnItemClickListener(this);
-        }
+        systemAdapter = new SystemAdapter(this, event, mListener);
+        lv.setAdapter(systemAdapter);
+        lv.setOnItemClickListener(this);
     }
 
     /**
@@ -135,23 +136,19 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         int listSize = event.size();
-        if (listSize > 0) {
-            if (position < listSize) {
-                Intent intent = new Intent(SceneSetActivity.this, SceneSettingActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("eventId", event.get(position).getEventId());
-                bundle.putString("sceneName", event.get(position).getSceneName());
-                intent.putExtra("bundle", bundle);
-                startActivity(intent);
-            } else {
-                if (MyApplication.getWareData().getSceneEvents().size() == 10) {
-                    ToastUtil.showText("自定义情景最多10个！");
-                    return;
-                }
-                getDialog();
-            }
+        if (position < listSize) {
+            Intent intent = new Intent(SceneSetActivity.this, SceneSettingActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("eventId", event.get(position).getEventId());
+            bundle.putString("sceneName", event.get(position).getSceneName());
+            intent.putExtra("bundle", bundle);
+            startActivity(intent);
         } else {
-            ToastUtil.showText("数据异常");
+            if (MyApplication.getWareData().getSceneEvents().size() == 10) {
+                ToastUtil.showText("自定义情景最多10个！");
+                return;
+            }
+            getDialog();
         }
     }
 
@@ -159,8 +156,11 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_bar_iv_or:
-                SendDataUtil.getSceneInfo();
-                MyApplication.mApplication.showLoadDialog(this);
+                MyApplication.getWareData().getSceneEvents().clear();
+                if ("".equals(GlobalVars.getDevid())) {
+                    SendDataUtil.getSceneInfo();
+                    MyApplication.mApplication.showLoadDialog(this);
+                }
                 break;
             case R.id.scene_btn_sure:
                 dialog.dismiss();

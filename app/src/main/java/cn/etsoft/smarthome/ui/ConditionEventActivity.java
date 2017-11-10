@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.ConditionAdapter;
 import cn.etsoft.smarthome.ui.Setting.ConditionEventActivity_details;
@@ -32,10 +33,12 @@ public class ConditionEventActivity extends Activity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
-        if (MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().size() == 0) {
-            MyApplication.mApplication.showLoadDialog(this);
-            SendDataUtil.getConditionInfo();
-        } else initListView();
+        if (!"".equals(GlobalVars.getDevid())) {
+            if (MyApplication.getWareData().getCondition_event_bean().getenvEvent_rows().size() == 0) {
+                MyApplication.mApplication.showLoadDialog(this);
+                SendDataUtil.getConditionInfo();
+            } else initListView();
+        }
         //初始化标题栏
         initTitleBar();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {

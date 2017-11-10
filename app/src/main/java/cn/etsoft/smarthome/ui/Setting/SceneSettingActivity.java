@@ -28,7 +28,6 @@ import cn.etsoft.smarthome.adapter.Room_Select_Adapter;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareSceneDevItem;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
-import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.weidget.CustomDialog;
 import cn.etsoft.smarthome.weidget.CustomDialog_comment;

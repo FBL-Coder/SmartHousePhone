@@ -77,14 +77,22 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     initView();
                 }
                 if (datType == 6) {
-                    ToastUtil.showText("操作成功");
-                    MyApplication.mApplication.dismissLoadDialog();
-                    finish();
+                    if (subtype2 == 1) {
+                        ToastUtil.showText("操作成功");
+                        MyApplication.mApplication.dismissLoadDialog();
+                        finish();
+                    } else {
+                        ToastUtil.showText("操作失败");
+                    }
                 }
                 if (datType == 7) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    ToastUtil.showText("操作成功");
-                    finish();
+                    if (subtype2 == 1) {
+                        MyApplication.mApplication.dismissLoadDialog();
+                        ToastUtil.showText("操作成功");
+                        finish();
+                    } else {
+                        ToastUtil.showText("操作失败");
+                    }
                 }
             }
         });

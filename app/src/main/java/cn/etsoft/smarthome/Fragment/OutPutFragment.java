@@ -64,10 +64,7 @@ public class OutPutFragment extends Fragment {
                 }
             }
         });
-
         initData();
-        if (outAdapter != null)
-            outAdapter.notifyDataSetChanged(GroupListDatas);
         super.onResume();
 
     }

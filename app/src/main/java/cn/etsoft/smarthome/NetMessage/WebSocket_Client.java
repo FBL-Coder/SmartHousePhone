@@ -91,7 +91,7 @@ public class WebSocket_Client {
     }
 
     //断开连接
-    private void closeConnect() {
+    public void closeConnect() {
         try {
             mWebSocketClient.close();
         } catch (Exception e) {

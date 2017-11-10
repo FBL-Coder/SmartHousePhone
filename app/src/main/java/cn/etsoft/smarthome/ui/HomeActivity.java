@@ -77,6 +77,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
 
 public class HomeActivity extends FragmentActivity implements View.OnClickListener {
     private RadioGroup homeRadioGroup;
+    private RadioButton rb_home_user, rb_home_home, rb_home_setting;
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
     private Fragment homeFragment, settingFragment, Userinterface;
@@ -102,6 +103,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     private List<ImageView> mImageViews = new ArrayList<ImageView>();
     private LinearLayout ll_home_dots;
     private int RoomPosition;
+    private boolean isLogput;
 
 
     @Override
@@ -184,6 +186,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         weather_text = (TextView) findViewById(R.id.weather_text);
         loaction_text = (TextView) findViewById(R.id.loaction_text);
         net_now = (TextView) findViewById(R.id.net_now);
+        rb_home_user = (RadioButton) findViewById(R.id.rb_home_user);
+        rb_home_home = (RadioButton) findViewById(R.id.rb_home_home);
+        rb_home_setting = (RadioButton) findViewById(R.id.rb_home_setting);
+
         ll_loaction.setOnClickListener(this);
         home_logout.setOnClickListener(this);
         ref_home.setOnClickListener(this);
@@ -483,7 +489,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             for (int i = 0; i < list.size(); i++) {
                 if (AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, "")
                         .equals(list.get(i).getDevUnitID())) {
-                    if ("".equals(list.get(i).getCanCpuName())) {
+                    if ("null".equals(list.get(i).getCanCpuName()) || "".equals(list.get(i).getCanCpuName())) {
                         net_now.setText(list.get(i).getName());
                     } else {
                         net_now.setText(list.get(i).getCanCpuName());
@@ -493,6 +499,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     }
                 }
             }
+        }else {
+            net_now.setText("点击设置模块");
         }
         text_room = new ArrayList<>();
         mWareDev_room = new ArrayList<>();
@@ -533,6 +541,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     case R.id.rb_home_user:
                         if (MyApplication.mApplication.isVisitor()) {
                             ToastUtil.showText("这里您不可以操作哦~");
+                            homeRadioGroup.check(R.id.rb_home_home);
                             return;
                         }
                         transaction.replace(R.id.home, Userinterface);
@@ -545,6 +554,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     case R.id.rb_home_setting:
                         if (MyApplication.mApplication.isVisitor()) {
                             ToastUtil.showText("这里您不可以操作哦~");
+                            homeRadioGroup.check(R.id.rb_home_home);
                             return;
                         }
                         if (Condition()) return;
@@ -564,6 +574,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
      */
     private boolean Condition() {
         if (!GlobalVars.isIsLAN()) {
+            homeRadioGroup.check(R.id.rb_home_home);
             ToastUtil.showText("设置只能在局域网下进行");
             return true;
         }
@@ -620,6 +631,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     clicktime = System.currentTimeMillis();
                     return;
                 }
+                if ("".equals(GlobalVars.getDevid()))
+                    return;
                 GlobalVars.IsclearCache = 0;
                 clicktime = System.currentTimeMillis();
                 GlobalVars.setIsLAN(true);
@@ -664,6 +677,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
+                        isLogput = true;
                         LogoutHelper.logout(HomeActivity.this);
                     }
                 });
@@ -690,12 +704,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         super.onDestroy();
         if (MyApplication.mApplication.isVisitor()) {
             Data_Cache.writeFile(GlobalVars.getDevid(), new WareData());
-            GlobalVars.setDevid("");
-            GlobalVars.setDevpass("");
-            GlobalVars.setUserid("");
-            AppSharePreferenceMgr.put(GlobalVars.RCUINFOID_SHAREPREFERENCE, "");
-            AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
-            AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
+            MyApplication.mApplication.isInputPass = false;
+            if (!isLogput && !MyApplication.mApplication.isVisitor())
+                System.exit(0);
         }
     }
 

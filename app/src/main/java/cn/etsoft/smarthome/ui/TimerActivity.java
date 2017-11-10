@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.TimerAdapter;
 import cn.etsoft.smarthome.ui.Setting.TimerActivity_details;
@@ -33,7 +34,7 @@ public class TimerActivity extends Activity implements AdapterView.OnItemClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
-        MyApplication.mApplication.showLoadDialog(this);
+
         //初始化标题栏
         initTitleBar();
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
@@ -46,7 +47,10 @@ public class TimerActivity extends Activity implements AdapterView.OnItemClickLi
                 }
             }
         });
-        SendDataUtil.getTimerInfo();
+        if (!"".equals(GlobalVars.getDevid())) {
+            SendDataUtil.getTimerInfo();
+            MyApplication.mApplication.showLoadDialog(this);
+        }
     }
 
     /**

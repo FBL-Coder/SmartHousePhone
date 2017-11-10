@@ -77,24 +77,25 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
 
     @Override
     public void onResume() {
-        if (MyApplication.getWareData().getSceneEvents().size() == 0)
-            SendDataUtil.getSceneInfo();
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                MyApplication.mApplication.dismissLoadDialog();
-                if (msg.what == 0)
-                    //初始化GridView
-                    initGridView(true);
-                else {
-                    ToastUtil.showText("用户数据获取失败");
+        if (!"".equals(GlobalVars.getDevid())) {
+            if (MyApplication.getWareData().getSceneEvents().size() == 0)
+                SendDataUtil.getSceneInfo();
+            handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    MyApplication.mApplication.dismissLoadDialog();
+                    if (msg.what == 0)
+                        //初始化GridView
+                        initGridView(true);
+                    else {
+                        ToastUtil.showText("用户数据获取失败");
+                    }
                 }
-            }
-        };
-        if (!MyApplication.mApplication.isVisitor())
-            getUserData(handler);
-
+            };
+            if (!MyApplication.mApplication.isVisitor())
+                getUserData(handler);
+        }
         HomeActivity.setHomeDataUpDataListener(new HomeActivity.HomeDataUpDataListener() {
             @Override
             public void getupData(int datType, int subtype1, int subtype2) {

@@ -111,16 +111,4 @@
             android:dividerHeight="@dimen/dp_2" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_10"
-
-        android:layout_weight="0.2"
-        android:gravity="right|bottom"
-        android:text="注 : 点击联网模块进行切换 , 后面有绿色“√”的为正在使用 ;
-        如若没有联网模块 ，请点击添加模块进行添加."
-        android:textColor="@color/color_37BC9B"
-        android:textSize="@dimen/sp_10" />
 </LinearLayout>

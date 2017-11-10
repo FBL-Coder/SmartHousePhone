@@ -202,7 +202,6 @@ public class UDPServer implements Runnable {
                             local, SEND_PORT);
                     Log.i("发送UDP", "UDP" + msg);
                     dSocket.send(dPacket);
-
                 } catch (Exception e) {
                     Log.e("Exception", "UDP发送消息失败：" + e + "   发送失败的msg：" + msg);
                     Message message = mhandler.obtainMessage();
@@ -262,6 +261,8 @@ public class UDPServer implements Runnable {
             UDPtimer.cancel();
             Log.i(TAG, "UDP数据，取消定时等待");
             if (!GlobalVars.isIsLAN()) {
+                if (MyApplication.mApplication.isSeekNet())
+                    return;
                 if (devUnitID.equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
                     Message message = mhandler.obtainMessage();
                     message.what = MyApplication.mApplication.NETCHANGE_LAN;
@@ -291,8 +292,7 @@ public class UDPServer implements Runnable {
     }
 
     public void IsWebData(String info) {
-        if (MyApplication.mApplication.isSeekNet())
-            return;
+
         String devUnitID = "";
         int datType = 0;
         int subType2 = 0;
@@ -303,11 +303,12 @@ public class UDPServer implements Runnable {
             datType = jsonObject.getInt("datType");
             subType1 = jsonObject.getInt("subType1");
             subType2 = jsonObject.getInt("subType2");
-            if (!devUnitID.equals(GlobalVars.getDevid()))
-                if (!MyApplication.mApplication.isSeekNet()) {
-                    Log.i(TAG, "WebSocket数据--过滤:" + "本地ID" + GlobalVars.getDevid() + "--数据ID" + devUnitID + ";包类型：" + datType + "-" + subType1 + "-" + subType2);
-                    return;
-                }
+            if (!devUnitID.equals(GlobalVars.getDevid())) {
+                Log.i(TAG, "WebSocket数据--过滤:" + "本地ID" + GlobalVars.getDevid() + "--数据ID" + devUnitID + ";包类型：" + datType + "-" + subType1 + "-" + subType2);
+                return;
+            }
+            if (MyApplication.mApplication.isSeekNet() && datType == 0)
+                return;
         } catch (JSONException e) {
             System.out.println(this.getClass().getName() + "--extractData--" + e.toString());
         }
@@ -1153,6 +1154,13 @@ public class UDPServer implements Runnable {
                         MyApplication.getWareData().getCurtains().set(i, curtain);
                     }
                 }
+                for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                    if (dev.getDevId() == MyApplication.getWareData().getDevs().get(i).getDevId()
+                            && dev.getCanCpuId().equals(MyApplication.getWareData().getDevs().get(i).getCanCpuId())
+                            && dev.getType() == MyApplication.getWareData().getDevs().get(i).getType()) {
+                        MyApplication.getWareData().getDevs().set(i, dev);
+                    }
+                }
             } else if (devType == 0) {
 
                 WareAirCondDev airCondDev = new WareAirCondDev();
@@ -1186,6 +1194,13 @@ public class UDPServer implements Runnable {
                         MyApplication.getWareData().getAirConds().set(i, airCondDev);
                     }
                 }
+                for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                    if (dev.getDevId() == MyApplication.getWareData().getDevs().get(i).getDevId()
+                            && dev.getCanCpuId().equals(MyApplication.getWareData().getDevs().get(i).getCanCpuId())
+                            && dev.getType() == MyApplication.getWareData().getDevs().get(i).getType()) {
+                        MyApplication.getWareData().getDevs().set(i, dev);
+                    }
+                }
             } else if (devType == 3) {
                 WareLight wareLight = new WareLight();
                 JSONObject jsonobj = array.getJSONObject(0);
@@ -1213,6 +1228,13 @@ public class UDPServer implements Runnable {
                         MyApplication.getWareData().getLights().set(i, wareLight);
                         Log.i("Light", wareLight.getDev().getDevId() + "");
                         break;
+                    }
+                }
+                for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                    if (dev.getDevId() == MyApplication.getWareData().getDevs().get(i).getDevId()
+                            && dev.getCanCpuId().equals(MyApplication.getWareData().getDevs().get(i).getCanCpuId())
+                            && dev.getType() == MyApplication.getWareData().getDevs().get(i).getType()) {
+                        MyApplication.getWareData().getDevs().set(i, dev);
                     }
                 }
             } else if (devType == 7) {
@@ -1249,6 +1271,13 @@ public class UDPServer implements Runnable {
                         break;
                     }
                 }
+                for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                    if (dev.getDevId() == MyApplication.getWareData().getDevs().get(i).getDevId()
+                            && dev.getCanCpuId().equals(MyApplication.getWareData().getDevs().get(i).getCanCpuId())
+                            && dev.getType() == MyApplication.getWareData().getDevs().get(i).getType()) {
+                        MyApplication.getWareData().getDevs().set(i, dev);
+                    }
+                }
             } else if (devType == 9) {
                 WareFloorHeat floorHeat = new WareFloorHeat();
                 JSONObject jsonobj = array.getJSONObject(0);
@@ -1279,7 +1308,15 @@ public class UDPServer implements Runnable {
                         break;
                     }
                 }
+                for (int i = 0; i < MyApplication.getWareData().getDevs().size(); i++) {
+                    if (dev.getDevId() == MyApplication.getWareData().getDevs().get(i).getDevId()
+                            && dev.getCanCpuId().equals(MyApplication.getWareData().getDevs().get(i).getCanCpuId())
+                            && dev.getType() == MyApplication.getWareData().getDevs().get(i).getType()) {
+                        MyApplication.getWareData().getDevs().set(i, dev);
+                    }
+                }
             }
+
         } catch (Exception e) {
             isFreshData = false;
             System.out.println(this.getClass().getName() + "datType = 4" + e.toString());

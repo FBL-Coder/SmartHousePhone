@@ -75,18 +75,25 @@ public class NetInfoActivity extends Activity {
         stateIP_yes = (RadioButton) findViewById(R.id.stateIP_yes);
         stateIP_no = (RadioButton) findViewById(R.id.stateIP_no);
         Net_Pass_LL = (LinearLayout) findViewById(R.id.Net_Pass_ll);
+    }
 
+    @Override
+    protected void onResume() {
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 1 && subtype1 == 1) {
                     MyApplication.mApplication.dismissLoadDialog();
-                    if (subtype2 == 1)
+                    if (subtype2 == 1) {
                         ToastUtil.showText("修改成功");
+                        setResult(5);
+                        finish();
+                    }
                     else ToastUtil.showText("修改失败");
                 }
             }
         });
+        super.onResume();
     }
 
     public void initData() {

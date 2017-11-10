@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.etsoft.smarthome.MyApplication;
+import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.SceneAdapter;
 import cn.etsoft.smarthome.domain.WareData;
@@ -35,10 +36,11 @@ public class SceneActivity extends Activity {
 //        MyApplication.getSceneInfo();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scene);
-        if (MyApplication.getWareData().getSceneEvents().size() == 0) {
-            SendDataUtil.getSceneInfo();
-            MyApplication.mApplication.showLoadDialog(this);
-        }
+        if (!"".equals(GlobalVars.getDevid()))
+            if (MyApplication.getWareData().getSceneEvents().size() == 0) {
+                SendDataUtil.getSceneInfo();
+                MyApplication.mApplication.showLoadDialog(this);
+            }
         //初始化标题栏
         initTitleBar();
         //初始化控件

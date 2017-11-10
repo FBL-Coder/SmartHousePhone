@@ -66,10 +66,14 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 5) {
-                    MyApplication.mApplication.dismissLoadDialog();
-                    ToastUtil.showText("操作成功");
-                    finish();
+                if (datType == 5 ) {
+                    if (subtype2 ==1) {
+                        MyApplication.mApplication.dismissLoadDialog();
+                        ToastUtil.showText("添加成功");
+                        finish();
+                    }else {
+                        ToastUtil.showText("添加失败");
+                    }
                 }
             }
         });
