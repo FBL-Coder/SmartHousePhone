@@ -33,7 +33,7 @@ public class SwipeItemLayout extends FrameLayout {
     private static final int STATE_CLOSE = 0;
     private static final int STATE_OPEN = 1;
     //构造函数
-    public SwipeItemLayout(View contentView,View menuView,Interpolator closeInterpolator, Interpolator openInterpolator){
+    public SwipeItemLayout(View contentView,Interpolator closeInterpolator, Interpolator openInterpolator){
         super(contentView.getContext());
         this.contentView = contentView;
         this.menuView = menuView;

@@ -2272,6 +2272,7 @@ public class UDPServer implements Runnable {
                 if (MyApplication.getWareData().getmGroupSet_Data().getSecs_trigger_rows().get(i).getTriggerId()
                         == jsonArray.getJSONObject(0).getInt("triggerId")) {
                     bean.setTriggerName(jsonArray.getJSONObject(0).getString("triggerName"));
+                    bean.setTriggerSecs(jsonArray.getJSONObject(0).getInt("triggerSecs"));
                     bean.setReportServ(jsonArray.getJSONObject(0).getInt("reportServ"));
                     bean.setTriggerId(jsonArray.getJSONObject(0).getInt("triggerId"));
                     bean.setDevCnt(jsonArray.getJSONObject(0).getInt("devCnt"));

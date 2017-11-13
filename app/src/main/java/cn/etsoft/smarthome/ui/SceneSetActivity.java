@@ -113,9 +113,41 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     private void initListView() {
         event = WareDataHliper.initCopyWareData().getCopyScenes();
         lv = (SwipeListView) findViewById(R.id.sceneSet_lv);
-        systemAdapter = new SystemAdapter(this, event, mListener);
+        systemAdapter = new SystemAdapter(this, event);
         lv.setAdapter(systemAdapter);
         lv.setOnItemClickListener(this);
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(SceneSetActivity.this);
+                builder.setTitle("提示 :");
+                builder.setMessage("您确定删除此模式?");
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                        //删除情景模式
+                        try {
+                            SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(i));
+                        } catch (Exception e) {
+                            ToastUtil.showText("数据请求异常，请刷新情景数据");
+                            return;
+                        }
+                        MyApplication.mApplication.showLoadDialog(SceneSetActivity.this);
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+        });
     }
 
     /**
@@ -212,41 +244,4 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
         SendDataUtil.addscene(eventID, name);
         MyApplication.mApplication.showLoadDialog(this);
     }
-
-    /**
-     * 实现类，响应按钮点击事件
-     */
-    private IClick mListener = new IClick() {
-        @Override
-        public void listViewItemClick(final int position, View v) {
-            switch (v.getId()) {
-                case R.id.deploy_delete:
-                    CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(SceneSetActivity.this);
-                    builder.setTitle("提示 :");
-                    builder.setMessage("您确定删除此模式?");
-                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int i) {
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int i) {
-                            dialog.dismiss();
-                            //删除情景模式
-                            try {
-                                SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(position));
-                            } catch (Exception e) {
-                                ToastUtil.showText("数据请求异常，请刷新情景数据");
-                                return;
-                            }
-                            MyApplication.mApplication.showLoadDialog(SceneSetActivity.this);
-                        }
-                    });
-                    builder.create().show();
-                    break;
-            }
-        }
-    };
 }

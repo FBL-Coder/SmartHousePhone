@@ -93,7 +93,7 @@ public class SceneActivity extends Activity {
                 }
             }
         });
-
+        gridView.setAdapter(new SceneAdapter(getListData(), SceneActivity.this));
         if (MyApplication.getWareData().getSceneEvents().size() > 0) {
             gridView.setAdapter(new SceneAdapter(getListData(), SceneActivity.this));
             gridView.setSelector(R.drawable.selector_gridview_item);

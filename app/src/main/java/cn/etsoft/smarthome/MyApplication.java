@@ -331,7 +331,7 @@ public class MyApplication extends Application {
                     super.handleMessage(msg);
                     try {
                         if (mDialog != null && mDialog.isShowing()) {
-                            ToastUtil.showText("请求超时");
+                            ToastUtil.showText("请求超时或没有数据");
                             mDialog.dismiss();
                         }
                     } catch (Exception e) {

@@ -26,10 +26,9 @@ public class SystemAdapter extends BaseAdapter {
     private int[] image = {R.drawable.zaijiamoshi, R.drawable.waichumoshi,
             R.drawable.yingyuanmoshi, R.drawable.jiuqingmoshi,
             R.drawable.huikemoshi};
-    private IClick mListener;
     private Context context;
 
-    public SystemAdapter(Context context, List<WareSceneEvent> lst, IClick listener) {
+    public SystemAdapter(Context context, List<WareSceneEvent> lst) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
         listViewItems = lst;
@@ -37,7 +36,6 @@ public class SystemAdapter extends BaseAdapter {
         mSceneEvents.addAll(listViewItems);
         //最后是"新增情景",所以要加一个
         mSceneEvents.add(null);
-        mListener = listener;
     }
 
     @Override
@@ -71,14 +69,11 @@ public class SystemAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            View convertView1 = mInflater.inflate(R.layout.sceneset_listview_item, null);
-            View convertView2 = mInflater.inflate(R.layout.equipmentdeploy_listview_item_scene, null);
+            convertView = mInflater.inflate(R.layout.sceneset_listview_item, null);
             viewHolder = new ViewHolder();
-            viewHolder.image = (ImageView) convertView1.findViewById(R.id.sceneSet_iv);
-            viewHolder.title = (TextView) convertView1.findViewById(R.id.sceneSet_tv);
-            viewHolder.hui = (ImageView) convertView1.findViewById(R.id.sceneSet_hui);
-            viewHolder.delete = (TextView) convertView2.findViewById(R.id.deploy_delete);
-            convertView = new SwipeItemLayout(convertView1, convertView2, null, null);
+            viewHolder.image = (ImageView) convertView.findViewById(R.id.sceneSet_iv);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.sceneSet_tv);
+            viewHolder.hui = (ImageView) convertView.findViewById(R.id.sceneSet_hui);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -95,23 +90,16 @@ public class SystemAdapter extends BaseAdapter {
             viewHolder.title.setText(mSceneEvents.get(position).getSceneName());
             viewHolder.hui.setImageResource(R.drawable.huijiantou);
 
-            if (mSceneEvents.get(position).getEventId() != 0) {
-                if (mSceneEvents.get(position).getEventId() != 1) {
-                    viewHolder.delete.setOnClickListener(mListener);
-                    viewHolder.delete.setTag(position);
-                }
-            }
         } else {
             viewHolder.image.setImageResource(R.drawable.xingzengmoshi);
             viewHolder.title.setText("新增模式");
             viewHolder.hui.setVisibility(View.GONE);
-            viewHolder.delete.setVisibility(View.GONE);
         }
         return convertView;
     }
 
     public class ViewHolder {
         private ImageView image, hui;
-        public TextView title, delete;
+        public TextView title;
     }
 }
