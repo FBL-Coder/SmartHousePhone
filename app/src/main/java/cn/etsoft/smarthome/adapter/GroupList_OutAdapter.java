@@ -136,7 +136,9 @@ public class GroupList_OutAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 //点击添加设备
-                mContext.startActivity(new Intent(mContext, Add_Dev_Activity.class));
+                Intent intent = new Intent(mContext, Add_Dev_Activity.class);
+                intent.putExtra("CancpuID",ListDatas.get(group).getDevUnitID());
+                mContext.startActivity(intent);
             }
         });
         return convertView;

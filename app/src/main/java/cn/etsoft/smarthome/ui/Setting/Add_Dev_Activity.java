@@ -46,10 +46,9 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     private EditText add_dev_name, edit_dev_room;
     private ImageView back, edit_roomname;
     private PopupWindow popupWindow;
-    private List<String> Board_text;
-    private List<WareBoardChnout> list_board;
     private List<String> home_text;
     private List<String> type_text;
+    private WareBoardChnout mBoardChnout;
     private boolean IsSave = true;
     private int type_position = 0;
     private int board_position = 0;
@@ -62,16 +61,20 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_dev);
+        for (int i = 0; i < MyApplication.getWareData().getBoardChnouts().size(); i++) {
+            if (MyApplication.getWareData().getBoardChnouts().get(i).getCanCpuID().equals(getIntent().getStringExtra("CancpuID")))
+                mBoardChnout = MyApplication.getWareData().getBoardChnouts().get(i);
+        }
 
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 5 ) {
-                    if (subtype2 ==1) {
+                if (datType == 5) {
+                    if (subtype2 == 1) {
                         MyApplication.mApplication.dismissLoadDialog();
                         ToastUtil.showText("添加成功");
                         finish();
-                    }else {
+                    } else {
                         ToastUtil.showText("添加失败");
                     }
                 }
@@ -97,15 +100,9 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         back.setOnClickListener(this);
         add_dev_type.setOnClickListener(this);
         add_dev_room.setOnClickListener(this);
-        add_dev_board.setOnClickListener(this);
         add_dev_save.setOnClickListener(this);
         add_dev_way.setOnClickListener(this);
 
-        Board_text = new ArrayList<>();
-        list_board = MyApplication.getWareData().getBoardChnouts();
-        for (int i = 0; i < list_board.size(); i++) {
-            Board_text.add(list_board.get(i).getBoardName());
-        }
 
         // 创建PopupWindow实例
         home_text = new ArrayList<>();
@@ -134,11 +131,11 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
         type_text.add("地暖");
         title.setText("添加设备");
         if (type_text != null && type_text.size() != 0 &&
-                Board_text != null && Board_text.size() != 0 &&
                 home_text != null && home_text.size() != 0) {
             add_dev_type.setText(type_text.get(0));
-            add_dev_board.setText(Board_text.get(0));
+            add_dev_board.setText(mBoardChnout.getBoardName());
             add_dev_room.setText(home_text.get(0));
+            add_dev_way.setText("请选择通道");
         } else {
             ToastUtil.showText("没有数据");
             return;
@@ -178,25 +175,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     popupWindow.showAsDropDown(v, 0, 0);
                 }
                 break;
-            case R.id.add_dev_board:
-                if ("机顶盒".equals(add_dev_type.getText()) ||
-                        "电视".equals(add_dev_type.getText())) {
-                    add_dev_board.setText("此设备不需要输出板");
-                    return;
-                }
-                if (popupWindow != null && popupWindow.isShowing()) {
-                    popupWindow.dismiss();
-                    popupWindow = null;
-                } else {
-                    initPopupWindow(Board_text, 3);
-                    popupWindow.showAsDropDown(v, 0, 0);
-                }
-                break;
             case R.id.add_dev_way:
-                if (board_position == -1) {
-                    ToastUtil.showText("请选择输出板");
-                    return;
-                }
                 List<Integer> list_voard_cancpuid = new ArrayList<>();
 
                 for (int z = 0; z < MyApplication.getWareData().getDevs().size(); z++) {
@@ -205,7 +184,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         for (int i = 0; i < MyApplication.getWareData().getAirConds().size(); i++) {
                             WareAirCondDev airCondDev = MyApplication.getWareData().getAirConds().get(i);
 
-                            if (list_board.get(board_position).getCanCpuID().equals(airCondDev.getDev().getCanCpuId())) {
+                            if (mBoardChnout.getCanCpuID().equals(airCondDev.getDev().getCanCpuId())) {
                                 int PowChn = airCondDev.getPowChn();
                                 String PowChnList = Integer.toBinaryString(PowChn);
                                 PowChnList = new StringBuffer(PowChnList).reverse().toString();
@@ -221,7 +200,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                     } else if (dev.getType() == 3) {
                         for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
 
-                            if (list_board.get(board_position).getCanCpuID().equals(
+                            if (mBoardChnout.getCanCpuID().equals(
                                     MyApplication.getWareData().getLights().get(i).getDev().getCanCpuId())) {
                                 int PowChn = MyApplication.getWareData().getLights().get(i).getPowChn() + 1;
                                 list_voard_cancpuid.add(PowChn);
@@ -229,7 +208,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         }
                     } else if (dev.getType() == 4) {
                         for (int i = 0; i < MyApplication.getWareData().getCurtains().size(); i++) {
-                            if (list_board.get(board_position).getCanCpuID().equals(
+                            if (mBoardChnout.getCanCpuID().equals(
                                     MyApplication.getWareData().getCurtains().get(i).getDev().getCanCpuId())) {
                                 int PowChn = MyApplication.getWareData().getCurtains().get(i).getPowChn();
                                 String PowChnList = Integer.toBinaryString(PowChn);
@@ -243,9 +222,9 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                 list_voard_cancpuid.addAll(index_list);
                             }
                         }
-                    }  else if (dev.getType() == 7) {
+                    } else if (dev.getType() == 7) {
                         for (int i = 0; i < MyApplication.getWareData().getFreshAirs().size(); i++) {
-                            if (list_board.get(board_position).getCanCpuID().equals(
+                            if (mBoardChnout.getCanCpuID().equals(
                                     MyApplication.getWareData().getFreshAirs().get(i).getDev().getCanCpuId())) {
                                 list_voard_cancpuid.add(MyApplication.getWareData().getFreshAirs().get(i).getOnOffChn() + 1);
                                 list_voard_cancpuid.add(MyApplication.getWareData().getFreshAirs().get(i).getSpdHighChn() + 1);
@@ -255,7 +234,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                         }
                     } else if (dev.getType() == 9) {
                         for (int i = 0; i < MyApplication.getWareData().getFloorHeat().size(); i++) {
-                            if (list_board.get(board_position).getCanCpuID().equals(
+                            if (mBoardChnout.getCanCpuID().equals(
                                     MyApplication.getWareData().getFloorHeat().get(i).getDev().getCanCpuId())) {
                                 int PowChn = MyApplication.getWareData().getFloorHeat().get(i).getPowChn() + 1;
                                 list_voard_cancpuid.add(PowChn);
@@ -268,7 +247,6 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 for (int i = 1; i < 13; i++) {
                     list_channel.add(i);
                 }
-
                 for (int i = 0; i < list_voard_cancpuid.size(); i++) {
                     for (int j = 0; j < list_channel.size(); j++) {
                         if (list_channel.get(j) == list_voard_cancpuid.get(i)) {
@@ -279,6 +257,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 boolean[] isSelect = new boolean[list_channel.size()];
                 if (list_channel.size() == 0) {
                     ToastUtil.showText("没有可用通道");
+                    add_dev_way.setText("没有可用通道");
                 } else {
                     initPopupWindow_channel((TextView) v, list_channel);
                     popupWindow.showAsDropDown(v, 0, 0);
@@ -422,7 +401,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"datType\":" + 5 + "," +
                                     "\"subType1\":0," +
                                     "\"subType2\":0," +
-                                    "\"canCpuID\":\"" + list_board.get(board_position).getCanCpuID() + "\"," +
+                                    "\"canCpuID\":\"" + mBoardChnout.getCanCpuID() + "\"," +
                                     "\"devType\":" + type_position + "," +
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +
@@ -438,7 +417,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"datType\":" + 5 + "," +
                                     "\"subType1\":0," +
                                     "\"subType2\":0," +
-                                    "\"canCpuID\":\"" + list_board.get(board_position).getCanCpuID() + "\"," +
+                                    "\"canCpuID\":\"" + mBoardChnout.getCanCpuID() + "\"," +
                                     "\"devType\":" + type_position + "," +
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +
@@ -452,7 +431,7 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                                     "\"datType\":" + 5 + "," +
                                     "\"subType1\":0," +
                                     "\"subType2\":0," +
-                                    "\"canCpuID\":\"" + list_board.get(board_position).getCanCpuID() + "\"," +
+                                    "\"canCpuID\":\"" + mBoardChnout.getCanCpuID() + "\"," +
                                     "\"devType\":" + type_position + "," +
                                     "\"devName\":" + "\"" + Save_DevName + "\"," +
                                     "\"roomName\":" + "\"" + Save_Roomname + "\"," +

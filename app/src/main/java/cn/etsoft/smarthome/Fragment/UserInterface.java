@@ -37,6 +37,10 @@ import cn.etsoft.smarthome.domain.WareSetBox;
 import cn.etsoft.smarthome.domain.WareTv;
 import cn.etsoft.smarthome.ui.HomeActivity;
 import cn.etsoft.smarthome.ui.Setting.UserAddDevsActivty;
+import cn.etsoft.smarthome.ui.UserInterface.Air_Control;
+import cn.etsoft.smarthome.ui.UserInterface.Cur_Control;
+import cn.etsoft.smarthome.ui.UserInterface.Flo_Control;
+import cn.etsoft.smarthome.ui.UserInterface.Fre_Control;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
@@ -189,20 +193,10 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
             if (beanBean.isIsDev() == 1) {
                 int type_dev = beanBean.getDevType();
                 if (type_dev == 0) {
-                    for (int j = 0; j < MyApplication.getWareData().getAirConds().size(); j++) {
-                        WareAirCondDev AirCondDev = MyApplication.getWareData().getAirConds().get(j);
-                        if (beanBean.getCanCpuID().equals(AirCondDev.getDev().getCanCpuId())
-                                && beanBean.getDevID() == AirCondDev.getDev().getDevId()) {
-                            int cmdValue = 0, modelValue = 0;
-                            if (AirCondDev.getbOnOff() == 0) {
-                                cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOn.getValue();//打开空调
-                            } else {
-                                cmdValue = UdpProPkt.E_AIR_CMD.e_air_pwrOff.getValue();//关闭空调
-                            }
-                            int value = (modelValue << 5) | cmdValue;
-                            SendDataUtil.controlDev(AirCondDev.getDev(), value);
-                        }
-                    }
+                    Intent intent = new Intent(mActivity, Air_Control.class);
+                    intent.putExtra("cancpuid", beanBean.getCanCpuID());
+                    intent.putExtra("devid", beanBean.getDevID());
+                    mActivity.startActivity(intent);
                 } else if (type_dev == 1) {
                     for (int j = 0; j < MyApplication.getWareData().getTvs().size(); j++) {
                         WareTv tv = MyApplication.getWareData().getTvs().get(j);
@@ -232,43 +226,20 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
                         }
                     }
                 } else if (type_dev == 4) {
-                    for (int j = 0; j < MyApplication.getWareData().getCurtains().size(); j++) {
-                        WareCurtain Curtain = MyApplication.getWareData().getCurtains().get(j);
-                        if (beanBean.getCanCpuID().equals(Curtain.getDev().getCanCpuId())
-                                && beanBean.getDevID() == Curtain.getDev().getDevId()) {
-                            if (count % 2 == 0) {
-                                state.setText("点击关闭");
-                                SendDataUtil.controlDev(Curtain.getDev(), UdpProPkt.E_CURT_CMD.e_curt_offOn.getValue());
-                            } else {
-                                state.setText("点击打开");
-                                SendDataUtil.controlDev(Curtain.getDev(), UdpProPkt.E_CURT_CMD.e_curt_offOff.getValue());
-                            }
-                            count++;
-                        }
-                    }
+                    Intent intent = new Intent(mActivity, Cur_Control.class);
+                    intent.putExtra("cancpuid", beanBean.getCanCpuID());
+                    intent.putExtra("devid", beanBean.getDevID());
+                    mActivity.startActivity(intent);
                 } else if (type_dev == 7) {
-                    for (int j = 0; j < MyApplication.getWareData().getFreshAirs().size(); j++) {
-                        WareFreshAir freshAir = MyApplication.getWareData().getFreshAirs().get(j);
-                        if (beanBean.getCanCpuID().equals(freshAir.getDev().getCanCpuId())
-                                && beanBean.getDevID() == freshAir.getDev().getDevId()) {
-                            if (freshAir.getbOnOff() == 1) {
-                                SendDataUtil.controlDev(freshAir.getDev(), UdpProPkt.E_FRESHAIR_CMD.e_freshair_close.getValue());
-                            } else {
-                                SendDataUtil.controlDev(freshAir.getDev(), UdpProPkt.E_FRESHAIR_CMD.e_freshair_open.getValue());
-                            }
-                        }
-                    }
+                    Intent intent = new Intent(mActivity, Fre_Control.class);
+                    intent.putExtra("cancpuid", beanBean.getCanCpuID());
+                    intent.putExtra("devid", beanBean.getDevID());
+                    mActivity.startActivity(intent);
                 } else if (type_dev == 9) {
-                    for (int j = 0; j < MyApplication.getWareData().getFloorHeat().size(); j++) {
-                        WareFloorHeat floorHeat = MyApplication.getWareData().getFloorHeat().get(j);
-                        if (beanBean.getCanCpuID().equals(floorHeat.getDev().getCanCpuId())
-                                && beanBean.getDevID() == floorHeat.getDev().getDevId()) {
-                            if (floorHeat.getbOnOff() == 1)
-                                SendDataUtil.controlDev(floorHeat.getDev(), UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_close.getValue());
-                            else
-                                SendDataUtil.controlDev(floorHeat.getDev(), UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_open.getValue());
-                        }
-                    }
+                    Intent intent = new Intent(mActivity, Flo_Control.class);
+                    intent.putExtra("cancpuid", beanBean.getCanCpuID());
+                    intent.putExtra("devid", beanBean.getDevID());
+                    mActivity.startActivity(intent);
                 }
             } else {
                 SendDataUtil.executelScene(beanBean.getEventId());

@@ -185,13 +185,10 @@
                 android:layout_marginRight="@dimen/dp_60"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_weight="1"
-                android:background="@drawable/save_click_selector"
-                android:clickable="true"
-                android:drawableRight="@drawable/more"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
-                android:textColor="#fff"
+                android:textColor="@color/black1"
                 android:textSize="@dimen/sp_16" />
         </LinearLayout>
 

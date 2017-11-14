@@ -182,14 +182,6 @@
         <activity
             android:name="cn.etsoft.smarthome.ui.Setting.KeySceneActivity_dev"
             android:screenOrientation="portrait" />
-        <!--设备信息-->
-        <activity
-            android:name="cn.etsoft.smarthome.ui.Equipment_control"
-            android:screenOrientation="portrait" />
-        <!--设备信息-->
-        <activity
-            android:name="cn.etsoft.smarthome.ui.Setting.EditDevActivity"
-            android:screenOrientation="portrait" />
         <!--输入模块编辑详情-->
         <activity
             android:name="cn.etsoft.smarthome.ui.Setting.EditModuleActivity"
@@ -241,7 +233,26 @@
         <activity
             android:name="cn.etsoft.smarthome.ui.Setting.UserAddDevsActivty"
             android:screenOrientation="portrait" />
-
+        <!--用户界面-空调-->
+        <activity
+            android:name="cn.etsoft.smarthome.ui.UserInterface.Air_Control"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--用户界面-窗帘-->
+        <activity
+            android:name="cn.etsoft.smarthome.ui.UserInterface.Cur_Control"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--用户界面-新风-->
+        <activity
+            android:name="cn.etsoft.smarthome.ui.UserInterface.Fre_Control"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--用户界面-地暖-->
+        <activity
+            android:name="cn.etsoft.smarthome.ui.UserInterface.Flo_Control"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- 配置密码帮助页面-->
         <activity
             android:name=".ui.Setting.ConfigPassActivity"

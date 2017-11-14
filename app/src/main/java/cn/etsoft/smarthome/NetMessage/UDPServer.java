@@ -1882,7 +1882,7 @@ public class UDPServer implements Runnable {
                     if (MyApplication.getWareData().getKeyInputs().size() > 0) {
                         for (int k = 0; k < MyApplication.getWareData().getKeyInputs().size(); k++) {
                             if (input.getCanCpuID().equals(MyApplication.getWareData().getKeyInputs().get(k).getCanCpuID())) {
-                                MyApplication.getWareData().getKeyInputs().set(i, input);
+                                MyApplication.getWareData().getKeyInputs().set(k, input);
                             }
                         }
                     }
@@ -1920,18 +1920,17 @@ public class UDPServer implements Runnable {
                     if (MyApplication.getWareData().getBoardChnouts().size() > 0) {
                         for (int k = 0; k < MyApplication.getWareData().getBoardChnouts().size(); k++) {
                             if (chnout.getCanCpuID().equals(MyApplication.getWareData().getBoardChnouts().get(k).getCanCpuID())) {
-                                MyApplication.getWareData().getBoardChnouts().set(i, chnout);
+                                MyApplication.getWareData().getBoardChnouts().set(k, chnout);
                             }
                         }
                     }
                 }
             } catch (JSONException e) {
                 isFreshData = false;
-                System.out.println(this.getClass().getName() + "datType = 8-1" + e.toString());
+                System.out.println(this.getClass().getName() + "datType = 9-1" + e.toString());
             }
         }
     }
-
 
     /**
      * 获取输入板设备详情

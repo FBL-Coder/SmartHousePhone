@@ -273,7 +273,7 @@ public class SafetyActivity_details extends Activity implements View.OnClickList
             }
         }
         if (MyApplication.getWareData().getResult_safety().getSec_info_rows().get(Safety_position).getSceneId() == 255) {
-            safety_scene.setText("选择情景");
+            safety_scene.setText("无");
             ScenePosition = 255;
         } else {
             //情景
