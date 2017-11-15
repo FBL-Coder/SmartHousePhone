@@ -137,7 +137,6 @@ public class MyApplication extends Application {
     private RoomTempBean mRoomTempBean;
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -465,7 +464,7 @@ public class MyApplication extends Application {
         return SeekRcuInfos;
     }
 
-    public RoomTempBean getRoomTempBean(){
+    public RoomTempBean getRoomTempBean() {
         return mRoomTempBean;
     }
 
@@ -506,6 +505,7 @@ public class MyApplication extends Application {
                 WS_againConnect();
             }
             if (msg.what == application.WS_DATA_OK) {//WebSocket 数据
+                WSIsOpen = true;
                 MyApplication.mApplication.getUdpServer().webSocketData((String) msg.obj);
             }
             if (msg.what == application.WS_Error) {
@@ -581,6 +581,7 @@ public class MyApplication extends Application {
             if (WSIsAgainConnectRun) {
                 return;
             }
+            WSIsAgainConnectRun = true;
             final Handler handler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
@@ -598,7 +599,6 @@ public class MyApplication extends Application {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    WSIsAgainConnectRun = true;
                     for (; ; ) {
                         if (WSIsOpen) {
                             WSIsAgainConnectRun = false;
