@@ -238,18 +238,27 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 byte[] nameData = {0};
                 try {
                     nameData = title.getText().toString().getBytes("GB2312");
-                } catch (UnsupportedEncodingException e) {
+                } catch (Exception e) {
                     MyApplication.mApplication.dismissLoadDialog();
-                    ToastUtil.showText("数据不合适，请重新编辑");
+                    ToastUtil.showText("发生未知错误");
+                    return;
                 }
                 String str_gb = CommonUtils.bytesToHexString(nameData);
                 Log.e("情景模式名称:%s", str_gb);
+
+                if ("".equals(more_data)){
+                    MyApplication.mApplication.dismissLoadDialog();
+                    ToastUtil.showText("没有选择设备，不可保存");
+                    return;
+
+                }
                 try {
                     more_data = more_data.substring(0, more_data.lastIndexOf(","));
                 } catch (Exception e) {
                     System.out.println(e + "");
                     MyApplication.mApplication.dismissLoadDialog();
                     ToastUtil.showText("数据不合适，请重新编辑");
+                    return;
                 }
                 //这就是要上传的字符串:data_hoad
                 String data_hoad = "{" +

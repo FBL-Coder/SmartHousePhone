@@ -119,7 +119,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
 
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long l) {
 
                 CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(SceneSetActivity.this);
                 builder.setTitle("提示 :");
@@ -136,7 +136,7 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                         dialog.dismiss();
                         //删除情景模式
                         try {
-                            SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(i));
+                            SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(position));
                         } catch (Exception e) {
                             ToastUtil.showText("数据请求异常，请刷新情景数据");
                             return;

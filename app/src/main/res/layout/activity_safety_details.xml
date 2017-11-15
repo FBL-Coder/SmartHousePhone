@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:text="全局布防类型"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12" />
 
             <TextView
                 android:id="@+id/safety_type"
@@ -75,21 +75,21 @@
                 android:layout_marginBottom="@dimen/dp_5"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_5"
-                android:layout_weight="0.5"
+                android:layout_weight="0.3"
                 android:gravity="center"
-                android:text="安防名称"
+                android:text="名称"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12" />
 
             <EditText
                 android:id="@+id/safety_name"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/dp_5"
-                android:layout_marginLeft="@dimen/dp_5"
                 android:layout_marginRight="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_5"
-                android:layout_weight="0.8"
+                android:layout_weight="1"
+                android:maxLength="6"
                 android:background="@color/color_10AEFF"
                 android:gravity="center"
                 android:textColorHint="@color/main_border2"
@@ -102,11 +102,11 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="使能"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12" />
 
             <TextView
                 android:id="@+id/safety_enabled"
@@ -151,11 +151,11 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="状态"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12" />
 
             <TextView
                 android:id="@+id/safety_state"
@@ -181,7 +181,7 @@
                 android:gravity="center"
                 android:text="关联情景"
                 android:textColor="@color/color_fff"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_12" />
 
             <TextView
                 android:id="@+id/safety_scene"

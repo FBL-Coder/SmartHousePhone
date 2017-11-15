@@ -95,7 +95,8 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
     //ViewPager
     //图片标题
     private TextView textView_banner, loaction_text, temp_text,
-            hum_text, pm_25, breath_text, weather_text, net_now;
+            hum_text, pm_25, breath_text, weather_text, net_now,
+            home_temp,home_hum,home_pm25;
     private ImageView ref_home, home_isConnect, home_logout;
     private ViewPagerCompat mViewPager;
     private List<Integer> mImgIds_img = new ArrayList<>();
@@ -136,6 +137,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 if (datType == 3) {
                     //更新数据
                     upData();
+                }
+                if (datType == 68){
+                    initTempRoom();
                 }
                 if (homeDataUpDataListener != null)
                     homeDataUpDataListener.getupData(datType, subtype1, subtype2);
@@ -186,6 +190,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         weather_text = (TextView) findViewById(R.id.weather_text);
         loaction_text = (TextView) findViewById(R.id.loaction_text);
         net_now = (TextView) findViewById(R.id.net_now);
+        home_temp = (TextView) findViewById(R.id.home_temp);
+        home_hum = (TextView) findViewById(R.id.home_hum);
+        home_pm25 = (TextView) findViewById(R.id.home_pm25);
         rb_home_user = (RadioButton) findViewById(R.id.rb_home_user);
         rb_home_home = (RadioButton) findViewById(R.id.rb_home_home);
         rb_home_setting = (RadioButton) findViewById(R.id.rb_home_setting);
@@ -419,6 +426,7 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
             dots_iv.get(oldPosition).setBackgroundResource(R.drawable.point_unfocused);
             dots_iv.get(position).setBackgroundResource(R.drawable.point_focused);
             oldPosition = position;
+            initTempRoom();
         }
 
         public void onPageScrollStateChanged(int arg0) {
@@ -466,6 +474,25 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         // 设置一个监听器，当ViewPage中的页面改变时调用
         mViewPager.setOnPageChangeListener(new MyPageChangeListener());
         mViewPager.setCurrentItem(RoomPosition);
+    }
+
+
+    public void initTempRoom(){
+        boolean isHaveData = false;
+        for (int i = 0; i <MyApplication.mApplication.getRoomTempBean().getRcu_rows().size(); i++) {
+            if (text_room.get(RoomPosition).equals(
+                    MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getRoomName())) {
+                isHaveData = true;
+                home_temp.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getTempVal() + "℃");
+                home_pm25.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getPm25() + "");
+                home_hum.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getHumidity() + "%");
+            }
+        }
+        if (!isHaveData){
+            home_temp.setText("--℃");
+            home_pm25.setText("--");
+            home_hum.setText("--%");
+        }
     }
 
     private void initData() {

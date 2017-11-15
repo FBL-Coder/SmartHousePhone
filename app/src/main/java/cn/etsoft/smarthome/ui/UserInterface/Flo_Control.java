@@ -16,6 +16,7 @@ import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.WareFloorHeat;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.utils.SendDataUtil;
+import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Author：FBL  Time： 2017/11/14.
@@ -52,7 +53,7 @@ public class Flo_Control extends Activity implements View.OnClickListener {
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
-                if (datType == 4 || datType == 35) {
+                if (datType == 4 || datType == 35 ||datType == 6) {
                     initData();
                 }
             }
@@ -114,6 +115,11 @@ public class Flo_Control extends Activity implements View.OnClickListener {
                     SendDataUtil.controlDev(mFloorHeat.getDev(), UdpProPkt.E_FLOOR_HEAT_CMD.e_floorHeat_open.getValue());
                 break;
             case R.id.floorheat_temp_add:
+                if (mFloorHeat.getbOnOff() == 0) {
+                    ToastUtil.showText("请先打开设备");
+                    return;
+                }
+
                 try {
                     DevName = CommonUtils.bytesToHexString(mFloorHeat.getDev().getDevName().getBytes("GB2312"));
                 } catch (UnsupportedEncodingException e) {
@@ -135,13 +141,17 @@ public class Flo_Control extends Activity implements View.OnClickListener {
                         "\"tempget\":" + mFloorHeat.getTempget() + "," +
                         "\"devName\":" + "\"" + DevName + "\"," +
                         "\"roomName\":" + "\"" + RoomName + "\"," +
-                        "\"tempset\":" + floorHeatTemp + "," +
+                        "\"tempset\":" + ++floorHeatTemp + "," +
                         "\"autoRun\":" + 0 + "," +
                         "\"cmd\":" + 1 + "," +
                         "\"powChn\":" + mFloorHeat.getDev().getPowChn() + "}";
                 MyApplication.mApplication.getUdpServer().send(chn_str, 6);
                 break;
             case R.id.floorheat_temp_down:
+                if (mFloorHeat.getbOnOff() == 0) {
+                    ToastUtil.showText("请先打开设备");
+                    return;
+                }
                 try {
                     DevName = CommonUtils.bytesToHexString(mFloorHeat.getDev().getDevName().getBytes("GB2312"));
                 } catch (UnsupportedEncodingException e) {
@@ -163,7 +173,7 @@ public class Flo_Control extends Activity implements View.OnClickListener {
                         "\"tempget\":" + mFloorHeat.getTempget() + "," +
                         "\"devName\":" + "\"" + DevName + "\"," +
                         "\"roomName\":" + "\"" + RoomName + "\"," +
-                        "\"tempset\":" + floorHeatTemp + "," +
+                        "\"tempset\":" + --floorHeatTemp + "," +
                         "\"autoRun\":" + mFloorHeat.getAutoRun() + "," +
                         "\"cmd\":" + 1 + "," +
                         "\"powChn\":" + mFloorHeat.getDev().getPowChn() + "}";

@@ -36,6 +36,7 @@ import cn.etsoft.smarthome.NetMessage.UDPServer;
 import cn.etsoft.smarthome.NetMessage.WebSocket_Client;
 import cn.etsoft.smarthome.NetWorkListener.AppNetworkMgr;
 import cn.etsoft.smarthome.domain.RcuInfo;
+import cn.etsoft.smarthome.domain.RoomTempBean;
 import cn.etsoft.smarthome.domain.Safety_Data;
 import cn.etsoft.smarthome.domain.WareData;
 import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
@@ -132,6 +133,10 @@ public class MyApplication extends Application {
     //Activity 集合
     private List<Activity> activities;
 
+    //首页房间温度湿度
+    private RoomTempBean mRoomTempBean;
+
+
 
     @Override
     public void onCreate() {
@@ -170,6 +175,8 @@ public class MyApplication extends Application {
 
         sp = new SoundPool(10, AudioManager.STREAM_SYSTEM, 5);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
         music = sp.load(this, R.raw.key_sound, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
+
+        mRoomTempBean = new RoomTempBean();
 
         int NETWORK = AppNetworkMgr.getNetworkState(this);
         if (NETWORK >= 10) {
@@ -456,6 +463,10 @@ public class MyApplication extends Application {
         if (SeekRcuInfos == null)
             SeekRcuInfos = new ArrayList<>();
         return SeekRcuInfos;
+    }
+
+    public RoomTempBean getRoomTempBean(){
+        return mRoomTempBean;
     }
 
     public void setSeekRcuInfos(List<RcuInfo> seekRcuInfos) {

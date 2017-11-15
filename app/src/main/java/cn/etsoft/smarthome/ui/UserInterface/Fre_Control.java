@@ -12,6 +12,7 @@ import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.utils.SendDataUtil;
+import cn.etsoft.smarthome.utils.ToastUtil;
 
 /**
  * Author：FBL  Time： 2017/11/14.
@@ -118,12 +119,24 @@ public class Fre_Control extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.low_freshair:
+                if (mFreshAir.getbOnOff() == 0) {
+                    ToastUtil.showText("请先打开设备");
+                    return;
+                }
                 SendDataUtil.controlDev(mFreshAir.getDev(), UdpProPkt.E_FRESHAIR_CMD.e_freshair_spd_low.getValue());
                 break;
             case R.id.min_freshair:
+                if (mFreshAir.getbOnOff() == 0) {
+                    ToastUtil.showText("请先打开设备");
+                    return;
+                }
                 SendDataUtil.controlDev(mFreshAir.getDev(), UdpProPkt.E_FRESHAIR_CMD.e_freshair_spd_mid.getValue());
                 break;
             case R.id.hig_freshair:
+                if (mFreshAir.getbOnOff() == 0) {
+                    ToastUtil.showText("请先打开设备");
+                    return;
+                }
                 SendDataUtil.controlDev(mFreshAir.getDev(), UdpProPkt.E_FRESHAIR_CMD.e_freshair_spd_high.getValue());
                 break;
             case R.id.air_control_close:
