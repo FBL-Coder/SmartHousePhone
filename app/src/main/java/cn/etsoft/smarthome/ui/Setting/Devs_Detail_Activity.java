@@ -68,13 +68,13 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         id = getIntent().getIntExtra("id", 0);
         type = getIntent().getIntExtra("type", 0);
         cpu = getIntent().getStringExtra("cpu");
-        initView();
+        initView(true);
         MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 3 || datType == 4 || datType == 35
-                        || (datType == 3 || subtype2 == 7) || (datType == 3 && subtype2 == 9)) {
-                    initView();
+                        || (datType == 3 && subtype2 == 7) || (datType == 3 && subtype2 == 9)) {
+                    initView(false);
                 }
                 if (datType == 6) {
                     if (subtype2 == 1) {
@@ -103,7 +103,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
      */
     int count = 0;
 
-    private void initView() {
+    private void initView(boolean isRef) {
         message_save = new ArrayList<>();
         title = (TextView) findViewById(R.id.dev_info_title);
         dev_type = (ImageView) findViewById(R.id.dev_type);
@@ -129,6 +129,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
             return;
         }
         title.setText(dev.getDevName());
+        if (isRef)
         dev_name.setText(dev.getDevName());
         dev_room.setText(dev.getRoomName());
 
@@ -141,8 +142,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                         dev_type.setImageResource(R.drawable.kongtiao);
                     } else dev_type.setImageResource(R.drawable.kongtiao2);
                     //可视布局数据
-                    dev_name.setText(airCondDev.getDev().getDevName());
-                    dev_room.setText(airCondDev.getDev().getRoomName());
+
                     int Way_num = airCondDev.getPowChn();
                     String Way_str = new StringBuffer(Integer.toBinaryString(Way_num)).reverse().toString();
                     String Way_ok = "";
@@ -174,12 +174,10 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
         } else if (dev.getType() == 1) {
             dev_type.setImageResource(R.drawable.tv1);
             dev_way.setText("此设备无通道");
-            dev_name.setText(dev.getDevName());
             dev_way.setClickable(false);
         } else if (dev.getType() == 2) {
             dev_type.setImageResource(R.drawable.jidinghe1);
             dev_way.setText("此设备无通道");
-            dev_name.setText(dev.getDevName());
             dev_way.setClickable(false);
         } else if (dev.getType() == 3) {
             for (int i = 0; i < MyApplication.getWareData().getLights().size(); i++) {
@@ -189,8 +187,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
 
                     int PowChn = light.getPowChn();
                     dev_way.setText((PowChn + 1) + "");
-                    dev_name.setText(light.getDev().getDevName());
-                    dev_room.setText(light.getDev().getRoomName());
                     if (light.getbOnOff() == 0) {
                         dev_type.setImageResource(R.drawable.dengguang);
                     } else dev_type.setImageResource(R.drawable.light_icon);
@@ -215,9 +211,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 if (curtain.getDev().getDevId()
                         == dev.getDevId() && dev.getCanCpuId()
                         .equals(curtain.getDev().getCanCpuId())) {
-
-                    dev_name.setText(curtain.getDev().getDevName());
-                    dev_room.setText(curtain.getDev().getRoomName());
                     int Way_num = curtain.getDev().getPowChn();
                     String Way_str = new StringBuffer(Integer.toBinaryString(Way_num)).reverse().toString();
                     String Way_ok = "";
@@ -252,8 +245,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                     dev_way.setText((freshAir.getOnOffChn() + 1) + "、"
                             + (freshAir.getSpdLowChn() + 1) + "、" + (freshAir.getSpdMidChn() + 1)
                             + "、" + (freshAir.getSpdHighChn() + 1));
-                    dev_name.setText(freshAir.getDev().getDevName());
-                    dev_room.setText(freshAir.getDev().getRoomName());
                     if (freshAir.getbOnOff() == 0) {
                         dev_type.setImageResource(R.drawable.freshair_close);
                     } else dev_type.setImageResource(R.drawable.freshair_icon);
@@ -279,8 +270,6 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                         .equals(floorHeat.getDev().getCanCpuId())) {
                     int PowChn = floorHeat.getPowChn();
                     dev_way.setText((PowChn + 1) + "");
-                    dev_name.setText(floorHeat.getDev().getDevName());
-                    dev_room.setText(floorHeat.getDev().getRoomName());
                     if (floorHeat.getbOnOff() == 0) {
                         dev_type.setImageResource(R.drawable.floorheat_close);
                     } else dev_type.setImageResource(R.drawable.floorheat_icon);
@@ -575,8 +564,13 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                 break;
             case R.id.dev_way:
                 List<Integer> list_voard_cancpuid = new ArrayList<>();
+                List<WareDev> boardDev = new ArrayList<>();
                 for (int z = 0; z < MyApplication.getWareData().getDevs().size(); z++) {
-                    WareDev dev_inner = MyApplication.getWareData().getDevs().get(z);
+                    if (dev.getCanCpuId().equals(MyApplication.getWareData().getDevs().get(z).getCanCpuId()))
+                        boardDev.add(MyApplication.getWareData().getDevs().get(z));
+                }
+                for (int z = 0; z < boardDev.size(); z++) {
+                    WareDev dev_inner = boardDev.get(z);
                     if (!(dev_inner.getType() == dev.getType()
                             && dev_inner.getDevId() == dev.getDevId()
                             && dev_inner.getCanCpuId().equals(dev.getCanCpuId()))) {
