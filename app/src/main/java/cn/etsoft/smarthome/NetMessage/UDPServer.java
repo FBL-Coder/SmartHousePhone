@@ -2339,23 +2339,32 @@ public class UDPServer implements Runnable {
                 roomTempBean.getRcu_rows().add(bean);
             } else {
                 boolean isExistRoom = false;
-                for (int i = 0; i < MyApplication.getWareData().getRooms().size(); i++) {
-                    if (bean.getRoomName().equals(MyApplication.getWareData().getRooms().get(i))) {
+                for (int i = 0; i < roomTempBean.getRcu_rows().size(); i++) {
+                    if (bean.getRoomName().equals(roomTempBean.getRcu_rows().get(i).getRoomName())) {
+                        if (roomTempBean.getRcu_rows().get(i).getHumidity() == 0 && bean.getHumidity() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setHumidity(bean.getHumidity());
+                        } else if (roomTempBean.getRcu_rows().get(i).getHumidity() != 0 && bean.getHumidity() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setHumidity(bean.getHumidity());
+                        }
+                        if (roomTempBean.getRcu_rows().get(i).getPm10() == 0 && bean.getPm10() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setPm10(bean.getPm10());
+                        } else if (roomTempBean.getRcu_rows().get(i).getPm10() != 0 && bean.getPm10() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setPm10(bean.getPm10());
+                        }
+                        if (roomTempBean.getRcu_rows().get(i).getPm25() == 0 && bean.getPm25() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setPm25(bean.getPm25());
+                        } else if (roomTempBean.getRcu_rows().get(i).getPm25() != 0 && bean.getPm25() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setPm25(bean.getPm25());
+                        }
+                        if (roomTempBean.getRcu_rows().get(i).getTempVal() == 0 && bean.getTempVal() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setTempVal(bean.getTempVal());
+                        } else if (roomTempBean.getRcu_rows().get(i).getTempVal() != 0 && bean.getTempVal() != 0) {
+                            roomTempBean.getRcu_rows().get(i).setTempVal(bean.getTempVal());
+                        }
                         isExistRoom = true;
                     }
                 }
                 if (!isExistRoom) {
-                    isFreshData = false;
-                    return;
-                }
-                boolean isExistTemp = false;
-                for (int i = 0; i < roomTempBean.getRcu_rows().size(); i++) {
-                    if (bean.getRoomName().equals(roomTempBean.getRcu_rows().get(i).getRoomName())) {
-                        roomTempBean.getRcu_rows().set(i, bean);
-                        isExistTemp = true;
-                    }
-                }
-                if (!isExistTemp) {
                     roomTempBean.getRcu_rows().add(bean);
                 }
             }

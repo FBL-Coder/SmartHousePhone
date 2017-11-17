@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
@@ -37,7 +36,6 @@ import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.semtec.community2.model.MyHttpUtil;
 import cn.semtec.community2.tool.Constants;
 import cn.semtec.community2.util.CatchUtil;
-import cn.semtec.community2.util.TimeCountUtil;
 import cn.semtec.community2.util.ToastUtil;
 
 public class RegistActivity extends MyBaseActivity implements View.OnClickListener {
