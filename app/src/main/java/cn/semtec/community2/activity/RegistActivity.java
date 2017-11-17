@@ -45,11 +45,11 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
     private View btn_back;
     private EditText et_phone;
     private EditText et_password;
-    private EditText et_verify;
-    private Button btn_verify;
+    //    private EditText et_verify;
+//    private Button btn_verify;
     private View btn_commit;
     private String cellphone;
-    private String verify;
+    private String verify = "";
     private String password;
     private Intent intent;
     private int ADDOK = 0;
@@ -66,8 +66,8 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
     private void setView() {
         btn_back = findViewById(R.id.btn_back);
         et_phone = (EditText) findViewById(R.id.et_phone);
-        et_verify = (EditText) findViewById(R.id.et_verify);
-        btn_verify = (Button) findViewById(R.id.btn_verify);
+//        et_verify = (EditText) findViewById(R.id.et_verify);
+//        btn_verify = (Button) findViewById(R.id.btn_verify);
         et_password = (EditText) findViewById(R.id.et_password);
         btn_commit = findViewById(R.id.btn_commit);
 
@@ -75,7 +75,7 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
 
     private void setListener() {
         btn_back.setOnClickListener(this);
-        btn_verify.setOnClickListener(this);
+//        btn_verify.setOnClickListener(this);
         btn_commit.setOnClickListener(this);
     }
 
@@ -85,9 +85,9 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
             case R.id.btn_back:
                 finish();
                 break;
-            case R.id.btn_verify:
-                getVerifycode();
-                break;
+//            case R.id.btn_verify:
+//                getVerifycode();
+//                break;
             case R.id.btn_commit:
                 if (!CheckInput()) {
                     break;
@@ -100,7 +100,7 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
 
     private boolean CheckInput() {
         cellphone = et_phone.getText().toString();
-        verify = et_verify.getText().toString();
+//        verify = et_verify.getText().toString();
         password = et_password.getText().toString();
 
         Pattern p = Pattern.compile("^1\\d{10}$");
@@ -109,10 +109,10 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
             ToastUtil.s(this, getString(R.string.regist_error));
             return false;
         }
-        if (verify.length() < 4) {
-            ToastUtil.s(this, getString(R.string.repickpassword_verify_error));
-            return false;
-        }
+//        if (verify.length() < 4) {
+//            ToastUtil.s(this, getString(R.string.repickpassword_verify_error));
+//            return false;
+//        }
         if (password.length() < 6) {
             ToastUtil.s(this, "请输入至少6位密码");
         }
@@ -239,54 +239,54 @@ public class RegistActivity extends MyBaseActivity implements View.OnClickListen
     }
 
     // 获取验证码
-    private void getVerifycode() {
-        cellphone = et_phone.getText().toString();
-        Pattern p = Pattern.compile("^1\\d{10}$");
-        Matcher m = p.matcher(cellphone);
-        if (!m.matches()) {
-            ToastUtil.s(this, getString(R.string.regist_error));
-            return;
-        }
-        //倒计时
-        TimeCountUtil timeCountUtil = new TimeCountUtil(this, 60000, 1000, btn_verify);
-        timeCountUtil.start();
-        String url = Constants.CONTENT_CELLPHONE + cellphone + Constants.CONTENT_VERIFYCODE;
-        MyHttpUtil http = new MyHttpUtil(HttpRequest.HttpMethod.GET, url,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        cancelProgress();
-                        if (responseInfo.statusCode == 200) {
-                            String mResult = responseInfo.result.toString();
-                            //获得回传的 json字符串
-                            JSONObject jo;
-                            try {
-                                jo = new JSONObject(mResult);
-                                //0为成功  <0为系统异常  其他待定
-                                if (jo.getInt("returnCode") == 0) {
-                                    JSONObject args = (JSONObject) jo.get("args");
-                                    if (!args.isNull("smscode")) {
-                                        String smscode = args.getString("smscode");
-                                        ToastUtil.l(getApplication(), smscode);
-                                        et_verify.setText(smscode);
-                                    }
-                                } else {
-                                    ToastUtil.s(getApplication(), jo.getString("msg"));
-                                }
-                            } catch (JSONException e) {
-                                CatchUtil.catchM(e);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException error, String msg) {
-                        cancelProgress();
-                        ToastUtil.s(RegistActivity.this, getString(R.string.net_abnormal));
-                        LogUtils.i(getString(R.string.net_abnormal) + msg);
-                    }
-                });
-        http.send();
-        showProgress();
-    }
+//    private void getVerifycode() {
+//        cellphone = et_phone.getText().toString();
+//        Pattern p = Pattern.compile("^1\\d{10}$");
+//        Matcher m = p.matcher(cellphone);
+//        if (!m.matches()) {
+//            ToastUtil.s(this, getString(R.string.regist_error));
+//            return;
+//        }
+//        //倒计时
+//        TimeCountUtil timeCountUtil = new TimeCountUtil(this, 60000, 1000, btn_verify);
+//        timeCountUtil.start();
+//        String url = Constants.CONTENT_CELLPHONE + cellphone + Constants.CONTENT_VERIFYCODE;
+//        MyHttpUtil http = new MyHttpUtil(HttpRequest.HttpMethod.GET, url,
+//                new RequestCallBack<String>() {
+//                    @Override
+//                    public void onSuccess(ResponseInfo<String> responseInfo) {
+//                        cancelProgress();
+//                        if (responseInfo.statusCode == 200) {
+//                            String mResult = responseInfo.result.toString();
+//                            //获得回传的 json字符串
+//                            JSONObject jo;
+//                            try {
+//                                jo = new JSONObject(mResult);
+//                                //0为成功  <0为系统异常  其他待定
+//                                if (jo.getInt("returnCode") == 0) {
+//                                    JSONObject args = (JSONObject) jo.get("args");
+//                                    if (!args.isNull("smscode")) {
+//                                        String smscode = args.getString("smscode");
+//                                        ToastUtil.l(getApplication(), smscode);
+//                                        et_verify.setText(smscode);
+//                                    }
+//                                } else {
+//                                    ToastUtil.s(getApplication(), jo.getString("msg"));
+//                                }
+//                            } catch (JSONException e) {
+//                                CatchUtil.catchM(e);
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(HttpException error, String msg) {
+//                        cancelProgress();
+//                        ToastUtil.s(RegistActivity.this, getString(R.string.net_abnormal));
+//                        LogUtils.i(getString(R.string.net_abnormal) + msg);
+//                    }
+//                });
+//        http.send();
+//        showProgress();
+//    }
 }
