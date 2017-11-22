@@ -1,5 +1,6 @@
 package cn.etsoft.smarthome.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,12 +34,16 @@ import cn.etsoft.smarthome.utils.ToastUtil;
  * Created by Say GoBay on 2016/8/25.
  * 组合设置--输出页面
  */
+@SuppressLint("ValidFragment")
+
 public class OutPutFragment extends Fragment {
     private ExpandableListView mGroupListView;
     private List<GroupList_BoardDevData> GroupListDatas;
     private GroupList_OutAdapter outAdapter;
     private Activity mActivity;
     private View view;
+
+    public OutPutFragment(){}
 
     public OutPutFragment(Activity activity) {
         mActivity = activity;

@@ -479,15 +479,17 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
 
     public void initTempRoom(){
         boolean isHaveData = false;
-        for (int i = 0; i <MyApplication.mApplication.getRoomTempBean().getRcu_rows().size(); i++) {
-            if (text_room.get(RoomPosition).equals(
-                    MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getRoomName())) {
-                isHaveData = true;
-                home_temp.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getTempVal() + "℃");
-                home_pm25.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getPm25() + "");
-                home_hum.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getHumidity() + "%");
+        try {
+            for (int i = 0; i < MyApplication.mApplication.getRoomTempBean().getRcu_rows().size(); i++) {
+                if (text_room.get(RoomPosition).equals(
+                        MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getRoomName())) {
+                    isHaveData = true;
+                    home_temp.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getTempVal() + "℃");
+                    home_pm25.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getPm25() + "");
+                    home_hum.setText(MyApplication.mApplication.getRoomTempBean().getRcu_rows().get(i).getHumidity() + "%");
+                }
             }
-        }
+        }catch (Exception e){}
         if (!isHaveData){
             home_temp.setText("--℃");
             home_pm25.setText("--");

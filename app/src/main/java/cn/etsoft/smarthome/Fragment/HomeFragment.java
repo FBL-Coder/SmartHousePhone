@@ -1,5 +1,6 @@
 package cn.etsoft.smarthome.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import cn.semtec.community2.MyApplication;
  * Created by Say GoBay on 2016/9/1.
  * 设备控制碎片
  */
+@SuppressLint("ValidFragment")
 public class HomeFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GridView gridView;
@@ -41,8 +43,11 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
     private String[] title = {"空调", "电视", "机顶盒", "灯光",
             "窗帘", "情景", "门禁", "安防", "新风", "地暖"};
     private int HomeAct_viewPage_position;
-    
-    public HomeFragment(Activity activity){
+
+    public HomeFragment() {
+    }
+
+    public HomeFragment(Activity activity) {
         mActivity = activity;
     }
 

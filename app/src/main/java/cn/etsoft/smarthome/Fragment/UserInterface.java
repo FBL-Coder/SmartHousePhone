@@ -1,5 +1,6 @@
 package cn.etsoft.smarthome.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,6 +54,8 @@ import cn.etsoft.smarthome.utils.ToastUtil;
  * Created by Say GoBay on 2016/9/1.
  * 用户界面
  */
+@SuppressLint("ValidFragment")
+
 public class UserInterface extends Fragment implements AdapterView.OnItemClickListener {
 
     private GridView gridView;
@@ -61,6 +64,9 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
     private UserBean bean;
     private Handler handler;
     private int count;
+
+    public UserInterface() {
+    }
 
     public UserInterface(Activity activity) {
         mActivity = activity;

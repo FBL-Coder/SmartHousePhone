@@ -384,6 +384,7 @@ public class NewWorkSetActivity extends Activity {
                                     MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
 //                            WareData wareData = (WareData) Data_Cache.readFile(MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID());
 //                            if (wareData == null) {
+                            initListview();
                             MyApplication.setNewWareData();
                             GlobalVars.setIsLAN(true);
                             MyApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {

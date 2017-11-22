@@ -49,6 +49,8 @@ import cn.etsoft.smarthome.utils.WratherUtil;
 import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.view.NotificationUtils;
 
+import static org.linphone.mediastream.Log.TAG;
+
 /**
  * Author：FBL  Time： 2017/6/12.
  * 全局 MyApplication
@@ -120,6 +122,7 @@ public class MyApplication extends Application {
 
     //游客登录标记
     private boolean IsVisitor = false;
+
 
     //是否可以切换联网模块
     private boolean CanChangeNet = true;
@@ -525,6 +528,10 @@ public class MyApplication extends Application {
                             "警报", contont, new Intent(MyApplication.mApplication, SafetyActivity_home.class), NotificationID, 0);
                     NotificationID++;
                 }
+                if ((int) msg.obj == 32 && msg.arg1 == 1) {
+                    AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, msg.arg2);
+                }
+
                 if (onGetWareDataListener != null)
                     onGetWareDataListener.upDataWareData((int) msg.obj, msg.arg1, msg.arg2);
             }
@@ -746,7 +753,6 @@ public class MyApplication extends Application {
     @Override
     public void onLowMemory() {
         // 低内存的时候执行
-        wsClient.closeConnect();
         Data_Cache.writeFile(GlobalVars.getDevid(), MyApplication.getWareData());
         super.onLowMemory();
     }
@@ -754,7 +760,6 @@ public class MyApplication extends Application {
     @Override
     public void onTrimMemory(int level) {
         // 程序在内存清理的时候执行
-        wsClient.closeConnect();
         Data_Cache.writeFile(GlobalVars.getDevid(), MyApplication.getWareData());
         super.onTrimMemory(level);
     }

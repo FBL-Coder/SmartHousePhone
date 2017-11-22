@@ -1,5 +1,6 @@
 package cn.etsoft.smarthome.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -39,6 +40,8 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
  * Created by Say GoBay on 2016/9/1.
  * 设置碎片
  */
+@SuppressLint("ValidFragment")
+
 public class SettingFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     private GridView gridView;
     private Activity mActivity;
@@ -54,6 +57,8 @@ public class SettingFragment extends Fragment implements AdapterView.OnItemClick
     private TextView mDialogTitle, mDialogTitleName, mDialoHelp;
     private LinearLayout mLayout;
     private boolean isPassCorrect;
+
+   public SettingFragment(){}
 
     public SettingFragment(Activity activity) {
         mActivity = activity;

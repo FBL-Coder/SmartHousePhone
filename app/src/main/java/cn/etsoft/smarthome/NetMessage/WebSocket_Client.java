@@ -2,6 +2,7 @@ package cn.etsoft.smarthome.NetMessage;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -11,6 +12,8 @@ import java.net.URISyntaxException;
 
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
+
+import static org.linphone.mediastream.Log.TAG;
 
 
 /**
@@ -29,12 +32,13 @@ public class WebSocket_Client {
     public void initSocketClient(final Handler handler) throws URISyntaxException {
         mHandler = handler;
         if (mWebSocketClient == null) {
+
             mWebSocketClient = new WebSocketClient(new URI(address)) {
                 @Override
                 public void onOpen(ServerHandshake serverHandshake) {
                     //连接成功
                     mWebSocketClient.send("{\"uid\":\""
-                            + AppSharePreferenceMgr.get( GlobalVars.USERID_SHAREPREFERENCE,
+                            + AppSharePreferenceMgr.get(GlobalVars.USERID_SHAREPREFERENCE,
                             "") + "\"}");
                     Message message = handler.obtainMessage();
                     message.what = MyApplication.mApplication.WS_OPEN_OK;
@@ -54,6 +58,7 @@ public class WebSocket_Client {
                 @Override
                 public void onClose(int i, String s, boolean remote) {
                     //连接关闭
+                    Log.e(TAG, "closeConnect:WebSocket====onClose" + s);
                     closeConnect();
                     Message message = handler.obtainMessage();
                     message.what = MyApplication.mApplication.WS_CLOSE;
