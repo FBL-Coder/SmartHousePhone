@@ -230,7 +230,8 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void ShowSafetyDialog(final List<String> text) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,
+                android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         builder.setView(R.layout.dialog_popupwindow_safety);
         final AlertDialog dialog = builder.create();
         dialog.show();

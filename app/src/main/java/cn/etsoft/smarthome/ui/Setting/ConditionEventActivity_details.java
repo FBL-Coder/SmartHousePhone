@@ -1,6 +1,7 @@
 package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -294,7 +295,8 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_bar_tv_room://保存
-                CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(ConditionEventActivity_details.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ConditionEventActivity_details.this
+                ,android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 builder.setTitle("提示");
                 builder.setMessage("您要保存这些设置吗？");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

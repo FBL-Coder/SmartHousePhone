@@ -175,7 +175,8 @@ public class AddEquipmentControlActivity extends Activity implements View.OnClic
                 initData();
                 break;
             case R.id.save_equipment:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this,
+                        android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 builder.setTitle("提示 :");
                 builder.setMessage("您要保存这些设置吗？");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

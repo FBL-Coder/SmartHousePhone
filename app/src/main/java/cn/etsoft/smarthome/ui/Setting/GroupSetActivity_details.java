@@ -1,6 +1,7 @@
 package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -535,7 +536,8 @@ public class GroupSetActivity_details extends Activity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_bar_tv_room://保存
-                CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(GroupSetActivity_details.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(GroupSetActivity_details.this
+                ,android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 builder.setTitle("提示");
                 builder.setMessage("您要保存这些设置吗？");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

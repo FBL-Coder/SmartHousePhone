@@ -98,7 +98,8 @@
         <activity
             android:name="cn.etsoft.smarthome.ui.HomeActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
         <!--空调-->
         <activity
             android:name="cn.etsoft.smarthome.ui.AirConditionActivity"

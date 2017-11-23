@@ -1,6 +1,5 @@
 package cn.etsoft.smarthome.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
+import android.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -697,7 +697,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
                 dialog_add_loaction.dismiss();
                 break;
             case R.id.home_logout:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this
+                        ,android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
+
                 builder.setTitle("提示");
                 builder.setMessage("您是否要退出登录？");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

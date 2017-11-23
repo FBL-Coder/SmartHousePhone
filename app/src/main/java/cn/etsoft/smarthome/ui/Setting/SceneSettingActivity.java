@@ -1,6 +1,7 @@
 package cn.etsoft.smarthome.ui.Setting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -202,7 +203,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     }
 
     public void save() {
-        CustomDialog_comment.Builder builder = new CustomDialog_comment.Builder(SceneSettingActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SceneSettingActivity.this,android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         builder.setTitle("提示");
         builder.setMessage("您要保存这些设置吗？");
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

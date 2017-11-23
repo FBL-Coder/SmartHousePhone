@@ -190,7 +190,7 @@ public class NewWorkSetActivity extends Activity {
      * @param SeekListData
      */
     private void showPassDialog(final List<RcuInfo> SeekListData, final int position) {
-        final Dialog dialog = new Dialog(NewWorkSetActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+        final Dialog dialog = new Dialog(NewWorkSetActivity.this);
         dialog.setContentView(R.layout.dialog_addscene);
         dialog.show();
         mDialogAddSceneName = (EditText) dialog.findViewById(R.id.dialog_addScene_name);
@@ -241,7 +241,8 @@ public class NewWorkSetActivity extends Activity {
                 if (GlobalVars.getDevid().equals(MyApplication.mApplication.getSeekRcuInfos().get(position).getDevUnitID()))
                     ToastUtil.showText("联网模块正在使用中！");
                 else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(NewWorkSetActivity.this);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(NewWorkSetActivity.this,
+                            android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                     dialog.setTitle("提示 :");
                     dialog.setMessage("您是否要使用此联网模块？");
                     dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -344,9 +345,8 @@ public class NewWorkSetActivity extends Activity {
                     ToastUtil.showText("游客登录不能进行此操作");
                     return;
                 }
-                Dialog dialog = new Dialog(NewWorkSetActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
+                Dialog dialog = new Dialog(NewWorkSetActivity.this,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
                 dialog.setContentView(R.layout.dialog_network);
-                dialog.setTitle("添加联网模块");
                 dialog.show();
                 initAddNetModuleDialog(dialog);
             }
@@ -369,16 +369,17 @@ public class NewWorkSetActivity extends Activity {
                 if (GlobalVars.getDevid().equals(MyApplication.mApplication.getRcuInfoList().get(position).getDevUnitID()))
                     ToastUtil.showText("联网模块正在使用中！");
                 else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(NewWorkSetActivity.this);
-                    dialog.setTitle("提示 :");
-                    dialog.setMessage("您是否要使用此联网模块？");
-                    dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(NewWorkSetActivity.this,
+                            android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
+                    builder.setTitle("提示 :");
+                    builder.setMessage("您是否要使用此联网模块？");
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
-                    dialog.setPositiveButton("是的", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -422,7 +423,7 @@ public class NewWorkSetActivity extends Activity {
 //                            }
                         }
                     });
-                    dialog.create().show();
+                    builder.create().show();
                 }
             }
         });
@@ -430,7 +431,8 @@ public class NewWorkSetActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(NewWorkSetActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewWorkSetActivity.this,
+                        android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 builder.setTitle("删除");
                 builder.setMessage("您是否要删除联网模块？");
                 builder.setNegativeButton("不要", new DialogInterface.OnClickListener() {
@@ -469,7 +471,8 @@ public class NewWorkSetActivity extends Activity {
         network_ref.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(NewWorkSetActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewWorkSetActivity.this,
+                        android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 builder.setTitle("提示");
                 builder.setMessage("您确定要刷新联网模块列表？");
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {

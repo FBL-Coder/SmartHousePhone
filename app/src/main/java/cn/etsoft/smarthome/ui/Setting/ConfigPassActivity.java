@@ -142,7 +142,8 @@ public class ConfigPassActivity extends Activity implements View.OnClickListener
     }
 
     public void succeedDialog(String pass, int Flag) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,
+                android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         if (Flag == CHANGE)
             builder.setMessage("密码修改成功\n" + pass);
         if (Flag == RESET)

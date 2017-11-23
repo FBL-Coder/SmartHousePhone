@@ -268,7 +268,8 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.add_dev_save:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this
+                ,android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 builder.setMessage("是否保存设置？");
                 builder.setPositiveButton("是的", new DialogInterface.OnClickListener() {
                     @Override

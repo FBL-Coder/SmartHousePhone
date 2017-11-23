@@ -262,7 +262,8 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
             case R.id.save_equipment:
                 //保存
                 //判断设备中有没有未设置的，有终止保存。无，继续保存。
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this,
+                        android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 builder.setTitle("提示 :");
                 builder.setMessage("您要保存这些设置吗？");
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
