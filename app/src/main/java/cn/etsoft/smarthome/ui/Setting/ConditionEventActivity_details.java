@@ -26,6 +26,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.githang.statusbar.StatusBarCompat;
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
@@ -84,6 +85,8 @@ public class ConditionEventActivity_details extends Activity implements View.OnC
         //解决弹出键盘压缩布局的问题
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_conditionevent);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         Condition_position = getIntent().getExtras().getInt("Condition_position");
         //初始化标题栏
         initTitleBar();

@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,8 @@ public class FreshairActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_light);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏
         initTitleBar();
         //初始化控件

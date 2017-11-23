@@ -9,6 +9,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.io.UnsupportedEncodingException;
 
 import cn.etsoft.smarthome.MyApplication;
@@ -40,6 +42,8 @@ public class ModuleDetailActivity extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_module);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏
         initTitleBar();
         //初始化控件

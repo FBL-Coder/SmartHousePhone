@@ -10,6 +10,8 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,8 @@ public class ParlourFourOutActivity extends Activity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parlour_four_out_listview);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏
         initTitleBar();
         //初始化ListView

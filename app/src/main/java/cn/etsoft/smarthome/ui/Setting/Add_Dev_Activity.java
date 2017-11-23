@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +63,8 @@ public class Add_Dev_Activity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_dev);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         for (int i = 0; i < MyApplication.getWareData().getBoardChnouts().size(); i++) {
             if (MyApplication.getWareData().getBoardChnouts().get(i).getCanCpuID().equals(getIntent().getStringExtra("CancpuID")))
                 mBoardChnout = MyApplication.getWareData().getBoardChnouts().get(i);

@@ -16,6 +16,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -56,6 +58,8 @@ public class NetInfoActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_netindo);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         initView();
         initData();
     }

@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.io.UnsupportedEncodingException;
 
 import cn.etsoft.smarthome.MyApplication;
@@ -44,6 +46,8 @@ public class Flo_Control extends Activity implements View.OnClickListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_flo_control);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         initView();
         initData();
     }

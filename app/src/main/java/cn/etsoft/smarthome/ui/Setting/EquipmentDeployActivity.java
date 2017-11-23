@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.githang.statusbar.StatusBarCompat;
 import com.google.gson.Gson;
 
 import java.math.BigInteger;
@@ -56,6 +57,9 @@ public class EquipmentDeployActivity extends Activity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_equipmentdeploy_listview);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
+
         //初始化标题栏
         initTitleBar();
         //初始化控件

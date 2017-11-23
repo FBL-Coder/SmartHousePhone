@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ public class UserAddDevsActivty extends Activity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_adddev);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         sceneEvents = new ArrayList<>();
         sceneEvents.addAll(MyApplication.getWareData().getSceneEvents());
         Alldevs = new ArrayList<>();

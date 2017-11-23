@@ -10,6 +10,8 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.IClick;
@@ -36,6 +38,9 @@ public class ParlourFourActivity extends Activity implements AdapterView.OnItemC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parlour_four_listview);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
+
         //初始化标题栏
         initTitleBar();
         //初始化ListView

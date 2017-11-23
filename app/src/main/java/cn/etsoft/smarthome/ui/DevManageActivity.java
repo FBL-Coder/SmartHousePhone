@@ -13,6 +13,8 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.Fragment.InPutFragment;
 import cn.etsoft.smarthome.Fragment.KeySceneFragment;
 import cn.etsoft.smarthome.Fragment.OutPutFragment;
@@ -34,6 +36,8 @@ public class DevManageActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_devmanage);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏
         initTitleBar();
         //初始化控件

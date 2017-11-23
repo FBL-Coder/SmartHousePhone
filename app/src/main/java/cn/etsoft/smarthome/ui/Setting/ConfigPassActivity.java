@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
@@ -42,6 +44,8 @@ public class ConfigPassActivity extends Activity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config_pass_help);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         initView();
         initData();
     }

@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
@@ -33,6 +35,8 @@ public class GroupSetActivity extends Activity implements AdapterView.OnItemClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
 
         //初始化标题栏
         initTitleBar();

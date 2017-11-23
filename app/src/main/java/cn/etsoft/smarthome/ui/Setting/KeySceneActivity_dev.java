@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.Helper.WareDataHliper;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
@@ -43,6 +45,8 @@ public class KeySceneActivity_dev extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_key);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏
         initTitleBar();
         KeySceneActivity_dev.setOnGetKeySceneDataListener(new KeySceneActivity_dev.OnGetKeySceneDataListener() {

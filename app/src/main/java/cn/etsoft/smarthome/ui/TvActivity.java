@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,8 @@ public class TvActivity extends Activity implements AdapterView.OnItemClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏
         initTitleBar();
         //初始化控件

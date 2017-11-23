@@ -33,6 +33,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.githang.statusbar.StatusBarCompat;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpResponse;
@@ -112,6 +113,9 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         MyApplication.mApplication.showLoadDialog(this, false);
         setContentView(R.layout.activity_home);
+
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化控件
         initView();
         initFragment();

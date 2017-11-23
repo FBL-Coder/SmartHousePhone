@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +66,8 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
         //解决弹出键盘压缩布局的问题
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_safety_home);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         MyApplication.mApplication.showLoadDialog(this);
         safety_Data = Data_Cache.readFile_safety(GlobalVars.getDevid(), true);
         //初始化标题栏

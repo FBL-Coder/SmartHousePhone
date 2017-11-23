@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.Scene_KeyAdapter;
 import cn.etsoft.smarthome.ui.Setting.KeySceneActivity_dev;
@@ -29,6 +31,8 @@ public class Scene_KeyActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keys_activity);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         initView();
     }
 

@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +52,8 @@ public class CurtainActivity extends Activity implements AdapterView.OnItemClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cur);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏及控件
         initTitleBar();
         //初始化数据

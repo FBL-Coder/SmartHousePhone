@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,8 @@ public class SceneActivity extends Activity {
 //        MyApplication.getSceneInfo();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scene);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         if (!"".equals(GlobalVars.getDevid()))
             if (MyApplication.getWareData().getSceneEvents().size() == 0) {
                 SendDataUtil.getSceneInfo();

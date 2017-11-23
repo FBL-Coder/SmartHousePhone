@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="AppTheme_color">#4994ef</color>
+
+
     <drawable name="regist_pressed_color">#2574d6</drawable>
     <drawable name="regist_pressed_color1">#000000</drawable>
 

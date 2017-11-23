@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.githang.statusbar.StatusBarCompat;
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
@@ -83,6 +84,8 @@ public class TimerActivity_details extends Activity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer_details);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         //初始化标题栏
         initTitleBar();
         Timer_position = getIntent().getIntExtra("Timer_position",0);

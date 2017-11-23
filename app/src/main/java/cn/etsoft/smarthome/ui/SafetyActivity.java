@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.SafetyAdapter;
@@ -33,6 +35,8 @@ public class SafetyActivity extends Activity implements AdapterView.OnItemClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview2);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         if (MyApplication.getWareData().getResult_safety().getSec_info_rows().size() == 0) {
             MyApplication.mApplication.showLoadDialog(this);
             SendDataUtil.getSafetyInfo();

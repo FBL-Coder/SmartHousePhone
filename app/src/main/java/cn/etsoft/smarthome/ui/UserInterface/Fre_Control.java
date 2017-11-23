@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.UdpProPkt;
@@ -38,6 +40,8 @@ public class Fre_Control extends Activity implements View.OnClickListener {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_fie_control);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         initView();
         initData();
     }

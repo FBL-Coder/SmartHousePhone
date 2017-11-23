@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.githang.statusbar.StatusBarCompat;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,8 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sceneset_listview);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         MyApplication.mApplication.setOnGetWareDataListener(new MyApplication.OnGetWareDataListener() {
             @Override
             public void upDataWareData(int datType, int subtype1, int subtype2) {

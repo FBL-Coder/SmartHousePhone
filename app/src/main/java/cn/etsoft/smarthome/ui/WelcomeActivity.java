@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.githang.statusbar.StatusBarCompat;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -51,6 +52,8 @@ public class WelcomeActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
+
         MyApplication.mApplication.getUdpServer().sendSeekNet(false);
         IsUpDataApk();
         try {
