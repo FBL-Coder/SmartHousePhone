@@ -11,11 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -248,11 +246,12 @@ public class UDPServer implements Runnable {
             datType = jsonObject.getInt("datType");
             subType1 = jsonObject.getInt("subType1");
             subType2 = jsonObject.getInt("subType2");
-            if (!devUnitID.equals(GlobalVars.getDevid()))
-                if (!MyApplication.mApplication.isSeekNet()) {
+            if (!MyApplication.mApplication.isSeekNet()) {
+                if (!devUnitID.equals(GlobalVars.getDevid())) {
                     Log.i(TAG, "UDP接收收据--过滤:" + "本地ID" + GlobalVars.getDevid() + "--数据ID" + devUnitID + ";包类型：" + datType + "-" + subType1 + "-" + subType2);
                     return;
                 }
+            }
         } catch (JSONException e) {
             System.out.println(this.getClass().getName() + "-ISUDP-extractData--" + e.toString());
         }
@@ -262,9 +261,12 @@ public class UDPServer implements Runnable {
             UDPtimer.cancel();
             Log.i(TAG, "UDP数据，取消定时等待");
             if (!GlobalVars.isIsLAN()) {
-                if (MyApplication.mApplication.isSeekNet())
-                    return;
-                if (devUnitID.equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
+                if (!MyApplication.mApplication.isSeekNet() && devUnitID.equals(AppSharePreferenceMgr.get(GlobalVars.RCUINFOID_SHAREPREFERENCE, ""))) {
+                    Message message = mhandler.obtainMessage();
+                    message.what = MyApplication.mApplication.NETCHANGE_LAN;
+                    mhandler.sendMessage(message);
+                }
+                if (!MyApplication.mApplication.isSeekNet()) {
                     Message message = mhandler.obtainMessage();
                     message.what = MyApplication.mApplication.NETCHANGE_LAN;
                     mhandler.sendMessage(message);
