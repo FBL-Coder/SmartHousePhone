@@ -24,6 +24,7 @@ import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
 import cn.etsoft.smarthome.utils.ToastUtil;
+import cn.semtec.community2.fragment.VideoFragment;
 import cn.semtec.community2.tool.Constants;
 
 /**
@@ -107,6 +108,13 @@ public class LogoutHelper {
         AppSharePreferenceMgr.put(GlobalVars.SAFETY_TYPE_SHAREPREFERENCE, 0);
         AppSharePreferenceMgr.put(GlobalVars.RCUINFOLIST_SHAREPREFERENCE, "");
         AppSharePreferenceMgr.put(GlobalVars.LOGIN_SHAREPREFERENCE, false);
+
+        //登出后台
+        cn.semtec.community2.MyApplication.logined = false;
+        cn.semtec.community2.MyApplication.houseList.clear();
+        cn.semtec.community2.MyApplication.houseProperty = null;
+        cn.semtec.community2.MyApplication.cellphone = null;
+        VideoFragment.mlist.clear();
         MyApplication.mApplication.dismissLoadDialog();
         activity.startActivity(new Intent(activity, cn.semtec.community2.activity.LoginActivity.class));
         activity.finish();
