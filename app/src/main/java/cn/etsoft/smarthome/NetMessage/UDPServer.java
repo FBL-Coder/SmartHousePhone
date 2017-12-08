@@ -2476,6 +2476,8 @@ public class UDPServer implements Runnable {
         }
     }
 
+
+
     /**
      * 获取情景
      */
@@ -2490,6 +2492,7 @@ public class UDPServer implements Runnable {
 //            "sceneName":	"6868",
 //                    "devCnt":	2,
 //                    "eventId":	2,
+//                    "rev3":	0,
 //                    "itemAry":	[{
 //                "canCpuID":	"36ffd4054842373532790843",
 //                        "devID":	2,
@@ -2525,7 +2528,7 @@ public class UDPServer implements Runnable {
             boolean IsSceneIdExist = false;
             boolean IsDevIdExist = false;
             event.setEventId(object.getInt("eventId"));
-
+            event.setExeSecu(object.getInt("exeSecu"));
             List<WareSceneEvent> events_exist = MyApplication.getWareData().getSceneEvents();
             WareSceneEvent event_exist = null;
             for (int i = 0; i < events_exist.size(); i++) {
@@ -2533,6 +2536,7 @@ public class UDPServer implements Runnable {
                     //相同的情景ID
                     IsSceneIdExist = true;
                     event_exist = events_exist.get(i);
+                    events_exist.get(i).setExeSecu(object.getInt("exeSecu"));
                     JSONArray itemAry = object.getJSONArray("itemAry");
 
                     if (event_exist.getItemAry().size() != 0 && itemAry.length() != 0) {
@@ -2556,7 +2560,6 @@ public class UDPServer implements Runnable {
                                 } else {
                                     //情景ID相同，但设备不同
                                     IsDevIdExist = false;
-
                                 }
                             }
                         }

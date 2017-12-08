@@ -175,6 +175,7 @@ public class SendDataUtil {
                 ",\"subType1\":0" +
                 ",\"subType2\":0" +
                 ",\"eventId\":" + sceneid +
+                ",\"exeSecu\":" + 255 +
                 ",\"devCnt\":" + 0 +
                 ",\"itemAry\":[{" +
                 "\"canCpuId\":\"\"" +
@@ -196,6 +197,7 @@ public class SendDataUtil {
                 ",\"subType1\":0" +
                 ",\"subType2\":0" +
                 ",\"eventId\":" + event.getEventId() +
+                ",\"exeSecu\":" + event.getExeSecu() +
                 ",\"devCnt\":" + 0 +
                 ",\"itemAry\":[{" +
                 "\"canCpuId\":\"\"" +

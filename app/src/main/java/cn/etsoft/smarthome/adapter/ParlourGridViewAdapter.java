@@ -9,11 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import cn.etsoft.smarthome.Helper.WareDataHliper;
-import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.domain.WareAirCondDev;
 import cn.etsoft.smarthome.domain.WareCurtain;
@@ -21,7 +18,6 @@ import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareFloorHeat;
 import cn.etsoft.smarthome.domain.WareFreshAir;
 import cn.etsoft.smarthome.domain.WareLight;
-import cn.etsoft.smarthome.domain.WareSceneDevItem;
 import cn.etsoft.smarthome.domain.WareSetBox;
 import cn.etsoft.smarthome.domain.WareTv;
 
@@ -31,25 +27,10 @@ import cn.etsoft.smarthome.domain.WareTv;
 public class ParlourGridViewAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<WareDev> dev_list;
-    private int eventId;
-    private WareAirCondDev AirCondDev;
-    private WareTv TV;
-    private WareSetBox TVUP;
-    private WareCurtain Curtain;
-    private WareLight Light;
-    private WareFreshAir freshAir;
-    private WareFloorHeat floorHeat;
-    private List<WareAirCondDev> AicList;
-    private List<WareTv> TVList;
-    private List<WareSetBox> tbsList;
-    private List<WareLight> lightList;
-    private List<WareCurtain> curtainList;
-    private List<WareFreshAir> freshAirs;
-    private List<WareFloorHeat> floorHeats;
 
-    public ParlourGridViewAdapter(Context context, List<WareDev> listViewItems, int eventId) {
+
+    public ParlourGridViewAdapter(Context context, List<WareDev> listViewItems) {
         mInflater = LayoutInflater.from(context);
-        this.eventId = eventId;
         dev_list = listViewItems;
     }
 

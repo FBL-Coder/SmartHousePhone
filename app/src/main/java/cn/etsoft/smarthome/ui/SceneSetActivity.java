@@ -138,6 +138,11 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
                         dialog.dismiss();
+                        if (WareDataHliper.initCopyWareData().getCopyScenes().get(position).getEventId() == 10
+                                || WareDataHliper.initCopyWareData().getCopyScenes().get(position).getEventId() == 11) {
+                            ToastUtil.showText("此情景不可删除");
+                            return;
+                        }
                         //删除情景模式
                         try {
                             SendDataUtil.deleteScene(MyApplication.getWareData().getSceneEvents().get(position));

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.githang.statusbar.StatusBarCompat;
@@ -27,9 +29,11 @@ import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
 import cn.etsoft.smarthome.R;
 import cn.etsoft.smarthome.adapter.ParlourGridViewAdapter;
+import cn.etsoft.smarthome.adapter.PopupWindowAdapter2;
 import cn.etsoft.smarthome.adapter.Room_Select_Adapter;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareSceneDevItem;
+import cn.etsoft.smarthome.domain.WareSceneEvent;
 import cn.etsoft.smarthome.pullmi.common.CommonUtils;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.weidget.CustomDialog;
@@ -40,7 +44,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog_comment;
  * 情景设置页面二
  */
 public class SceneSettingActivity extends Activity implements View.OnClickListener {
-    private TextView title, title_bar_tv_room, sceneSetSave;
+    private TextView title, title_bar_tv_room, sceneSetSave, safety_type;
     private ImageView back, title_bar_iv_or;
     private List<WareDev> mWareDev;
     private List<WareDev> listViewItems;
@@ -50,6 +54,9 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     private List<String> room_list;
     private GridView gridView;
     private ParlourGridViewAdapter parlourGridViewAdapter;
+    private WareSceneEvent sceneEvent;
+    private PopupWindow popupWindow;
+    private List<String> safetytypes;
 
 
     @Override
@@ -63,7 +70,6 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
             public void upDataWareData(int datType, int subtype1, int subtype2) {
                 if (datType == 24 && subtype2 == 1) {
                     ToastUtil.showText("保存成功");
-//                    SendDataUtil.getSceneInfo();
                     MyApplication.mApplication.dismissLoadDialog();
                     finish();
                 }
@@ -74,7 +80,6 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         listViewItems = WareDataHliper.initCopyWareData().getCopyDevs();
         for (int i = 0; i < listViewItems.size(); i++) {
             listViewItems.get(i).setSelect(false);
-//            listViewItems.get(i).setbOnOff(0);
         }
         title_bar_tv_room.setText("全部");
         upData();
@@ -87,6 +92,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         title = (TextView) findViewById(R.id.title_bar_tv_title);
         back = (ImageView) findViewById(R.id.title_bar_iv_back);
         title_bar_tv_room = (TextView) findViewById(R.id.title_bar_tv_room);
+        safety_type = (TextView) findViewById(R.id.safety_type);
         title_bar_tv_room.setVisibility(View.VISIBLE);
         title_bar_tv_room.setTextColor(0xff000000);
         title_bar_iv_or = (ImageView) findViewById(R.id.title_bar_iv_or);
@@ -97,17 +103,19 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         eventId = getIntent().getBundleExtra("bundle").getInt("eventId", 0);
         title_bar_iv_or.setOnClickListener(this);
         sceneSetSave = (TextView) findViewById(R.id.sceneSetSave);
-        sceneSetSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                save();
-            }
-        });
+        sceneSetSave.setOnClickListener(this);
+        safety_type.setOnClickListener(this);
 
         //房间集合
         room_list = new ArrayList<>();
         room_list.add("全部");
         room_list.addAll(MyApplication.getWareData().getRooms());
+
+        safetytypes = new ArrayList<>();
+        safetytypes.add("24小时布防");
+        safetytypes.add("在家布防");
+        safetytypes.add("外出布防");
+        safetytypes.add("全部撤防");
     }
 
     /**
@@ -118,7 +126,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         if (parlourGridViewAdapter != null) {
             parlourGridViewAdapter.notifyDataSetChanged(listViewItems);
         } else {
-            parlourGridViewAdapter = new ParlourGridViewAdapter(this, listViewItems, eventId);
+            parlourGridViewAdapter = new ParlourGridViewAdapter(this, listViewItems);
             gridView.setAdapter(parlourGridViewAdapter);
         }
     }
@@ -170,6 +178,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
         try {
             for (int i = 0; i < WareDataHliper.initCopyWareData().getCopyScenes().size(); i++) {
                 if (WareDataHliper.initCopyWareData().getCopyScenes().get(i).getEventId() == eventId) {
+                    sceneEvent = WareDataHliper.initCopyWareData().getCopyScenes().get(i);
                     items = WareDataHliper.initCopyWareData().getCopyScenes().get(i).getItemAry();
                 }
             }
@@ -177,6 +186,15 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
             ToastUtil.showText("情景选择出错");
             finish();
         }
+        if (0 == sceneEvent.getExeSecu())
+            safety_type.setText("24小时布防");
+        if (1 == sceneEvent.getExeSecu())
+            safety_type.setText("在家布防");
+        if (2 == sceneEvent.getExeSecu())
+            safety_type.setText("外出布防");
+        if (255 == sceneEvent.getExeSecu())
+            safety_type.setText("撤防状态");
+
         for (int i = 0; i < items.size(); i++) {
             for (int j = 0; j < listViewItems.size(); j++) {
                 if (items.get(i).getDevID() == listViewItems.get(j).getDevId()
@@ -203,7 +221,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
     }
 
     public void save() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SceneSettingActivity.this,android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SceneSettingActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         builder.setTitle("提示");
         builder.setMessage("您要保存这些设置吗？");
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -251,7 +269,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 String str_gb = CommonUtils.bytesToHexString(nameData);
                 Log.e("情景模式名称:%s", str_gb);
 
-                if ("".equals(more_data)){
+                if ("".equals(more_data)) {
                     MyApplication.mApplication.dismissLoadDialog();
                     ToastUtil.showText("没有选择设备，不可保存");
                     return;
@@ -273,6 +291,7 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                         "\"subType1\":0" + "," +
                         "\"subType2\":0" + "," +
                         "\"eventId\":" + eventId + "," +
+                        "\"exeSecu\":" + sceneEvent.getExeSecu() + "," +
                         "\"devCnt\":" + num + "," +
                         "\"itemAry\":[" + more_data + "]}";
                 Log.e("情景模式测试:", data_hoad);
@@ -291,6 +310,66 @@ public class SceneSettingActivity extends Activity implements View.OnClickListen
                 if (room_list != null && room_list.size() > 0)
                     getRoomDialog();
             }
+        if (view == safety_type) {
+            initRadioPopupWindow(view, safetytypes);
+            popupWindow.showAsDropDown(view, 0, 0);
+        }
+        if (view == sceneSetSave) {
+            save();
+        }
+    }
+
+    /**
+     * 初始化自定义设备的状态以及设备PopupWindow
+     */
+    private void initRadioPopupWindow(final View view_parent, final List<String> text) {
+
+        //获取自定义布局文件pop.xml的视图
+        final View customView = view_parent.inflate(this, R.layout.listview_popupwindow_equipment, null);
+        customView.setBackgroundResource(R.drawable.selectbg);
+        customView.setFocusable(true);
+        customView.setFocusableInTouchMode(true);
+        customView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    if (popupWindow != null) {
+                        popupWindow.dismiss();
+                    }
+                }
+                return false;
+            }
+        });
+        // 创建PopupWindow实例
+        popupWindow = new PopupWindow(customView, view_parent.getWidth(), 200);
+        popupWindow.setContentView(customView);
+        ListView list_pop = (ListView) customView.findViewById(R.id.popupWindow_equipment_lv);
+        PopupWindowAdapter2 adapter = new PopupWindowAdapter2(text, this);
+        list_pop.setAdapter(adapter);
+        list_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView tv = (TextView) view_parent;
+                tv.setText(text.get(position));
+                sceneEvent.setExeSecu(position == 3 ? 255 : position);
+                popupWindow.dismiss();
+            }
+        });
+        //popupwindow页面之外可点
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.update();
+        // 自定义view添加触摸事件
+        customView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (popupWindow != null && popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                    popupWindow = null;
+                }
+                return false;
+            }
+        });
     }
 }
 

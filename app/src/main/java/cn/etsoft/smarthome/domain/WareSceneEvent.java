@@ -12,8 +12,18 @@ public class WareSceneEvent implements Serializable {
     private String sceneName;
     private int devCnt;
     private int eventId;
+    private int exeSecu;
     private int rev2;
     private int rev3;
+
+    public int getExeSecu() {
+        return exeSecu;
+    }
+
+    public void setExeSecu(int exeSecu) {
+        this.exeSecu = exeSecu;
+    }
+
     private boolean isSelect;
 
 
