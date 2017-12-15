@@ -53,9 +53,8 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
-
-        MyApplication.mApplication.getUdpServer().sendSeekNet(false);
         IsUpDataApk();
+        MyApplication.mApplication.getUdpServer().sendSeekNet(false);
         try {
             //获取屏幕数据
             DisplayMetrics metric = new DisplayMetrics();

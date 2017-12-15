@@ -13,7 +13,7 @@ public class RecordEntity {
      * returnCode : 0
      * msg :
      * args : http://yitong-ss1.weedoor.com:8040/sipManager/
-     * object : [{"photoUrl":"files/20176/upload/openDoorLog/a2384b2756924709a0245c18bce9b00c.jpg","time":"2017-02-07 16:15:24","userName":"17089111219","openType":1,"lockName":"易同2号门口机"},{"photoUrl":"files/20176/upload/openDoorLog/38cf20b63b6148808bf71be627368284.jpg","time":"2017-02-08 14:55:59","userName":"17089111219","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/154e591ed02c4146b17fea787c416a8b.jpg","time":"2017-02-08 17:33:52","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/ab39ddbf3e8e481286f771ef08dc92c4.jpg","time":"2017-02-09 08:22:36","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/dd828f9ac88944d09206542e3aaef06d.jpg","time":"2017-02-09 11:25:37","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/9faa04886dfd4c8fadcc88c3bd564472.jpg","time":"2017-02-09 13:13:28","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/b775943eb25349188ca9e3d2c804cc2d.jpg","time":"2017-02-09 13:16:38","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/bf87d1b735c14ba788fc063f253a2d6b.jpg","time":"2017-02-09 14:16:50","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/700f648b82a64a60bb33fbdaec1639d2.jpg","time":"2017-02-11 09:43:31","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/d3028de34c534493a9e7972e7ab53d54.jpg","time":"2017-02-11 09:43:43","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/c3336526ef0c46589c3a6cea1878f4c8.jpg","time":"2017-02-11 09:44:48","userName":"0200000000000000","openType":1,"lockName":"易同2号"},{"photoUrl":"files/20176/upload/openDoorLog/71a63de282e8445fa7c555192d905167.jpg","time":"2017-02-11 10:06:40","userName":"0200000000000000","openType":1,"lockName":"易同2号"}]
+     * object : [{"photoUrl":"files/201744/upload/openDoorLog/ad45f46781ab4cd4b7e6777c830e77ab.jpg","time":"2017-11-01 05:32:47","userName":"0600000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/12809fc7b9da4e528c7c86d7bd8df1f4.jpg","time":"2017-11-01 05:32:49","userName":"0600000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/1e5ef869791f4487a7cd44fd8bb26c8d.jpg","time":"2017-11-01 05:33:03","userName":"0600000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/71b280f0b3c549358a9b131078f1f794.jpg","time":"2017-11-01 05:34:35","userName":"0D00000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/1d3ef3c0b77d4b2a9313ac9d206d377f.jpg","time":"2017-11-01 05:34:41","userName":"0600000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/9f123ac4eff34bd1a25a6b2730eef2c1.jpg","time":"2017-11-01 05:34:55","userName":"0500000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/7e01ab434c5b4cb2baf378b104f152f0.jpg","time":"2017-11-03 00:39:39","userName":"0600000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/19701366023c431e860b1e6a8eddc790.jpg","time":"2017-11-03 00:48:35","userName":"0400000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/ca71adf13fad4a29a0e04ff576ebce08.jpg","time":"2017-11-03 03:06:46","userName":"0400000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/16f989493ea84676bf0105019542665f.jpg","time":"2017-11-03 07:01:34","userName":"0300000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"files/201744/upload/openDoorLog/ecced403588f4ff183e4ccdb592f592e.jpg","time":"2017-11-03 07:01:42","userName":"0400000000000000","openType":1,"lockName":"上海1016"},{"photoUrl":"20171208/7238044dcff6fa0054c020052530dc0b.jpg","time":null,"userName":"我是开门人","openType":"","lockName":""}]
      */
 
     private int returnCode;
@@ -55,11 +55,11 @@ public class RecordEntity {
 
     public static class ObjectBean {
         /**
-         * photoUrl : files/20176/upload/openDoorLog/a2384b2756924709a0245c18bce9b00c.jpg
-         * time : 2017-02-07 16:15:24
-         * userName : 17089111219
+         * photoUrl : files/201744/upload/openDoorLog/ad45f46781ab4cd4b7e6777c830e77ab.jpg
+         * time : 2017-11-01 05:32:47
+         * userName : 0600000000000000
          * openType : 1
-         * lockName : 易同2号门口机
+         * lockName : 上海1016
          */
 
         private String photoUrl;
