@@ -3,17 +3,16 @@ package cn.etsoft.smarthome.ui;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -33,7 +32,6 @@ import cn.etsoft.smarthome.pullmi.utils.Data_Cache;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
-import cn.etsoft.smarthome.view.Circle_Progress;
 import cn.etsoft.smarthome.weidget.CustomDatePicker;
 
 /**
@@ -232,7 +230,8 @@ public class SafetyActivity_home extends Activity implements View.OnClickListene
     private void ShowSafetyDialog(final List<String> text) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this,
                 android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
-        builder.setView(R.layout.dialog_popupwindow_safety);
+        View view = LayoutInflater.from(SafetyActivity_home.this).inflate(R.layout.dialog_popupwindow_safety, null, false);
+        builder.setView(view);
         final AlertDialog dialog = builder.create();
         dialog.show();
         final ListView ListView_dialog = (ListView) dialog.findViewById(R.id.popupWindow_equipment_lv);
