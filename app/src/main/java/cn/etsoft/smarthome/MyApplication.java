@@ -263,6 +263,7 @@ public class MyApplication extends Application {
         }
         return music;
     }
+
     public int getMusic_wozai() {
         return music_wozai;
     }
