@@ -15,15 +15,16 @@
     <GridView
         android:id="@+id/light_gv"
         android:layout_width="match_parent"
+        android:background="@color/color_aa60A7D5"
         android:layout_height="@dimen/dp_0"
         android:layout_weight="1"
-        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginBottom="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_5"
         android:clipToPadding="true"
         android:horizontalSpacing="@dimen/dp_10"
         android:verticalSpacing="@dimen/dp_10"
-        android:numColumns="3"
+        android:numColumns="2"
         android:scrollbars="none" />
 </LinearLayout>

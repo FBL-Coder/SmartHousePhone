@@ -32,7 +32,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
  * Created by Say GoBay on 2016/9/1.
  * 灯光控制
  */
-public class LightActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class LightActivity extends Activity implements View.OnClickListener {
     private GridView gridView;
     private LinearLayout ll;
     private ImageView back, title_bar_iv_or;
@@ -51,7 +51,6 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_light);
         StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
-
 
 
         //初始化标题栏
@@ -104,7 +103,6 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
 
         gridView = (GridView) findViewById(R.id.light_gv);
         gridView.setSelector(R.drawable.selector_gridview_item);
-        gridView.setOnItemClickListener(this);
 
         if (MyApplication.getWareData().getLights() != null && MyApplication.getWareData().getLights().size() > 0) {
             upData();
@@ -113,29 +111,6 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
             Toast.makeText(this, "没有找到可控制灯具", Toast.LENGTH_SHORT).show();
         }
     }
-
-    long TimeExit = 0;
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (IsCanClick) {
-            //连续点击，间隔小于1秒，不做反应
-            if (System.currentTimeMillis() - TimeExit < 1000) {
-                TimeExit = System.currentTimeMillis();
-                return;
-            }
-            //给点击按钮添加点击音效
-            MyApplication.mApplication.getSp().play(MyApplication.mApplication.getMusic(), 1, 1, 0, 0, 1);
-            if (wareLight.get(position).getbTuneEn() == 0) {
-                if (wareLight.get(position).getbOnOff() == 0) {
-                    SendDataUtil.controlDev(wareLight.get(position).getDev(), 0);
-                } else {
-                    SendDataUtil.controlDev(wareLight.get(position).getDev(), 1);
-                }
-            }
-        }
-    }
-
 
     /**
      * 选择房间的dialog
@@ -215,9 +190,7 @@ public class LightActivity extends Activity implements AdapterView.OnItemClickLi
 
             //房间里的灯
             if (wareLight.size() == 0) {
-                lightAdapter = new LightAdapter(new ArrayList<WareLight>(), this);
-                gridView.setAdapter(lightAdapter);
-                ToastUtil.showText(title_bar_tv_room.getText() + "没有找到灯具，请添加");
+                return;
             } else {
                 if (lightAdapter == null) {
                     lightAdapter = new LightAdapter(wareLight, this);

@@ -93,6 +93,8 @@
 
     <color name="color_fff">#fff</color>
 
+    <color name="color_ECF0F7">#ECF0F7</color>
+
     <color name="color_4489CA">#4489CA</color>
 
     <color name="color_323232">#323232</color>
@@ -208,5 +210,7 @@
     <color name="color_3F51B5">#3F51B5</color>
     <color name="color_646A78">#646A78</color>
     <color name="color_55546A78">#55546A78</color>
+
+    <color name="home_time">#85f3f7f9</color>
 
 </resources>

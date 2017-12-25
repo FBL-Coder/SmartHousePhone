@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import cn.etsoft.smarthome.domain.UdpProPkt;
 import cn.etsoft.smarthome.domain.WareDev;
 import cn.etsoft.smarthome.domain.WareKeyOpItem;
+import cn.etsoft.smarthome.domain.WareLight;
 import cn.etsoft.smarthome.domain.WareSceneEvent;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.NetMessage.GlobalVars;
@@ -134,6 +135,21 @@ public class SendDataUtil {
                 ",\"canCpuID\":\"" + dev.getCanCpuId() + "\"" +
                 ",\"devType\":" + dev.getType() +
                 ",\"devID\":" + dev.getDevId() +
+                ",\"lmval\":" + 0 +
+                ",\"cmd\":" + cmd +
+                "}";
+        MyApplication.mApplication.getUdpServer().send(ctlStr, 4);
+    }
+
+    public static void controlLight(WareLight dev, int cmd, int val) {
+        String ctlStr = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_ctrlDev.getValue() +
+                ",\"subType1\":0" +
+                ",\"subType2\":0" +
+                ",\"canCpuID\":\"" + dev.getDev().getCanCpuId() + "\"" +
+                ",\"devType\":" + dev.getDev().getType() +
+                ",\"devID\":" + dev.getDev().getDevId() +
+                ",\"lmval\":" + val +
                 ",\"cmd\":" + cmd +
                 "}";
         MyApplication.mApplication.getUdpServer().send(ctlStr, 4);
