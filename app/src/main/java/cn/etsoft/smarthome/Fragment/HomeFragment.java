@@ -36,12 +36,12 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private GridView gridView;
     private Activity mActivity;
-    private int[] image = {R.drawable.air_home, R.drawable.tv_home,
-            R.drawable.stb_home, R.drawable.light_home,
+    private int[] image = {R.drawable.air_home, R.drawable.light_home,
             R.drawable.curtain_home, R.drawable.scene_home, R.drawable.control_home,
-            R.drawable.safety_home, R.drawable.freshair, R.drawable.floorheat};
-    private String[] title = {"空调", "电视", "机顶盒", "灯光",
-            "窗帘", "情景", "门禁", "安防", "新风", "地暖"};
+            R.drawable.safety_home, R.drawable.freshair, R.drawable.floorheat, R.drawable.tv_home,
+            R.drawable.stb_home};
+    private String[] title = {"空调", "灯光",
+            "窗帘", "情景", "门禁", "安防", "新风", "地暖", "电视", "机顶盒"};
     private int HomeAct_viewPage_position;
 
     public HomeFragment() {
@@ -101,33 +101,23 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                 intent = new Intent(mActivity, AirConditionActivity.class);
                 intent.putExtra("title", title[0]);
                 break;
-            //电视
+            //灯光
             case 1:
-                intent = new Intent(mActivity, TvActivity.class);
+                intent = new Intent(mActivity, LightActivity.class);
                 intent.putExtra("title", title[1]);
                 break;
-            //机顶盒
+            //窗帘
             case 2:
-                intent = new Intent(mActivity, StbActivity.class);
+                intent = new Intent(mActivity, CurtainActivity.class);
                 intent.putExtra("title", title[2]);
                 break;
-            //灯光
+            //情景
             case 3:
-                intent = new Intent(mActivity, LightActivity.class);
+                intent = new Intent(mActivity, SceneActivity.class);
                 intent.putExtra("title", title[3]);
                 break;
-            //窗帘
-            case 4:
-                intent = new Intent(mActivity, CurtainActivity.class);
-                intent.putExtra("title", title[4]);
-                break;
-            //情景
-            case 5:
-                intent = new Intent(mActivity, SceneActivity.class);
-                intent.putExtra("title", title[5]);
-                break;
             //门禁
-            case 6:
+            case 4:
                 if (cn.etsoft.smarthome.MyApplication.mApplication.isVisitor()) {
                     ToastUtil.showText("这里您不可以操作哦~");
                     return;
@@ -135,17 +125,27 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                 startActivity(new Intent(mActivity, cn.semtec.community2.WelcomeActivity.class));
                 break;
             //报警记录
-            case 7:
+            case 5:
                 startActivity(new Intent(mActivity, SafetyActivity_home.class));
                 break;
             //新风
-            case 8:
+            case 6:
                 intent = new Intent(mActivity, FreshairActivity.class);
                 break;
 
             //地暖
-            case 9:
+            case 7:
                 intent = new Intent(mActivity, FloorHeatActivity.class);
+                break;
+            //电视
+            case 8:
+                intent = new Intent(mActivity, TvActivity.class);
+                intent.putExtra("title", title[8]);
+                break;
+            //机顶盒
+            case 9:
+                intent = new Intent(mActivity, StbActivity.class);
+                intent.putExtra("title", title[9]);
                 break;
 
         }

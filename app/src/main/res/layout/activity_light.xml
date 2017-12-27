@@ -15,7 +15,6 @@
     <GridView
         android:id="@+id/light_gv"
         android:layout_width="match_parent"
-        android:background="@color/color_aa60A7D5"
         android:layout_height="@dimen/dp_0"
         android:layout_weight="1"
         android:layout_marginBottom="@dimen/dp_10"
