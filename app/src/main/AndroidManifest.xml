@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.etsoft.smarthome"
-    android:versionCode="212"
-    android:versionName="2.1.2">
+    android:versionCode="211"
+    android:versionName="2.1.1">
 
     <permission
         android:name="cn.etsoft.smarthome.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
     <!-- bluethooch -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!--<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />-->
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
