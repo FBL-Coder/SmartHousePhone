@@ -40,7 +40,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="如果安装失败，请在根目录下ZNJJAPK文件夹中打开apk文件安装！"
-                android:textColor="@color/main_blue1"
+                android:textColor="@color/black1"
                 android:textSize="@dimen/sp_8"
                 android:visibility="gone" />
 
@@ -48,9 +48,9 @@
                 android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"
+                android:gravity="left"
                 android:padding="@dimen/dp_15"
-                android:textColor="@color/color_000"
+                android:textColor="@color/dimgrey"
                 android:textSize="@dimen/sp_16" />
         </LinearLayout>
 

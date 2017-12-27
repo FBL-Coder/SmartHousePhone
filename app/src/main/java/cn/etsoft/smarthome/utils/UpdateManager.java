@@ -116,7 +116,7 @@ public class UpdateManager {
 
         CustomDialog_comment.Builder dialog = new CustomDialog_comment.Builder(mContext);
         dialog.setTitle("发现新版本 ：" + VersionName);
-        dialog.setMessage(updateDescription + "\n  描述：" + Info);
+        dialog.setMessage("更新描述："+Info);
         dialog.setPositiveButton("更新", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
@@ -186,7 +186,7 @@ public class UpdateManager {
 
 
                     int count = 0;
-                    byte buf[] = new byte[1024*50];
+                    byte buf[] = new byte[1024 * 50];
 
                     do {
                         int numread = is.read(buf);

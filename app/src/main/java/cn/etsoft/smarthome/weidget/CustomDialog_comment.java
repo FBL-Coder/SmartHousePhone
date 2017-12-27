@@ -3,6 +3,7 @@ package cn.etsoft.smarthome.weidget;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -183,7 +184,9 @@ public class CustomDialog_comment extends Dialog {
                         View.GONE);
             }
             if (message != null) {
-                ((TextView) layout.findViewById(R.id.message)).setText(message);
+                TextView textView = (TextView) layout.findViewById(R.id.message);
+                textView.setTextColor(Color.RED);
+                textView.setText(message);
             } else {
                 ((LinearLayout) layout.findViewById(R.id.content)).setVisibility(View.GONE);
             }
