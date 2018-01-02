@@ -168,14 +168,16 @@ public class SendDataUtil {
         MyApplication.mApplication.getUdpServer().send(str, 7);
     }
 
-    public static void executelScene(int sceneid) {
+    public static void executelScene(WareSceneEvent event) {
         String str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
                 ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_exeSceneEvents.getValue() +
+                ",\"exeSecu\":" + event.getExeSecu() +
                 ",\"subType1\":0" +
                 ",\"subType2\":0" +
-                ",\"eventId\":" + sceneid + "}";
+                ",\"eventId\":" + event.getEventId() + "}";
         MyApplication.mApplication.getUdpServer().send(str, 26);
     }
+
 
     public static void addscene(int sceneid, String name) {
         byte[] data = {0};

@@ -82,7 +82,7 @@ public class SceneAdapter extends BaseAdapter {
                 MyApplication.mApplication.setSceneIsShow(true);
                 //给点击情景按钮添加点击音效
                 MyApplication.mApplication.getSp().play(MyApplication.mApplication.getMusic(), 1, 1, 0, 0, 1);
-                createSceneEvents(mWareSceneEvents.get(position).getEventId());
+                createSceneEvents(mWareSceneEvents.get(position));
             }
         });
 
@@ -92,13 +92,13 @@ public class SceneAdapter extends BaseAdapter {
 
     long TimeExit = 0;
 
-    private void createSceneEvents(int eventId) {
+    private void createSceneEvents(WareSceneEvent event) {
         //连续点击，间隔小于1秒，不做反应
         if (System.currentTimeMillis() - TimeExit < 1000) {
             TimeExit = System.currentTimeMillis();
             return;
         }
-        SendDataUtil.executelScene(eventId);
+        SendDataUtil.executelScene(event);
     }
 
     private class ViewHolder {

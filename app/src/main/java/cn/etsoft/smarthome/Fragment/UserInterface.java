@@ -248,7 +248,10 @@ public class UserInterface extends Fragment implements AdapterView.OnItemClickLi
                     mActivity.startActivity(intent);
                 }
             } else {
-                SendDataUtil.executelScene(beanBean.getEventId());
+                for (int i = 0; i < MyApplication.getWareData().getSceneEvents().size(); i++) {
+                    if (MyApplication.getWareData().getSceneEvents().get(i).getEventId() == beanBean.getEventId())
+                        SendDataUtil.executelScene(MyApplication.getWareData().getSceneEvents().get(i));
+                }
             }
         } else {
             startActivity(new Intent(mActivity, UserAddDevsActivty.class));

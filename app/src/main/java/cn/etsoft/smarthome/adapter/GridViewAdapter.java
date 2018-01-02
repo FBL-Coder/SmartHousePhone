@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,18 +19,20 @@ import cn.etsoft.smarthome.domain.GridViewBean;
  * Created by Say GoBay on 2016/9/1.
  */
 public class GridViewAdapter extends BaseAdapter {
-    private LayoutInflater mInflater;
     private List<GridViewBean> listViewItems;
+    private Context context;
 
     public GridViewAdapter(int[] image, String[] title, Context context) {
         super();
+        this.context = context;
         listViewItems = new ArrayList<>();
-        mInflater = LayoutInflater.from(context);
+
         for (int i = 0; i < image.length; i++) {
-            GridViewBean item = new GridViewBean( image[i] , title[i]);
+            GridViewBean item = new GridViewBean(image[i], title[i]);
             listViewItems.add(item);
         }
     }
+
     @Override
     public int getCount() {
         if (null != listViewItems) {
@@ -41,7 +44,7 @@ public class GridViewAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-            return listViewItems.get(position);
+        return listViewItems.get(position);
     }
 
     @Override
@@ -53,7 +56,7 @@ public class GridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.home_gridview_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.home_gridview_item, null, false);
             viewHolder = new ViewHolder();
             viewHolder.image = (ImageView) convertView.findViewById(R.id.home_gv_image);
             viewHolder.title = (TextView) convertView.findViewById(R.id.home_gv_title);
