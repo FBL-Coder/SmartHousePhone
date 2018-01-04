@@ -122,6 +122,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemClickLis
                     ToastUtil.showText("这里您不可以操作哦~");
                     return;
                 }
+                MyApplication.mApplication.myWakeup.stop();
                 startActivity(new Intent(mActivity, cn.semtec.community2.WelcomeActivity.class));
                 break;
             //报警记录
