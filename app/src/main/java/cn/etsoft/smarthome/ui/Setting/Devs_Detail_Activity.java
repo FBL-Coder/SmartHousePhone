@@ -534,6 +534,7 @@ public class Devs_Detail_Activity extends Activity implements View.OnClickListen
                             "\"devName\":" + "\"" + Save_DevName + "\"," +
                             "\"roomName\":" + "\"" + Save_Roomname + "\"," +
                             "\"powChn\":" + Save_DevWay + "," +
+                            "\"lmVal\":0," +
                             "\"cmd\":" + 1 + "}";
                 }
                 MyApplication.mApplication.showLoadDialog(Devs_Detail_Activity.this);

@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -62,10 +63,10 @@ import cn.etsoft.smarthome.yuyin.recognization.StatusRecogListener;
 import cn.etsoft.smarthome.yuyin.util.Logger;
 import cn.etsoft.smarthome.yuyin.wakeup.IWakeupListener;
 import cn.etsoft.smarthome.yuyin.wakeup.RecogWakeupListener;
+import cn.semtec.community2.util.Util;
 
 import static cn.etsoft.smarthome.yuyin.recognization.IStatus.STATUS_FINISHED;
 import static cn.etsoft.smarthome.yuyin.recognization.IStatus.STATUS_WAKEUP_SUCCESS;
-import static org.linphone.mediastream.Log.TAG;
 
 /**
  * Author：FBL  Time： 2017/6/12.
@@ -173,6 +174,8 @@ public class MyApplication extends Application {
      */
     private int backTrackInMs = 2500;
 
+    private int mFinalCount = 0;
+    private int isback = 0;
 
     @Override
     public void onCreate() {
@@ -241,6 +244,60 @@ public class MyApplication extends Application {
         myWakeup = new MyWakeup(this, listener);
 
         myWakeup.start();
+
+
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                mFinalCount++;
+                //如果mFinalCount ==1，说明是从后台到前台
+                Log.e("onActivityStarted", mFinalCount +"");
+                if (mFinalCount == 1){
+                    //说明从后台回到了前台
+                    if (isback == 0)
+                        myWakeup.start();
+                    isback = 1;
+
+                }
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                mFinalCount--;
+                isback = 0;
+                //如果mFinalCount ==0，说明是前台到后台
+                Log.i("onActivityStopped", mFinalCount +"");
+                if (mFinalCount == 0){
+                    //说明从前台回到了后台
+                    myWakeup.stop();
+                }
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
     }
 
     private String intToIp(int i) {
