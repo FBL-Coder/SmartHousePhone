@@ -75,7 +75,9 @@ public class LightAdapter extends BaseAdapter {
 
         if (wareLight.get(position).getbTuneEn() == 1) {
             viewHolder.seekBar.setVisibility(View.VISIBLE);
-            viewHolder.seekBar.setValue(wareLight.get(position).getLmVal());
+            if (wareLight.get(position).getLmVal() == 9)
+                viewHolder.seekBar.setValue(wareLight.get(position).getLmVal() - 1);
+            else viewHolder.seekBar.setValue(wareLight.get(position).getLmVal());
         } else viewHolder.seekBar.setVisibility(View.INVISIBLE);
 
 
@@ -114,8 +116,11 @@ public class LightAdapter extends BaseAdapter {
             public void onStopTrackingTouch(RangeSeekBar rangeSeekBar, boolean b) {
                 if (min < wareLight.get(position).getLmVal())
                     SendDataUtil.controlLight(wareLight.get(position), UdpProPkt.E_LGT_CMD.e_lgt_dark.getValue(), min);
-                else if (min > wareLight.get(position).getLmVal())
+                else if (min > wareLight.get(position).getLmVal()) {
+                    if (min == 8)
+                        min = 9;
                     SendDataUtil.controlLight(wareLight.get(position), UdpProPkt.E_LGT_CMD.e_lgt_bright.getValue(), min);
+                }
             }
         });
         return convertView;
