@@ -211,7 +211,7 @@ public class UDPServer implements Runnable {
         }).start();
     }
 
-    public static void show(String str) {
+    public static void show(String flag, String str) {
 
         try {
             str = str.trim();
@@ -226,7 +226,7 @@ public class UDPServer implements Runnable {
                     sub = str.substring(index, maxLength);
                 }
                 index += maxLength;
-                Log.i("接收信息", sub.trim());
+                Log.i(flag + "接收信息", sub.trim());
             }
         } catch (Exception e) {
             Log.e("Exception", e.toString());
@@ -291,6 +291,7 @@ public class UDPServer implements Runnable {
         Message message = mhandler.obtainMessage();
         message.what = MyApplication.mApplication.UDP_HANR_DATA;
         mhandler.sendMessage(message);
+        show("UDP", info);
         extractData(info);
     }
 
@@ -315,14 +316,19 @@ public class UDPServer implements Runnable {
         } catch (JSONException e) {
             System.out.println(this.getClass().getName() + "-ISWeb-extractData--" + e.toString());
         }
-        extractData(info);
+        show("WEB", info);
+        if (GlobalVars.isIsLAN() && devUnitID.equals(GlobalVars.getDevid())){
+            Log.e("同ID的WEB数据","局域网数据优先，不处理WEB数据");
+            return;
+        }
+            extractData(info);
     }
 
     //警报时间间隔
     long time = 0;
 
     public void extractData(String info) {
-        show(info);
+
         int datType = 0;
         int subType2 = 0;
         int subType1 = 0;
@@ -2475,7 +2481,6 @@ public class UDPServer implements Runnable {
             System.out.println(this.getClass().getName() + "datType = 14" + e);
         }
     }
-
 
 
     /**
