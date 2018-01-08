@@ -197,8 +197,8 @@ public class SceneSetActivity extends Activity implements AdapterView.OnItemClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_bar_iv_or:
-                MyApplication.getWareData().getSceneEvents().clear();
-                if ("".equals(GlobalVars.getDevid())) {
+//                MyApplication.getWareData().getSceneEvents().clear();
+                if (!"".equals(GlobalVars.getDevid())) {
                     SendDataUtil.getSceneInfo();
                     MyApplication.mApplication.showLoadDialog(this);
                 }
