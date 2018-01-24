@@ -190,7 +190,7 @@ public class NewWorkSetActivity extends Activity {
      * @param SeekListData
      */
     private void showPassDialog(final List<RcuInfo> SeekListData, final int position) {
-        final Dialog dialog = new Dialog(NewWorkSetActivity.this);
+        final Dialog dialog = new Dialog(NewWorkSetActivity.this,android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar);
         dialog.setContentView(R.layout.dialog_addscene);
         dialog.show();
         mDialogAddSceneName = (EditText) dialog.findViewById(R.id.dialog_addScene_name);
@@ -198,7 +198,7 @@ public class NewWorkSetActivity extends Activity {
         mDialogAddSceneOk = (TextView) dialog.findViewById(R.id.dialog_addScene_ok);
         mTitleName = (TextView) dialog.findViewById(R.id.title_name);
         mTitle = (TextView) dialog.findViewById(R.id.title);
-        mTitle.setText("模块密码");
+        mTitle.setText("使用搜索");
         mDialogAddSceneName.setHint("请输入当前模块密码");
         mTitleName.setText("模块密码 :");
         mDialogAddSceneOk.setText("确定");
