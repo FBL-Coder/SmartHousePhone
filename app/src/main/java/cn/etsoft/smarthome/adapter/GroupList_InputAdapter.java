@@ -201,6 +201,7 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
         mEtBoardKeycut.setMaxEms(1);
         mEtBoardKeycut.setHint("请输入有效按键数");
         mEtBoardKeycut.setText(ListDatas.get(groupposition).getKeyCnt() + "");
+        mEtBoardName.setText(ListDatas.get(groupposition).getBoardName());
         mBtnSure = (Button) dialog.findViewById(R.id.btn_sure);
         mBtnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
         mBtnSure.setOnClickListener(new View.OnClickListener() {
@@ -225,16 +226,24 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
                         keyInput.setbResetKey(ListDatas.get(groupposition).getbResetKey());
                         keyInput.setCanCpuID(ListDatas.get(groupposition).getCanCpuID());
                         keyInput.setKeyAllCtrlType(ListDatas.get(groupposition).getKeyAllCtrlType());
-                        keyInput.setKeyCnt(Integer.valueOf(mEtBoardKeycut.getText().toString()));
-                        String[] nameKey = new String[ListDatas.get(groupposition).getKeyName().length];
-                        for (int i = 0; i < ListDatas.get(groupposition).getKeyName().length; i++) {
-                            nameKey[i] = CommonUtils.bytesToHexString(ListDatas.get(groupposition).getKeyName()[i].getBytes("GB2312"));
+
+                        int keyCut = Integer.valueOf(mEtBoardKeycut.getText().toString());
+                        String[] nameKey = new String[keyCut];
+
+                        for (int i = 0; i < keyCut; i++) {
+                            if (i < ListDatas.get(groupposition).getKeyName().length) {
+                                if ("".equals(ListDatas.get(groupposition).getKeyName()[i])) {
+                                    nameKey[i] = CommonUtils.bytesToHexString("未命名".getBytes("GB2312"));
+                                } else
+                                    nameKey[i] = CommonUtils.bytesToHexString(ListDatas.get(groupposition).getKeyName()[i].getBytes("GB2312"));
+                            } else {
+                                nameKey[i] = CommonUtils.bytesToHexString("未命名".getBytes("GB2312"));
+                            }
                         }
+                        keyInput.setKeyCnt(keyCut);
                         keyInput.setKeyName(nameKey);
                         keyInput.setLedBkType(ListDatas.get(groupposition).getLedBkType());
-                    } catch (UnsupportedEncodingException e) {
-                        Log.i("转码Name", "onClick: " + e);
-                    }
+
                     Gson gson = new Gson();
                     String data = gson.toJson(keyInput);
                     String str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
@@ -246,6 +255,9 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
                     Log.i("修改输入板名称    ", str);
                     MyApplication.mApplication.showLoadDialog(mContext);
                     MyApplication.mApplication.getUdpServer().send(str, 9);
+                    } catch (Exception e) {
+                        Log.i("转码Name", "onClick: " + e);
+                    }
 
                 }
             }
@@ -283,7 +295,7 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
                     return;
                 } else {
                     //修改按键板名称逻辑
-//修改按键板名称逻辑
+
                     String name = mEtBoardName.getText().toString();
                     WareBoardKeyInput keyInput = new WareBoardKeyInput();
                     try {

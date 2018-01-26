@@ -2553,6 +2553,7 @@ public class UDPServer implements Runnable {
                             item.setDevID(object2.getInt("devID"));
                             item.setDevType(object2.getInt("devType"));
                             item.setCanCpuID(object2.getString("canCpuID"));
+                            item.setLmVal(object2.getInt("lmVal"));
                             event.getItemAry().add(item);
                             for (int a = 0; a < event_exist.getItemAry().size(); a++) {
                                 WareSceneDevItem item_exist = event_exist.getItemAry().get(a);
@@ -2582,6 +2583,7 @@ public class UDPServer implements Runnable {
                                 item.setDevID(object2.getInt("devID"));
                                 item.setDevType(object2.getInt("devType"));
                                 item.setCanCpuID(object2.getString("canCpuID"));
+                                item.setLmVal(object2.getInt("lmVal"));
                                 event.getItemAry().add(item);
                             }
                         }
@@ -2609,6 +2611,7 @@ public class UDPServer implements Runnable {
                         item.setDevID(object2.getInt("devID"));
                         item.setDevType(object2.getInt("devType"));
                         item.setCanCpuID(object2.getString("canCpuID"));
+                        item.setLmVal(object2.getInt("lmVal"));
                         event.getItemAry().add(item);
                     }
                 }

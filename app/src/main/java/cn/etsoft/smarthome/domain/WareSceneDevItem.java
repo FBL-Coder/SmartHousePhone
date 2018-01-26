@@ -11,6 +11,7 @@ public class WareSceneDevItem implements Serializable {
 	private int devID;
 	private int devType;
 	private int bOnOff;
+	private int lmVal;
 	private int param1;
 	private int param2;
 
@@ -44,6 +45,14 @@ public class WareSceneDevItem implements Serializable {
 
 	public void setbOnOff(int bOnOff) {
 		this.bOnOff = bOnOff;
+	}
+
+	public int getLmVal() {
+		return lmVal;
+	}
+
+	public void setLmVal(int lmVal) {
+		this.lmVal = lmVal;
 	}
 
 	public int getParam1() {
