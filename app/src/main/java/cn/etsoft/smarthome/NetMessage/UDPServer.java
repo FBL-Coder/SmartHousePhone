@@ -317,11 +317,11 @@ public class UDPServer implements Runnable {
             System.out.println(this.getClass().getName() + "-ISWeb-extractData--" + e.toString());
         }
         show("WEB", info);
-        if (GlobalVars.isIsLAN() && devUnitID.equals(GlobalVars.getDevid())){
-            Log.e("同ID的WEB数据","局域网数据优先，不处理WEB数据");
+        if (GlobalVars.isIsLAN() && devUnitID.equals(GlobalVars.getDevid())) {
+            Log.e("同ID的WEB数据", "局域网数据优先，不处理WEB数据");
             return;
         }
-            extractData(info);
+        extractData(info);
     }
 
     //警报时间间隔
