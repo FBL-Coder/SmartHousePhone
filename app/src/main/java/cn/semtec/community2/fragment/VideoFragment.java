@@ -91,8 +91,8 @@ public class VideoFragment extends Fragment {
 //                    String s = SipCompress.compress(MyApplication.houseProperty.sipnum, MyApplication.cellphone);
                     // 开门
                     ((squirrelCallImpl) getActivity().getApplication()).squirrelSendMessage(map.get("obj_sipnum")
-                            ,MyApplication.houseProperty.sipaddr,squirrelCallImpl.serverport
-                            ,squirrelCallImpl.OPENDOOR,100);
+                            , MyApplication.houseProperty.sipaddr, squirrelCallImpl.serverport
+                            , squirrelCallImpl.OPENDOOR, 100);
                 }
             });
             holder.image.setOnClickListener(new View.OnClickListener() {

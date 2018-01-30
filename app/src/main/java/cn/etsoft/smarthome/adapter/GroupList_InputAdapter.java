@@ -34,7 +34,7 @@ import cn.etsoft.smarthome.weidget.CustomDialog;
 
 /**
  * Author：FBL  Time： 2017/10/20.
- * 问卷的显示适配器；
+ * 双层listview适配器；
  * 这个适配器是类似QQ好友分组的数据适配；
  */
 public class GroupList_InputAdapter extends BaseExpandableListAdapter {
@@ -244,17 +244,17 @@ public class GroupList_InputAdapter extends BaseExpandableListAdapter {
                         keyInput.setKeyName(nameKey);
                         keyInput.setLedBkType(ListDatas.get(groupposition).getLedBkType());
 
-                    Gson gson = new Gson();
-                    String data = gson.toJson(keyInput);
-                    String str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
-                            ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_editBoards.getValue() +
-                            ",\"subType1\":0" +
-                            ",\"subType2\":1" +
-                            ",\"keyinput_rows\":[" + data + "]" +
-                            ",\"keyinput\":1}";
-                    Log.i("修改输入板名称    ", str);
-                    MyApplication.mApplication.showLoadDialog(mContext);
-                    MyApplication.mApplication.getUdpServer().send(str, 9);
+                        Gson gson = new Gson();
+                        String data = gson.toJson(keyInput);
+                        String str = "{\"devUnitID\":\"" + GlobalVars.getDevid() + "\"" +
+                                ",\"datType\":" + UdpProPkt.E_UDP_RPO_DAT.e_udpPro_editBoards.getValue() +
+                                ",\"subType1\":0" +
+                                ",\"subType2\":1" +
+                                ",\"keyinput_rows\":[" + data + "]" +
+                                ",\"keyinput\":1}";
+                        Log.i("修改输入板名称    ", str);
+                        MyApplication.mApplication.showLoadDialog(mContext);
+                        MyApplication.mApplication.getUdpServer().send(str, 9);
                     } catch (Exception e) {
                         Log.i("转码Name", "onClick: " + e);
                     }
