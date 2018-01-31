@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 package org.linphone.mediastream;
 
@@ -80,7 +80,7 @@ public class AACFilter {
 
 			encoder.start();
 
-			encoderBufferInfo = new MediaCodec.BufferInfo();
+			encoderBufferInfo = new BufferInfo();
 
 			int ascPollCount = 0;
 			while (asc == null && ascPollCount < 1000) {
@@ -127,7 +127,7 @@ public class AACFilter {
 			decoderOutputBuffers= decoder.getOutputBuffers();
 			decoderInputBuffers= decoder.getInputBuffers();
 
-			decoderBufferInfo = new MediaCodec.BufferInfo();
+			decoderBufferInfo = new BufferInfo();
 		} catch (Exception exc) {
 			Log.e(exc, "Unable to create AAC Decoder");
 			return false;

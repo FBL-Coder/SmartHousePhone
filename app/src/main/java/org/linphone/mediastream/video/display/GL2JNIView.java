@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 package org.linphone.mediastream.video.display;
 
@@ -74,7 +74,7 @@ public class GL2JNIView extends GLSurfaceView {
                              new ConfigChooser(5, 6, 5, 0, depth, stencil) );
     }
 
-    private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
+    private static class ContextFactory implements EGLContextFactory {
         private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
             Log.w("creating OpenGL ES 2.0 context");
@@ -97,7 +97,7 @@ public class GL2JNIView extends GLSurfaceView {
         }
     }
 
-    private static class ConfigChooser implements GLSurfaceView.EGLConfigChooser {
+    private static class ConfigChooser implements EGLConfigChooser {
 
         public ConfigChooser(int r, int g, int b, int a, int depth, int stencil) {
             mRedSize = r;

@@ -66,6 +66,7 @@ import cn.etsoft.smarthome.ui.Setting.NewWorkSetActivity;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 import cn.etsoft.smarthome.utils.CityDB;
 import cn.etsoft.smarthome.utils.NetUtil;
+import cn.etsoft.smarthome.utils.PermissionsUtli;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.view.DepthPageTransformer;

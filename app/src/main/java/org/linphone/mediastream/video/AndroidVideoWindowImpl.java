@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 package org.linphone.mediastream.video;
 
@@ -170,7 +170,7 @@ public class AndroidVideoWindowImpl {
 		return mBitmap;
 	}
 	 
-	public void setOpenGLESDisplay(int ptr) {
+	public void setOpenGLESDisplay(long ptr) {
 		if (!useGLrendering)
 			Log.e("View class does not match Video display filter used (you must use a GL View)");
 		renderer.setOpenGLESDisplay(ptr);
@@ -199,7 +199,7 @@ public class AndroidVideoWindowImpl {
 	}
 	
     private static class Renderer implements GLSurfaceView.Renderer {
-    	int ptr;
+    	long ptr;
     	boolean initPending;
     	int width, height;
     	
@@ -208,7 +208,7 @@ public class AndroidVideoWindowImpl {
     		initPending = false;
     	}
     	 
-    	public void setOpenGLESDisplay(int ptr) {
+    	public void setOpenGLESDisplay(long ptr) {
     		/* 
     		 * Synchronize this with onDrawFrame:
     		 * - they are called from different threads (Rendering thread and Linphone's one)

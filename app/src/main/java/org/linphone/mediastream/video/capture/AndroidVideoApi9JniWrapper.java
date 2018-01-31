@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 package org.linphone.mediastream.video.capture;
 
@@ -104,8 +104,8 @@ public class AndroidVideoApi9JniWrapper {
 	}
 	
 	private static void setCameraDisplayOrientation(int rotationDegrees, int cameraId, Camera camera) {
-		android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-		android.hardware.Camera.getCameraInfo(cameraId, info);
+		Camera.CameraInfo info = new Camera.CameraInfo();
+		Camera.getCameraInfo(cameraId, info);
 		
 		int result;
 		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {

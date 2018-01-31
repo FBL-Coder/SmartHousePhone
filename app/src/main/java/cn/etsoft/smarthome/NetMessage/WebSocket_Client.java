@@ -13,7 +13,6 @@ import java.net.URISyntaxException;
 import cn.etsoft.smarthome.MyApplication;
 import cn.etsoft.smarthome.utils.AppSharePreferenceMgr;
 
-import static org.linphone.mediastream.Log.TAG;
 
 
 /**
@@ -58,7 +57,7 @@ public class WebSocket_Client {
                 @Override
                 public void onClose(int i, String s, boolean remote) {
                     //连接关闭
-                    Log.e(TAG, "closeConnect:WebSocket====onClose" + s);
+                    Log.e("WebSocket", "closeConnect:WebSocket====onClose" + s);
                     closeConnect();
                     Message message = handler.obtainMessage();
                     message.what = MyApplication.mApplication.WS_CLOSE;

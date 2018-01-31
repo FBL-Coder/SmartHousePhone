@@ -31,8 +31,8 @@ public class IncomingActivity extends MyBaseActivity implements OnClickListener 
     private MediaPlayer mMediaPlayer;
     private Bundle _bundle;
     private squirrelCallImpl myCallImpl;
-    private int currentCallID;
-//    private AudioManager audioManager;
+    private long currentCallID;
+    //    private AudioManager audioManager;
     private Vibrator vibrator;
     private SharedPreferenceUtil preference;
 
@@ -60,10 +60,10 @@ public class IncomingActivity extends MyBaseActivity implements OnClickListener 
         setView();
         setListener();
         _bundle = getIntent().getExtras();
-        currentCallID = _bundle.getInt("callid");
+        currentCallID = _bundle.getLong("callid");
 //        if (!preference.getBoolean(MyApplication.cellphone + "isDND") && !inDNDTime()) {
-            Util.OnPlayRing(getApplication());
-            OnVibrator();
+        Util.OnPlayRing(getApplication());
+        OnVibrator();
 //        }
     }
 
@@ -153,17 +153,18 @@ public class IncomingActivity extends MyBaseActivity implements OnClickListener 
         super.onDestroy();
 
     }
+
     private void checkName() {
         new Thread() {
             public void run() {
                 String username = null;
-                if(_bundle != null && _bundle.containsKey("username")){
-                     username = _bundle.getString("username");
+                if (_bundle != null && _bundle.containsKey("username")) {
+                    username = _bundle.getString("username");
                 }
                 String name;
                 if (username == null || VideoFragment.mlist == null)
                     return;
-                if (username == null){
+                if (username == null) {
                     username = "未知";
                 }
                 for (int i = 0; i < VideoFragment.mlist.size(); i++) {

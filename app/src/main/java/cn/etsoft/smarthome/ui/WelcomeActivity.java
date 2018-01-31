@@ -27,6 +27,7 @@ import cn.etsoft.smarthome.utils.HttpGetDataUtils.HttpCallback;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.NewHttpPort;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.OkHttpUtils;
 import cn.etsoft.smarthome.utils.HttpGetDataUtils.ResultDesc;
+import cn.etsoft.smarthome.utils.PermissionsUtli;
 import cn.etsoft.smarthome.utils.SendDataUtil;
 import cn.etsoft.smarthome.utils.ToastUtil;
 import cn.etsoft.smarthome.utils.UpdateManager;
@@ -52,6 +53,7 @@ public class WelcomeActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        PermissionsUtli.verifyStoragePermissions(this);
         StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.AppTheme_color));
         IsUpDataApk();
         MyApplication.mApplication.getUdpServer().sendSeekNet(false);
@@ -85,8 +87,8 @@ public class WelcomeActivity extends Activity {
                                 version.getData().get(0).getMobile().getVersion2() +
                                 version.getData().get(0).getMobile().getVersion3();
 
-                        VersionName = "V "+version.getData().get(0).getMobile().getVersion1() +"."+
-                                version.getData().get(0).getMobile().getVersion2() +"."+
+                        VersionName = "V " + version.getData().get(0).getMobile().getVersion1() + "." +
+                                version.getData().get(0).getMobile().getVersion2() + "." +
                                 version.getData().get(0).getMobile().getVersion3();
                         Info = version.getData().get(0).getMobile().getDescribe();
                         NewHttpPort.DownLoad_Apk = version.getData().get(0).getMobile().getUrl();

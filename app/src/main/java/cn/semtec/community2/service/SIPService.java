@@ -32,7 +32,6 @@ import cn.semtec.community2.activity.IncomingActivity;
 import cn.semtec.community2.activity.LoginActivity;
 import cn.semtec.community2.activity.MyBaseActivity;
 import cn.semtec.community2.model.LoginHelper;
-import cn.semtec.community2.model.VoiceWaveHelper;
 import cn.semtec.community2.util.SharedPreferenceUtil;
 import cn.semtec.community2.util.ToastUtil;
 
@@ -41,7 +40,6 @@ import cn.semtec.community2.util.ToastUtil;
  */
 public class SIPService extends Service {
     private squirrelCallImpl squirrelCall = null;
-    public static VoiceWaveHelper voiceWaveHelper;
     Timer timer;
     Timer squirreltimer;
     TimerTask timerTask;
@@ -59,7 +57,7 @@ public class SIPService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
+        //  Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -75,7 +73,6 @@ public class SIPService extends Service {
         if (preference.contains("cellphone") && preference.contains("password")) {
             String cellphone = preference.getString("cellphone");
             String password = preference.getString("password");
-
             LoginHelper loginHelper = new LoginHelper(loginHandler);
             loginHelper.loginServer(cellphone, password);
         }
@@ -86,7 +83,6 @@ public class SIPService extends Service {
         // 20ms sip heartbeat
         squirrelCall = (squirrelCallImpl) getApplication();
         squirrelCall.setHandler(mMsgHandler);
-        voiceWaveHelper = new VoiceWaveHelper(this);
         autoLogin();
     }
 
@@ -156,7 +152,6 @@ public class SIPService extends Service {
                         buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_1);
                         PendingIntent PI_button1 = PendingIntent.getBroadcast(SIPService.this, 1, buttonIntent, 0);
                         mRemoteViews.setOnClickPendingIntent(R.id.button1, PI_button1);
-
                         Class<? extends MyBaseActivity> into = IncomingActivity.instance != null
                                 ? IncomingActivity.class
                                 : ((MyApplication.logined == true) ? BaseActivity.class : LoginActivity.class);
@@ -165,7 +160,7 @@ public class SIPService extends Service {
                         mRemoteViews.setOnClickPendingIntent(R.id.layout, PI_layout);
 
                         Builder mBuilder = new Builder(SIPService.this);
-                        mBuilder.setContent(mRemoteViews).setSmallIcon(R.drawable.et);
+                        mBuilder.setContent(mRemoteViews).setSmallIcon(R.mipmap.et);
 
                         NotificationManager notificationManager = (NotificationManager) getSystemService(
                                 NOTIFICATION_SERVICE);
@@ -197,6 +192,7 @@ public class SIPService extends Service {
             super.handleMessage(msg);
         }
     };
+
 
     void HandlerRegState(Bundle _bundle) {
         @SuppressWarnings("unused")
@@ -291,7 +287,7 @@ public class SIPService extends Service {
                     case BUTTON_1:// 发送声波给门禁机， 声波开门
                         try {
                             if (MyApplication.cellphone != null && MyApplication.logined) {
-                                voiceWaveHelper.play();
+//                                voiceWaveHelper.play();
                             } else {
                                 ToastUtil.s(context, "您当前还没有登录,请先登录！");
                             }
@@ -320,7 +316,7 @@ public class SIPService extends Service {
                 return true;
             }
             Calendar c = Calendar.getInstance();
-            int nowMunute = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
+            @SuppressLint("WrongConstant") int nowMunute = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
             if (fromMinute < toMinute) {
                 if (nowMunute > fromMinute && nowMunute < toMinute) {
                     return true;
