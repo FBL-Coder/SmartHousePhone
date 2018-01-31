@@ -34,6 +34,7 @@ public class VideoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_video, null);
         adapter = new MyAdapter();
+        cn.etsoft.smarthome.MyApplication.mApplication.myWakeup.stop();
         setView();
         return layout;
     }
@@ -130,5 +131,11 @@ public class VideoFragment extends Fragment {
         instan.squirrelAccountLogin(MyApplication.houseProperty.sipaddr, squirrelCallImpl.serverport, 1, null,
                 MyApplication.houseProperty.sipnum, MyApplication.houseProperty.sippassword, null, 1);
         ToastUtil.l(getActivity(), "连接失败，请检查\n网络连接并重试！");
+    }
+
+    @Override
+    public void onDestroy() {
+        cn.etsoft.smarthome.MyApplication.mApplication.myWakeup.start();
+        super.onDestroy();
     }
 }
